@@ -11,6 +11,7 @@ pipeline{
                     # npm install --save classlist.js
                     # npm i --save-dev puppeteer
                     # npm i --save-dev karma-junit-reporter karma-coverage-istanbul-reporter karma-spec-reporter
+                    npm i --save-dev typescript 
                     '''
                 }
             }
@@ -23,7 +24,7 @@ pipeline{
                 }
             }
             parallel{
-                stage("Couverture"){
+                stage("Tests/Couverture"){
                     steps{
                         dir("frontend"){
                             sh "\$(npm bin)/ng test --watch=false --codeCoverage=true"
@@ -57,13 +58,14 @@ pipeline{
                         dir("frontend"){
                             sh """
                                 mkdir -p reports
-                                \$(npm bin)/ng lint --fix=false --tslintConfig=tslint.json --force=true --format=checkstyle >> reports/tslint.report
+                                \$(npm bin)/ng lint --fix=false --tslintConfig=tslint.json --force=true --format=checkstyle > reports/tslint-report.xml
                                 """
                         }
                     }
-                    post{
-                        always{
-                            recordIssues(tools: [tsLint(pattern: 'frontend/reports/tslint.report')])
+                    post {
+                        always {
+                            recordIssues tool: tsLint(pattern: 'frontend/reports/tslint-report.xml'),
+                                        enabledForFailure: true
                         }
                     }
                 }
@@ -90,15 +92,47 @@ pipeline{
                 }
             }
             stages{
-                stage('code quality'){
+                stage("Tests/Couverture"){
                     steps{
                         dir("frontend"){
-                            sh "\$(npm bin)/ng lint --fix=false --tslintConfig=tslint.json --force=true --format=checkstyle >> reports/tslint.report"
+                            sh "\$(npm bin)/ng test --watch=false --codeCoverage=true"
                         }
                     }
-                    post{
-                        always{
-                            recordIssues(tools: [tsLint(pattern: 'reports/tslint.report')])
+                    post {
+                        always {
+                            junit "frontend/reports/junit.xml"
+                            cobertura (
+                                autoUpdateHealth: false,
+                                autoUpdateStability: false,
+                                coberturaReportFile: 'frontend/coverage/cobertura-coverage.xml',
+                                onlyStable: false,
+                                sourceEncoding: 'ASCII',
+                                zoomCoverageChart: false)
+                            publishHTML(target: [
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: 'frontend/coverage',
+                                reportFiles: 'index.html',
+                                reportName: 'HTML Report',
+                                reportTitles: ''])
+                        }
+                    }
+                }
+
+                stage ('code quality'){
+                    steps{
+                        dir("frontend"){
+                            sh """
+                                mkdir -p reports
+                                \$(npm bin)/ng lint --fix=false --tslintConfig=tslint.json --force=true --format=checkstyle > reports/tslint-report.xml
+                                """
+                        }
+                    }
+                    post {
+                        always {
+                            recordIssues tool: tsLint(pattern: 'frontend/reports/tslint-report.xml'),
+                                        enabledForFailure: true
                         }
                     }
                 }
@@ -110,11 +144,65 @@ pipeline{
                         }
                     }
                 }
-            }
 
+                stage("SonarQube analysis") {
+                    environment {
+                        scannerHome = tool 'SonarQubeScanner' 
+                    }
+                    steps {
+                        withSonarQubeEnv('SonarQube') {
+                            sh "${scannerHome}/bin/sonar-scanner -X"
+                        }
+                        timeout(time: 1, unit: 'HOURS') {
+                            waitForQualityGate abortPipeline: true 
+                        }
+                    }
+                }
+            }
         }
 
-        stage ('DEPLOY') {
+        stage ('DEPLOY DEV') {
+            when{
+                expression {
+                    return GIT_BRANCH =~ "dev"
+                }
+            }
+            stages{
+                // stage ('Doc generation'){
+                //     steps {
+                //         dir("frontend"){
+                //             sh "npm run compodoc"
+                //         }
+                //     }
+                //     post{
+                //         always{
+                //             archiveArtifacts artifacts: 'frontend/documentation'
+                //         }
+                //     }
+                // }
+                stage('Build'){
+                    steps{
+                        dir("frontend"){
+                            sh '''
+                                \$(npm bin)/ng build --build-optimizer
+                                '''
+                        }
+                    }
+                }
+
+                stage('Deploy on distant server'){
+                    steps{
+                        sh '''
+                            ssh root@192.168.101.14 'rm -rf /var/www/pic-slalom/*';
+                            scp -r -p $WORKSPACE/frontend/dist/user-administration-project/* root@192.168.101.14:/var/www/pic-slalom/;
+                        '''
+                    }
+                }
+            }
+        }
+
+
+        stage ('DEPLOY PROD') {
             when{
                 expression {
                     return GIT_BRANCH =~ "master"
