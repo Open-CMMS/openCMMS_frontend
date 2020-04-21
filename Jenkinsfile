@@ -194,7 +194,7 @@ pipeline{
                     steps{
                         sh '''
                             ssh root@192.168.101.14 'rm -rf /var/www/pic-slalom/*';
-                            scp -r -p $WORKSPACE/frontend/dist/user-administration-project/* root@192.168.101.14:/var/www/pic-slalom/;
+                            scp -r -p $WORKSPACE/frontend/dist/pic-slalom/* root@192.168.101.14:/var/www/pic-slalom/;
                         '''
                     }
                 }
