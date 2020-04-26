@@ -17,14 +17,14 @@ import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
 import { TasksListComponent } from './tabs/tasks/tasks-list/tasks-list.component';
 import { TaskDetailsComponent } from './tabs/tasks/task-details/task-details.component';
 import { NewTaskComponent } from './tabs/tasks/new-task/new-task.component';
-import { GroupManagementComponent } from './tabs/groups/group-management/group-management.component';
-import { GroupsListComponent } from './tabs/groups/groups-list/groups-list.component';
-import { GroupDetailsComponent } from './tabs/groups/group-details/group-details.component';
-import { NewGroupComponent } from './tabs/groups/new-group/new-group.component';
-import { GroupTypeManagementComponent } from './tabs/group-types/group-type-management/group-type-management.component';
-import { GroupTypesListComponent } from './tabs/group-types/group-types-list/group-types-list.component';
-import { GroupTypeDetailsComponent } from './tabs/group-types/group-type-details/group-type-details.component';
-import { NewGroupTypeComponent } from './tabs/group-types/new-group-type/new-group-type.component';
+import { TeamManagementComponent } from './tabs/teams/team-management/team-management.component';
+import { TeamsListComponent } from './tabs/teams/teams-list/teams-list.component';
+import { TeamDetailsComponent } from './tabs/teams/team-details/team-details.component';
+import { NewTeamComponent } from './tabs/teams/new-team/new-team.component';
+import { TeamTypeManagementComponent } from './tabs/team-types/team-type-management/team-type-management.component';
+import { TeamTypesListComponent } from './tabs/team-types/team-types-list/team-types-list.component';
+import { TeamTypeDetailsComponent } from './tabs/team-types/team-type-details/team-type-details.component';
+import { NewTeamTypeComponent } from './tabs/team-types/new-team-type/new-team-type.component';
 import { UserManagementComponent } from './tabs/users/user-management/user-management.component';
 import { UsersListComponent } from './tabs/users/users-list/users-list.component';
 import { UserDetailsComponent } from './tabs/users/user-details/user-details.component';
@@ -36,8 +36,8 @@ import { EquipmentDetailsComponent } from './tabs/equipments/equipment-details/e
 import { NewEquipmentComponent } from './tabs/equipments/new-equipment/new-equipment.component';
 import { AuthenticationService } from './services/auth/authentication.service';
 import { AuthGuardService } from './services/auth/auth-guard.service';
-import { GroupService } from './services/groups/group.service';
-import { GroupTypeService } from './services/group-types/group-type.service';
+import { TeamService } from './services/teams/team.service';
+import { TeamTypeService } from './services/team-types/team-type.service';
 import { UserService } from './services/users/user.service';
 import { PermissionService } from './services/permissions/permission.service';
 import { EquipmentService } from './services/equipments/equipment.service';
@@ -54,10 +54,10 @@ const appRoutes: Routes = [
   {path: 'settings', component: SettingsComponent},
   {path: 'infos', component: UserDetailsComponent},
   {path: 'tasks/:id', component: TaskDetailsComponent},
-  {path: 'groups', component: GroupManagementComponent},
-  {path: 'groups/:id', component: GroupDetailsComponent},
-  {path: 'group-types', component: GroupTypeManagementComponent},
-  {path: 'group-types/:id', component: GroupTypeDetailsComponent},
+  {path: 'teams', component: TeamManagementComponent},
+  {path: 'teams/:id', component: TeamDetailsComponent},
+  {path: 'team-types', component: TeamTypeManagementComponent},
+  {path: 'team-types/:id', component: TeamTypeDetailsComponent},
   {path: 'users', component: UserManagementComponent},
   {path: 'users/:id', component: UserDetailsComponent},
   {path: 'equipments', component: EquipmentManagementComponent},
@@ -79,14 +79,14 @@ const appRoutes: Routes = [
     TasksListComponent,
     TaskDetailsComponent,
     NewTaskComponent,
-    GroupManagementComponent,
-    GroupsListComponent,
-    GroupDetailsComponent,
-    NewGroupComponent,
-    GroupTypeManagementComponent,
-    GroupTypesListComponent,
-    GroupTypeDetailsComponent,
-    NewGroupTypeComponent,
+    TeamManagementComponent,
+    TeamsListComponent,
+    TeamDetailsComponent,
+    NewTeamComponent,
+    TeamTypeManagementComponent,
+    TeamTypesListComponent,
+    TeamTypeDetailsComponent,
+    NewTeamTypeComponent,
     UserManagementComponent,
     UsersListComponent,
     UserDetailsComponent,
@@ -108,8 +108,8 @@ const appRoutes: Routes = [
   providers: [
     AuthenticationService,
     AuthGuardService,
-    GroupService,
-    GroupTypeService,
+    TeamService,
+    TeamTypeService,
     UserService,
     PermissionService,
     TaskService,
