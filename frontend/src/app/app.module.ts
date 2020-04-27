@@ -43,6 +43,10 @@ import { PermissionService } from './services/permissions/permission.service';
 import { EquipmentService } from './services/equipments/equipment.service';
 import { TaskService } from './services/tasks/task.service';
 import { UtilsService } from './services/utils/utils.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -103,7 +107,11 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule
   ],
   providers: [
     AuthenticationService,
