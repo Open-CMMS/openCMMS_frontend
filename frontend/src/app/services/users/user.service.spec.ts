@@ -77,4 +77,37 @@ describe('UserService', () => {
     req.flush(mockUsers);
 
   });
+
+  it('returned UserProfile should match the right data of getUser()', () => {
+    const mockUser = {
+      id: 3,
+      last_name: 'Maricato',
+      first_name: 'Hugo',
+      username: 'hmaricato',
+      email: 'hugo.maricato@insa-rouen.fr',
+      password: 'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=',
+      nb_tries: 0,
+      is_active: false
+    };
+    service.getUser(3).subscribe(user => {
+      expect(user.id).toEqual(3);
+      expect(user.last_name).toEqual('Maricato');
+      expect(user.first_name).toEqual('Hugo');
+      expect(user.username).toEqual('hmaricato');
+      expect(user.email).toEqual('hugo.maricato@insa-rouen.fr');
+      expect(user.nb_tries).toEqual(0);
+      expect(user.is_active).toEqual(false);
+    });
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/gestion/users/3/');
+
+    expect(req.request.method).toEqual('GET');
+
+    req.flush(mockUser);
+
+  });
+
+
+
+
+
 });
