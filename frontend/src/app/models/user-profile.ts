@@ -8,3 +8,6 @@ export class UserProfile {
     nb_tries: number;
     is_active: boolean;
 }
+
+
+
