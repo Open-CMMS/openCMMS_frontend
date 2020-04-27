@@ -40,7 +40,7 @@ export class TeamTypeService {
       })
     };
 
-    const obs = this.httpClient.post<TeamType>(this.BASE_URL_API + '/api/gestion/TeamTypes/', gtJson, httpOptions);
+    const obs = this.httpClient.post<TeamType>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/', gtJson, httpOptions);
     obs.subscribe(
       team_type => {
         this.team_types.push(team_type);
@@ -58,7 +58,7 @@ export class TeamTypeService {
       })
     };
 
-    const obs = this.httpClient.put<TeamType>(this.BASE_URL_API + '/api/gestion/TeamTypes/' + updated_team_type.getId(),
+    const obs = this.httpClient.put<TeamType>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + updated_team_type.getId(),
                                               ttJson,
                                               httpOptions);
     obs.subscribe(
@@ -74,29 +74,18 @@ export class TeamTypeService {
     return obs;
   }
 
-  getTeamType(team_type_id: number): TeamType {
-    let ret = null;
-    this.httpClient
-      .get<any[]>(this.BASE_URL_API + '/api/gestion/TeamTypes/' + team_type_id)
-      .subscribe(
-        team_type => {
-          ret = team_type;
-        },
-        (error) => {
-          console.log('Erreur ! :' + error);
-        }
-      );
-    return ret;
+  getTeamType(team_type_id: number): Observable<TeamType> {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + team_type_id);
   }
 
   getTeamTypes() {
     this.httpClient
-      .get<any[]>(this.BASE_URL_API + '/api/gestion/TeamTypes/')
+      .get<any[]>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/')
       .subscribe(
         (response) => {
           response.forEach(element => {
-              const gt = new TeamType(element.name, element.perms, element.groups);
-              this.team_types.push(gt);
+            const gt = new TeamType(element.id, element.name, element.permissions, element.teams);
+            this.team_types.push(gt);
           });
           this.emitTeamTypes();
         },
@@ -108,11 +97,11 @@ export class TeamTypeService {
 
   getTeamTypePermissions() {
     this.httpClient
-      .get<any[]>(this.BASE_URL_API + '/api/gestion/TeamTypes/')
+      .get<any[]>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/')
       .subscribe(
         (response) => {
           response.forEach(element => {
-              const gt = new TeamType(element.name, element.perms, element.groups);
+              const gt = new TeamType(element.id, element.name, element.perms, element.groups);
               this.team_types.push(gt);
           });
           this.emitTeamTypes();
@@ -126,7 +115,7 @@ export class TeamTypeService {
   deleteTeamType(id_team_type: number) {
     let ret = false;
     this.httpClient
-      .delete<any>(this.BASE_URL_API + '/api/gestion/TeamTypes/' + id_team_type)
+      .delete<any>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + id_team_type)
       .subscribe(
         (response) => {
           if (response === true) {

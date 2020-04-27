@@ -29,11 +29,13 @@ export class TeamTypesListComponent implements OnInit, OnDestroy {
   }
 
   onViewTeamType(i: number) {
-    this.router.navigate(['/team-types', i]);
+    const team_type_id = this.teamTypes[i].getId();
+    this.router.navigate(['/team-types', team_type_id]);
   }
 
   onDeleteTeamType(i: number) {
-    console.log('delete : ' + i);
+    const team_type_id = this.teamTypes[i].getId();
+    console.log('delete : ' + team_type_id);
   }
 
   ngOnDestroy() {

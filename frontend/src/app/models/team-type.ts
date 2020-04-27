@@ -6,11 +6,13 @@ export class TeamType {
 
     /**
      *
+     * @param id The id of the team type
      * @param name The name of the team type
      * @param permissions The list of the Permissions associated to the GroupType
      * @param teams The list of the teams associated to the GroupType
      */
-    constructor(name: string, permissions: number[], teams: number[]) {
+    constructor(id: number, name: string, permissions: number[], teams: number[]) {
+        this.id = id;
         this.name = name;
         this.permissions = permissions;
         this.teams = teams;

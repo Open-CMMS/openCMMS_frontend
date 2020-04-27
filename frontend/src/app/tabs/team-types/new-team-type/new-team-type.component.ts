@@ -43,10 +43,11 @@ export class NewTeamTypeComponent implements OnInit {
     const permissionsStr = 'permissions';
     const teamsStr = 'teams';
 
+    const id = 0;
     const name = form.value[nameStr];
     const permissions = form.value[permissionsStr];
     const teams = form.value[teamsStr];
-    this.teamTypeService.createTeamType(new TeamType(name, permissions, teams));
+    this.teamTypeService.createTeamType(new TeamType(id, name, permissions, teams));
   }
 
 }

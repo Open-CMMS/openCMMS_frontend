@@ -12,10 +12,10 @@
       <div class="form-team">
         <mat-form-field appearance="fill" class="form-field-fill">
           <mat-label>Permissions</mat-label>
-          <mat-select multiple required name='rights' ngModel class="form-field">
+          <mat-select multiple required name='permissions' ngModel class="form-field">
             <mat-option 
-              class="list-rights-item"
-              *ngFor="let right of rights"
+              class="list-permissions-item"
+              *ngFor="let right of permissions"
               value= "{{ right.codename }}">{{ right.name }}
             </mat-option>
           </mat-select>
