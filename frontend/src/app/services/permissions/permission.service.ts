@@ -23,7 +23,7 @@ export class PermissionService {
     );
   }
 
-  getPermissions(permissionId) : Observable<Permission[]> {
+  getPermissions() : Observable<Permission[]> {
     return this.httpClient
     .get<Permission[]>(this.BASE_URL_API + '/api/usersmanagement/perms/')
     .pipe(
