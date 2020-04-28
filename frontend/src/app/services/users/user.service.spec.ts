@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { UserProfile } from 'src/app/models/user-profile';
 
 describe('UserService', () => {
   const BASE_URL_API = environment.baseUrl;
@@ -70,7 +71,7 @@ describe('UserService', () => {
       expect(users[1].is_active).toEqual(false);
     });
 
-    const req = httpTestingController.expectOne(BASE_URL_API + '/api/gestion/users/');
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
 
     expect(req.request.method).toEqual('GET');
 
@@ -98,7 +99,7 @@ describe('UserService', () => {
       expect(user.nb_tries).toEqual(0);
       expect(user.is_active).toEqual(false);
     });
-    const req = httpTestingController.expectOne(BASE_URL_API + '/api/gestion/users/3/');
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
 
     expect(req.request.method).toEqual('GET');
 
@@ -106,8 +107,88 @@ describe('UserService', () => {
 
   });
 
+  it('returned Observable should match the right data for update', () => {
+    const mockUser = {
+      id: 3,
+      last_name: 'Maricat',
+      first_name: 'Hugo',
+      username: 'hmaricato',
+      email: 'hugo.maricato@insa-rouen.fr',
+      password: 'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=',
+      nb_tries: 0,
+      is_active: false
+    };
+
+    service.updateUser(new UserProfile(3, 'Maricat', 'Hugo', 'hmaricato', 'hugo.maricato@insa-rouen.fr',
+    'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=', 0, false))
+      .subscribe(userData => {
+        expect(userData.username).toEqual('hmaricato');
+        expect(userData.last_name).toEqual('Maricat');
+      });
+
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
+
+    expect(req.request.method).toEqual('PUT');
+
+    req.flush(mockUser);
+  });
 
 
+  it('returned Observable should match the right data on create', () => {
+    const mockUser = {
+      id: 0,
+      last_name: 'Maricato',
+      first_name: 'Hugo',
+      username: 'hmaricato',
+      email: 'h.m@insa-rouen.fr',
+      password: 'test1234',
+      nb_tries: 0,
+      is_active: false
+    };
+
+    service.createUser('Maricato', 'Hugo', 'hmaricato', 'h.m@insa-rouen.fr', 'test1234')
+      .subscribe(userData => {
+        expect(userData.last_name).toEqual('Maricato');
+        expect(userData.first_name).toEqual('Hugo');
+        expect(userData.username).toEqual('hmaricato');
+        expect(userData.email).toEqual('h.m@insa-rouen.fr');
+        expect(userData.nb_tries).toEqual(0);
+        expect(userData.is_active).toEqual(false);
+      });
+
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+
+    expect(req.request.method).toEqual('POST');
+
+    req.flush(mockUser);
+  });
+
+  it('returned Observable should match the right data on delete', () => {
+    const mockUser = {
+      id: 0,
+      last_name: 'Maricato',
+      first_name: 'Hugo',
+      username: 'hmaricato',
+      email: 'h.m@insa-rouen.fr',
+      password: 'test1234',
+      nb_tries: 0,
+      is_active: false
+    };
+
+    service.deleteUser(mockUser.id)
+      .subscribe(userData => {
+        expect(userData.last_name).toEqual('Maricato');
+        expect(userData.first_name).toEqual('Hugo');
+        expect(userData.username).toEqual('hmaricato');
+        expect(userData.email).toEqual('h.m@insa-rouen.fr');
+      });
+
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/0/');
+
+    expect(req.request.method).toEqual('DELETE');
+
+    req.flush(mockUser);
+  });
 
 
 });

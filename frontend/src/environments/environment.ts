@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'http://dev.lxc.pic.brasserie-du-slalom.fr'
+  baseUrl: 'https://dev.lxc.pic.brasserie-du-slalom.fr'
 };
 
 /*
