@@ -75,7 +75,7 @@ export class TeamService {
                    .subscribe(
                       (response) => {
                         response.forEach(element => {
-                          const team = new Team(element.id, element.name, element.team_type);
+                          const team = new Team(element.id, element.name, element.team_type, element.user_set);
                           this.teams.push(team);
                         });
                         this.emitTeams();
@@ -99,7 +99,11 @@ export class TeamService {
    * Function that delete a Team object in database
    * @param id  the id of the team tot delete
    */
-  deleteGroup(id: number) {
+  deleteTeam(id: number) {
     return this.httpClient.delete<Team>(this.BASE_URL_API + '/api/usersmanagement/teams/' + id + '/');
+  }
+
+  addUserToTeam() {
+
   }
 }
