@@ -56,6 +56,7 @@ const appRoutes: Routes = [
   {path: 'tasks/:id', component: TaskDetailsComponent},
   {path: 'teams', component: TeamManagementComponent},
   {path: 'teams/:id', component: TeamDetailsComponent},
+  {path: 'teams/new-team', component: NewTeamComponent},
   {path: 'team-types', component: TeamTypeManagementComponent},
   {path: 'team-types/:id', component: TeamTypeDetailsComponent},
   {path: 'users', component: UserManagementComponent},
