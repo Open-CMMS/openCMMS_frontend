@@ -17,7 +17,7 @@ export class TeamManagementComponent implements OnInit {
 
   onCreateTeam() {
     console.log('Coucou');
-    this.router.navigate(['/teams/new-team']);
+    this.router.navigate(['/new-team']);
   }
 
 }

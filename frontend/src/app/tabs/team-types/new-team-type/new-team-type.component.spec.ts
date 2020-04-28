@@ -1,4 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { NewTeamTypeComponent } from './new-team-type.component';
 
@@ -8,7 +10,8 @@ describe('NewTeamTypeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewTeamTypeComponent ]
+      declarations: [ NewTeamTypeComponent ],
+      imports: [ RouterTestingModule, HttpClientTestingModule ]
     })
     .compileComponents();
   }));

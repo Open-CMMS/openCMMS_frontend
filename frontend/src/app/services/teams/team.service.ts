@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Team } from 'src/app/models/team';
-import { catchError } from 'rxjs/operators';
-import { throwError, Observable, Subject, observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,17 +15,6 @@ export class TeamService {
 
   constructor(private httpClient: HttpClient) {
     this.getTeams();
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      console.error('An error occurred:', error.error.message);
-    } else {
-      console.error(
-        'Backend returned code ${error.status}, ');
-    }
-    return throwError(
-      'Something bad happened; please try again later.');
   }
 
   emitTeams() {
@@ -46,15 +34,7 @@ export class TeamService {
       })
     };
 
-    const obs = this.httpClient.post<Team>(this.BASE_URL_API + '/api/teams/', teamJson, httpOptions);
-    obs.subscribe(
-      team => {
-        this.teams.push(team);
-        this.emitTeams();
-      }
-    );
-
-    return obs;
+    return this.httpClient.post<Team>(this.BASE_URL_API + '/api/usersmanagement/teams/', teamJson, httpOptions);
   }
 
   /**
@@ -71,6 +51,7 @@ export class TeamService {
    * @return the list of groups called for
    */
   getTeams() {
+    this.teams = [];
     this.httpClient.get<Team[]>(this.BASE_URL_API + '/api/usersmanagement/teams/')
                    .subscribe(
                       (response) => {
@@ -88,11 +69,15 @@ export class TeamService {
    * @param id  the id of the team
    * @param teamUpdated the new version of the team
    */
-  updateTeam(id: number, teamUpdated: Team) {
-    this.httpClient.put<Team>(this.BASE_URL_API + '/api/usersmanagement/teams/' + id + '/', teamUpdated)
-    .pipe(
-      catchError(this.handleError)
-    );
+  updateTeam(id: number, teamUpdated: Team): Observable<Team> {
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json'
+      })
+    };
+
+    return this.httpClient.put<Team>(this.BASE_URL_API + '/api/usersmanagement/teams/' + id, teamUpdated, httpOptions);
   }
 
   /**
@@ -100,7 +85,7 @@ export class TeamService {
    * @param id  the id of the team tot delete
    */
   deleteTeam(id: number) {
-    return this.httpClient.delete<Team>(this.BASE_URL_API + '/api/usersmanagement/teams/' + id + '/');
+    return this.httpClient.delete<Team>(this.BASE_URL_API + '/api/usersmanagement/teams/' + id);
   }
 
   addUserToTeam() {

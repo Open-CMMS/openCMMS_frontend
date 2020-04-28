@@ -16,7 +16,34 @@
         <h4 class="modal-title" id="modal-modify">Modifiy Team</h4>
     </div>
     <div class="modal-body">
-        
+        <form [formGroup]="updateForm">
+            <div class="form-group">
+                <!--
+                <mat-form-field class="example-full-width">
+                    <mat-label>Team Name</mat-label>
+                    <input matInput id="teamName" formControlName="teamName">
+                </mat-form-field>
+            -->
+                    <label for="teamName">Team Name </label>
+                    <input type="text" id="teamName" class="form-control" formControlName="teamName">
+
+            </div>
+            <div class="form-group">
+                <!--
+                <mat-form-field>
+                    <mat-label>Team Type</mat-label>
+                    <select matNativeControl>
+                        <option *ngFor="let teamType of teamTypes" [value]="teamType.id">{{ teamType.name }}</option>
+                    </select>
+                </mat-form-field>
+            -->
+                    <label for="teamType">Team Type </label>
+                    <select id="teamType" class="form-control" formControlName="teamType">
+                         <option *ngFor="let teamType of teamTypes" [value]="teamType.id">{{ teamType.name }}</option>
+                    </select>
+
+            </div>
+        </form>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
@@ -24,10 +51,23 @@
     </div>
 </ng-template>
 
+<ng-template #contentAddUser let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-addUser">Add a user</h4>
+    </div>
+    <div class="modal-body">
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Add</button>
+    </div>
+</ng-template>
+
 <div class="container-fluid col-10 mt-3 justify-content-center">
     <div class="container-fluid d-flex justify-content-between">
         <div class="d-flex">
-            <h2 class="font-weight-bold">Team {{ team.name }}</h2>
+            <h2 class="font-weight-bold" *ngIf="loading">Team {{ team.name }}</h2>
         </div>
         <div class="d-flex btn-group" role="group">
             <button class="btn btn-secondary" (click)="openModify(contentModify)"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
@@ -41,8 +81,8 @@
         <div class="row">
             <div class="col-12">
                 <div class="px-2 py-1">
-                    <p><span class="font-weight-bold">Team Name  :</span> {{ team.name }} <p>
-                    <p><span class="font-weight-bold">Team Type  :</span> {{ teamType.name }} </p>
+                    <p *ngIf="loading"><span class="font-weight-bold">Team Name  :</span> {{ team.name }} <p>
+                    <p *ngIf="loading"><span class="font-weight-bold">Team Type  :</span> {{ teamType.name }} </p>
                 </div>
             </div>
         </div>
@@ -53,7 +93,7 @@
                 <h3 class="font-weight-bold"> Users : </h3>
             </div>
             <div class="d-flex">
-                <button class="d-flex btn btn-secondary"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
+                <button class="d-flex btn btn-secondary" (click)="openAddUser(contentAddUser)"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
             </div>
         </div>
         <div class="row">
@@ -69,5 +109,9 @@
                 </li>
             </ul>
         </div>
+    </div>
+    <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="updateError">
+        <p class="font-weight-bold">Error when updating the team properties:</p>
+        <p>This team name is invalid !</p>
     </div>
 </div>

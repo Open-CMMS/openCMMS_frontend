@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { Router } from '@angular/router';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-teams-list',
@@ -15,7 +16,7 @@ export class TeamsListComponent implements OnInit, OnDestroy {
   teams: Team[] = [];
   teamsSubscription: Subscription;
 
-  constructor(private teamService: TeamService, private router: Router) { }
+  constructor(private teamService: TeamService, private router: Router, private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this.teamsSubscription = this.teamService.teamSubject.subscribe(
@@ -24,15 +25,27 @@ export class TeamsListComponent implements OnInit, OnDestroy {
       }
     );
     this.teamService.emitTeams();
-    console.log(this.teams);
   }
 
   onViewTeam(team: Team) {
     this.router.navigate(['/teams/', team.id]);
   }
 
-  onDeleteTeam(i: number) {
+  openDelete(content, team: Team) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onDeleteTeam(team);
+      }
+    });
+  }
 
+  onDeleteTeam(team: Team) {
+    this.teamService.deleteTeam(team.id).subscribe(
+      (resp) => {
+        this.teamService.getTeams();
+        this.router.navigate(['/teams']);
+      }
+    );
   }
 
   ngOnDestroy() {
