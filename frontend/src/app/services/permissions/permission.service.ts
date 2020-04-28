@@ -15,17 +15,17 @@ export class PermissionService {
     private utils: UtilsService
     ) { }
 
-  getPermission(permissionId) : Observable<Permission> {
+  getPermission(permissionId) : Observable<any> {
     return this.httpClient
-    .get<Permission>(this.BASE_URL_API + '/api/usersmanagement/perms/'+permissionId+'/')
+    .get<any>(this.BASE_URL_API + '/api/usersmanagement/perms/'+permissionId+'/')
     .pipe(
       catchError(this.utils.handleError)
     );
   }
 
-  getPermissions() : Observable<Permission[]> {
+  getPermissions() : Observable<any[]> {
     return this.httpClient
-    .get<Permission[]>(this.BASE_URL_API + '/api/usersmanagement/perms/')
+    .get<any>(this.BASE_URL_API + '/api/usersmanagement/perms/')
     .pipe(
       catchError(this.utils.handleError)
     );
