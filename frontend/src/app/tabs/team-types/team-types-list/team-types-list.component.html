@@ -1,20 +1,19 @@
 <div class="row my-3">
-    <div class="col-12">
-      <h2>Liste des types d'équipes existants : </h2>
-      <div class="list-team my-3">
-            <li class="list-team">
-                <ul
-                    class="container list-team-item font-weight-bold "
+    <div class="container-fluid col-12" style="padding: 0px;">
+        <div class="list-team">
+            <ul class="list-team">
+                <li
+                    class="container-fluid list-team-item font-weight-bold "
                     *ngFor="let teamType of teamTypes; let i = index">
-                    <div class="container row justify-content-between">
+                    <div class="container-fluid row justify-content-between">
                         <h3>{{ teamType.name }}</h3>
                         <div>
                             <button class="btn btn-info" (click)="onViewTeamType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                             <button class="btn btn-danger" (click)="onDeleteTeamType(i)"><fa-icon [icon]="faTrash"></fa-icon></button>
                         </div>
                     </div>
-                </ul>
-            </li>
-      </div>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>

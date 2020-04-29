@@ -27,15 +27,14 @@ export class NewTeamTypeComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit(): void {
-    // this.permissionsSubscription = this.permissionService.permissionsSubject.subscribe(
-    //   (permissions: Permission[]) => {
-    //     this.permissions = permissions;
-    //   }
-    // );
+    this.permissionsSubscription = this.permissionService.getPermissions().subscribe(
+      (permissions: Permission[]) => {
+        this.permissions = permissions;
+      }
+    );
     // this.teamService.getTeams().subscribe((teams: Team[]) => {
     //   this.teams = teams;
     // });
-    // this.permissionService.emitPermissions();
   }
 
   onSubmit(form: NgForm) {

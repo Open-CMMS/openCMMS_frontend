@@ -84,7 +84,7 @@ export class TeamTypeService {
       .subscribe(
         (response) => {
           response.forEach(element => {
-            const gt = new TeamType(element.id, element.name, element.permissions, element.teams);
+            const gt = new TeamType(element.id, element.name, element.perms, element.team_set);
             this.team_types.push(gt);
           });
           this.emitTeamTypes();

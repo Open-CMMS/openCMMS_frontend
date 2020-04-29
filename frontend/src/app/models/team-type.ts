@@ -1,21 +1,21 @@
 export class TeamType {
     id: number;
     name: string;
-    permissions: number[];
-    teams: number[];
+    perms: number[];
+    team_set: number[];
 
     /**
      *
      * @param id The id of the team type
      * @param name The name of the team type
-     * @param permissions The list of the Permissions associated to the GroupType
-     * @param teams The list of the teams associated to the GroupType
+     * @param perms The list of the Permissions associated to the GroupType
+     * @param team_set The list of the team_set associated to the GroupType
      */
-    constructor(id: number, name: string, permissions: number[], teams: number[]) {
+    constructor(id: number, name: string, perms: number[], team_set: number[]) {
         this.id = id;
         this.name = name;
-        this.permissions = permissions;
-        this.teams = teams;
+        this.perms = perms;
+        this.team_set = team_set;
     }
 
     /**
@@ -35,19 +35,19 @@ export class TeamType {
     }
 
     /**
-     * Getter on the permissions list field of the GroupType
-     * @returns The permissions list of the GroupType
+     * Getter on the perms list field of the GroupType
+     * @returns The perms list of the GroupType
      */
     getPermissions(): number[] {
-        return this.permissions;
+        return this.perms;
     }
 
     /**
-     * Getter on the teams list field of the GroupType
+     * Getter on the team_set list field of the GroupType
      * @returns The team list of the GroupType
      */
     getTeams(): number[] {
-        return this.teams;
+        return this.team_set;
     }
 
     /**
@@ -59,18 +59,18 @@ export class TeamType {
     }
 
     /**
-     * Setter on the permissions list field of the GroupType
-     * @param permissions The new permissions list to set
+     * Setter on the perms list field of the GroupType
+     * @param perms The new perms list to set
      */
-    setPermissions(permissions: number[]) {
-        this.permissions = permissions;
+    setPermissions(perms: number[]) {
+        this.perms = perms;
     }
 
     /**
-     * Setter on the teams list field of the GroupType
-     * @param teams The new teams list to set
+     * Setter on the team_set list field of the GroupType
+     * @param team_set The new team_set list to set
      */
-    setTeams(teams: number[]) {
-        this.teams = teams;
+    setTeams(team_set: number[]) {
+        this.team_set = team_set;
     }
 }
