@@ -10,6 +10,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TeamTypeService } from 'src/app/services/team-types/team-type.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { UserService } from 'src/app/services/users/user.service';
 
 @Component({
   selector: 'app-team-details',
@@ -51,6 +52,7 @@ export class TeamDetailsComponent implements OnInit {
    */
   constructor(private router: Router,
               private teamService: TeamService,
+              private userService: UserService,
               private teamTypeService: TeamTypeService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
@@ -77,7 +79,16 @@ export class TeamDetailsComponent implements OnInit {
                                             }
                                           );
                       this.team.user_set.forEach(userId => {
-                        this.teamUsers.push(new UserProfile());
+                        this.userService.getUser(userId).subscribe((user) => {
+                          this.teamUsers.push(new UserProfile(user.id,
+                                                              user.last_name,
+                                                              user.first_name,
+                                                              user.username,
+                                                              user.email,
+                                                              user.password,
+                                                              user.nb_tries,
+                                                              user.is_active));
+                        });
                       });
                   },
                   (error) => {
