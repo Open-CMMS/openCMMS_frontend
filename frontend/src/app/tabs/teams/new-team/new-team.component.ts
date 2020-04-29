@@ -13,6 +13,9 @@ import { Team } from 'src/app/models/team';
   templateUrl: './new-team.component.html',
   styleUrls: ['./new-team.component.scss']
 })
+/**
+ * Class for the component in charge of new Team creations
+ */
 export class NewTeamComponent implements OnInit {
 
   // Local variables
@@ -23,12 +26,21 @@ export class NewTeamComponent implements OnInit {
   // Forms
   createForm: FormGroup;
 
+  /**
+   * Constructor for the NewTeamComponent
+   * @param router the service used to handle redirections
+   * @param teamService the service to communicate with backend on Team objects
+   * @param teamTypeService the service to communicate with backend on TeamType objects
+   * @param formBuilder the service to handle forms
+   */
   constructor(private router: Router,
               private teamService: TeamService,
               private teamTypeService: TeamTypeService,
               private formBuilder: FormBuilder
               ) { }
-
+  /**
+   * Function that initialize the component when loaded
+   */
   ngOnInit(): void {
     this.teamTypesSubscription = this.teamTypeService.team_types_subject.subscribe(
       (teamTypes: TeamType[]) => {
@@ -38,6 +50,9 @@ export class NewTeamComponent implements OnInit {
     this.initForm();
   }
 
+  /**
+   * Function that initialize the fields in the form to create a new Team
+   */
   initForm() {
     this.createForm = this.formBuilder.group({
       teamName: ['', Validators.required],
@@ -46,6 +61,9 @@ export class NewTeamComponent implements OnInit {
     });
   }
 
+  /**
+   * Function that is triggered when a new Team is being created (when button "Create new team" is pressed)
+   */
   onCreateTeam() {
     const formValues = this.createForm.value;
     const newTeam = new Team(1, formValues.teamName, formValues.teamType, []);
