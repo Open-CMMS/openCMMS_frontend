@@ -1,1 +1,17 @@
-<p>users-list works!</p>
+<div class="container-fluid col-12" style="padding: 0px;">
+    <div class="list-group">
+        <ul class="list-group">
+            <li
+                class="container-fluid list-group-item font-weight-bold "
+                *ngFor="let user of users;"
+                >
+                <div class="container-fluid row justify-content-between">
+                    <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewUser(user)">{{ user.first_name }} {{ user.last_name }}</h5>
+                    <button class="btn btn-danger" (click)="onDeleteUser(user)">
+                        <fa-icon [icon]="faTrash"></fa-icon>
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

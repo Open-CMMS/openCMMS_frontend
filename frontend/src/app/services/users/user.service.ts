@@ -4,13 +4,17 @@ import { environment } from '../../../environments/environment';
 import { UserProfile } from '../../models/user-profile';
 import { Subject, Observable } from 'rxjs';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserService {
 
   users: UserProfile[] = [];
   usersSubject = new Subject<UserProfile[]>();
 
   private BASE_URL_API = environment.baseUrl;
+
+  emitUsers() {
+    this.usersSubject.next(this.users);
+  }
 
   constructor(private httpClient: HttpClient) {
   }
