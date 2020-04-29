@@ -43,6 +43,7 @@ import { PermissionService } from './services/permissions/permission.service';
 import { EquipmentService } from './services/equipments/equipment.service';
 import { TaskService } from './services/tasks/task.service';
 import { UtilsService } from './services/utils/utils.service';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -60,6 +61,7 @@ const appRoutes: Routes = [
   {path: 'tasks/:id', component: TaskDetailsComponent},
   {path: 'teams', component: TeamManagementComponent},
   {path: 'teams/:id', component: TeamDetailsComponent},
+  {path: 'new-team', component: NewTeamComponent},
   {path: 'team-types', component: TeamTypeManagementComponent},
   {path: 'team-types/:id', component: TeamTypeDetailsComponent},
   {path: 'users', component: UserManagementComponent},
@@ -108,12 +110,14 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
+    NgbModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule
   ],
   providers: [
+    HttpClientModule,
     AuthenticationService,
     AuthGuardService,
     TeamService,
