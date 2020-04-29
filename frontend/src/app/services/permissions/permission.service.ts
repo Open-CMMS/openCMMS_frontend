@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Permission } from 'src/app/models/permission';
 import { HttpClient } from '@angular/common/http';
 import { catchError} from 'rxjs/operators';
 import { UtilsService } from '../utils/utils.service';
