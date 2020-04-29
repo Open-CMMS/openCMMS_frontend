@@ -16,6 +16,9 @@ import { Subscription } from 'rxjs';
   templateUrl: './team-details.component.html',
   styleUrls: ['./team-details.component.scss']
 })
+/**
+ * Class for the component in charge of Team details display
+ */
 export class TeamDetailsComponent implements OnInit {
   // Font awesome logos
   faPencilAlt = faPencilAlt;
@@ -37,7 +40,15 @@ export class TeamDetailsComponent implements OnInit {
   // Forms
   updateForm: FormGroup;
   addUserForm: FormGroup;
-
+  /**
+   * Constructor for component TeamDetailsComponent
+   * @param router the service used to handle redirections
+   * @param teamService the service to communicate with backend on Team objects
+   * @param teamTypeService the service to communicate with backend on TeamType objects
+   * @param route the service used to analyse the current URL
+   * @param formBuilder the service to handle forms
+   * @param modalService the service used to handle modal windows
+   */
   constructor(private router: Router,
               private teamService: TeamService,
               private teamTypeService: TeamTypeService,
@@ -45,6 +56,9 @@ export class TeamDetailsComponent implements OnInit {
               private formBuilder: FormBuilder,
               private modalService: NgbModal) { }
 
+  /**
+   * Function that initialize the component when loaded
+   */
   ngOnInit(): void {
     let id: number;
     this.route.params.subscribe(params => {
@@ -76,6 +90,9 @@ export class TeamDetailsComponent implements OnInit {
     );
   }
 
+  /**
+   * Function that is triggered when validating the modal of deletion
+   */
   onDeleteTeam() {
     this.teamService.deleteTeam(this.team.id).subscribe(
       (resp) => {
@@ -85,6 +102,9 @@ export class TeamDetailsComponent implements OnInit {
     );
   }
 
+  /**
+   * Function that is triggered when validating the modal of modification
+   */
   onModifyTeam() {
     const formValues = this.updateForm.value;
     const tempTeam = JSON.parse(JSON.stringify(this.team));
@@ -111,19 +131,33 @@ export class TeamDetailsComponent implements OnInit {
     });
   }
 
+  /**
+   * Function that redirect to the user details view when clicking on a user
+   * @param user the user requested
+   */
   onViewUser(user: UserProfile) {
     this.router.navigate(['/users', user.id]);
   }
-
+  /**
+   * Function that add a user in a team
+   */
   onAddUser() {
     // To complete when userService is ready
   }
 
+  /**
+   * Function that remove a user from a team
+   * @param user the user to remove
+   */
   onRemoveUserFromTeam(user: UserProfile) {
     // Remove user from user_set of the Team and update it
     this.teamService.updateTeam(this.team.id, this.team);
   }
 
+  /**
+   * Function that is triggered to load the modal template for deletion
+   * @param content the modal to open
+   */
   openDelete(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
@@ -132,6 +166,10 @@ export class TeamDetailsComponent implements OnInit {
     });
   }
 
+  /**
+   * Function that is triggered to load the modal template for modification
+   * @param content the modal to open
+   */
   openModify(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-modify'}).result.then((result) => {
       if (result === 'OK') {
@@ -140,6 +178,10 @@ export class TeamDetailsComponent implements OnInit {
     });
   }
 
+  /**
+   * Function that is triggered to load the modal template for user addition
+   * @param content the modal to open
+   */
   openAddUser(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-addUser'}).result.then((result) => {
       if (result === 'OK') {
@@ -148,6 +190,9 @@ export class TeamDetailsComponent implements OnInit {
     });
   }
 
+  /**
+   * Function that initializes the different forms used in the component
+   */
   initForm() {
     this.updateForm = this.formBuilder.group({
       teamName: '',
