@@ -44,7 +44,7 @@
 <div class="container-fluid col-10 mt-3 justify-content-center">
     <div class="container-fluid d-flex justify-content-between">
         <div class="d-flex">
-            <h2 class="font-weight-bold" *ngIf="loading">User : {{ user.first_name }} {{ user.last_name }}</h2>
+            <h2 class="font-weight-bold" *ngIf="loaded">User : {{ user.first_name }} {{ user.last_name }}</h2>
         </div>
         <div class="d-flex btn-group" role="group">
             <button class="btn btn-secondary" (click)="openModify(contentModify)"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
@@ -58,10 +58,10 @@
         <div class="row">
             <div class="col-12">
                 <div class="px-2 py-1">
-                    <p *ngIf="loading"><span class="font-weight-bold" >First Name  :</span> {{ user.first_name }} <p>
-                    <p *ngIf="loading"><span class="font-weight-bold">Last Name  :</span> {{ user.last_name }} </p>
-                    <p *ngIf="loading"><span class="font-weight-bold">Username  :</span> {{ user.username }} </p>
-                    <p *ngIf="loading"><span class="font-weight-bold">Email Address  :</span> {{ user.email }} </p>
+                    <p *ngIf="loaded"><span class="font-weight-bold" >First Name  :</span> {{ user.first_name }} <p>
+                    <p *ngIf="loaded"><span class="font-weight-bold">Last Name  :</span> {{ user.last_name }} </p>
+                    <p *ngIf="loaded"><span class="font-weight-bold">Username  :</span> {{ user.username }} </p>
+                    <p *ngIf="loaded"><span class="font-weight-bold">Email Address  :</span> {{ user.email }} </p>
                 </div>
             </div>
         </div>
