@@ -11,8 +11,13 @@ import { Router } from '@angular/router';
  * Class for the component in charge of Teams list display
  */
 export class TeamManagementComponent implements OnInit {
+  // Local Variables
   faPlus = faPlus;
 
+  /**
+   * Constructor for the TeamManagement component
+   * @param router the service used to handle redirection
+   */
   constructor(private router: Router) { }
 
   /**
