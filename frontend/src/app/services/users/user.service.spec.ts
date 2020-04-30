@@ -26,6 +26,7 @@ describe('UserService', () => {
   });
 
   it('should be created', () => {
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     expect(service).toBeTruthy();
     const mockUsers = [
       {
@@ -161,7 +162,7 @@ describe('UserService', () => {
         expect(userData.first_name).toEqual('Hugo');
         expect(userData.last_name).toEqual('Maricat');
       });
-
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
 
     expect(req.request.method).toEqual('PUT');
@@ -193,11 +194,11 @@ describe('UserService', () => {
         expect(userData.is_active).toEqual(false);
       });
 
-    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+    const req = httpTestingController.match(BASE_URL_API + '/api/usersmanagement/users/');
 
-    expect(req.request.method).toEqual('POST');
+    expect(req[1].request.method).toEqual('POST');
 
-    req.flush(mockUser);
+    req[1].flush(mockUser);
   });
 
   it('returned Observable should match the right data on delete', () => {

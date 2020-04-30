@@ -4,48 +4,30 @@
     </div>
     <form [formGroup]="createForm" (ngSubmit)="onCreateTeam()">
         <div class="form-group">
-            <!--
-            <mat-form-field class="example-full-width">
-                <mat-label>Team Name</mat-label>
-                <input type="text" id="teamName" class="form-control" formControlName="teamName">
-              </mat-form-field>
-            -->
             <label for="teamName">Team Name </label>
             <input type="text" id="teamName" class="form-control" formControlName="teamName">
         </div>
         <div class="form-group">
-            <!--
-            <mat-form-field>
-                <mat-label>Team Type</mat-label>
-                <select matNativeControl id="teamType" formControlName="teamType" required>
-                    <option *ngFor="let teamType of teamTypes" [value]="teamType.id">{{ teamType.name }}</option>
-                </select>
-              </mat-form-field>
-            -->
             <label for="teamType">Team Type </label>
             <select id="teamType" class="form-control" formControlName="teamType">
                     <option *ngFor="let teamType of teamTypes" [value]="teamType.id">{{ teamType.name }}</option>
             </select>
         </div>
         <div class="form-group">
-            <!--
-            <mat-form-field appearance="fill" class="form-field-fill">
-                <mat-label>Users</mat-label>
-                <mat-select multiple required name='groups' class="form-field" formControlName="users">
-                  <mat-option 
-                    class="list-groups-item"
-                    *ngFor="let user of users"
-                    value= "{{ user.id }}">{{ user.username }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            
-
+          <label for="users">Users</label>
+          <ng-multiselect-dropdown
+            [settings]="dropdownUsersSettings"
+            [data]="usersList"
+            formControlName="users"
+            name="users"
+          >
+          </ng-multiselect-dropdown>
+          <!--
             <label for="teamType">Users</label>
             <select id="teamType" class="form-control" formControlName="teamType">
                     <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
             </select>
-            -->
+          -->
         </div>
         <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create team</button>
     </form>

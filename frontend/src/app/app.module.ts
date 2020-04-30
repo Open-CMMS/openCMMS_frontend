@@ -47,7 +47,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -115,7 +115,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
     HttpClientModule,
