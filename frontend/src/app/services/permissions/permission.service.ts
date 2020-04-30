@@ -9,11 +9,20 @@ import { Observable } from 'rxjs';
 })
 export class PermissionService {
   private BASE_URL_API = environment.baseUrl;
+  /**
+   * Constructor of PermissionService.
+   * @param httpClient The http instance.
+   * @param utils The UtilsService instance.
+   */
   constructor(
     private httpClient: HttpClient,
     private utils: UtilsService
     ) { }
-
+  /**
+   * Get one permission.
+   * @param permissionId Id of the permission.
+   * @returns Observable of the permission.
+   */
   getPermission(permissionId): Observable<any> {
     return this.httpClient
     .get<any>(this.BASE_URL_API + '/api/usersmanagement/perms/' + permissionId + '/')
@@ -21,7 +30,10 @@ export class PermissionService {
       catchError(this.utils.handleError)
     );
   }
-
+  /**
+   * Get all permissions.
+   * @returns Observable of the list of all permissions.
+   */
   getPermissions(): Observable<any[]> {
     return this.httpClient
     .get<any>(this.BASE_URL_API + '/api/usersmanagement/perms/')
