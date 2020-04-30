@@ -1,27 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { UserProfile } from 'src/app/models/user-profile';
-import { UserService } from 'src/app/services/users/user.service';
-import { environment } from 'src/environments/environment';
+import { HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import { BehaviorSubject, Observable, throwError, Subject } from 'rxjs';
+import { UserProfile } from '../../models/user-profile';
+import { UserService } from '../users/user.service';
 
 
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
 
-  private currentUserSubject: BehaviorSubject<UserProfile>;
-  private currentUser: Observable<UserProfile>;
-  private BASE_URL_API = environment.baseUrl;
+  private currentUser: UserProfile;
+  private currentUserSubject = new Subject<UserProfile>();
+  private API_URL = 'https://application.lxc.pic.brasserie-du-slalom.fr/api/gestion/';
 
-  // private currentRightList Array<Right>;
-   /**
-    * Constructor of AutheticationService
-    * @param httpClient The http instance
-    * @param userService The UserService instance
-    */
+  /**
+   * Constructor of AutheticationService
+   * @param httpClient The http instance
+   * @param userService The UserService instance
+   */
   constructor(private httpClient: HttpClient, private userService: UserService) {
-    this.currentUserSubject = new BehaviorSubject<UserProfile>(JSON.parse(localStorage.getItem('currentUser')));
-    this.currentUser = this.currentUserSubject.asObservable();
+    this.currentUser = null;
+    this.emitCurrentUser();
+  }
+
+  emitCurrentUser() {
+    this.currentUserSubject.next(this.currentUser);
   }
 
    /**
@@ -29,7 +31,7 @@ export class AuthenticationService {
     * @returns The current User
     */
   public getCurrentUser(): UserProfile {
-    return this.currentUserSubject.getValue();
+    return this.currentUser;
   }
 
    /**
@@ -37,40 +39,59 @@ export class AuthenticationService {
     * @param userName Name provided by user.
     * @param password Key provided by user.
     */
+  public login(username: string, password: string) {
 
-  public login(username: string, password: string): Observable<boolean> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
 
-    this.httpClient.post<any>(this.BASE_URL_API + 'login/', {username, password})
-      .subscribe(id => this.currentUser = this.userService.getUser(id)
-        .subscribe(user => {
-          localStorage.setItem('currentUser', JSON.stringify(user));
-          this.currentUserSubject.next(user);
-        }));
-    // const rep = new Observable<boolean>(response =>
-    //   response.next(username === 'jmarie' && password === 'p@sword-au-top')
-    // );
+    const reqJSON = '{"username": "' + username + '", "password": "' + password + '"}';
 
-    // console.log(username === 'jmarie' && password === 'p@sword-au-top');
-    // return (rep);
+    const promise = new Promise((resolve, reject) => {
+      this.httpClient.post<any>(this.API_URL + 'login', reqJSON, httpOptions)
+                     .toPromise()
+                     .then(
+                        res => {
+                          this.userService.getUser(res).toPromise().then(
+                            user => {
+                              this.currentUser = new UserProfile(
+                                user.id,
+                                user.username,
+                                user.first_name,
+                                user.last_name,
+                                user.email,
+                                user.password,
+                                user.nbTries,
+                                user.isActive
+                                );
+                              this.emitCurrentUser();
+                              resolve();
+                            },
+                            error => {
+                              console.log('Connection error !: ' + error);
+                              reject(error);
+                            }
+                          );
+                        },
+                        error => {
+                          console.log('Connection error !: ' + error);
+                          reject(error);
+                        }
+                      );
 
-    if (username === 'jmarie' && password === 'p@sword-au-top') {
-      this.userService.getUser(2)
-      .subscribe(user => {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      this.currentUserSubject.next(user);
     });
-    }
-    const rep = new Observable<boolean>(response =>
-      response.next(username === 'jmarie' && password === 'p@sword-au-top')
-    );
-    return (rep);
+
+    return promise;
   }
+
    /**
     * Logout method.
     */
   public logout() {
-    this.httpClient.get<boolean>(`http://application.lxc.pic.brasserie-du-slalom.fr/api/gestion/logout/`)
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
+    this.httpClient.get<boolean>(`https://application.lxc.pic.brasserie-du-slalom.fr/api/gestion/logout/`);
+    this.currentUser = null;
+    this.emitCurrentUser();
   }
 }

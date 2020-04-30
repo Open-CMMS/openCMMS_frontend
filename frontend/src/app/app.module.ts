@@ -48,28 +48,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-
-const appRoutes: Routes = [
-  {path: '', component: HomeComponent},
-  {path: 'sign-in', component: SigninComponent},
-  {path: 'sign-up', component: SignupComponent},
-  {path: 'account-blocked', component: AccountBlockedComponent},
-  {path: 'first-connection', component: WelcomeFirstConnectionComponent},
-  {path: 'first-connection/sign-up', component: SignupComponent},
-  {path: 'settings', component: SettingsComponent},
-  {path: 'infos', component: UserDetailsComponent},
-  {path: 'tasks/:id', component: TaskDetailsComponent},
-  {path: 'teams', component: TeamManagementComponent},
-  {path: 'teams/:id', component: TeamDetailsComponent},
-  {path: 'new-team', component: NewTeamComponent},
-  {path: 'team-types', component: TeamTypeManagementComponent},
-  {path: 'team-types/:id', component: TeamTypeDetailsComponent},
-  {path: 'users', component: UserManagementComponent},
-  {path: 'users/:id', component: UserDetailsComponent},
-  {path: 'equipments', component: EquipmentManagementComponent},
-  {path: 'equipments/:id', component: EquipmentDetailsComponent},
-  {path: '**', component: FourOhFourComponent}
-];
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -109,12 +88,12 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(appRoutes),
     NgbModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    AppRoutingModule
   ],
   providers: [
     HttpClientModule,
