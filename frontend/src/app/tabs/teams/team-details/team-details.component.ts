@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Team } from 'src/app/models/team';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TeamService } from 'src/app/services/teams/team.service';
@@ -21,7 +21,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 /**
  * Class for the component in charge of Team details display
  */
-export class TeamDetailsComponent implements OnInit {
+export class TeamDetailsComponent implements OnInit, OnDestroy {
   // Font awesome logos
   faPencilAlt = faPencilAlt;
   faTrash = faTrash;
@@ -60,8 +60,7 @@ export class TeamDetailsComponent implements OnInit {
               private teamTypeService: TeamTypeService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
-              private modalService: NgbModal) {
-               }
+              private modalService: NgbModal) { }
 
   /**
    * Function that initialize the component when loaded
@@ -104,22 +103,23 @@ export class TeamDetailsComponent implements OnInit {
       (teamTypes: TeamType[]) => {
         this.teamTypes = teamTypes;
       }
-    );
-    this.users = [];
+      );
+    this.teamTypeService.emitTeamTypes();
     this.usersSubscription = this.userService.usersSubject.subscribe(
-      (users: any) => {
-        users.forEach(
-          (user) => {
-            this.users.push(new UserProfile(user.id,
-              user.last_name,
-              user.first_name,
-              user.username,
-              user.email,
-              user.password,
-              user.nb_tries,
-              user.is_active));
-          });
-      });
+        (users: any) => {
+          users.forEach(
+            (user) => {
+              this.users.push(new UserProfile(user.id,
+                user.last_name,
+                user.first_name,
+                user.username,
+                user.email,
+                user.password,
+                user.nb_tries,
+                user.is_active));
+              });
+            });
+    this.userService.emitUsers();
   }
 
   /**
@@ -128,8 +128,6 @@ export class TeamDetailsComponent implements OnInit {
   initUsersSelect() {
     this.usersList = [];
     let found = false;
-    console.log(this.users);
-    console.log(this.teamUsers);
     this.users.forEach(user => {
           found = false;
           this.teamUsers.forEach(
@@ -143,7 +141,6 @@ export class TeamDetailsComponent implements OnInit {
             this.usersList.push({id: user.id.toString(), value: user.username});
           }
     });
-    console.log(this.usersList);
     this.dropdownUsersSettings = {
       singleSelection: false,
       idField: 'id',
@@ -314,5 +311,10 @@ export class TeamDetailsComponent implements OnInit {
     this.addUserForm = this.formBuilder.group({
       users: ''
     });
+  }
+
+  ngOnDestroy(): void {
+    this.teamTypesSubscription.unsubscribe();
+    this.usersSubscription.unsubscribe();
   }
 }

@@ -5,6 +5,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { NewTeamComponent } from './new-team.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 describe('NewTeamComponent', () => {
   let component: NewTeamComponent;
@@ -15,7 +16,7 @@ describe('NewTeamComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ NewTeamComponent ],
-      imports: [ ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule ]
+      imports: [ NgMultiSelectDropDownModule, ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule ]
     })
     .compileComponents();
 
@@ -26,6 +27,9 @@ describe('NewTeamComponent', () => {
     fixture = TestBed.createComponent(NewTeamComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    component.users = [];
+    component.initForm();
+    component.initUsersSelect();
   });
 
   it('should create', () => {
@@ -33,15 +37,15 @@ describe('NewTeamComponent', () => {
   });
 
   it('should initialize a form', () => {
-    component.initForm();
     expect(component.createForm.contains('teamName')).toBe(true);
-    expect(component.createForm.contains('teamName')).toBe(true);
+    expect(component.createForm.contains('teamType')).toBe(true);
     expect(component.createForm.contains('users')).toBe(true);
   });
 
-  it('should call thye creation method of Team', () => {
+  it('should call the creation method of Team', () => {
     component.onCreateTeam();
 
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     const req = httpTestingController.match(BASE_URL_API + '/api/usersmanagement/teams/');
     expect(req[1].request.method).toBe('POST');

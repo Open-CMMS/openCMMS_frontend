@@ -26,6 +26,7 @@ describe('UserService', () => {
   });
 
   it('should be created', () => {
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     expect(service).toBeTruthy();
   });
 
@@ -71,11 +72,11 @@ describe('UserService', () => {
       expect(users[1].is_active).toEqual(false);
     });
 
-    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+    const req = httpTestingController.match(BASE_URL_API + '/api/usersmanagement/users/');
 
-    expect(req.request.method).toEqual('GET');
+    expect(req[1].request.method).toEqual('GET');
 
-    req.flush(mockUsers);
+    req[1].flush(mockUsers);
 
   });
 
@@ -99,6 +100,7 @@ describe('UserService', () => {
       expect(user.nb_tries).toEqual(0);
       expect(user.is_active).toEqual(false);
     });
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
 
     expect(req.request.method).toEqual('GET');
@@ -125,7 +127,7 @@ describe('UserService', () => {
         expect(userData.username).toEqual('hmaricato');
         expect(userData.last_name).toEqual('Maricat');
       });
-
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
 
     expect(req.request.method).toEqual('PUT');
@@ -156,11 +158,11 @@ describe('UserService', () => {
         expect(userData.is_active).toEqual(false);
       });
 
-    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+    const req = httpTestingController.match(BASE_URL_API + '/api/usersmanagement/users/');
 
-    expect(req.request.method).toEqual('POST');
+    expect(req[1].request.method).toEqual('POST');
 
-    req.flush(mockUser);
+    req[1].flush(mockUser);
   });
 
   it('returned Observable should match the right data on delete', () => {
@@ -182,7 +184,7 @@ describe('UserService', () => {
         expect(userData.username).toEqual('hmaricato');
         expect(userData.email).toEqual('h.m@insa-rouen.fr');
       });
-
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/0/');
 
     expect(req.request.method).toEqual('DELETE');

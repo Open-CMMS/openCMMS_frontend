@@ -41,6 +41,8 @@ describe('TeamDetailsComponent', () => {
   it('should delete the team', () => {
     component.team = new Team(1, 'Test', 2, []);
     component.onDeleteTeam();
+
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/NaN');
@@ -54,6 +56,7 @@ describe('TeamDetailsComponent', () => {
     component.teamType = new TeamType(2, 'Test TT', [], []);
     component.initForm();
     component.onModifyTeam();
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/NaN');
@@ -66,13 +69,14 @@ describe('TeamDetailsComponent', () => {
     component.team = new Team(1, 'Test', 2, []);
     component.teamType = new TeamType(2, 'Test TT', [], []);
     component.initForm();
-    component.onRemoveUserFromTeam(new UserProfile());
-    // httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
-    // httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
-    // httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/NaN');
-    // const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/1');
-    // expect(req.request.method).toBe('PUT');
-    // httpTestingController.verify();
+    component.onRemoveUserFromTeam(new UserProfile(1, 'Maricato', 'Hugo', 'hmaricato', 'h.m@insa-rouen.fr', 'mdp', 2, true));
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/NaN');
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/1');
+    expect(req.request.method).toBe('PUT');
+    httpTestingController.verify();
   });
 
   it('should init the forms', () => {

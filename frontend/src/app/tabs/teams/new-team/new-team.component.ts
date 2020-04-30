@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { TeamTypeService } from 'src/app/services/team-types/team-type.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -18,7 +18,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 /**
  * Class for the component in charge of new Team creations
  */
-export class NewTeamComponent implements OnInit {
+export class NewTeamComponent implements OnInit, OnDestroy {
 
   // Local variables
   users: UserProfile[];
@@ -57,12 +57,14 @@ export class NewTeamComponent implements OnInit {
         this.teamTypes = teamTypes;
       }
     );
+    this.teamTypeService.emitTeamTypes();
     this.usersSubscription = this.userService.usersSubject.subscribe(
       (users: UserProfile[]) => {
         this.users = users;
         this.initUsersSelect();
       }
     );
+    this.userService.emitUsers();
     this.initForm();
   }
 
@@ -102,7 +104,8 @@ export class NewTeamComponent implements OnInit {
   onCreateTeam() {
     const formValues = this.createForm.value;
     const usersToAdd = [];
-    formValues.users.forEach(item => {
+    const usersArray: Array<any> = formValues.users;
+    Object.values(usersArray).forEach(item => {
       usersToAdd.push(item.id);
     });
     const newTeam = new Team(1, formValues.teamName, formValues.teamType, usersToAdd);
@@ -115,6 +118,15 @@ export class NewTeamComponent implements OnInit {
         this.creationError = true;
       }
     );
+
+  }
+
+  /**
+   * Function that clears subscriptions
+   */
+  ngOnDestroy(): void {
+    this.teamTypesSubscription.unsubscribe();
+    this.usersSubscription.unsubscribe();
   }
 
 }
