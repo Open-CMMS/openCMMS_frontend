@@ -3,7 +3,7 @@ import { Team } from 'src/app/models/team';
 import { Subscription } from 'rxjs';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { Router } from '@angular/router';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -17,6 +17,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class TeamsListComponent implements OnInit, OnDestroy {
   // Local Variables
   faTrash = faTrash;
+  faInfoCircle = faInfoCircle;
   teams: Team[] = [];
   teamsSubscription: Subscription;
 
