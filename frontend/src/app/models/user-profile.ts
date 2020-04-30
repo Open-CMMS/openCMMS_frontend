@@ -27,9 +27,9 @@ export class UserProfile {
                 nbTries: number,
                 isActive: boolean) {
     this.id = id;
-    this.last_name = username;
+    this.last_name = lastName;
     this.first_name = firstName;
-    this.username = lastName;
+    this.username = username;
     this.email = email;
     this.password = password;
     this.nb_tries = nbTries;
