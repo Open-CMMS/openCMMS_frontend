@@ -17,6 +17,12 @@ export class UserService {
   }
 
   constructor(private httpClient: HttpClient) {
+    this.getUsers().subscribe(
+      (users) => {
+        this.users = users;
+        this.emitUsers();
+      }
+    );
   }
 
 
