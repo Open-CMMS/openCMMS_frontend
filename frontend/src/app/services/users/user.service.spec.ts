@@ -26,7 +26,6 @@ describe('UserService', () => {
   });
 
   it('should be created', () => {
-    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     expect(service).toBeTruthy();
     const mockUsers = [
       {
@@ -162,7 +161,6 @@ describe('UserService', () => {
         expect(userData.first_name).toEqual('Hugo');
         expect(userData.last_name).toEqual('Maricat');
       });
-    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
 
     expect(req.request.method).toEqual('PUT');
@@ -183,7 +181,6 @@ describe('UserService', () => {
       is_active: false
     };
 
-    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     service.createUser('hmaricato', 'Maricato', 'Hugo', 'h.m@insa-rouen.fr', 'test1234')
       .subscribe(userData => {
         expect(userData.last_name).toEqual('Maricato');
