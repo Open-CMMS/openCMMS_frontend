@@ -7,6 +7,8 @@ import { Subscription } from 'rxjs';
 import { TeamType } from 'src/app/models/team-type';
 import { UserProfile } from 'src/app/models/user-profile';
 import { Team } from 'src/app/models/team';
+import { UserService } from 'src/app/services/users/user.service';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
   selector: 'app-new-team',
@@ -22,9 +24,16 @@ export class NewTeamComponent implements OnInit {
   users: UserProfile[];
   teamTypes: TeamType[];
   teamTypesSubscription: Subscription;
+  usersSubscription: Subscription;
   creationError = false;
+
+  // Multiple Select
+  usersList = [];
+  dropdownUsersSettings: IDropdownSettings;
+
   // Forms
   createForm: FormGroup;
+
 
   /**
    * Constructor for the NewTeamComponent
@@ -36,6 +45,7 @@ export class NewTeamComponent implements OnInit {
   constructor(private router: Router,
               private teamService: TeamService,
               private teamTypeService: TeamTypeService,
+              private userService: UserService,
               private formBuilder: FormBuilder
               ) { }
   /**
@@ -47,7 +57,32 @@ export class NewTeamComponent implements OnInit {
         this.teamTypes = teamTypes;
       }
     );
+    this.usersSubscription = this.userService.usersSubject.subscribe(
+      (users: UserProfile[]) => {
+        this.users = users;
+        this.initUsersSelect();
+      }
+    );
     this.initForm();
+  }
+
+  /**
+   * Function that initialize the multiselect for Users
+   */
+  initUsersSelect() {
+    this.usersList = [];
+    this.users.forEach(user => {
+      this.usersList.push({id: user.id.toString(), value: user.username});
+    });
+    this.dropdownUsersSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'value',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 4,
+      allowSearchFilter: true
+    };
   }
 
   /**
@@ -66,7 +101,11 @@ export class NewTeamComponent implements OnInit {
    */
   onCreateTeam() {
     const formValues = this.createForm.value;
-    const newTeam = new Team(1, formValues.teamName, formValues.teamType, []);
+    const usersToAdd = [];
+    formValues.users.forEach(item => {
+      usersToAdd.push(item.id);
+    });
+    const newTeam = new Team(1, formValues.teamName, formValues.teamType, usersToAdd);
     this.teamService.createTeam(newTeam).subscribe(
       (team: Team) => {
         this.router.navigate(['/teams']);
