@@ -109,6 +109,6 @@ export class UserService {
   }
 
   getUserPermissions(id: number ) {
-    return this.httpClient.get<any>(this.BASE_URL_API + '/api/gestion/users/' + id + '/get_user_permissions/')
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/gestion/users/' + id + '/get_user_permissions/');
   }
 }
