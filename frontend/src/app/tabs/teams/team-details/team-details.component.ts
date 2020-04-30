@@ -185,6 +185,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
                                               this.initForm();
                                             }
                                           );
+      this.teamService.getTeams();
       this.updateError = false;
     },
     (error) => {
@@ -224,6 +225,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
                                             }
                                           );
       this.updateError = false;
+      this.teamService.getTeams();
     },
     (error) => {
       this.updateError = true;
@@ -249,10 +251,11 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
                                             }
                                             );
       this.updateError = false;
-                                          },
-                                          (error) => {
-                                            this.updateError = true;
-                                          });
+      this.teamService.getTeams();
+    },
+    (error) => {
+      this.updateError = true;
+    });
   }
 
   /**
