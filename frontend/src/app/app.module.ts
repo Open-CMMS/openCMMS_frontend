@@ -66,6 +66,7 @@ const appRoutes: Routes = [
   {path: 'team-types/:id', component: TeamTypeDetailsComponent},
   {path: 'users', component: UserManagementComponent},
   {path: 'users/:id', component: UserDetailsComponent},
+  {path: 'new-user', component: NewUserComponent},
   {path: 'equipments', component: EquipmentManagementComponent},
   {path: 'equipments/:id', component: EquipmentDetailsComponent},
   {path: '**', component: FourOhFourComponent}

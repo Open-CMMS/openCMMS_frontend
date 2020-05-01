@@ -17,8 +17,8 @@ describe('UserService', () => {
       imports: [ HttpClientTestingModule ]
     });
 
-    httpTestingController = TestBed.inject(HttpTestingController);
     service = TestBed.inject(UserService);
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
@@ -26,17 +26,13 @@ describe('UserService', () => {
   });
 
   it('should be created', () => {
-    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     expect(service).toBeTruthy();
-  });
-
-  it('returnd Observable should match the right data', () => {
     const mockUsers = [
       {
           id: 2,
-          last_name: 'Marie',
-          first_name: 'Joran',
           username: 'jmarie',
+          first_name: 'Joran',
+          last_name: 'Marie',
           email: 'joran.marie2@insa-rouen.fr',
           password: 'pbkdf2_sha256$180000$9rJ0klyN3tbv$Nsn6jDDiCbWo5TaIJDALhe49eVKeRMlztrRkss0q/Eo=',
           nb_tries: 0,
@@ -44,9 +40,9 @@ describe('UserService', () => {
       },
       {
           id: 3,
-          last_name: 'Maricato',
-          first_name: 'Hugo',
           username: 'hmaricato',
+          first_name: 'Hugo',
+          last_name: 'Maricato',
           email: 'hugo.maricato@insa-rouen.fr',
           password: 'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=',
           nb_tries: 0,
@@ -54,8 +50,41 @@ describe('UserService', () => {
       }
   ];
 
-    service.getUsers()
-    .subscribe(users => {
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockUsers);
+  });
+
+  it('returnd Observable should match the right data', () => {
+    const mockUsers = [
+      {
+          id: 2,
+          username: 'jmarie',
+          first_name: 'Joran',
+          last_name: 'Marie',
+          email: 'joran.marie2@insa-rouen.fr',
+          password: 'pbkdf2_sha256$180000$9rJ0klyN3tbv$Nsn6jDDiCbWo5TaIJDALhe49eVKeRMlztrRkss0q/Eo=',
+          nb_tries: 0,
+          is_active: false
+      },
+      {
+          id: 3,
+          username: 'hmaricato',
+          first_name: 'Hugo',
+          last_name: 'Maricato',
+          email: 'hugo.maricato@insa-rouen.fr',
+          password: 'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=',
+          nb_tries: 0,
+          is_active: false
+      }
+  ];
+
+    service.getUsers();
+
+    let users: UserProfile[] = [];
+    service.usersSubject.subscribe((usersRegistered: UserProfile[]) => {
+      users = usersRegistered;
+      expect(users.length).toBe(2);
       expect(users[0].id).toEqual(2);
       expect(users[0].last_name).toEqual('Marie');
       expect(users[0].first_name).toEqual('Joran');
@@ -74,6 +103,7 @@ describe('UserService', () => {
 
     const req = httpTestingController.match(BASE_URL_API + '/api/usersmanagement/users/');
 
+    expect(req[0].request.method).toEqual('GET');
     expect(req[1].request.method).toEqual('GET');
 
     req[1].flush(mockUsers);
@@ -83,15 +113,17 @@ describe('UserService', () => {
   it('returned UserProfile should match the right data of getUser()', () => {
     const mockUser = {
       id: 3,
-      last_name: 'Maricato',
-      first_name: 'Hugo',
       username: 'hmaricato',
+      first_name: 'Hugo',
+      last_name: 'Maricato',
       email: 'hugo.maricato@insa-rouen.fr',
       password: 'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=',
       nb_tries: 0,
       is_active: false
     };
-    service.getUser(3).subscribe(user => {
+
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+    service.getUser(3).subscribe((user: UserProfile) => {
       expect(user.id).toEqual(3);
       expect(user.last_name).toEqual('Maricato');
       expect(user.first_name).toEqual('Hugo');
@@ -100,34 +132,35 @@ describe('UserService', () => {
       expect(user.nb_tries).toEqual(0);
       expect(user.is_active).toEqual(false);
     });
-    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
-    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
 
-    expect(req.request.method).toEqual('GET');
+    const req2 = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
 
-    req.flush(mockUser);
+    expect(req2.request.method).toEqual('GET');
+
+    req2.flush(mockUser);
 
   });
 
   it('returned Observable should match the right data for update', () => {
     const mockUser = {
       id: 3,
-      last_name: 'Maricat',
-      first_name: 'Hugo',
       username: 'hmaricato',
+      first_name: 'Hugo',
+      last_name: 'Maricat',
       email: 'hugo.maricato@insa-rouen.fr',
       password: 'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=',
       nb_tries: 0,
       is_active: false
     };
 
-    service.updateUser(new UserProfile(3, 'Maricat', 'Hugo', 'hmaricato', 'hugo.maricato@insa-rouen.fr',
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+    service.updateUser(new UserProfile(3,  'hmaricato', 'Hugo', 'Maricat', 'hugo.maricato@insa-rouen.fr',
     'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=', 0, false))
       .subscribe(userData => {
         expect(userData.username).toEqual('hmaricato');
+        expect(userData.first_name).toEqual('Hugo');
         expect(userData.last_name).toEqual('Maricat');
       });
-    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
 
     expect(req.request.method).toEqual('PUT');
@@ -136,19 +169,19 @@ describe('UserService', () => {
   });
 
 
-  it('returned Observable should match the right data on create', () => {
+  it('returned Observable should match the right data on creating new user', () => {
     const mockUser = {
       id: 0,
-      last_name: 'Maricato',
-      first_name: 'Hugo',
       username: 'hmaricato',
+      first_name: 'Hugo',
+      last_name: 'Maricato',
       email: 'h.m@insa-rouen.fr',
       password: 'test1234',
       nb_tries: 0,
       is_active: false
     };
 
-    service.createUser('Maricato', 'Hugo', 'hmaricato', 'h.m@insa-rouen.fr', 'test1234')
+    service.createUser('hmaricato', 'Maricato', 'Hugo', 'h.m@insa-rouen.fr', 'test1234')
       .subscribe(userData => {
         expect(userData.last_name).toEqual('Maricato');
         expect(userData.first_name).toEqual('Hugo');
@@ -166,30 +199,12 @@ describe('UserService', () => {
   });
 
   it('returned Observable should match the right data on delete', () => {
-    const mockUser = {
-      id: 0,
-      last_name: 'Maricato',
-      first_name: 'Hugo',
-      username: 'hmaricato',
-      email: 'h.m@insa-rouen.fr',
-      password: 'test1234',
-      nb_tries: 0,
-      is_active: false
-    };
-
-    service.deleteUser(mockUser.id)
-      .subscribe(userData => {
-        expect(userData.last_name).toEqual('Maricato');
-        expect(userData.first_name).toEqual('Hugo');
-        expect(userData.username).toEqual('hmaricato');
-        expect(userData.email).toEqual('h.m@insa-rouen.fr');
-      });
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
-    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/0/');
+    service.deleteUser(1).subscribe();
+
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/1/');
 
     expect(req.request.method).toEqual('DELETE');
-
-    req.flush(mockUser);
   });
 
 

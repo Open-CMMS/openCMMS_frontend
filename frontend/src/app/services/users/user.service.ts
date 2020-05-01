@@ -7,32 +7,40 @@ import { Subject, Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
-  users: UserProfile[] = [];
+  private users: UserProfile[] = [];
   usersSubject = new Subject<UserProfile[]>();
 
   private BASE_URL_API = environment.baseUrl;
 
+  constructor(private httpClient: HttpClient) {
+    this.getUsers();
+  }
+
+  /**
+   * Function that updates the subject usersSubject
+   */
   emitUsers() {
     this.usersSubject.next(this.users);
   }
-
-  constructor(private httpClient: HttpClient) {
-    this.getUsers().subscribe(
-      (users) => {
-        this.users = users;
-        this.emitUsers();
-      }
-    );
-  }
-
 
   /**
    * Getter on the List of all users saved on the server's database
    * @return the response which contain all users
    */
-  getUsers(): Observable<any> {
-    return this.httpClient
-      .get<any>(this.BASE_URL_API + '/api/usersmanagement/users/');
+  getUsers() {
+    this.users = [];
+    this.httpClient.get<UserProfile[]>(this.BASE_URL_API + '/api/usersmanagement/users/')
+                  .subscribe(
+                    (response) => {
+                      response.forEach(element => {
+                        const user = new UserProfile(element.id, element.username, element.first_name,
+                                              element.last_name, element.email, element.password,
+                                              element.nb_tries, element.is_active);
+                        this.users.push(user);
+                      });
+                      this.emitUsers();
+                    },
+                  );
   }
 
   /**
@@ -40,9 +48,9 @@ export class UserService {
    * @param id the id attribut of a user
    * @return a specific user
    */
-  getUser(id: number ): Observable<any> {
+  getUser(id: number ): Observable<UserProfile> {
     return this.httpClient
-      .get<any>(this.BASE_URL_API + '/api/usersmanagement/users/' + id + '/');
+      .get<UserProfile>(this.BASE_URL_API + '/api/usersmanagement/users/' + id + '/');
   }
 
   updateUser(userModified: UserProfile) {
@@ -69,11 +77,8 @@ export class UserService {
    * Fonction to save a new user in the database
    * @param userToCreate User to be saved in the server's database
    */
-  createUser(lastName: string, firstName: string, username: string, email: string, password: string): Observable<any> {
-
-    const newUser = {lastName, firstName, username, email, password};
-
-    const userJson = JSON.stringify(newUser);
+  createUser(username: string, first_name: string, last_name: string, email: string, password: string): Observable<any> {
+    const userJson = JSON.stringify({username, first_name, last_name, email, password});
 
     const httpOptions = {
       headers : new HttpHeaders({
@@ -109,9 +114,8 @@ export class UserService {
    * @return a string containing the suffixe to be added to the current username
    */
   getUsernameSuffix(username: string ) {
-    const suffix = this.httpClient.get<string>(this.BASE_URL_API + '/api/usersmanagement/users/username_suffix?username='
+    return this.httpClient.get<string>(this.BASE_URL_API + '/api/usersmanagement/users/username_suffix?username='
     + username);
-    return username + suffix;
   }
 
 }
