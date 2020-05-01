@@ -12,6 +12,8 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/services/users/user.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-team-details',
@@ -53,6 +55,8 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
    * @param route the service used to analyse the current URL
    * @param formBuilder the service to handle forms
    * @param modalService the service used to handle modal windows
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
   constructor(private router: Router,
               private teamService: TeamService,
@@ -60,7 +64,9 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
               private teamTypeService: TeamTypeService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal,
+              private utilsService: UtilsService,
+              private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initialize the component when loaded
@@ -314,6 +320,26 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
     this.addUserForm = this.formBuilder.group({
       users: ''
     });
+  }
+
+  /**
+   * Function that display the delete button on Teams considering user permissions
+   */
+  onDeleteTeamPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_team'
+      );
+  }
+
+  /**
+   * Function that display the modify button on Teams considering user permissions
+   */
+  onChangeTeamPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'change_team'
+      );
   }
 
   ngOnDestroy(): void {

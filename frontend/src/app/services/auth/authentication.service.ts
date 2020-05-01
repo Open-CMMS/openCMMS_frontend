@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 export class AuthenticationService {
 
   private currentUser: UserProfile;
-  private currentUserSubject = new Subject<UserProfile>();
+  currentUserSubject = new Subject<UserProfile>();
   private BASE_URL_API = environment.baseUrl;
   private userPermissions: any[] = [];
 
@@ -37,16 +37,8 @@ export class AuthenticationService {
   /**
    * Switch current user to another.
    */
-  private emitCurrentUser() {
+  emitCurrentUser() {
     this.currentUserSubject.next(this.currentUser);
-  }
-
-  /**
-   * Get the current User.
-   * @returns The current User
-   */
-  public getCurrentUser(): UserProfile {
-    return this.currentUser;
   }
 
   /**

@@ -3,22 +3,32 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Route
 import { AuthenticationService } from './authentication.service';
 import { UserService } from 'src/app/services/users/user.service';
 import { UserProfile } from 'src/app/models/user-profile';
+import { Subscription } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuardService implements CanActivate {
+
+    currentUser: UserProfile;
+    currentUserSubscription: Subscription;
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService,
         private userService: UserService
-    ) { }
+    ) {
+        this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
+            (currentUser) => {
+                this.currentUser = currentUser;
+            }
+        );
+        this.authenticationService.emitCurrentUser();
+     }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         return new Promise<boolean>(
             (resolve, reject) => {
-                const currentUser = this.authenticationService.getCurrentUser();
-                if (currentUser !== null) { // A user is connected so then we can check the perms
+                if (this.currentUser !== null) { // A user is connected so then we can check the perms
                     if (route.data.requiredPerms.length > 0) {
-                        this.userService.getUserPermissions(currentUser.id).subscribe(
+                        this.userService.getUserPermissions(this.currentUser.id).subscribe(
                             (res) => {
                                 if (this.checkUserPermissions(route, res)) {
                                     resolve(true);
