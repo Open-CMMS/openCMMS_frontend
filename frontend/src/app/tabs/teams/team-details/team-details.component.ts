@@ -86,9 +86,9 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
                       this.team.user_set.forEach(userId => {
                         this.userService.getUser(userId).subscribe((user) => {
                           this.teamUsers.push(new UserProfile(user.id,
-                                                              user.last_name,
-                                                              user.first_name,
                                                               user.username,
+                                                              user.first_name,
+                                                              user.last_name,
                                                               user.email,
                                                               user.password,
                                                               user.nb_tries,
@@ -110,9 +110,9 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
           users.forEach(
             (user) => {
               this.users.push(new UserProfile(user.id,
-                user.last_name,
-                user.first_name,
                 user.username,
+                user.first_name,
+                user.last_name,
                 user.email,
                 user.password,
                 user.nb_tries,

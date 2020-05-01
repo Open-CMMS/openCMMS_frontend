@@ -1,5 +1,5 @@
 <nav class="navbar fixed top navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="">OPENCMMS</a>
+    <a class="navbar-brand" routerLink>OPENCMMS</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -14,25 +14,27 @@
             Tasks
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="tasks/1">My Tasks</a>
+            <a class="dropdown-item" routerLink="tasks/0">My Tasks</a>
+          <div *ngIf="onViewTasksPermission()">
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="">Task management</a>
+            <a class="dropdown-item" routerLink="tasks/0" *ngIf="onViewTasksPermission()">Task management</a>
+          </div>
           </div>
         </li>
-        <li class="nav-item dropdown" routerLinkActive="active">
+        <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onViewTeamsPermission() || onViewTeamTypesPermission()">
           <a class="nav-link dropdown-toggle" href="#" id="userDetails" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Teams
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" routerLink="teams">Teams Management</a>
+            <a class="dropdown-item" routerLink="teams" *ngIf="onViewTeamsPermission()">Teams Management</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" routerLink="team-types">Team Types Management</a>
+            <a class="dropdown-item" routerLink="team-types" *ngIf="onViewTeamTypesPermission()">Team Types Management</a>
           </div>
         </li>
-        <li routerLinkActive="active">
+        <li routerLinkActive="active" *ngIf="onViewEquipmentPermission()">
             <a class="nav-link" routerLink="equipments">Equipments</a>
         </li>
-        <li routerLinkActive="active">
+        <li routerLinkActive="active" *ngIf="onViewUserPermission()">
           <a class="nav-link" routerLink="users">Users</a>
       </li>
       </ul>
@@ -42,8 +44,10 @@
               My Account
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" routerLink="{{onUserDetailsAccess()}}">My Account</a>
-              <a class="dropdown-item" routerLink="settings">App settings</a>
+              <a class="dropdown-item" routerLink="infos">My Account</a>
+              <div *ngIf="onAddUserPermission()">
+                <a class="dropdown-item" routerLink="settings">App settings</a>
+              </div>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" (click)="onLogout()">Sign out</a>
             </div>

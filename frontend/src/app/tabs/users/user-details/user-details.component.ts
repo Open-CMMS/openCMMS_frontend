@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup} from '@angular/forms';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-user-details',
@@ -43,7 +44,8 @@ export class UserDetailsComponent implements OnInit {
               private userService: UserService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal,
+              private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initialize the component when loaded
@@ -51,7 +53,11 @@ export class UserDetailsComponent implements OnInit {
   ngOnInit(): void {
     let id: number;
     this.route.params.subscribe(params => {
-      id = +params.id;
+      if (params.id) {
+        id = +params.id;
+      } else {
+        id = this.authenticationService.getCurrentUser().id;
+      }
     });
     this.userService.getUser(id)
       .subscribe(
