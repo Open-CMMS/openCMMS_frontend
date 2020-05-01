@@ -9,13 +9,20 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   idCurrentUser: number;
+  infoPath: string;
 
   constructor(private authenticationService: AuthenticationService,
               private router: Router) { }
 
   ngOnInit(): void {
-    this.idCurrentUser = this.authenticationService.getCurrentUser().id;
-    console.log(this.idCurrentUser);
+  }
+
+  onUserDetailsAccess(): string {
+    if (this.authenticationService.getCurrentUser()) {
+      return 'users/' + this.authenticationService.getCurrentUser().id;
+    } else {
+      return '';
+    }
   }
 
   onLogout() {

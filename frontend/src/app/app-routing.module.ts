@@ -66,7 +66,7 @@ const appRoutes: Routes = [
     path: 'settings', component: SettingsComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['add_user']
+      requiredPerms: ['add_userprofile']
     }
   },
   {
@@ -94,14 +94,14 @@ const appRoutes: Routes = [
     path: 'teams', component: TeamManagementComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_teams']
+      requiredPerms: ['view_team']
     }
   },
   {
     path: 'teams/:id', component: TeamDetailsComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_teams']
+      requiredPerms: ['view_team']
     }
   },
   {
@@ -136,21 +136,21 @@ const appRoutes: Routes = [
     path: 'users', component: UserManagementComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_users']
+      requiredPerms: ['view_userprofile']
     }
   },
   {
     path: 'users/:id', component: UserDetailsComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_users']
+      requiredPerms: ['view_userprofile']
     }
   },
   {
     path: 'new-user', component: NewUserComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['add_users']
+      requiredPerms: ['add_userprofile']
     }
   },
   {

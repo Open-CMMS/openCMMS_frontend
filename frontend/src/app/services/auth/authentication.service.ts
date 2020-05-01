@@ -18,7 +18,11 @@ export class AuthenticationService {
    * @param userService The UserService instance
    */
   constructor(private httpClient: HttpClient, private userService: UserService) {
-    this.currentUser = null;
+    if (localStorage.getItem('currentUser')) {
+      this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    } else {
+      this.currentUser = null;
+    }
     this.emitCurrentUser();
   }
   /**
@@ -68,6 +72,7 @@ export class AuthenticationService {
                                 user.nbTries,
                                 user.isActive
                                 );
+                              localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
                               this.emitCurrentUser();
                               resolve();
                             },
@@ -97,6 +102,7 @@ export class AuthenticationService {
         this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/logout').subscribe(
           (res) => {
             this.currentUser = null;
+            localStorage.setItem('currentUser', null);
             this.emitCurrentUser();
             resolve();
           }

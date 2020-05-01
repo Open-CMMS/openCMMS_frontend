@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, RouterLink } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
 import { UserService } from 'src/app/services/users/user.service';
 import { UserProfile } from 'src/app/models/user-profile';
@@ -13,42 +13,61 @@ export class AuthGuardService implements CanActivate {
     ) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        // return new Promise<boolean>(
-        //     (resolve, reject) => {
-        //         const currentUser = this.authenticationService.getCurrentUser();
-        //         console.log(currentUser);
-        //         console.log(route.data.requiredPerms);
-        //         if (currentUser !== null) { // A user is connected so then we can check the perms
-        //             if (route.data.roles) {
-        //                 this.userService.getUserPermissions(currentUser.id).subscribe(
-        //                     (res) => {
-        //                         // Check if the user perms are sufficient to access the requested URL
-        //                         resolve(true);
-        //                     },
-        //                     (error) => {
-        //                         this.router.navigate(['four-oh-four']);
-        //                         resolve(false);
-        //                     }
-        //                 );
-        //             }
-        //         }
-        //         this.router.navigate(['sign-in']);
-        //         resolve(false);
-        //     }
-        // );
+        return new Promise<boolean>(
+            (resolve, reject) => {
+                const currentUser = this.authenticationService.getCurrentUser();
+                if (currentUser !== null) { // A user is connected so then we can check the perms
+                    if (route.data.requiredPerms.length > 0) {
+                        this.userService.getUserPermissions(currentUser.id).subscribe(
+                            (res) => {
+                                if (this.checkUserPermissions(route, res)) {
+                                    resolve(true);
+                                } else {
+                                    this.router.navigate(['four-oh-four']);
+                                    resolve(false);
+                                }
+                            },
+                            (error) => {
+                                this.router.navigate(['four-oh-four']);
+                                resolve(false);
+                            }
+                        );
+                    } else {
+                        resolve(true);
+                    }
+                } else {
+                    this.router.navigate(['sign-in']);
+                    resolve(false);
+                }
+            }
+        );
+    }
 
-        const currentUser = this.authenticationService.getCurrentUser();
-        console.log(currentUser);
-        if (currentUser !== null) {
-            // if (route.data.requiredPerms && route.data.requiredPerms.indexOf(this.userService.getUserPermissions(currentUser.id)[0].getCodename()) === -1) {
-            //     console.log(route.data.roles);
-            //     this.router.navigate(['']);
-            //     return false;
-            // }
-            return true;
+    private checkUserPermissions(route: ActivatedRouteSnapshot, userPerms: any[]): boolean {
+        let permissionFound: boolean;
+        let index = 0;
+        const breakException = {};
+        try {
+            route.data.requiredPerms.forEach(permRequired => {
+                permissionFound = false;
+                while (!permissionFound && index < userPerms.length) {
+                    if (userPerms[index].codename === permRequired) {
+                        permissionFound = true;
+                    } else {
+                        index++;
+                    }
+                }
+                if (!permissionFound) {
+                    throw breakException;
+                }
+            });
+        } catch (e) {
+            if (e !== breakException) {
+                throw e;
+            } else {
+                return false;
+            }
         }
-        this.router.navigate(['sign-in']);
-        return false;
-
+        return true;
     }
 }
