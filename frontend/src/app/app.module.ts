@@ -46,7 +46,9 @@ import { UtilsService } from './services/utils/utils.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AppRoutingModule } from './app-routing.module';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { appRoutingModule } from './app-routing.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
@@ -90,7 +92,9 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     NgbModule,
     BrowserAnimationsModule,
     MatFormFieldModule,
-    AppRoutingModule,
+    MatSelectModule,
+    MatInputModule,
+    appRoutingModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [

@@ -92,8 +92,16 @@ export class AuthenticationService {
     * Logout the current user.
     */
   public logout() {
-    this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/logout/');
-    this.currentUser = null;
-    this.emitCurrentUser();
+    return new Promise(
+      (resolve, reject) => {
+        this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/logout').subscribe(
+          (res) => {
+            this.currentUser = null;
+            this.emitCurrentUser();
+            resolve();
+          }
+        );
+      }
+    );
   }
 }
