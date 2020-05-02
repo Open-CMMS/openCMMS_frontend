@@ -7,6 +7,7 @@ export class UserProfile {
     password: string;
     nb_tries: number;
     is_active: boolean;
+    token?: string;
 
     /**
      * @param id The id of the user

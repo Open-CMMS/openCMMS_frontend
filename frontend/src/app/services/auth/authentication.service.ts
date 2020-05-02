@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { UserProfile } from '../../models/user-profile';
-import { UserService } from '../users/user.service';
 import { environment } from 'src/environments/environment';
 
 
@@ -19,18 +18,14 @@ export class AuthenticationService {
    * @param httpClient The http instance
    * @param userService The UserService instance
    */
-  constructor(private httpClient: HttpClient, private userService: UserService) {
+  constructor(private httpClient: HttpClient) {
     this.userPermissions = [];
-    if (localStorage.getItem('currentUser') !== 'null') {
+    if (localStorage.getItem('currentUser') !== 'null' && localStorage.getItem('currentUserPerms') !== 'null') {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      this.userService.getUserPermissions(this.currentUser.id)
-                                              .subscribe(
-                                                (perms) => {
-                                                  this.userPermissions = perms;
-                                                }
-                                              );
+      this.userPermissions = JSON.parse(localStorage.getItem('currentUserPerms'));
     } else {
       this.currentUser = null;
+      this.userPermissions = null;
     }
     this.emitCurrentUser();
   }
@@ -69,33 +64,28 @@ export class AuthenticationService {
                      .toPromise()
                      .then(
                         res => {
-                          this.userService.getUser(res.user_id).toPromise().then(
-                            user => {
-                              this.currentUser = new UserProfile(
-                                user.id,
-                                user.username,
-                                user.first_name,
-                                user.last_name,
-                                user.email,
-                                user.password,
-                                user.nb_tries,
-                                user.is_active
-                                );
-                              localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-                              this.userService.getUserPermissions(this.currentUser.id)
-                                              .subscribe(
-                                                (perms) => {
-                                                  this.userPermissions = perms;
-                                                }
-                                              );
-                              this.emitCurrentUser();
-                              resolve();
-                            },
-                            error => {
-                              console.log('Connection error !: ' + error);
-                              reject(error);
-                            }
-                          );
+                          console.log(res);
+                          this.currentUser = new UserProfile(
+                            res.user.id,
+                            res.user.username,
+                            res.user.first_name,
+                            res.user.last_name,
+                            res.user.email,
+                            res.user.password,
+                            res.user.nb_tries,
+                            res.user.is_active,
+                            );
+                          this.currentUser.token = res.token;
+                          localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+                          this.getUserPermissions(this.currentUser.id)
+                                          .subscribe(
+                                            (perms) => {
+                                              this.userPermissions = perms;
+                                              localStorage.setItem('currentUserPerms', JSON.stringify(this.userPermissions));
+                                            }
+                                          );
+                          this.emitCurrentUser();
+                          resolve();
                         },
                         error => {
                           console.log('Connection error !: ' + error);
@@ -106,6 +96,10 @@ export class AuthenticationService {
     });
 
     return promise;
+  }
+
+  getUserPermissions(id: number ) {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/users/' + id + '/get_user_permissions');
   }
 
    /**
@@ -119,6 +113,7 @@ export class AuthenticationService {
             this.currentUser = null;
             this.userPermissions = [];
             localStorage.setItem('currentUser', null);
+            localStorage.setItem('currentUserPerms', null);
             this.emitCurrentUser();
             resolve();
           }

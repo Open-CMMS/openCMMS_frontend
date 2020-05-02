@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -50,6 +50,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { appRoutingModule } from './app-routing.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { JwtInterceptorService } from './services/jwt-interceptor/jwt-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -107,7 +108,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     PermissionService,
     TaskService,
     EquipmentService,
-    UtilsService
+    UtilsService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true}
   ],
   bootstrap: [AppComponent]
 })

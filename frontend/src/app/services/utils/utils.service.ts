@@ -30,7 +30,7 @@ export class UtilsService {
     let index = 0;
     const breakException = {};
     while (!permissionFound && index < userPerms.length) {
-        if (userPerms[index].codename === permissionCodename) {
+        if (userPerms[index] === permissionCodename) {
             permissionFound = true;
         } else {
             index++;

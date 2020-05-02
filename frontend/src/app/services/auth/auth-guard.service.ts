@@ -28,7 +28,7 @@ export class AuthGuardService implements CanActivate {
             (resolve, reject) => {
                 if (this.currentUser !== null) { // A user is connected so then we can check the perms
                     if (route.data.requiredPerms.length > 0) {
-                        this.userService.getUserPermissions(this.currentUser.id).subscribe(
+                        this.authenticationService.getUserPermissions(this.currentUser.id).subscribe(
                             (res) => {
                                 if (this.checkUserPermissions(route, res)) {
                                     resolve(true);
@@ -61,7 +61,7 @@ export class AuthGuardService implements CanActivate {
             route.data.requiredPerms.forEach(permRequired => {
                 permissionFound = false;
                 while (!permissionFound && index < userPerms.length) {
-                    if (userPerms[index].codename === permRequired) {
+                    if (userPerms[index] === permRequired) {
                         permissionFound = true;
                     } else {
                         index++;

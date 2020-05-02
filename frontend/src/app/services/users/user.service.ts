@@ -117,8 +117,4 @@ export class UserService {
     return this.httpClient.get<string>(this.BASE_URL_API + '/api/usersmanagement/users/username_suffix?username='
     + username);
   }
-
-  getUserPermissions(id: number ) {
-    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/users/' + id + '/get_user_permissions');
-  }
 }
