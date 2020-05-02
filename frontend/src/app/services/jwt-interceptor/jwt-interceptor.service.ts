@@ -19,6 +19,8 @@ export class JwtInterceptorService implements HttpInterceptor {
         this.currentUser = currentUser;
       }
     );
+    this.authenticationService.emitCurrentUser();
+
     if (this.currentUser && this.currentUser.token) {
       request = request.clone({
           setHeaders: {

@@ -99,6 +99,7 @@ import { JwtInterceptorService } from './services/jwt-interceptor/jwt-intercepto
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true},
     HttpClientModule,
     AuthenticationService,
     AuthGuardService,
@@ -108,8 +109,7 @@ import { JwtInterceptorService } from './services/jwt-interceptor/jwt-intercepto
     PermissionService,
     TaskService,
     EquipmentService,
-    UtilsService,
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true}
+    UtilsService
   ],
   bootstrap: [AppComponent]
 })

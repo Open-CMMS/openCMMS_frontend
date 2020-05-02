@@ -12,8 +12,7 @@ export class AuthGuardService implements CanActivate {
     currentUserSubscription: Subscription;
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService,
-        private userService: UserService
+        private authenticationService: AuthenticationService
     ) {
         this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
             (currentUser) => {

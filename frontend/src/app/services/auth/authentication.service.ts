@@ -19,13 +19,12 @@ export class AuthenticationService {
    * @param userService The UserService instance
    */
   constructor(private httpClient: HttpClient) {
-    this.userPermissions = [];
     if (localStorage.getItem('currentUser') !== 'null' && localStorage.getItem('currentUserPerms') !== 'null') {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
       this.userPermissions = JSON.parse(localStorage.getItem('currentUserPerms'));
     } else {
       this.currentUser = null;
-      this.userPermissions = null;
+      this.userPermissions = [];
     }
     this.emitCurrentUser();
   }
