@@ -53,6 +53,10 @@ export class UserService {
       .get<UserProfile>(this.BASE_URL_API + '/api/usersmanagement/users/' + id + '/');
   }
 
+  /**
+   * Fonction to update a existing user in the database
+   * @param userModified User concerned with the modification and with modifications applied
+   */
   updateUser(userModified: UserProfile) {
 
     const last_name = userModified.last_name;
