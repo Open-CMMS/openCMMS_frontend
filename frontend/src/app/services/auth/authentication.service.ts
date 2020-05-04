@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { UserProfile } from '../../models/user-profile';
 import { environment } from 'src/environments/environment';
@@ -52,14 +52,16 @@ export class AuthenticationService {
 
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json'
+        'Content-Type':  'application/x-www-form-urlencoded'
       })
     };
 
-    const reqJSON = '{"username": "' + username + '", "password": "' + password + '"}';
+    // const reqJSON = '{"username": "' + username + '", "password": "' + password + '"}';
+
+    const params = new HttpParams().set('username', username).set('password', password);
 
     const promise = new Promise((resolve, reject) => {
-      this.httpClient.post<any>(this.BASE_URL_API + '/api/usersmanagement/login', reqJSON, httpOptions)
+      this.httpClient.post<any>(this.BASE_URL_API + '/api/usersmanagement/login', params, httpOptions)
                      .toPromise()
                      .then(
                         res => {
