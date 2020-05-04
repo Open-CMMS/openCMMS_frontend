@@ -58,7 +58,7 @@ export class TeamTypeService {
       })
     };
 
-    const obs = this.httpClient.put<TeamType>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + updated_team_type.getId(),
+    const obs = this.httpClient.put<TeamType>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + updated_team_type.getId() + '/',
                                               ttJson,
                                               httpOptions);
     obs.subscribe(
@@ -75,7 +75,7 @@ export class TeamTypeService {
   }
 
   getTeamType(team_type_id: number): Observable<TeamType> {
-    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + team_type_id);
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + team_type_id + '/');
   }
 
   getTeamTypes() {
@@ -115,7 +115,7 @@ export class TeamTypeService {
   deleteTeamType(id_team_type: number) {
     let ret = false;
     this.httpClient
-      .delete<any>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + id_team_type)
+      .delete<any>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + id_team_type + '/')
       .subscribe(
         (response) => {
           if (response === true) {
