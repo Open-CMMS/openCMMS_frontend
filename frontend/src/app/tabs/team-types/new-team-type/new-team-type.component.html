@@ -1,39 +1,33 @@
-<div class="row my-3">
-    <div class="col-12">
-      <h2>Créer un nouveau type d'équipe : </h2>
-      <div class="col-sm-8 col-sm-offset-2">
-    <form (ngSubmit)="onSubmit(f)" #myForm="ngForm">
-      <div class="form-team">
-        <mat-form-field appearance="fill"  class="form-field-fill">
-          <mat-label>Team type name</mat-label>
-          <input matInput id="name" class="form-control" name="name" ngModel required class="form-field">
-        </mat-form-field>
-      </div>
-      <div class="form-team">
-        <mat-form-field appearance="fill" class="form-field-fill">
-          <mat-label>Permissions</mat-label>
-          <mat-select multiple required name='permissions' ngModel class="form-field">
-            <mat-option 
-              class="list-permissions-item"
-              *ngFor="let right of permissions"
-              value= "{{ right.codename }}">{{ right.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="form-team">
-        <mat-form-field appearance="fill" class="form-field-fill">
-          <mat-label>Teams</mat-label>
-          <mat-select multiple required name='teams' ngModel class="form-field">
-            <mat-option 
-              class="list-teams-item"
-              *ngFor="let team of teams"
-              value= "{{ team.name }}">{{ team.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <button class="btn btn-primary" type="submit" [disabled]="!f.form.valid">Enregistrer</button>
-    </form>
+<div class="container-fluid col-10 mt-3 justify-content-center">
+  <div class="d-flex">
+    <h2 class="font-weight-bold">Create a new team type</h2>
   </div>
+
+  <form [formGroup]="teamTypeForm" (ngSubmit)="onSubmit()" >
+    <div class="form-group">
+      <label for="name">Nom</label>
+      <input type="text" class='form-control' formControlName="name">
+    </div>
+    <div class="form-group">
+      <label for="permissions">Permissions</label>
+      <ng-multiselect-dropdown
+        [settings]="dropdownPermsSettings"
+        [data]="permsList"
+        formControlName="permissions"
+        name="permissions"
+      >
+      </ng-multiselect-dropdown>
+    </div>
+    <div class="form-group">
+      <label for="teams">Équipes</label>
+      <ng-multiselect-dropdown
+        [settings]="dropdownTeamsSettings"
+        [data]="teamsList"
+        formControlName="teams"
+        name="teams"
+      >
+      </ng-multiselect-dropdown>
+    </div>
+    <button class="btn btn-primary" type="submit" [disabled]="teamTypeForm.invalid">Enregistrer</button>
+  </form>
 </div>

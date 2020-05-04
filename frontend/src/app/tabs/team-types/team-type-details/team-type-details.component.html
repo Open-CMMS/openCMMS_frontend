@@ -7,21 +7,50 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
+        <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
     </div>
 </ng-template>
 
 <ng-template #contentModify let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-modify">Modifiy TeamType</h4>
-    </div>
-    <div class="modal-body">
-        <app-new-team-type></app-new-team-type>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Modify</button>
-    </div>
+    <form [formGroup]="teamTypeForm" (ngSubmit)="modifyTeamType()" >
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-modify">Modifiy TeamType</h4>
+        </div>
+        <div class="modal-body">
+            <div class="col-sm-8 col-sm-offset-2">
+              <div class="form-group">
+                <label for="name">Nom</label>
+                <input type="text" class='form-control' formControlName="name" [(ngModel)]="name">
+              </div>
+              <div class="form-grpup">
+                <label for="permissions">Permissions</label>
+                <ng-multiselect-dropdown
+                  [settings]="dropdownPermsSettings"
+                  [data]="permsList"
+                  [(ngModel)]="selectedPerms"
+                  formControlName="permissions"
+                  name="permissions"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+              <div class="form-group">
+                <label for="teams">Équipes</label>
+                <ng-multiselect-dropdown
+                  [settings]="dropdownTeamsSettings"
+                  [data]="teamsList"
+                  [(ngModel)]="selectedTeams"
+                  formControlName="teams"
+                  name="teams"
+                >
+                </ng-multiselect-dropdown>
+              </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+            <button type="button" class="btn btn-success" [disabled]="teamTypeForm.invalid" type="submit">Modify</button>
+        </div>
+    </form>
 </ng-template>
 
 <div class="container-fluid col-10 mt-3 justify-content-center">
@@ -46,14 +75,14 @@
             </div>
         </div>
     </div>
-    <!-- <div class="card mt-5">
+    <div class="card mt-5">
         <div class="card-header d-flex justify-content-between">
             <div class="d-flex">
                 <h3 class="font-weight-bold"> Teams : </h3>
             </div>
         </div>
         <div class="row">
-            <ul class="list-permission">
+            <ul class="list-team">
                 <li
                     class="container-fluid list-permission-item font-weight-bold "
                     *ngFor="let team of teams; let i = index">
@@ -63,7 +92,7 @@
                 </li>
             </ul>
         </div>
-    </div> -->
+    </div>
     <div class="card mt-5">
         <div class="card-header d-flex justify-content-between">
             <div class="d-flex">
@@ -76,7 +105,7 @@
                     class="container-fluid list-permission-item font-weight-bold "
                     *ngFor="let perm of perms; let i = index">
                     <div class="container-fluid row justify-content-between">
-                        <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewPerm(perm)">{{ perm.name }}</h5>
+                        <h5 style="margin-bottom: 0px; vertical-align: middle;">{{ perm.name }}</h5>
                     </div>
                 </li>
             </ul>
