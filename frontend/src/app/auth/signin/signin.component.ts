@@ -92,6 +92,7 @@ export class SigninComponent implements OnInit {
         this.authenticationService.login(this.f.username.value, this.f.password.value).then(() => {
             this.router.navigate(['']);
             this.loading = false;
+            this.userService.getUsers();
         })
         .catch( () => {
             this.error = 'Erreur dans la saisie des identifiants';
@@ -120,6 +121,7 @@ export class SigninComponent implements OnInit {
                         this.authenticationService.login(username, formValues.password).then(() => {
                             this.router.navigate(['']);
                             this.loading = false;
+                            this.userService.getUsers();
                         })
                         .catch( () => {
                             this.error = 'Erreur dans la saisie des identifiants';
