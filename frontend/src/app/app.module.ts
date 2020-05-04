@@ -45,8 +45,6 @@ import { TaskService } from './services/tasks/task.service';
 import { UtilsService } from './services/utils/utils.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 const appRoutes: Routes = [
@@ -64,6 +62,7 @@ const appRoutes: Routes = [
   {path: 'new-team', component: NewTeamComponent},
   {path: 'team-types', component: TeamTypeManagementComponent},
   {path: 'team-types/:id', component: TeamTypeDetailsComponent},
+  {path: 'new-team-type', component: NewTeamTypeComponent},
   {path: 'users', component: UserManagementComponent},
   {path: 'users/:id', component: UserDetailsComponent},
   {path: 'new-user', component: NewUserComponent},
@@ -113,8 +112,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     NgbModule,
     BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatSelectModule,
+    NgbModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [

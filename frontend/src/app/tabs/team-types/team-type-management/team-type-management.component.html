@@ -1,10 +1,9 @@
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-6">
-            <app-team-types-list></app-team-types-list>
-        </div>
-        <div class="col-6">
-            <app-new-team-type></app-new-team-type>
-        </div>
+<div class="container-fluid justify-content-center col-10 mt-3">
+    <div class="container-fluid row">
+        <h3 class="font-weight-bold">TeamTypes Management</h3>
     </div>
+    <div class="container-fluid row my-3">
+        <button class="btn btn-primary" (click)="onCreateTeamType()"><fa-icon [icon]="faPlus"></fa-icon> Create new team type</button>
+    </div>
+    <app-team-types-list></app-team-types-list>
 </div>
