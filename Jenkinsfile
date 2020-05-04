@@ -184,7 +184,7 @@ pipeline{
                     steps{
                         dir("frontend"){
                             sh '''
-                                \$(npm bin)/ng build --build-optimizer
+                                \$(npm bin)/ng build --build-optimizer --configuration=dev
                                 '''
                         }
                     }

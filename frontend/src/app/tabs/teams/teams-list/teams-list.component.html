@@ -20,7 +20,10 @@
                 >
                 <div class="container-fluid row justify-content-between">
                     <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
-                    <button class="btn btn-danger" (click)="openDelete(contentDelete, team)"><fa-icon [icon]="faTrash"></fa-icon></button>
+                    <div>
+                        <button class="btn btn-info" (click)="onViewTeam(team)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                        <button class="btn btn-danger" (click)="openDelete(contentDelete, team)"><fa-icon [icon]="faTrash"></fa-icon></button>
+                    </div>
                 </div>
             </li>
         </ul>

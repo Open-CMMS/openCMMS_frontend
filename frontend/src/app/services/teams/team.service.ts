@@ -17,6 +17,9 @@ export class TeamService {
     this.getTeams();
   }
 
+  /**
+   * Function that updates the subject teamSubject
+   */
   emitTeams() {
     this.teamSubject.next(this.teams);
   }
@@ -86,9 +89,5 @@ export class TeamService {
    */
   deleteTeam(id: number) {
     return this.httpClient.delete<Team>(this.BASE_URL_API + '/api/usersmanagement/teams/' + id);
-  }
-
-  addUserToTeam() {
-
   }
 }
