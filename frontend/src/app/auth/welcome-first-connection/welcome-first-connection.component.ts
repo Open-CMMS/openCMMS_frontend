@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-welcome-first-connection',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomeFirstConnectionComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+  }
+
+  onSignUp() {
+    this.router.navigate(['sign-up']);
   }
 
 }

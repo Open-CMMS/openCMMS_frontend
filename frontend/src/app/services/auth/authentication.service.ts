@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
 
+  // Local variables
   private currentUser: UserProfile;
   currentUserSubject = new Subject<UserProfile>();
   private BASE_URL_API = environment.baseUrl;
@@ -16,7 +17,6 @@ export class AuthenticationService {
   /**
    * Constructor of AutheticationService
    * @param httpClient The http instance
-   * @param userService The UserService instance
    */
   constructor(private httpClient: HttpClient) {
     if (localStorage.getItem('currentUser') !== 'null' && localStorage.getItem('currentUserPerms') !== 'null') {
@@ -28,6 +28,7 @@ export class AuthenticationService {
     }
     this.emitCurrentUser();
   }
+
   /**
    * Switch current user to another.
    */
@@ -43,11 +44,11 @@ export class AuthenticationService {
     return this.userPermissions;
   }
 
-   /**
-    * Login method.
-    * @param userName Name provided by user.
-    * @param password Key provided by user.
-    */
+  /**
+   * Login method.
+   * @param userName Name provided by user.
+   * @param password Key provided by user.
+   */
   public login(username: string, password: string) {
 
     const httpOptions = {
@@ -56,8 +57,6 @@ export class AuthenticationService {
       })
     };
 
-    // const reqJSON = '{"username": "' + username + '", "password": "' + password + '"}';
-
     const params = new HttpParams().set('username', username).set('password', password);
 
     const promise = new Promise((resolve, reject) => {
@@ -65,7 +64,6 @@ export class AuthenticationService {
                      .toPromise()
                      .then(
                         res => {
-                          console.log(res);
                           this.currentUser = new UserProfile(
                             res.user.id,
                             res.user.username,
@@ -99,13 +97,17 @@ export class AuthenticationService {
     return promise;
   }
 
+  /**
+   * Function that gets the set of a user's permissions.
+   * @param id the id of the user.
+   */
   getUserPermissions(id: number ) {
     return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/users/' + id + '/get_user_permissions');
   }
 
-   /**
-    * Logout the current user.
-    */
+  /**
+   * Logout the current user.
+   */
   public logout() {
     return new Promise(
       (resolve, reject) => {
@@ -121,5 +123,13 @@ export class AuthenticationService {
         );
       }
     );
+  }
+
+  /**
+   * Getter to know if there is any user in the server's database
+   * @returns a boolean, true if there is no user, else return false
+   */
+  is_first_user() {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/users/is_first_user');
   }
 }

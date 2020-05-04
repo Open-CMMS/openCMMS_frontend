@@ -9,6 +9,10 @@ export class UtilsService {
 
   constructor() { }
 
+  /**
+   * Function that treats errors on erquests with HttpClient.
+   * @param error the error raised by the request.
+   */
   public handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       console.error('An error occurred:', error.error.message);
@@ -21,7 +25,8 @@ export class UtilsService {
   }
 
   /**
-   * Function that search in a set of permission of a user and 
+   * Function that search in a set of permission of a user 
+   * and check if the user has a certain permission
    * @param userPerms the permissions of the current connected user
    * @param permissionCodename the permission codename
    */

@@ -8,11 +8,18 @@ import { Router } from '@angular/router';
 })
 export class FourOhFourComponent implements OnInit {
 
+  /**
+   * Constructor of the component 404.
+   * @param router the service used for routing.
+   */
   constructor(private router: Router) { }
 
   ngOnInit(): void {
   }
 
+  /**
+   * Function that redirects the user on the home page.
+   */
   onBackHome() {
     this.router.navigate(['']);
   }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, RouterLink } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
-import { UserService } from 'src/app/services/users/user.service';
 import { UserProfile } from 'src/app/models/user-profile';
 import { Subscription } from 'rxjs';
 
@@ -10,6 +9,13 @@ export class AuthGuardService implements CanActivate {
 
     currentUser: UserProfile;
     currentUserSubscription: Subscription;
+    firstUser = true;
+
+    /**
+     * Constructor of AuthGuard.
+     * @param router the service used for routing.
+     * @param authenticationService the auth service.
+     */
     constructor(
         private router: Router,
         private authenticationService: AuthenticationService
@@ -22,7 +28,11 @@ export class AuthGuardService implements CanActivate {
         this.authenticationService.emitCurrentUser();
      }
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    /**
+     * Function that checks if you are allowed to acces a route.
+     * @param route the requested route.
+     */
+    canActivate(route: ActivatedRouteSnapshot) {
         return new Promise<boolean>(
             (resolve, reject) => {
                 if (this.currentUser !== null) { // A user is connected so then we can check the perms

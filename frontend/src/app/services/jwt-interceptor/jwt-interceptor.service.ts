@@ -9,10 +9,20 @@ import { UserProfile } from 'src/app/models/user-profile';
 })
 export class JwtInterceptorService implements HttpInterceptor {
 
+  // Local Variables
   private currentUser: UserProfile;
 
+  /**
+   * Constructor of JwtInterceptorService
+   * @param authenticationService the auth service
+   */
   constructor(private authenticationService: AuthenticationService) { }
 
+  /**
+   * Function that intercepts the requests to add the JWT token in headers.
+   * @param request the request
+   * @param next the HttpHandler
+   */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.authenticationService.currentUserSubject.subscribe(
       (currentUser) => {

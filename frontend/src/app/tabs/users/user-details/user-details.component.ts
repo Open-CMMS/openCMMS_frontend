@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
 /**
  * Class for the component in charge of showing user details
  */
-export class UserDetailsComponent implements OnInit {
+export class UserDetailsComponent implements OnInit, OnDestroy {
   // Font awesome logos
   faPencilAlt = faPencilAlt;
   faTrash = faTrash;
@@ -189,6 +189,10 @@ export class UserDetailsComponent implements OnInit {
       this.authenticationService.getCurrentUserPermissions(),
       'delete_userprofile'
       );
+  }
+
+  ngOnDestroy() {
+    this.currentUserSubscription.unsubscribe();
   }
 
 }

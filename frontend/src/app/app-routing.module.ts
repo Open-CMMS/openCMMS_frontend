@@ -6,7 +6,6 @@ import { SignupComponent } from './auth/signup/signup.component';
 import { WelcomeFirstConnectionComponent } from './auth/welcome-first-connection/welcome-first-connection.component';
 import { UserDetailsComponent } from './tabs/users/user-details/user-details.component';
 import { TeamTypeDetailsComponent } from './tabs/team-types/team-type-details/team-type-details.component';
-import { TeamTypesListComponent } from './tabs/team-types/team-types-list/team-types-list.component';
 import { TeamTypeManagementComponent } from './tabs/team-types/team-type-management/team-type-management.component';
 import { TeamDetailsComponent } from './tabs/teams/team-details/team-details.component';
 import { AccountBlockedComponent } from './auth/account-blocked/account-blocked.component';
@@ -23,6 +22,9 @@ import { NewTaskComponent } from './tabs/tasks/new-task/new-task.component';
 import { NewUserComponent } from './tabs/users/new-user/new-user.component';
 import { NewEquipmentComponent } from './tabs/equipments/new-equipment/new-equipment.component';
 
+/**
+ * List of the routes for the application and their associated permissions.
+ */
 const appRoutes: Routes = [
   {
     path: 'sign-in', component: SigninComponent,
