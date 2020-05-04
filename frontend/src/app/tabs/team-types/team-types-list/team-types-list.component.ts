@@ -10,6 +10,10 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
   templateUrl: './team-types-list.component.html',
   styleUrls: ['./team-types-list.component.scss']
 })
+
+/**
+ * Class for the component in charge of listing all team types
+ */
 export class TeamTypesListComponent implements OnInit, OnDestroy {
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
@@ -17,8 +21,16 @@ export class TeamTypesListComponent implements OnInit, OnDestroy {
   teamTypes: TeamType[] = [];
   teamTypesSubscription: Subscription;
 
+  /**
+   * Constructor for the TeamTypeListComponent
+   * @param teamTypeService the service to communicate with backend on TeamType objects
+   * @param router the service used to handle redirections
+   */
   constructor(private teamTypeService: TeamTypeService, private router: Router) { }
 
+  /**
+   * Function that initializes the component when loaded
+   */
   ngOnInit(): void {
     this.teamTypesSubscription = this.teamTypeService.team_types_subject.subscribe(
       (teamTypes: TeamType[]) => {
@@ -28,16 +40,27 @@ export class TeamTypesListComponent implements OnInit, OnDestroy {
     this.teamTypeService.emitTeamTypes();
   }
 
+  /**
+   * Function that navigates to the TeamTypeDetailComponent
+   * @param i the index of the teamType in the list
+   */
   onViewTeamType(i: number) {
-    const team_type_id = this.teamTypes[i].getId();
+    const team_type_id = this.teamTypes[i].id;
     this.router.navigate(['/team-types', team_type_id]);
   }
 
+  /**
+   * Function that navigates to delete a TeamType
+   * @param i the index of the teamType in the list
+   */
   onDeleteTeamType(i: number) {
     const team_type_id = this.teamTypes[i].getId();
-    console.log('delete : ' + team_type_id);
+    this.teamTypeService.deleteTeamType(team_type_id);
   }
 
+  /**
+   * Function called when the component is destroyed
+   */
   ngOnDestroy() {
     this.teamTypesSubscription.unsubscribe();
   }
