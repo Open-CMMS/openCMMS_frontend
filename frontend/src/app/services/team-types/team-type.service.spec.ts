@@ -124,7 +124,7 @@ describe('TeamTypeService', () => {
       teamType => {
         expect(teamType.name).toBe('TeamType 2');
         expect(teamType.perms.length).toBe(1);
-        expect(teamType.perms)[0].toBe(1);
+        expect(teamType.perms[0]).toBe(1);
         expect(teamType.team_set).toEqual([]);
       }
     );
