@@ -34,7 +34,7 @@ export class UserProfile {
     this.password = password;
     this.nb_tries = nbTries;
     this.is_active = isActive;
-}
+    }
 }
 
 
