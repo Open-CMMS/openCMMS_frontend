@@ -67,7 +67,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       if (params.id) {
         id = +params.id;
-      } else {
+      } else if (this.currentUser !== null) {
         id = this.currentUser.id;
       }
     });

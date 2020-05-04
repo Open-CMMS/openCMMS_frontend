@@ -2,8 +2,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './tabs/home/home.component';
 import { AuthGuardService } from './services/auth/auth-guard.service';
 import { SigninComponent } from './auth/signin/signin.component';
-import { SignupComponent } from './auth/signup/signup.component';
-import { WelcomeFirstConnectionComponent } from './auth/welcome-first-connection/welcome-first-connection.component';
 import { UserDetailsComponent } from './tabs/users/user-details/user-details.component';
 import { TeamTypeDetailsComponent } from './tabs/team-types/team-type-details/team-type-details.component';
 import { TeamTypeManagementComponent } from './tabs/team-types/team-type-management/team-type-management.component';
@@ -33,26 +31,7 @@ const appRoutes: Routes = [
     }
   },
   {
-    path: 'sign-up', component: SignupComponent,
-    canActivate: [AuthGuardService],
-    data: {
-      requiredPerms: []
-    }
-  },
-  {
     path: 'account-blocked', component: AccountBlockedComponent,
-    data: {
-      requiredPerms: []
-    }
-  },
-  {
-    path: 'first-connection', component: WelcomeFirstConnectionComponent,
-    data: {
-      requiredPerms: []
-    }
-  },
-  {
-    path: 'first-connection/sign-up', component: SignupComponent,
     data: {
       requiredPerms: []
     }

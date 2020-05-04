@@ -25,7 +25,7 @@ export class UtilsService {
   }
 
   /**
-   * Function that search in a set of permission of a user 
+   * Function that search in a set of permission of a user
    * and check if the user has a certain permission
    * @param userPerms the permissions of the current connected user
    * @param permissionCodename the permission codename
@@ -34,12 +34,14 @@ export class UtilsService {
     let permissionFound: boolean;
     let index = 0;
     const breakException = {};
-    while (!permissionFound && index < userPerms.length) {
-        if (userPerms[index] === permissionCodename) {
-            permissionFound = true;
-        } else {
-            index++;
-        }
+    if (userPerms !== null) {
+      while (!permissionFound && index < userPerms.length) {
+          if (userPerms[index] === permissionCodename) {
+              permissionFound = true;
+          } else {
+              index++;
+          }
+      }
     }
     if (permissionFound) {
         return true;

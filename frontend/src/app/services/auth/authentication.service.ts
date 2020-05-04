@@ -64,25 +64,31 @@ export class AuthenticationService {
                      .toPromise()
                      .then(
                         res => {
-                          this.currentUser = new UserProfile(
-                            res.user.id,
-                            res.user.username,
-                            res.user.first_name,
-                            res.user.last_name,
-                            res.user.email,
-                            res.user.password,
-                            res.user.nb_tries,
-                            res.user.is_active,
-                            );
-                          this.currentUser.token = res.token;
+                          if (res.user) {
+                            this.currentUser = new UserProfile(
+                              res.user.id,
+                              res.user.username,
+                              res.user.first_name,
+                              res.user.last_name,
+                              res.user.email,
+                              res.user.password,
+                              res.user.nb_tries,
+                              res.user.is_active,
+                              );
+                          }
+                          if (res.token && this.currentUser) {
+                            this.currentUser.token = res.token;
+                          }
                           localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-                          this.getUserPermissions(this.currentUser.id)
-                                          .subscribe(
-                                            (perms) => {
-                                              this.userPermissions = perms;
-                                              localStorage.setItem('currentUserPerms', JSON.stringify(this.userPermissions));
-                                            }
-                                          );
+                          if (this.currentUser) {
+                            this.getUserPermissions(this.currentUser.id)
+                                            .subscribe(
+                                              (perms) => {
+                                                this.userPermissions = perms;
+                                                localStorage.setItem('currentUserPerms', JSON.stringify(this.userPermissions));
+                                              }
+                                            );
+                          }
                           this.emitCurrentUser();
                           resolve();
                         },

@@ -27,20 +27,39 @@ describe('AuthenticationService', () => {
     const mockUser =
       new UserProfile(2, 'hmaricato', 'hugo', '', 'hugo.simoes_maricato@insa-rouen.fr',
       '!fmEy1YLWGsoWhQ4TgYb3LRqwUGbQwHaFiJFam8jf', 0, true);
+    mockUser.token = 'toto';
     authenticationService.login('hmaricato', '!fmEy1YLWGsoWhQ4TgYb3LRqwUGbQwHaFiJFam8jf')
       .then((user: UserProfile)  => {
-         expect(user.username).toBe('hmaricato');
-         expect(user.id).toBe(2);
-         expect(user.last_name).toBe('');
-         expect(user.first_name).toBe('hugo');
+        if (user) {
+          expect(user.username).toBe('hmaricato');
+          expect(user.id).toBe(2);
+          expect(user.last_name).toBe('');
+          expect(user.first_name).toBe('hugo');
+          expect(user.token).toBe('toto');
+        }
       });
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/login');
     expect(req.request.method).toEqual('POST');
     req.flush(mockUser);
   });
-  // it('should verify the parameters of the logout call', () => {
-  //   authenticationService.logout();
-  //   const authSpy = spyOn(authenticationService, 'logout');
-  //   expect(authenticationService.logout).toHaveBeenCalled();
-  // });
+
+  it('should verify get the user\'s permissions ', () => {
+    const mockPerms = [
+      'add_userprofile',
+      'delete_team',
+      'change_teamtype'
+    ];
+
+    authenticationService.getUserPermissions(2).subscribe(
+      (perms) => {
+        expect(perms[0]).toBe('add_userprofile');
+        expect(perms[1]).toBe('delete_team');
+        expect(perms[2]).toBe('change_teamtype');
+      }
+    );
+
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/2/get_user_permissions');
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockPerms);
+  });
 });

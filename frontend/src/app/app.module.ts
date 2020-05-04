@@ -2,14 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SigninComponent } from './auth/signin/signin.component';
-import { SignupComponent } from './auth/signup/signup.component';
 import { AccountBlockedComponent } from './auth/account-blocked/account-blocked.component';
-import { WelcomeFirstConnectionComponent } from './auth/welcome-first-connection/welcome-first-connection.component';
 import { HeaderComponent } from './bars/header/header.component';
 import { FooterComponent } from './bars/footer/footer.component';
 import { HomeComponent } from './tabs/home/home.component';
@@ -57,9 +54,7 @@ import { JwtInterceptorService } from './services/jwt-interceptor/jwt-intercepto
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    WelcomeFirstConnectionComponent,
     SigninComponent,
-    SignupComponent,
     AccountBlockedComponent,
     HomeComponent,
     FourOhFourComponent,
