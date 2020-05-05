@@ -48,6 +48,7 @@ import { MatInputModule } from '@angular/material/input';
 import { appRoutingModule } from './app-routing.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { JwtInterceptorService } from './services/jwt-interceptor/jwt-interceptor.service';
+import { TaskTypeService } from './services/task-types/task-type.service';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,8 @@ import { JwtInterceptorService } from './services/jwt-interceptor/jwt-intercepto
     PermissionService,
     TaskService,
     EquipmentService,
-    UtilsService
+    UtilsService,
+    TaskTypeService
   ],
   bootstrap: [AppComponent]
 })
