@@ -1,15 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { Routes, RouterModule } from '@angular/router';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SigninComponent } from './auth/signin/signin.component';
-import { SignupComponent } from './auth/signup/signup.component';
 import { AccountBlockedComponent } from './auth/account-blocked/account-blocked.component';
-import { WelcomeFirstConnectionComponent } from './auth/welcome-first-connection/welcome-first-connection.component';
 import { HeaderComponent } from './bars/header/header.component';
 import { FooterComponent } from './bars/footer/footer.component';
 import { HomeComponent } from './tabs/home/home.component';
@@ -45,40 +42,19 @@ import { TaskService } from './services/tasks/task.service';
 import { UtilsService } from './services/utils/utils.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { appRoutingModule } from './app-routing.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-
-const appRoutes: Routes = [
-  {path: '', component: HomeComponent},
-  {path: 'sign-in', component: SigninComponent},
-  {path: 'sign-up', component: SignupComponent},
-  {path: 'account-blocked', component: AccountBlockedComponent},
-  {path: 'first-connection', component: WelcomeFirstConnectionComponent},
-  {path: 'first-connection/sign-up', component: SignupComponent},
-  {path: 'settings', component: SettingsComponent},
-  {path: 'infos', component: UserDetailsComponent},
-  {path: 'tasks/:id', component: TaskDetailsComponent},
-  {path: 'teams', component: TeamManagementComponent},
-  {path: 'teams/:id', component: TeamDetailsComponent},
-  {path: 'new-team', component: NewTeamComponent},
-  {path: 'team-types', component: TeamTypeManagementComponent},
-  {path: 'team-types/:id', component: TeamTypeDetailsComponent},
-  {path: 'new-team-type', component: NewTeamTypeComponent},
-  {path: 'users', component: UserManagementComponent},
-  {path: 'users/:id', component: UserDetailsComponent},
-  {path: 'new-user', component: NewUserComponent},
-  {path: 'equipments', component: EquipmentManagementComponent},
-  {path: 'equipments/:id', component: EquipmentDetailsComponent},
-  {path: '**', component: FourOhFourComponent}
-];
+import { JwtInterceptorService } from './services/jwt-interceptor/jwt-interceptor.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    WelcomeFirstConnectionComponent,
     SigninComponent,
-    SignupComponent,
     AccountBlockedComponent,
     HomeComponent,
     FourOhFourComponent,
@@ -109,13 +85,16 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(appRoutes),
     NgbModule,
     BrowserAnimationsModule,
-    NgbModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    appRoutingModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true},
     HttpClientModule,
     AuthenticationService,
     AuthGuardService,

@@ -64,7 +64,7 @@ export class TeamTypeService {
    * @param team_type_id the id of the teamType to be returned
    */
   getTeamType(team_type_id: number): Observable<TeamType> {
-    return this.httpClient.get<TeamType>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + team_type_id);
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/teamtypes/' + team_type_id + '/');
   }
 
   /**

@@ -105,7 +105,7 @@ describe('TeamTypeService', () => {
       expect(teamType.team_set[1]).toBe(2);
     });
 
-    const req2 = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/1');
+    const req2 = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/1/');
     expect(req2.request.method).toEqual('GET');
     req2.flush(mockTeamType);
   });
