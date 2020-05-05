@@ -29,13 +29,13 @@ describe('TaskTypeService', () => {
       {
         id: 0,
         name: 'TaskType 1',
-        fields: [1, 3],
+        fields_groups: [1, 3],
         tasks: [1, 2]
       },
       {
         id: 1,
         name: 'TaskType 2',
-        fields: [3, 4],
+        fields_groups: [3, 4],
         tasks: [3]
       }
     ];
@@ -50,13 +50,13 @@ describe('TaskTypeService', () => {
       {
         id: 0,
         name: 'TaskType 1',
-        fields: [1, 3],
+        fields_groups: [1, 3],
         tasks: [1, 2]
       },
       {
         id: 1,
         name: 'TaskType 2',
-        fields: [3, 4],
+        fields_groups: [3, 4],
         tasks: [3]
       }
     ];
@@ -69,9 +69,9 @@ describe('TaskTypeService', () => {
                           expect(taskTypes.length).toBe(2);
                           expect(taskTypes[0].id).toBe(0);
                           expect(taskTypes[0].name).toBe('TaskType 1');
-                          expect(taskTypes[0].fields.length).toBe(2);
-                          expect(taskTypes[0].fields[0]).toBe(1);
-                          expect(taskTypes[0].fields[1]).toBe(3);
+                          expect(taskTypes[0].fields_groups.length).toBe(2);
+                          expect(taskTypes[0].fields_groups[0]).toBe(1);
+                          expect(taskTypes[0].fields_groups[1]).toBe(3);
                           expect(taskTypes[0].tasks.length).toBe(2);
                           expect(taskTypes[0].tasks[0]).toBe(1);
                           expect(taskTypes[0].tasks[1]).toBe(2);
@@ -91,15 +91,15 @@ describe('TaskTypeService', () => {
     const mockTaskType = {
         id: 1,
         name: 'TaskType 1',
-        fields: [1, 3],
+        fields_groups: [1, 3],
         tasks: [1, 2]
       };
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasktypes/');
     service.getTaskType(1).subscribe((taskType: TaskType) => {
       expect(taskType.name).toBe('TaskType 1');
-      expect(taskType.fields.length).toBe(2);
-      expect(taskType.fields[0]).toBe(1);
-      expect(taskType.fields[1]).toBe(3);
+      expect(taskType.fields_groups.length).toBe(2);
+      expect(taskType.fields_groups[0]).toBe(1);
+      expect(taskType.fields_groups[1]).toBe(3);
       expect(taskType.tasks.length).toBe(2);
       expect(taskType.tasks[0]).toBe(1);
       expect(taskType.tasks[1]).toBe(2);
@@ -114,7 +114,7 @@ describe('TaskTypeService', () => {
     const mockTaskType = {
         id: 1,
         name: 'TaskType 2',
-        fields: [1],
+        fields_groups: [1],
         tasks: []
       };
 
@@ -123,8 +123,8 @@ describe('TaskTypeService', () => {
     service.createTaskType(newTaskType).subscribe(
       taskType => {
         expect(taskType.name).toBe('TaskType 2');
-        expect(taskType.fields.length).toBe(1);
-        expect(taskType.fields[0]).toBe(1);
+        expect(taskType.fields_groups.length).toBe(1);
+        expect(taskType.fields_groups[0]).toBe(1);
         expect(taskType.tasks).toEqual([]);
       }
     );
@@ -138,7 +138,7 @@ describe('TaskTypeService', () => {
     const mockTaskType = {
         id: 1,
         name: 'TaskType 2',
-        fields: [2],
+        fields_groups: [2],
         tasks: []
     };
 
@@ -147,8 +147,8 @@ describe('TaskTypeService', () => {
     service.updateTaskType(newTaskType).subscribe(
       taskType => {
         expect(taskType.name).toBe('TaskType 2');
-        expect(taskType.fields.length).toBe(1);
-        expect(taskType.fields[0]).toBe(2);
+        expect(taskType.fields_groups.length).toBe(1);
+        expect(taskType.fields_groups[0]).toBe(2);
         expect(taskType.tasks).toEqual([]);
       }
     );

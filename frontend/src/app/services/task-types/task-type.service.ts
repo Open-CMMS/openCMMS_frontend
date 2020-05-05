@@ -77,7 +77,7 @@ export class TaskTypeService {
         (response) => {
           this.task_types = [];
           response.forEach(element => {
-            const tt = new TaskType(element.id, element.name, element.fields, element.tasks);
+            const tt = new TaskType(element.id, element.name, element.fields_groups, element.tasks);
             this.task_types.push(tt);
           });
           this.emitTaskTypes();
