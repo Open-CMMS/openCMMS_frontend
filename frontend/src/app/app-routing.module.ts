@@ -19,6 +19,7 @@ import { NewTeamTypeComponent } from './tabs/team-types/new-team-type/new-team-t
 import { NewTaskComponent } from './tabs/tasks/new-task/new-task.component';
 import { NewUserComponent } from './tabs/users/new-user/new-user.component';
 import { NewEquipmentComponent } from './tabs/equipments/new-equipment/new-equipment.component';
+import { TasksListComponent } from './tabs/tasks/tasks-list/tasks-list.component';
 
 /**
  * List of the routes for the application and their associated permissions.
@@ -58,10 +59,24 @@ const appRoutes: Routes = [
     }
   },
   {
-    path: 'tasks/:id', component: TaskDetailsComponent,
+    path: 'tasks', component: TasksListComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: []
+    }
+  },
+  {
+    path: 'tasks-management', component: TasksListComponent,
     canActivate: [AuthGuardService],
     data: {
       requiredPerms: ['view_task']
+    }
+  },
+  {
+    path: 'tasks/:id', component: TaskDetailsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: []
     }
   },
   {

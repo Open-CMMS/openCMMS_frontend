@@ -14,10 +14,10 @@
             Tasks
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" routerLink="tasks/0">My Tasks</a>
+            <a class="dropdown-item" routerLink="tasks">My Tasks</a>
           <div *ngIf="onViewTasksPermission()">
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" routerLink="tasks/0" *ngIf="onViewTasksPermission()">Task management</a>
+            <a class="dropdown-item" routerLink="tasks-management" *ngIf="onViewTasksPermission()">Task management</a>
           </div>
           </div>
         </li>
