@@ -1,15 +1,120 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { faTrash, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
+import { TaskService } from 'src/app/services/tasks/task.service';
+import { Task } from 'src/app/models/task';
+import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-tasks-list',
   templateUrl: './tasks-list.component.html',
   styleUrls: ['./tasks-list.component.scss']
 })
-export class TasksListComponent implements OnInit {
+export class TasksListComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  // Local Variables
+  faTrash = faTrash;
+  faInfoCircle = faInfoCircle;
+  faPlus = faPlus;
+  tasks: Task[] = [];
+  tasksSubscription: Subscription;
 
+  /**
+   * Constructor for the TasksList component
+   * @param taskService the service used to handle tasks
+   * @param router the service used to handle redirections
+   * @param modalService the service to handle modal windows
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
+   */
+  constructor(private taskService: TaskService,
+              private router: Router,
+              private modalService: NgbModal,
+              private utilsService: UtilsService,
+              private authenticationService: AuthenticationService
+              ) { }
+
+  /**
+   * Function that initialize the component when loaded
+   */
   ngOnInit(): void {
+    this.tasksSubscription = this.taskService.taskSubject.subscribe(
+      (tasks: Task[]) => {
+        this.tasks = tasks;
+      }
+    );
+    this.taskService.emitTasks();
+  }
+
+  /**
+   * Function that redirect to a precide Task details page
+   * @param task The task to display
+   */
+  onViewTask(task: Task) {
+    this.router.navigate(['/tasks/', task.id]);
+  }
+
+  /**
+   * Function that opens the modal to confirm a deletion
+   * @param content the modal template to load
+   * @param task the task concerned by the deletion
+   */
+  openDelete(content, task: Task) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onDeleteTask(task);
+      }
+    });
+  }
+
+  /**
+   * Function to delete a team
+   * @param task the team to delete
+   */
+  onDeleteTask(task: Task) {
+    this.taskService.deleteTask(task.id).subscribe(
+      (resp) => {
+        this.taskService.getTasks();
+        // this.router.navigate(['/tasks']); // Modify to take the current link into account
+      }
+    );
+  }
+
+  /**
+   * Function that display the delete button on Teams considering user permissions
+   */
+  onDeleteTaskPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_task'
+      );
+  }
+
+  /**
+   * Function to navigate on the tasks creation page
+   */
+  onCreateTask() {
+    this.router.navigate(['/new-task']);
+  }
+
+  /**
+   * Function that display Create Team button in navbar when current User has the correct permission
+   */
+  onAddTeamPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'add_task'
+      );
+  }
+
+  /**
+   * Function called at the destruction of the component
+   */
+  ngOnDestroy() {
+    this.tasksSubscription.unsubscribe();
   }
 
 }
