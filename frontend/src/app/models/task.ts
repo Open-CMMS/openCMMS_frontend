@@ -2,8 +2,8 @@ export class Task {
     id: number;
     name: string;
     description: string;
-    end_date: Date;
-    time: Date;
+    end_date: string; // au format YYY-MM-DD
+    time: string; // au format X days, hh:mm:ss
     is_template: boolean;
     equipment: number;
     teams: number[];
@@ -29,8 +29,8 @@ export class Task {
         id: number,
         name: string,
         description: string,
-        end_date: Date,
-        time: Date,
+        end_date: string,
+        time: string,
         is_template: boolean,
         equipment: number,
         teams: number[],
