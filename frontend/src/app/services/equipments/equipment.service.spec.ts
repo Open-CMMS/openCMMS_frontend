@@ -187,6 +187,8 @@ describe('EquipmentService', () => {
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/1/');
 
     expect(req.request.method).toEqual('DELETE');
+
+    req.flush(mockEquipment);
   });
 
 
