@@ -3,10 +3,11 @@ import { faTrash, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import { UserProfile } from 'src/app/models/user-profile';
 
 @Component({
   selector: 'app-tasks-list',
@@ -20,7 +21,9 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   faPlus = faPlus;
   tasks: Task[] = [];
-  tasksSubscription: Subscription;
+  currentUser: UserProfile;
+  tasksSubscription: Subscription = null;
+  currentUserSubscription: Subscription = null;
 
   /**
    * Constructor for the TasksList component
@@ -34,19 +37,38 @@ export class TasksListComponent implements OnInit, OnDestroy {
               private router: Router,
               private modalService: NgbModal,
               private utilsService: UtilsService,
-              private authenticationService: AuthenticationService
-              ) { }
+              private authenticationService: AuthenticationService,
+              private route: ActivatedRoute) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
-    this.tasksSubscription = this.taskService.taskSubject.subscribe(
-      (tasks: Task[]) => {
-        this.tasks = tasks;
+    // Checking the route
+    this.route.url.subscribe(
+      (route) => {
+        if (route[0].path === 'tasks') { // Users tasks display
+          this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
+            (currentUser) => {
+              this.currentUser = currentUser;
+            }
+          );
+          this.authenticationService.emitCurrentUser();
+          this.taskService.getUserTasks(this.currentUser.id).subscribe(
+            (tasks: Task[]) => {
+              this.tasks = tasks;
+            }
+          );
+        } else { // path equals tasks-management: all the tasks are displayed
+          this.tasksSubscription = this.taskService.taskSubject.subscribe(
+            (tasks: Task[]) => {
+              this.tasks = tasks;
+            }
+          );
+          this.taskService.emitTasks();
+        }
       }
     );
-    this.taskService.emitTasks();
   }
 
   /**
@@ -114,7 +136,12 @@ export class TasksListComponent implements OnInit, OnDestroy {
    * Function called at the destruction of the component
    */
   ngOnDestroy() {
-    this.tasksSubscription.unsubscribe();
+    if (this.tasksSubscription) {
+      this.tasksSubscription.unsubscribe();
+    }
+    if (this.currentUserSubscription) {
+      this.currentUserSubscription.unsubscribe();
+    }
   }
 
 }

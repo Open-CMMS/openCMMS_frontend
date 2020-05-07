@@ -149,4 +149,11 @@ export class TaskService {
     }
     return end_date;
   }
+  /**
+   * Function that return the set of task of a specific user
+   * @param userId the id of the user
+   */
+  getUserTasks(userId: number) {
+    return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/usertasklist/' + userId);
+  }
 }
