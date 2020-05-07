@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-equipment-type-management',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EquipmentTypeManagementComponent implements OnInit {
 
-  constructor() { }
+  faPlus = faPlus;
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
+  }
+
+  /**
+   * Function that navigates to the create equipment type component
+   */
+  onCreateEquipmentType() {
+    this.router.navigate(['/new-equipment-type']);
   }
 
 }

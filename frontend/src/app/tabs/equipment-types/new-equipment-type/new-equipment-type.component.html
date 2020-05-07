@@ -1,1 +1,24 @@
-<p>new-equipment-type works!</p>
+<div class="container-fluid col-10 mt-3 justify-content-center">
+    <div class="d-flex">
+      <h2 class="font-weight-bold">Create a new equipment type</h2>
+    </div>
+  
+    <form [formGroup]="equipmentTypeForm" (ngSubmit)="onSubmit()" >
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class='form-control' formControlName="name">
+      </div>
+      <div class="form-group">
+        <label for="teams">Equipments</label>
+        <ng-multiselect-dropdown
+          [settings]="dropdownEquipmentsSettings"
+          [data]="equipmentsList"
+          formControlName="equipments"
+          name="equipments"
+        >
+        </ng-multiselect-dropdown>
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Save</button>
+    </form>
+  </div>
+  
