@@ -65,6 +65,7 @@ export class NewTeamTypeComponent implements OnInit {
       this.teams = teams;
       this.initTeamsSelect();
     });
+    this.teamService.emitTeams();
     this.initForm();
   }
 
@@ -112,8 +113,8 @@ export class NewTeamTypeComponent implements OnInit {
   initForm() {
     this.teamTypeForm = this.formBuilder.group({
       name: ['', Validators.required],
-      teams: [''],
-      permissions: ['', Validators.required]
+      permissions: ['', Validators.required],
+      teams: ['']
     });
   }
 
@@ -134,9 +135,11 @@ export class NewTeamTypeComponent implements OnInit {
       permissions.push(item.id);
     });
     const teams = [];
-    formValue[teamsStr].forEach(item => {
-      teams.push(item.id);
-    });
+    if (formValue[teamsStr]) {
+      formValue[teamsStr].forEach(item => {
+        teams.push(item.id);
+      });
+    }
     this.teamTypeService.createTeamType(new TeamType(id, name, permissions, teams)).subscribe(
       team_type => {
         this.teamTypeService.team_types.push(team_type);
