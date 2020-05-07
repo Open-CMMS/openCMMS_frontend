@@ -11,6 +11,8 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { Equipment } from 'src/app/models/equipment';
+import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 
 @Component({
   selector: 'app-task-details',
@@ -28,6 +30,8 @@ export class TaskDetailsComponent implements OnInit {
 
   // Local variables
   task: Task = null;
+  equipmentName = '';
+  taskDuration = '';
   teamsTask: Team[] = [];
   loaded = false;
   teams: Team[] = [];
@@ -42,6 +46,7 @@ export class TaskDetailsComponent implements OnInit {
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,
               private teamService: TeamService,
+              private equipmentService: EquipmentService,
               private router: Router,
               private modalService: NgbModal,
               private utilsService: UtilsService,
@@ -57,6 +62,13 @@ export class TaskDetailsComponent implements OnInit {
     this.taskService.getTask(id).subscribe(
       (task: Task) => {
         this.task = task;
+        if (this.task.equipment) {
+          this.equipmentService.getEquipment(this.task.equipment).subscribe(
+            (equipment: Equipment) => {
+              this.equipmentName = equipment.name;
+            }
+          );
+        }
         this.teamsTask = [];
         this.task.teams.forEach(teamId => {
           this.teamService.getTeam(teamId).subscribe((team: Team) => {
@@ -64,6 +76,7 @@ export class TaskDetailsComponent implements OnInit {
           });
         });
         this.loaded = true;
+        this.formatDurationString();
       }
     );
 
@@ -74,6 +87,36 @@ export class TaskDetailsComponent implements OnInit {
     );
     this.teamService.emitTeams();
     this.initForm();
+  }
+
+  formatDurationString() {
+    const days_time_separator = ' ';
+    const hours_minutes_separator = ':';
+    const init_str = this.task.time;
+    let days: string;
+    let time: string;
+    let right_part: string;
+    let left_part: string;
+    let days_str: string;
+    [left_part, right_part] = init_str.split(days_time_separator);
+    if (right_part) {
+      days = left_part;
+      time = right_part;
+    } else {
+      if (left_part.indexOf(hours_minutes_separator) === -1) {
+        days = left_part;
+      } else {
+        time = left_part;
+      }
+    }
+    if (days) {
+      const plurel = parseInt(days, 10) > 1 ? 's' : '';
+      days_str = parseInt(days, 10) > 0 ? days + 'day' + plurel + ', ' : '';
+    } else {
+      days_str = '';
+    }
+
+    this.taskDuration = days_str + time;
   }
 
   /**

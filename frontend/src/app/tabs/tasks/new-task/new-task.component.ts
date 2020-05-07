@@ -119,11 +119,11 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
-      description: [''],
+      description: ['', Validators.required],
       end_date: [null],
       time: ['', Validators.pattern(regex_time)],
       is_template: [false],
-      equipment: ['', Validators.required],
+      equipment: [''],
       teams: ['']
     });
   }
@@ -227,11 +227,13 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     const formValues = this.createForm.value;
 
     const teams = [];
-    formValues.teams.forEach(item => {
-      teams.push(item.id);
-    });
+    if (formValues.teams) {
+      formValues.teams.forEach(item => {
+        teams.push(item.id);
+      });
+    }
 
-    const equipment = formValues.equipment[0].id;
+    const equipment = formValues.equipment ? formValues.equipment[0].id : null;
 
     const end_date = this.normaliseEndDateValue(formValues.end_date);
 
