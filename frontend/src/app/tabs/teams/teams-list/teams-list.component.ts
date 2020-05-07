@@ -5,6 +5,8 @@ import { TeamService } from 'src/app/services/teams/team.service';
 import { Router } from '@angular/router';
 import { faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-teams-list',
@@ -26,8 +28,14 @@ export class TeamsListComponent implements OnInit, OnDestroy {
    * @param teamService the service to communicate with backend on Team objects
    * @param router the service used to handle redirections
    * @param modalService the service to handle modal windows
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
-  constructor(private teamService: TeamService, private router: Router, private modalService: NgbModal) { }
+  constructor(private teamService: TeamService,
+              private router: Router,
+              private modalService: NgbModal,
+              private utilsService: UtilsService,
+              private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initialize the component when loaded
@@ -73,6 +81,16 @@ export class TeamsListComponent implements OnInit, OnDestroy {
         this.router.navigate(['/teams']);
       }
     );
+  }
+
+  /**
+   * Function that display the delete button on Teams considering user permissions
+   */
+  onDeleteTeamPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_team'
+      );
   }
 
   /**

@@ -72,8 +72,8 @@
             <h2 class="font-weight-bold" *ngIf="loading">Team {{ team.name }}</h2>
         </div>
         <div class="d-flex btn-group" role="group">
-            <button class="btn btn-secondary" (click)="openModify(contentModify)"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
-            <button class="btn btn-danger" (click)="openDelete(contentDelete)"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
+            <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeTeamPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
+            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteTeamPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
         </div>
     </div>
     <div class="card mt-5">
@@ -95,7 +95,7 @@
                 <h3 class="font-weight-bold"> Users : </h3>
             </div>
             <div class="d-flex">
-                <button class="d-flex btn btn-secondary" (click)="openAddUser(contentAddUser)"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
+                <button class="d-flex btn btn-secondary" (click)="openAddUser(contentAddUser)" *ngIf="onChangeTeamPermission()"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
             </div>
         </div>
         <div class="card-body d-flex row">
@@ -105,8 +105,8 @@
                     *ngFor="let user of teamUsers; let i = index"
                     >
                     <div class="container-fluid row justify-content-between">
-                        <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewUser(user)">{{ user.username }}</h5>
-                        <button class="btn btn-danger" (click)="onRemoveUserFromTeam(user)"><fa-icon [icon]="faMinusSquare" size="2x"></fa-icon></button>
+                        <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewUser(user)">{{user.first_name}} {{user.last_name}} ({{ user.username }})</h5>
+                        <button class="btn btn-danger" (click)="onRemoveUserFromTeam(user)" *ngIf="onChangeTeamPermission()"><fa-icon [icon]="faMinusSquare" size="2x"></fa-icon></button>
                     </div>
                 </li>
             </ul>

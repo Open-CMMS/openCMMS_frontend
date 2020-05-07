@@ -5,6 +5,9 @@ import { FormBuilder, FormGroup} from '@angular/forms';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-user-details',
@@ -15,7 +18,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 /**
  * Class for the component in charge of showing user details
  */
-export class UserDetailsComponent implements OnInit {
+export class UserDetailsComponent implements OnInit, OnDestroy {
   // Font awesome logos
   faPencilAlt = faPencilAlt;
   faTrash = faTrash;
@@ -29,7 +32,8 @@ export class UserDetailsComponent implements OnInit {
   email: string;
   user: UserProfile = null;
   userUpdateForm: FormGroup;
-
+  currentUserSubscription: Subscription;
+  currentUser: UserProfile;
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -38,20 +42,34 @@ export class UserDetailsComponent implements OnInit {
    * @param route the service used to analyse the current URL
    * @param formBuilder the service to handle forms
    * @param modalService the service used to handle modal windows
+   * @param authenticationService the auth service
+   * @param utilsService the service used for useful functions
    */
   constructor(private router: Router,
               private userService: UserService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal,
+              private authenticationService: AuthenticationService,
+              private utilsService: UtilsService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
     let id: number;
+    this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
+      (currentUser) => {
+        this.currentUser = currentUser;
+      }
+    );
+    this.authenticationService.emitCurrentUser();
     this.route.params.subscribe(params => {
-      id = +params.id;
+      if (params.id) {
+        id = +params.id;
+      } else if (this.currentUser !== null) {
+        id = this.currentUser.id;
+      }
     });
     this.userService.getUser(id)
       .subscribe(
@@ -151,6 +169,30 @@ export class UserDetailsComponent implements OnInit {
       firstName: this.user.first_name,
       email: this.user.email
     });
+  }
+
+  /**
+   * Function that display Modify button in navbar when current User has the correct permission
+   */
+  onChangeUserPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'change_userprofile'
+      );
+  }
+
+  /**
+   * Function that display Delete button in navbar when current User has the correct permission
+   */
+  onDeleteUserPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_userprofile'
+      );
+  }
+
+  ngOnDestroy() {
+    this.currentUserSubscription.unsubscribe();
   }
 
 }

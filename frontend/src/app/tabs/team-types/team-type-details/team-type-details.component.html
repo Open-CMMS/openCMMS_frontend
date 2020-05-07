@@ -81,13 +81,16 @@
                 <h3 class="font-weight-bold"> Teams : </h3>
             </div>
         </div>
-        <div class="row">
-            <ul class="list-team">
+        <div class="card-body d-flex row">
+            <ul class="col-12 list-group">
                 <li
-                    class="container-fluid list-permission-item font-weight-bold "
+                    class="container-fluid list-group-item font-weight-bold "
                     *ngFor="let team of teams; let i = index">
                     <div class="container-fluid row justify-content-between">
-                        <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
+                        <h5 (click)="onViewTeam(team)">{{ team.name }}</h5>
+                        <div class="d-flex">
+                            <button class="btn btn-info" (click)="onViewTeam(team)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                        </div>
                     </div>
                 </li>
             </ul>

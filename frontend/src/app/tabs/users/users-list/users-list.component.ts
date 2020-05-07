@@ -36,6 +36,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
    * on the backend database and saving them in a local variable.
    */
   ngOnInit(): void {
+    // this.userService.getUsers();
     this.usersSubscription = this.userService.usersSubject.subscribe(
       (us: UserProfile[]) => {
         this.users = us;
