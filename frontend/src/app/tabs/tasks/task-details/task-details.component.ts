@@ -8,6 +8,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-task-details',
@@ -25,6 +26,9 @@ export class TaskDetailsComponent implements OnInit {
   task: Task = null;
   teamsTask: Team[] = [];
   loaded = false;
+
+  // Forms
+  updateForm: FormGroup;
 
 
   constructor(private taskService: TaskService,
@@ -44,7 +48,6 @@ export class TaskDetailsComponent implements OnInit {
     this.taskService.getTask(id).subscribe(
       (task: Task) => {
         this.task = task;
-        console.log(this.task);
         this.teamsTask = [];
         this.task.teams.forEach(teamId => {
           this.teamService.getTeam(teamId).subscribe((team: Team) => {
