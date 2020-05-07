@@ -5,6 +5,7 @@ import { TeamType } from 'src/app/models/team-type';
 import { Router } from '@angular/router';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-team-types-list',
   templateUrl: './team-types-list.component.html',
@@ -26,7 +27,9 @@ export class TeamTypesListComponent implements OnInit, OnDestroy {
    * @param teamTypeService the service to communicate with backend on TeamType objects
    * @param router the service used to handle redirections
    */
-  constructor(private teamTypeService: TeamTypeService, private router: Router) { }
+  constructor(private teamTypeService: TeamTypeService,
+              private router: Router,
+              private modalService: NgbModal) { }
 
   /**
    * Function that initializes the component when loaded
@@ -50,11 +53,24 @@ export class TeamTypesListComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function that opens the delete modal
+   * @param contentDelete the content to put in the modal
+   * @param i the index of the teamtype to delete
+   */
+  openDelete(contentDelete, i: number) {
+    this.modalService.open(contentDelete, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onDeleteTeamType(i);
+      }
+    });
+  }
+
+  /**
    * Function that navigates to delete a TeamType
    * @param i the index of the teamType in the list
    */
   onDeleteTeamType(i: number) {
-    const team_type_id = this.teamTypes[i].getId();
+    const team_type_id = this.teamTypes[i].id;
     this.teamTypeService.deleteTeamType(team_type_id);
   }
 

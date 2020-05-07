@@ -6,9 +6,10 @@ import { Permission } from '../../../models/permission';
 import { Team } from '../../../models/team';
 import { PermissionService } from 'src/app/services/permissions/permission.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-user-details',
@@ -16,6 +17,8 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
   styleUrls: ['./team-type-details.component.scss']
 })
 export class TeamTypeDetailsComponent implements OnInit {
+
+  faInfoCircle = faInfoCircle;
 
   // local vaiables
   id: number;
@@ -71,6 +74,7 @@ export class TeamTypeDetailsComponent implements OnInit {
       this.all_teams = teams;
       this.initTeamsSelect();
     });
+    this.teamService.emitTeams();
     this.initForm();
   }
 
