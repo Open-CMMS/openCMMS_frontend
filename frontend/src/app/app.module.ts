@@ -42,9 +42,6 @@ import { TaskService } from './services/tasks/task.service';
 import { UtilsService } from './services/utils/utils.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
 import { appRoutingModule } from './app-routing.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { JwtInterceptorService } from './services/jwt-interceptor/jwt-interceptor.service';
@@ -88,9 +85,6 @@ import { TaskTypeService } from './services/task-types/task-type.service';
     HttpClientModule,
     NgbModule,
     BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
     appRoutingModule,
     NgMultiSelectDropDownModule.forRoot()
   ],

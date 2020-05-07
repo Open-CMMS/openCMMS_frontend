@@ -1,1 +1,73 @@
-<p>new-task works!</p>
+<div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom:100px">
+    <div class="d-flex">
+        <h2 class="font-weight-bold">Create a new task</h2>
+    </div>
+    <button class="btn btn-warning" (click)="testForm()" >Test form</button>
+    <form [formGroup]="createForm" (ngSubmit)="onCreateTask()">
+        <div class="form-group">
+            <label for="name">Task Name </label>
+            <input type="text" id="name" class="form-control" formControlName="name">
+        </div>
+        <div class="form-group">
+            <label for="description">Task Description </label>
+            <input type="text" id="description" class="form-control" formControlName="description">
+        </div>
+        <div class="form-group">
+            <label for="teams">Teams</label>
+            <ng-multiselect-dropdown
+              [settings]="dropdownTeamsSettings"
+              [data]="teamsList"
+              formControlName="teams"
+              name="teams"
+            >
+            </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group">
+          <label for="equipment">Equipment</label>
+          <ng-multiselect-dropdown
+            [settings]="dropdownEquipmentsSettings"
+            [data]="equipmentList"
+            formControlName="equipment"
+            name="equipment"
+          >
+          </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group">
+            <label for="end_date">Task end date </label>
+            <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                        name="end_date" ngbDatepicker #datePicker="ngbDatepicker" formControlName="end_date">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row col-4">
+            <label for="time">Task duration </label>
+            <div class="input-group">
+                <input type="text" name="time" id="time" class="form-control" formControlName="time">
+                <div class="input-group-append">
+                    <button class="btn btn-info" ngbPopover="Example : 10d 3h 45m"
+                                                placement="right"
+                                                triggers="mouseenter:mouseleave" 
+                                                popoverTitle="Info"
+                                                [closeDelay]="2000">
+                <fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                </div>
+            </div>
+            <div *ngIf="createForm.controls.time.status == 'INVALID'" class="alert alert-danger">
+                Enter a duration with the correct pattern
+            </div>
+        </div>
+        <div class="form-group">
+            <label ngbButtonLabel>
+              <input type="checkbox" formControlName="is_template" ngbButton> Task Template
+            </label>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create task</button>
+    </form>
+    <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">
+        <p class="font-weight-bold">Error when creating the task :</p>
+        <p>This task name is probably invalid !</p>
+    </div>
+</div>

@@ -112,6 +112,7 @@ export class NewTeamTypeComponent implements OnInit {
   initForm() {
     this.teamTypeForm = this.formBuilder.group({
       name: ['', Validators.required],
+      teams: [''],
       permissions: ['', Validators.required]
     });
   }
