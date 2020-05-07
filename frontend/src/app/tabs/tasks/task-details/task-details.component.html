@@ -66,6 +66,12 @@
         </div>
         <div class="row">
             <div class="col-12">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Description</span>
+                    </div>
+                    <textarea class="form-control" aria-label="Description"> {{ task.description }}</textarea>
+                </div>
                 <div class="px-2 py-1">
                     <p><span class="font-weight-bold">Task Description :</span> {{ task.description }} <p>
                     <p><span class="font-weight-bold">End date :</span> {{ task.end_date }} </p>
