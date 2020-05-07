@@ -11,6 +11,30 @@
     </div>
 </ng-template>
 
+<ng-template #contentAddTeam let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-addUser">Add a team</h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="addTeamForm">
+            <div class="form-group">
+                <label for="teams">Teams</label>
+                <ng-multiselect-dropdown
+                    [settings]="dropdownTeamsSettings"
+                    [data]="teamsDiff"
+                    formControlName="teams"
+                    name="teams"
+                >
+                </ng-multiselect-dropdown>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Add</button>
+    </div>
+</ng-template>
+
 <ng-template #contentModify let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-modify">Modifiy Task</h4>
@@ -55,11 +79,9 @@
             <div class="d-flex">
                 <h3 class="font-weight-bold"> Teams : </h3>
             </div>
-            <!--
-                <div class="d-flex">
-                    <button class="d-flex btn btn-secondary" (click)="openAddUser(contentAddUser)" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
-                </div>
-            -->
+            <div class="d-flex">
+                <button class="d-flex btn btn-secondary" (click)="openAddTeam(contentAddTeam)" *ngIf="onChangeTaskPermission() && onViewTeamsPermission()"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
+            </div>
         </div>
         <div class="card-body d-flex row">
             <ul class="col-12 list-group">

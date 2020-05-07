@@ -8,7 +8,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FormGroup } from '@angular/forms';
+import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
   selector: 'app-task-details',
@@ -21,14 +23,19 @@ import { FormGroup } from '@angular/forms';
 export class TaskDetailsComponent implements OnInit {
   // Icons
   faTrash = faTrash;
+  faPlusSquare = faPlusSquare;
 
   // Local variables
   task: Task = null;
   teamsTask: Team[] = [];
   loaded = false;
+  teams: Team[] = [];
+  teamsDiff = [];
 
   // Forms
   updateForm: FormGroup;
+  addTeamForm: FormGroup;
+  dropdownTeamsSettings: IDropdownSettings;
 
 
   constructor(private taskService: TaskService,
@@ -37,7 +44,8 @@ export class TaskDetailsComponent implements OnInit {
               private router: Router,
               private modalService: NgbModal,
               private utilsService: UtilsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
     let id: number;
@@ -57,6 +65,13 @@ export class TaskDetailsComponent implements OnInit {
         this.loaded = true;
       }
     );
+
+    this.teamService.teamSubject.subscribe(
+      (teams) => {
+        this.teams = teams;
+      }
+    );
+    this.teamService.emitTeams();
   }
 
   /**
@@ -115,14 +130,115 @@ export class TaskDetailsComponent implements OnInit {
       );
   }
 
-  // /**
-  //  * Function that display the modify button on Task considering user permissions
-  //  */
-  // onChangeTaskPermission() {
-  //   return this.utilsService.isAUserPermission(
-  //     this.authenticationService.getCurrentUserPermissions(),
-  //     'change_task'
-  //     );
-  // }
+  /**
+   * Function that display the modify button on Task considering user permissions
+   */
+  onChangeTaskPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'change_task'
+      );
+  }
+
+  /**
+   * Function that is triggered to load the modal template for user addition
+   * @param content the modal to open
+   */
+  openAddTeam(content) {
+    this.initTeamsSelect();
+    this.modalService.open(content, {ariaLabelledBy: 'modal-addTeam'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onAddTeam();
+      }
+    },
+    (error) => {});
+  }
+
+  /**
+   * Function that initialize the multiselect for Teams
+   */
+  initTeamsSelect() {
+    this.teamsDiff = [];
+    let found = false;
+    this.teams.forEach(team => {
+          found = false;
+          this.teamsTask.forEach(
+          (teamTask) => {
+            if (team.id === teamTask.id) {
+              found = true;
+            }
+          }
+          );
+          if (!found) {
+            this.teamsDiff.push({id: team.id.toString(), value: team.name});
+          }
+    });
+    this.dropdownTeamsSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'value',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 4,
+      allowSearchFilter: true
+    };
+  }
+
+  /**
+   * Function that add a user in a team
+   */
+  onAddTeam() {
+    const formValues = this.addTeamForm.value;
+    const usersToAdd = [];
+    formValues.users.forEach(item => {
+      usersToAdd.push(item.id);
+    });
+    // const tempTeam = JSON.parse(JSON.stringify(this.team));
+    // usersToAdd.forEach(item => {
+    //   tempTeam.user_set.push(item);
+    // });
+    // this.teamService.updateTeam(this.team.id, tempTeam).subscribe(teamUpdated => {
+    //   this.team = teamUpdated;
+    //   this.teamTypeService.getTeamType(this.team.team_type)
+    //                                       .subscribe(
+    //                                         teamType => {
+    //                                           this.teamType = teamType;
+    //                                           this.ngOnInit();
+    //                                           this.initForm();
+    //                                         }
+    //                                       );
+    //   this.updateError = false;
+    //   this.teamService.getTeams();
+    // },
+    // (error) => {
+    //   this.updateError = true;
+    // });
+  }
+
+  /**
+   * Function that initializes the different forms used in the component
+   */
+  initForm() {
+    this.addTeamForm = this.formBuilder.group({
+      teams: ''
+    });
+  }
+
+  /**
+   * Function that add a user in a team
+   */
+  onViewTeamsPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'view_team'
+      );
+  }
+
+  /**
+   * Function that add a user in a team
+   */
+  onRemoveTeamFromTask(team: Task) {
+    // use the PUT on addTeamToTask
+  }
 
 }
