@@ -24,6 +24,7 @@ export class TaskDetailsComponent implements OnInit {
   // Icons
   faTrash = faTrash;
   faPlusSquare = faPlusSquare;
+  faMinusSquare = faMinusSquare;
 
   // Local variables
   task: Task = null;
@@ -72,6 +73,7 @@ export class TaskDetailsComponent implements OnInit {
       }
     );
     this.teamService.emitTeams();
+    this.initForm();
   }
 
   /**
@@ -189,30 +191,18 @@ export class TaskDetailsComponent implements OnInit {
    */
   onAddTeam() {
     const formValues = this.addTeamForm.value;
-    const usersToAdd = [];
-    formValues.users.forEach(item => {
-      usersToAdd.push(item.id);
+    const teamsToAdd = [];
+    formValues.teams.forEach(team => {
+      teamsToAdd.push(team.id);
     });
-    // const tempTeam = JSON.parse(JSON.stringify(this.team));
-    // usersToAdd.forEach(item => {
-    //   tempTeam.user_set.push(item);
-    // });
-    // this.teamService.updateTeam(this.team.id, tempTeam).subscribe(teamUpdated => {
-    //   this.team = teamUpdated;
-    //   this.teamTypeService.getTeamType(this.team.team_type)
-    //                                       .subscribe(
-    //                                         teamType => {
-    //                                           this.teamType = teamType;
-    //                                           this.ngOnInit();
-    //                                           this.initForm();
-    //                                         }
-    //                                       );
-    //   this.updateError = false;
-    //   this.teamService.getTeams();
-    // },
-    // (error) => {
-    //   this.updateError = true;
-    // });
+    teamsToAdd.forEach((teamId) => {
+      this.taskService.addTeamToTask(this.task.id, teamId).subscribe(
+        (res) => {
+          this.taskService.getTasks();
+          this.ngOnInit();
+        }
+      );
+    });
   }
 
   /**
@@ -238,7 +228,12 @@ export class TaskDetailsComponent implements OnInit {
    * Function that add a user in a team
    */
   onRemoveTeamFromTask(team: Task) {
-    // use the PUT on addTeamToTask
+    this.taskService.removeTeamFromTask(this.task.id, team.id).subscribe(
+      (res) => {
+        this.taskService.getTasks();
+        this.ngOnInit();
+      }
+    );
   }
 
 }

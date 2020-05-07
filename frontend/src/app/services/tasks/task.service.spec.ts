@@ -213,4 +213,20 @@ describe('TaskService', () => {
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/1/');
     expect(req.request.method).toEqual('DELETE');
   });
+
+  it('should verify the addition of  team to a task', () => {
+    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
+    service.addTeamToTask(1, 1).subscribe();
+
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/addteamtotask');
+    expect(req.request.method).toEqual('POST');
+  });
+
+  it('should verify the removal of a team from a task', () => {
+    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
+    service.removeTeamFromTask(1, 1).subscribe();
+
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/addteamtotask');
+    expect(req.request.method).toEqual('PUT');
+  });
 });

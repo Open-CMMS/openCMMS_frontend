@@ -101,4 +101,42 @@ export class TaskService {
   deleteTask(id: number) {
     return this.httpClient.delete<Task>(this.BASE_URL_API + '/api/maintenancemanagement/tasks/' + id + '/');
   }
+
+  /**
+   * Function that add a team to a task
+   * @param idTask  the id of the task to update
+   * @param idTeam  the id of the team to add
+   */
+  addTeamToTask(idTask: number, idTeam: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json'
+      })
+    };
+
+    const reqBody = {
+      id_task: idTask.toString(),
+      id_team: idTeam.toString()
+    };
+    return this.httpClient.post<any>(this.BASE_URL_API + '/api/maintenancemanagement/addteamtotask', reqBody, httpOptions);
+  }
+
+  /**
+   * Function that remove a team from a task
+   * @param idTask  the id of the task to update
+   * @param idTeam  the id of the teamù to remove
+   */
+  removeTeamFromTask(idTask: number, idTeam: number) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json'
+      })
+    };
+
+    const reqBody = {
+      id_task: idTask.toString(),
+      id_team: idTeam.toString()
+    };
+    return this.httpClient.put<any>(this.BASE_URL_API + '/api/maintenancemanagement/addteamtotask', reqBody, httpOptions);
+  }
 }
