@@ -4,15 +4,16 @@ import { TaskService } from 'src/app/services/tasks/task.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Team } from 'src/app/models/team';
 import { TeamService } from 'src/app/services/teams/team.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPen, faCalendar, faSave } from '@fortawesome/free-solid-svg-icons';
 import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Equipment } from 'src/app/models/equipment';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
+import { NewTaskComponent } from '../new-task/new-task.component';
 
 @Component({
   selector: 'app-task-details',
@@ -27,15 +28,23 @@ export class TaskDetailsComponent implements OnInit {
   faTrash = faTrash;
   faPlusSquare = faPlusSquare;
   faMinusSquare = faMinusSquare;
+  faPen = faPen;
+  faCalendar = faCalendar;
+  faSave = faSave;
 
   // Local variables
   task: Task = null;
+  description: string;
   equipmentName = '';
   taskDuration = '';
   teamsTask: Team[] = [];
   loaded = false;
   teams: Team[] = [];
   teamsDiff = [];
+  date: NgbDateStruct;
+
+  descriptionInputEnabled = false;
+  dateInputEnabled = false;
 
   // Forms
   updateForm: FormGroup;
@@ -62,6 +71,7 @@ export class TaskDetailsComponent implements OnInit {
     this.taskService.getTask(id).subscribe(
       (task: Task) => {
         this.task = task;
+        this.description = task.description;
         if (this.task.equipment) {
           this.equipmentService.getEquipment(this.task.equipment).subscribe(
             (equipment: Equipment) => {
@@ -77,6 +87,7 @@ export class TaskDetailsComponent implements OnInit {
         });
         this.loaded = true;
         this.formatDurationString();
+        this.initDateInput();
       }
     );
 
@@ -85,8 +96,50 @@ export class TaskDetailsComponent implements OnInit {
         this.teams = teams;
       }
     );
+    this.equipmentService.emitEquipments();
     this.teamService.emitTeams();
     this.initForm();
+  }
+
+  enableInput(attribute: string) {
+    switch (attribute) {
+      case 'description':
+        this.descriptionInputEnabled = true;
+        break;
+      case 'end_date':
+        this.dateInputEnabled = true;
+        break;
+      default:
+        break;
+    }
+  }
+
+  saveInput(attribute: string) {
+    switch (attribute) {
+      case 'description':
+        this.task.description = this.description;
+        this.descriptionInputEnabled = false;
+        break;
+      case 'end_date':
+        const date_str = this.taskService.normaliseEndDateValue(this.date);
+        this.task.end_date = date_str;
+        this.dateInputEnabled = false;
+        break;
+      default:
+        break;
+    }
+    this.taskService.updateTask(this.task.id, this.task).subscribe(
+      (response) => {
+        console.log('updated');
+      }
+    );
+  }
+
+  initDateInput() {
+    const tab_date = this.task.end_date.split('-');
+    this.date = {year: parseInt(tab_date[0], 10),
+                month: parseInt(tab_date[1], 10),
+                day: parseInt(tab_date[2], 10)};
   }
 
   formatDurationString() {

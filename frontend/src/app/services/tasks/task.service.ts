@@ -139,4 +139,14 @@ export class TaskService {
     };
     return this.httpClient.put<any>(this.BASE_URL_API + '/api/maintenancemanagement/addteamtotask', reqBody, httpOptions);
   }
+
+  normaliseEndDateValue(formEndDateInput: any): string {
+    let end_date: string;
+    if (formEndDateInput) {
+      end_date = formEndDateInput.year + '-' + formEndDateInput.month + '-' + formEndDateInput.day;
+    } else {
+      end_date = null;
+    }
+    return end_date;
+  }
 }

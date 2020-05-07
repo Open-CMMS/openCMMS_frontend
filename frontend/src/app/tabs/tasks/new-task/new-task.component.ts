@@ -177,16 +177,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     return days.trim() + ' days, ' + hours.trim() + ':' + minutes.trim() + ':0';
   }
 
-  normaliseEndDateValue(formEndDateInput: any): string {
-    let end_date: string;
-    if (formEndDateInput) {
-      end_date = formEndDateInput.year + '-' + formEndDateInput.month + '-' + formEndDateInput.day;
-    } else {
-      end_date = null;
-    }
-    return end_date;
-  }
-
   testForm() {
     const formValues = this.createForm.value;
 
@@ -197,7 +187,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
     const equipment = formValues.equipment[0].id;
 
-    const end_date = this.normaliseEndDateValue(formValues.end_date);
+    const end_date = this.taskService.normaliseEndDateValue(formValues.end_date);
 
     const time = this.normaliseDurationValue(formValues.time);
 
@@ -235,7 +225,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
     const equipment = formValues.equipment ? formValues.equipment[0].id : null;
 
-    const end_date = this.normaliseEndDateValue(formValues.end_date);
+    const end_date = this.taskService.normaliseEndDateValue(formValues.end_date);
 
     const time = this.normaliseDurationValue(formValues.time);
 
