@@ -1,5 +1,5 @@
 <nav class="navbar fixed top navbar-expand-md navbar-dark bg-dark" *ngIf="loaded">
-    <a class="navbar-brand" routerLink>OPENCMMS</a>
+    <a class="navbar-brand" routerLink="tasks">OPENCMMS</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -7,17 +7,15 @@
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
       <ul class="navbar-nav mr-auto">
         <li routerLinkActive="active">
-          <a class="nav-link" routerLink="">Home</a>
+          <a class="nav-link" routerLink="tasks">My Tasks</a>
         </li>
-        <li class="nav-item dropdown" routerLinkActive="active">
+        <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onViewTasksPermission()">
           <a class="nav-link dropdown-toggle" href="#" id="userDetails" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Tasks
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" routerLink="tasks">My Tasks</a>
           <div *ngIf="onViewTasksPermission()">
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" routerLink="tasks-management" *ngIf="onViewTasksPermission()">Task management</a>
+            <a class="dropdown-item" routerLink="tasks-management">Task management</a>
           </div>
           </div>
         </li>

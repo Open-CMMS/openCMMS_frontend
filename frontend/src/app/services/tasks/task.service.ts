@@ -139,4 +139,12 @@ export class TaskService {
     };
     return this.httpClient.put<any>(this.BASE_URL_API + '/api/maintenancemanagement/addteamtotask', reqBody, httpOptions);
   }
+
+  /**
+   * Function that return the set of task of a specific user
+   * @param userId the id of the user
+   */
+  getUserTasks(userId: number) {
+    return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/usertasklist/' + userId);
+  }
 }

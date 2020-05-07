@@ -117,6 +117,7 @@ export class AuthenticationService {
   public logout() {
     localStorage.setItem('currentUser', null);
     localStorage.setItem('currentUserPerms', null);
+    window.location.reload();
     return new Promise(
       (resolve, reject) => {
         this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/logout').subscribe(

@@ -38,11 +38,7 @@ const appRoutes: Routes = [
     }
   },
   {
-    path: '', component: HomeComponent,
-    canActivate: [AuthGuardService],
-    data: {
-      requiredPerms: []
-    }
+    path: '', redirectTo: 'tasks', pathMatch: 'full'
   },
   {
     path: 'settings', component: SettingsComponent,
