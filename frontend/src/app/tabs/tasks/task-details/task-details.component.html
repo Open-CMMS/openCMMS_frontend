@@ -69,29 +69,68 @@
                 <div class="px-2 py-1">
                     <p><span class="font-weight-bold">Description :</span></p>
                     <div class="input-group row col-6">
-                        <textarea id="description" class="form-control" aria-label="Description" [attr.disabled]="!descriptionInputEnabled ? '' : null" [(ngModel)]="description"></textarea>
+                        <textarea class="form-control" [attr.disabled]="!descriptionInputEnabled ? '' : null" [(ngModel)]="description"></textarea>
                         <div class="input-group-append">
-                            <button id="descriptionButton" class="btn btn-outline-secondary" *ngIf="descriptionInputEnabled" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="descriptionInputEnabled" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                         <div class="input-group-append">
-                            <button id="descriptionButton" class="btn btn-outline-secondary" *ngIf="!descriptionInputEnabled" (click)="enableInput('description')"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="!descriptionInputEnabled" (click)="enableInput('description')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
                     <br>
                     <p><span class="font-weight-bold">End date :</span></p>
                     <div class="input-group row col-2">
-                        <input id="end_date" class="form-control"
-                                name="end_date" ngbDatepicker #datePicker="ngbDatepicker" [(ngModel)]="date" [disabled]="!dateInputEnabled ? '' : null">
+                        <input class="form-control"
+                                ngbDatepicker #datePicker="ngbDatepicker" [(ngModel)]="date" [disabled]="!dateInputEnabled ? '' : null">
                         <div class="input-group-append">
-                            <button id="end_dateButton" class="btn btn-outline-secondary" *ngIf="dateInputEnabled" (click)="saveInput('end_date')"><fa-icon [icon]="faSave"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="dateInputEnabled" (click)="saveInput('end_date')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                         <div class="input-group-append">
-                            <button id="end_dateButton" class="btn btn-outline-secondary" *ngIf="!dateInputEnabled" (click)="datePicker.toggle(); enableInput('end_date')"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="!dateInputEnabled" (click)="datePicker.toggle(); enableInput('end_date')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
                     <br>
-                    <p><span class="font-weight-bold">Duration :</span> {{ taskDuration }} </p>
-                    <p><span class="font-weight-bold">Equipment :</span> {{ equipmentName }} </p>
+                    <p><span class="font-weight-bold">Duration :</span></p>
+                    <div class="input-group row col-2" *ngIf="!durationInputEnabled">
+                        <input class="form-control" [(ngModel)]="taskDuration" disabled>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="enableInput('duration')"><fa-icon [icon]="faPen"></fa-icon></button>
+                        </div>
+                    </div>
+                    <div class="input-group row col-3" *ngIf="durationInputEnabled">
+                        <input class="form-control col-2 text-center" [(ngModel)]="durationDays">
+                        <div class="input-group-append">
+                            <span class="input-group-text">days</span>
+                        </div>
+
+                        <ngb-timepicker class="form-control" [(ngModel)]="durationTime" [minuteStep]="5"></ngb-timepicker>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="saveInput('duration')"><fa-icon [icon]="faSave"></fa-icon></button>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <p><span class="font-weight-bold">Equipment :</span></p>
+                    <div class="input-group row col-4" *ngIf="!equipmentInputEnabled">
+                        <input class="form-control" [(ngModel)]="equipmentName" disabled>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment')"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-info" (click)="onViewEquipment(task.equipment)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                        </div>
+                    </div>
+                    <div class="input-group row col-4" *ngIf="equipmentInputEnabled">
+                        <ng-multiselect-dropdown
+                            [settings]="dropdownEquipmentsSettings"
+                            [(ngModel)]="selectedEquipment"
+                            [data]="equipmentsList"
+                            name="equipment"
+                            class="form-control"
+                        >
+                        </ng-multiselect-dropdown>
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="saveInput('equipment')"><fa-icon [icon]="faSave"></fa-icon></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

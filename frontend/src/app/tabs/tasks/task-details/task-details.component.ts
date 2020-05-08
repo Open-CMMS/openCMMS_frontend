@@ -7,13 +7,13 @@ import { TeamService } from 'src/app/services/teams/team.service';
 import { NgbModal, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
-import { faTrash, faPen, faCalendar, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPen, faCalendar, faSave, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Equipment } from 'src/app/models/equipment';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
-import { NewTaskComponent } from '../new-task/new-task.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-task-details',
@@ -31,6 +31,7 @@ export class TaskDetailsComponent implements OnInit {
   faPen = faPen;
   faCalendar = faCalendar;
   faSave = faSave;
+  faInfoCircle = faInfoCircle;
 
   // Local variables
   task: Task = null;
@@ -39,17 +40,27 @@ export class TaskDetailsComponent implements OnInit {
   taskDuration = '';
   teamsTask: Team[] = [];
   loaded = false;
+  equipments: Equipment[] = [];
+  equipmentsList = [];
+  selectedEquipment = [];
   teams: Team[] = [];
   teamsDiff = [];
   date: NgbDateStruct;
+  durationDays = 0;
+  durationTime = null;
 
   descriptionInputEnabled = false;
   dateInputEnabled = false;
+  durationInputEnabled = false;
+  equipmentInputEnabled = false;
+
+  teamSubscription: Subscription;
 
   // Forms
   updateForm: FormGroup;
   addTeamForm: FormGroup;
   dropdownTeamsSettings: IDropdownSettings;
+  dropdownEquipmentsSettings: IDropdownSettings;
 
 
   constructor(private taskService: TaskService,
@@ -76,6 +87,7 @@ export class TaskDetailsComponent implements OnInit {
           this.equipmentService.getEquipment(this.task.equipment).subscribe(
             (equipment: Equipment) => {
               this.equipmentName = equipment.name;
+              this.selectedEquipment = [{id: equipment.id.toString(), value: equipment.name}];
             }
           );
         }
@@ -83,10 +95,11 @@ export class TaskDetailsComponent implements OnInit {
         this.task.teams.forEach(teamId => {
           this.teamService.getTeam(teamId).subscribe((team: Team) => {
             this.teamsTask.push(team);
+            this.initTeamsDiff();
           });
         });
         this.loaded = true;
-        this.formatDurationString();
+        this.formatDurationStringAndInitDurationInput();
         this.initDateInput();
       }
     );
@@ -96,9 +109,43 @@ export class TaskDetailsComponent implements OnInit {
         this.teams = teams;
       }
     );
+
+    this.equipmentService.equipmentsSubject.subscribe(
+      (equipments) => {
+        this.equipments = equipments;
+        this.initEquipmentsSelect();
+      }
+    );
     this.equipmentService.emitEquipments();
     this.teamService.emitTeams();
     this.initForm();
+  }
+
+  initEquipmentsSelect() {
+    this.equipmentsList = [];
+    this.equipments.forEach(equipment => {
+      this.equipmentsList.push({id: equipment.id.toString(), value: equipment.name});
+    });
+    this.dropdownEquipmentsSettings = {
+      singleSelection: true,
+      idField: 'id',
+      textField: 'value',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      allowSearchFilter: true
+    };
+  }
+
+  initTeamsDiff() {
+    this.teamSubscription = this.teamService.teamSubject.subscribe(
+      (teams: Team[]) => {
+        teams.forEach((team) => {
+          if (this.teams.indexOf(team) === -1) {
+            this.teamsDiff.push(team);
+          }
+        });
+      }
+    );
   }
 
   enableInput(attribute: string) {
@@ -108,6 +155,12 @@ export class TaskDetailsComponent implements OnInit {
         break;
       case 'end_date':
         this.dateInputEnabled = true;
+        break;
+      case 'duration':
+        this.durationInputEnabled = true;
+        break;
+      case 'equipment':
+        this.equipmentInputEnabled = true;
         break;
       default:
         break;
@@ -125,12 +178,26 @@ export class TaskDetailsComponent implements OnInit {
         this.task.end_date = date_str;
         this.dateInputEnabled = false;
         break;
+      case 'duration':
+        this.durationInputEnabled = false;
+        this.task.time = this.durationDays + ' days, ' + this.durationTime.hour + ':' + this.durationTime.minute + ':00';
+        break;
+      case 'equipment':
+        this.equipmentInputEnabled = false;
+        this.task.equipment = this.selectedEquipment[0].id;
+        this.equipmentName = this.selectedEquipment[0].value;
+        break;
       default:
         break;
     }
     this.taskService.updateTask(this.task.id, this.task).subscribe(
       (response) => {
-        console.log('updated');
+        this.taskService.getTask(this.task.id).subscribe(
+          (task: Task) => {
+            this.task = task;
+            this.formatDurationStringAndInitDurationInput();
+          }
+        );
       }
     );
   }
@@ -142,7 +209,7 @@ export class TaskDetailsComponent implements OnInit {
                 day: parseInt(tab_date[2], 10)};
   }
 
-  formatDurationString() {
+  formatDurationStringAndInitDurationInput() {
     const days_time_separator = ' ';
     const hours_minutes_separator = ':';
     const init_str = this.task.time;
@@ -165,11 +232,24 @@ export class TaskDetailsComponent implements OnInit {
     if (days) {
       const plurel = parseInt(days, 10) > 1 ? 's' : '';
       days_str = parseInt(days, 10) > 0 ? days + 'day' + plurel + ', ' : '';
+      this.durationDays = parseInt(days, 10);
     } else {
       days_str = '';
     }
 
+    if (time) {
+      let hours: string;
+      let minutes: string;
+      let seconds: string;
+      [hours, minutes, seconds] = time.split(hours_minutes_separator);
+      this.durationTime = {hour: parseInt(hours, 10), minute: parseInt(minutes, 10)};
+    }
+
     this.taskDuration = days_str + time;
+  }
+
+  onViewEquipment(idEquipment: number) {
+    this.router.navigate(['/equipments', idEquipment]);
   }
 
   /**
@@ -277,6 +357,7 @@ export class TaskDetailsComponent implements OnInit {
       textField: 'value',
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
+      noDataAvailablePlaceholderText: 'No other teams available',
       itemsShowLimit: 4,
       allowSearchFilter: true
     };
