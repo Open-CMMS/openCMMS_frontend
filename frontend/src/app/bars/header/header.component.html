@@ -31,8 +31,15 @@
             <a class="dropdown-item" routerLink="team-types" *ngIf="onViewTeamTypesPermission()">Team Types Management</a>
           </div>
         </li>
-        <li routerLinkActive="active" *ngIf="onViewEquipmentPermission()">
-            <a class="nav-link" routerLink="equipments">Equipments</a>
+        <li class="nav-item dropdown" routerLinkActive="active">
+          <a class="nav-link dropdown-toggle" href="#" id="userDetails" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Equipments
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" routerLink="equipments" *ngIf="onViewEquipmentPermission()">Equipments management</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" routerLink="equipment-types">Equipment Types Management</a>
+          </div>
         </li>
         <li routerLinkActive="active" *ngIf="onViewUserPermission()">
           <a class="nav-link" routerLink="users">Users</a>

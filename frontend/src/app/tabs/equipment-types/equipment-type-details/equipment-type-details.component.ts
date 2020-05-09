@@ -1,0 +1,189 @@
+import { Component, OnInit } from '@angular/core';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { Equipment } from 'src/app/models/equipment';
+import { EquipmentType } from 'src/app/models/equipment-type';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
+import { EquipmentService } from 'src/app/services/equipments/equipment.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+@Component({
+  selector: 'app-equipment-type-details',
+  templateUrl: './equipment-type-details.component.html',
+  styleUrls: ['./equipment-type-details.component.scss']
+})
+export class EquipmentTypeDetailsComponent implements OnInit {
+
+  faInfoCircle = faInfoCircle;
+
+  // local vaiables
+  id: number;
+  name: string;
+  equipments: Equipment[];
+  all_equipments: Equipment[] = [];
+
+  equipment_type: EquipmentType;
+
+  // variables for the dropdown selects in the modify form
+  equipmentsList = [];
+  selectedEquipments = [];
+  dropdownEquipmentsSettings: IDropdownSettings;
+
+
+  // the Forms
+  equipmentTypeForm: FormGroup;
+
+  /**
+   * Constructor for the NewEquipmentComponent
+   * @param router the service used to handle redirections
+   * @param equipmentTypeService the service to communicate with backend on EquipmentType objects
+   * @param equipmentService the service to communicate with backend on Equipment objects
+   * @param route the service to get the id of the equipmentType in the url
+   * @param modalService the service to create popups
+   * @param formBuilder the service to handle forms
+   */
+  constructor(private router: Router,
+              private equipmentTypeService: EquipmentTypeService,
+              private equipmentService: EquipmentService,
+              private route: ActivatedRoute,
+              private modalService: NgbModal,
+              private formBuilder: FormBuilder) { }
+
+  /**
+   * Function that initialize the component when loaded
+   */
+  ngOnInit(): void {
+    this.initFields();
+    this.equipmentService.equipmentsSubject.subscribe((equipments: Equipment[]) => {
+      this.all_equipments = equipments;
+      this.initEquipmentsSelect();
+    });
+    this.equipmentService.emitEquipments();
+    this.initForm();
+  }
+
+  /**
+   * Function that initialize the equipment type fields when the component is loaded
+   */
+  initFields() {
+    this.route.params.subscribe(params => {
+      this.id = +params.id;
+    });
+    this.equipmentTypeService.getEquipmentType(this.id).subscribe((equipment_type: EquipmentType) => {
+      this.name = equipment_type.name;
+      this.equipments = Array();
+      equipment_type.equipment_set.forEach((id) => {
+        this.equipmentService.getEquipment(id).subscribe((equipment: Equipment) => {
+          this.equipments.push(equipment);
+          this.initSelectedEquipments();
+        });
+      });
+    });
+  }
+
+  /**
+   * Function that navigates to the EquipmentDetailComponent
+   * @param equipment the equipment to navigate to
+   */
+  onViewEquipment(equipment) {
+    this.router.navigate(['/equipments', equipment.id]);
+  }
+
+  /**
+   * Function that opens the modify modal
+   * @param contentModify the content to put in the modal
+   */
+  openModify(contentModify) {
+    this.modalService.open(contentModify, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+  }
+
+  /**
+   * Function that opens the delete modal
+   * @param contentDelete the content to put in the modal
+   */
+  openDelete(contentDelete) {
+    this.modalService.open(contentDelete, {ariaLabelledBy: 'modal-basic-title'});
+  }
+
+  /**
+   * Function that deletes the equipmentType and navigates back to the EquipmentTypeListComponent
+   */
+  onDelete() {
+    this.equipmentTypeService.deleteEquipmentType(this.id);
+    this.router.navigate(['/equipment-types']);
+    this.modalService.dismissAll();
+  }
+
+  /**
+   * Function that initialize the dropdown select for equipments
+   */
+  initEquipmentsSelect() {
+    this.equipmentsList = [];
+    this.all_equipments.forEach(equipment => {
+      this.equipmentsList.push({id: equipment.id.toString(), value: equipment.name.toString()});
+    });
+    this.dropdownEquipmentsSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'value',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 4,
+      allowSearchFilter: true
+    };
+  }
+
+  /**
+   * Function that initialize the selected equipments in the select
+   */
+  initSelectedEquipments() {
+    this.selectedEquipments = [];
+    this.equipments.forEach(equipment => {
+      this.selectedEquipments.push({id: equipment.id.toString(), value: equipment.name.toString()});
+    });
+  }
+
+  /**
+   * Function that initialize the fields in the form to create a new EquipmentType
+   */
+  initForm() {
+    this.equipmentTypeForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      equipments: ['']
+    });
+  }
+
+  /**
+   * Function that submits the form to modify the equipmentType
+   */
+  modifyEquipmentType() {
+    const formValue = this.equipmentTypeForm.value;
+
+    const nameStr = 'name';
+    const equipmentsStr = 'equipments';
+
+    const id = this.id;
+    const name = formValue[nameStr];
+    const equipments = [];
+    formValue[equipmentsStr].forEach(item => {
+      equipments.push(item.id);
+    });
+    this.equipmentTypeService.updateEquipmentType(new EquipmentType(id, name, equipments)).subscribe(
+        equipment_type => {
+          const old_equipment_type = this.equipmentTypeService.equipment_types.find((value) => {
+            return value.id === equipment_type.id;
+          });
+          const index = this.equipmentTypeService.equipment_types.indexOf(old_equipment_type);
+          this.equipmentTypeService.equipment_types[index] = equipment_type;
+
+          this.equipmentTypeService.emitEquipmentTypes();
+
+          this.initFields();
+        });
+    this.modalService.dismissAll();
+  }
+
+
+}

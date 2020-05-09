@@ -19,6 +19,9 @@ import { NewTeamTypeComponent } from './tabs/team-types/new-team-type/new-team-t
 import { NewTaskComponent } from './tabs/tasks/new-task/new-task.component';
 import { NewUserComponent } from './tabs/users/new-user/new-user.component';
 import { NewEquipmentComponent } from './tabs/equipments/new-equipment/new-equipment.component';
+import { EquipmentTypeManagementComponent } from './tabs/equipment-types/equipment-type-management/equipment-type-management.component';
+import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-type-details/equipment-type-details.component';
+import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
 
 /**
  * List of the routes for the application and their associated permissions.
@@ -153,6 +156,27 @@ const appRoutes: Routes = [
     canActivate: [AuthGuardService],
     data: {
       requiredPerms: ['add_equipment']
+    }
+  },
+  {
+    path: 'equipment-types', component: EquipmentTypeManagementComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['view_equipmenttype']
+    }
+  },
+  {
+    path: 'equipment-types/:id', component: EquipmentTypeDetailsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['view_equipmenttype']
+    }
+  },
+  {
+    path: 'new-equipment-type', component: NewEquipmentTypeComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['add_equipmenttype']
     }
   },
   {
