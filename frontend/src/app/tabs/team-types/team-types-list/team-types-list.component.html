@@ -23,7 +23,7 @@
                     
                     <div class="d-flex">
                         <button class="btn btn-info" (click)="onViewTeamType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
-                        <button class="btn btn-danger" (click)="openDelete(contentDelete, i)"><fa-icon [icon]="faTrash"></fa-icon></button>
+                        <button class="btn btn-danger" (click)="openDelete(contentDelete, i)" *ngIf="onDeleteTeamTypesPermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
                     </div>
                 </div>
             </li>

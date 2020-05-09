@@ -3,7 +3,7 @@
         <h3 class="font-weight-bold">TeamTypes Management</h3>
     </div>
     <div class="container-fluid row my-3">
-        <button class="btn btn-primary" (click)="onCreateTeamType()"><fa-icon [icon]="faPlus"></fa-icon> Create new team type</button>
+        <button class="btn btn-primary" (click)="onCreateTeamType()" *ngIf="onAddTeamTypesPermission()"><fa-icon [icon]="faPlus"></fa-icon> Create new team type</button>
     </div>
     <app-team-types-list></app-team-types-list>
 </div>
