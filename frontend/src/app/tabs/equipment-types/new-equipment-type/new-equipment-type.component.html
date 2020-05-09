@@ -9,7 +9,7 @@
         <input type="text" class='form-control' formControlName="name">
       </div>
       <div class="form-group">
-        <label for="teams">Equipments</label>
+        <label for="equipments">Equipments</label>
         <ng-multiselect-dropdown
           [settings]="dropdownEquipmentsSettings"
           [data]="equipmentsList"
@@ -21,4 +21,3 @@
       <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Save</button>
     </form>
   </div>
-  
