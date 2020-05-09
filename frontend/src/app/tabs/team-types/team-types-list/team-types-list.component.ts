@@ -6,6 +6,8 @@ import { Router } from '@angular/router';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 @Component({
   selector: 'app-team-types-list',
   templateUrl: './team-types-list.component.html',
@@ -26,10 +28,14 @@ export class TeamTypesListComponent implements OnInit, OnDestroy {
    * Constructor for the TeamTypeListComponent
    * @param teamTypeService the service to communicate with backend on TeamType objects
    * @param router the service used to handle redirections
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
   constructor(private teamTypeService: TeamTypeService,
               private router: Router,
-              private modalService: NgbModal) { }
+              private modalService: NgbModal,
+              private utilsService: UtilsService,
+              private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initializes the component when loaded
@@ -72,6 +78,16 @@ export class TeamTypesListComponent implements OnInit, OnDestroy {
   onDeleteTeamType(i: number) {
     const team_type_id = this.teamTypes[i].id;
     this.teamTypeService.deleteTeamType(team_type_id);
+  }
+
+  /**
+   * Function that displays the Delete button if user is allowed to do so
+   */
+  onDeleteTeamTypesPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_teamtype'
+      );
   }
 
   /**
