@@ -53,6 +53,7 @@ import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-
 import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-type-details/equipment-type-details.component';
 import { EquipmentTypeManagementComponent } from './tabs/equipment-types/equipment-type-management/equipment-type-management.component';
 import { EquipmentTypesListComponent } from './tabs/equipment-types/equipment-types-list/equipment-types-list.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { EquipmentTypesListComponent } from './tabs/equipment-types/equipment-ty
     NewEquipmentTypeComponent,
     EquipmentTypeDetailsComponent,
     EquipmentTypeManagementComponent,
-    EquipmentTypesListComponent
+    EquipmentTypesListComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
