@@ -60,7 +60,7 @@ export class NewUserComponent implements OnInit {
   }
 
   /**
-   * Function that is triggered when a new Team is being created (when button "Create new team" is pressed)
+   * Function that is triggered when a new User is being created (when button "Create new User" is pressed)
    */
   onCreateUser() {
     this.submitted = true;
@@ -77,14 +77,14 @@ export class NewUserComponent implements OnInit {
           this.userService.createUser(username, formValues.firstName, formValues.lastName, formValues.email, formValues.password)
           .subscribe(
             (user: UserProfile) => {
-              this.user = this.user = new UserProfile(user.id,
-                                                      user.username,
-                                                      user.first_name,
-                                                      user.last_name,
-                                                      user.email,
-                                                      user.password,
-                                                      user.nb_tries,
-                                                      user.is_active);
+              this.user = new UserProfile(user.id,
+                                          user.username,
+                                          user.first_name,
+                                          user.last_name,
+                                          user.email,
+                                          user.password,
+                                          user.nb_tries,
+                                          user.is_active);
               this.userService.getUsers();
         });
           this.router.navigate(['/users']);
