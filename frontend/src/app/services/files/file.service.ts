@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 
@@ -26,17 +26,13 @@ export class FileService {
    * Fonction to save a new equipment in the database
    * @param file the file you want to upload
    */
-  uploadFile(file: FormData) {
-    const httpOptions = {
-      headers : new HttpHeaders({
-        'Content-Type': 'multipart/form-data'
-      })
-    };
-
+  uploadFile(file: FormData): Observable<any> {
+    const headers = new HttpHeaders();
+    headers.set('Content-Type', null);
+    headers.set('Accept', 'multipart/form-data');
+    const params = new HttpParams();
     return this.httpClient
-            .post(this.BASE_URL_API + '/api/maintenancemanagement/files/',
-                  file,
-                  httpOptions);
+            .post(this.BASE_URL_API + '/api/maintenancemanagement/files/', file, {params, headers});
   }
 
 
@@ -47,4 +43,5 @@ export class FileService {
   deleteFile(fileId: number) {
     return this.httpClient.delete(this.BASE_URL_API + '/api/maintenancemanagement/files/' + fileId + '/');
   }
+
 }
