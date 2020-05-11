@@ -5,6 +5,8 @@ import { faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/services/users/user.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-users-list',
@@ -27,8 +29,14 @@ export class UsersListComponent implements OnInit, OnDestroy {
    * @param userService the service to communicate with backend on UserProfile objects
    * @param router the service used to handle redirections
    * @param modalService the service to handle modal windows
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
-  constructor(private userService: UserService, private router: Router, private modalService: NgbModal ) { }
+  constructor(private userService: UserService,
+              private router: Router,
+              private modalService: NgbModal,
+              private utilsService: UtilsService,
+              private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initialize the component when loaded
@@ -77,6 +85,16 @@ export class UsersListComponent implements OnInit, OnDestroy {
         this.userService.getUsers();
       }
     );
+  }
+
+  /**
+   * Function that displays the Delete button if user is allowed to do so
+   */
+  onDeleteUserPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_userprofile'
+      );
   }
 
 

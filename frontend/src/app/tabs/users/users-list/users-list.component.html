@@ -26,7 +26,7 @@
                         <button class="btn btn-info" (click)="onViewUser(user)">
                             <fa-icon [icon]="faInfoCircle"></fa-icon>
                         </button>
-                        <button class="btn btn-danger" (click)="openDelete(contentDelete, user)">
+                        <button class="btn btn-danger" (click)="openDelete(contentDelete, user)" *ngIf="onDeleteUserPermission()">
                             <fa-icon [icon]="faTrash"></fa-icon>
                         </button>
                     </div>

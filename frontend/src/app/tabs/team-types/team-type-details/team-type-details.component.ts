@@ -6,9 +6,12 @@ import { Permission } from '../../../models/permission';
 import { Team } from '../../../models/team';
 import { PermissionService } from 'src/app/services/permissions/permission.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-user-details',
@@ -16,6 +19,8 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
   styleUrls: ['./team-type-details.component.scss']
 })
 export class TeamTypeDetailsComponent implements OnInit {
+
+  faInfoCircle = faInfoCircle;
 
   // local vaiables
   id: number;
@@ -49,6 +54,8 @@ export class TeamTypeDetailsComponent implements OnInit {
    * @param route the service to get the id of the teamType in the url
    * @param modalService the service to create popups
    * @param formBuilder the service to handle forms
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
   constructor(private router: Router,
               private teamTypeService: TeamTypeService,
@@ -56,7 +63,9 @@ export class TeamTypeDetailsComponent implements OnInit {
               private teamService: TeamService,
               private route: ActivatedRoute,
               private modalService: NgbModal,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private utilsService: UtilsService,
+              private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initialize the component when loaded
@@ -71,6 +80,7 @@ export class TeamTypeDetailsComponent implements OnInit {
       this.all_teams = teams;
       this.initTeamsSelect();
     });
+    this.teamService.emitTeams();
     this.initForm();
   }
 
@@ -235,6 +245,26 @@ export class TeamTypeDetailsComponent implements OnInit {
           this.initFields();
         });
     this.modalService.dismissAll();
+  }
+
+  /**
+   * Function that displays the Modify button if user is allowed to do so
+   */
+  onChangeTeamTypesPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'change_teamtype'
+      );
+  }
+
+  /**
+   * Function that displays the Delete button if user is allowed to do so
+   */
+  onDeleteTeamTypesPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_teamtype'
+      );
   }
 
 }

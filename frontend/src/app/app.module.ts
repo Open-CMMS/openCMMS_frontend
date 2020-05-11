@@ -48,6 +48,11 @@ import { MatInputModule } from '@angular/material/input';
 import { appRoutingModule } from './app-routing.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { JwtInterceptorService } from './services/jwt-interceptor/jwt-interceptor.service';
+import { EquipmentTypeService } from './services/equipment-types/equipment-type.service';
+import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
+import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-type-details/equipment-type-details.component';
+import { EquipmentTypeManagementComponent } from './tabs/equipment-types/equipment-type-management/equipment-type-management.component';
+import { EquipmentTypesListComponent } from './tabs/equipment-types/equipment-types-list/equipment-types-list.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +82,11 @@ import { JwtInterceptorService } from './services/jwt-interceptor/jwt-intercepto
     EquipmentManagementComponent,
     EquipmentsListComponent,
     EquipmentDetailsComponent,
-    NewEquipmentComponent
+    NewEquipmentComponent,
+    NewEquipmentTypeComponent,
+    EquipmentTypeDetailsComponent,
+    EquipmentTypeManagementComponent,
+    EquipmentTypesListComponent
   ],
   imports: [
     BrowserModule,
@@ -104,7 +113,8 @@ import { JwtInterceptorService } from './services/jwt-interceptor/jwt-intercepto
     PermissionService,
     TaskService,
     EquipmentService,
-    UtilsService
+    UtilsService,
+    EquipmentTypeService,
   ],
   bootstrap: [AppComponent]
 })
