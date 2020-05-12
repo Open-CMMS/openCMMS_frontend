@@ -54,13 +54,13 @@ export class EquipmentDetailsComponent implements OnInit {
     this.equipmentService.getEquipment(this.id)
       .subscribe(eq => {
         this.currentEquipment = eq;
+        this.name = this.currentEquipment.name;
+        this.equipment_type = this.currentEquipment.equipment_type;
         this.loaded = true;
         this.initForm();
       },
       (error) => this.router.navigate(['/four-oh-four']));
     // this.files = this.currentEquipment.files;
-    this.name = this.currentEquipment.name;
-    this.equipment_type = this.currentEquipment.equipment_type;
   }
 
   /**
@@ -69,8 +69,8 @@ export class EquipmentDetailsComponent implements OnInit {
   onDeleteEquipment() {
     this.equipmentService.deleteEquipment(this.currentEquipment.id).subscribe(
       (resp) => {
-        this.equipmentService.getEquipments();
         this.router.navigate(['/equipments']);
+        this.equipmentService.getEquipments();
       }
     );
   }
