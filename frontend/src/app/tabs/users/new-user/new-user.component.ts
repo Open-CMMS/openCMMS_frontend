@@ -4,9 +4,6 @@ import { Router } from '@angular/router';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
 
-// Custom validator
-import { CrossMatch } from '../../../shares/cross-match.validator';
-
 @Component({
   selector: 'app-new-user',
   templateUrl: './new-user.component.html',
@@ -51,11 +48,7 @@ export class NewUserComponent implements OnInit {
     this.createForm = this.formBuilder.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(7)]],
-      confPassword: ['', Validators.required]
-    }, {
-      validator: CrossMatch('password', 'confPassword')
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
@@ -74,17 +67,17 @@ export class NewUserComponent implements OnInit {
     this.userService.getUsernameSuffix(username)
         .subscribe((suffix) => {
           username = username + suffix;
-          this.userService.createUser(username, formValues.firstName, formValues.lastName, formValues.email, formValues.password)
+          this.userService.createUser(username, formValues.firstName, formValues.lastName, formValues.email, 'uselessTemporaryPassword')
           .subscribe(
             (user: UserProfile) => {
-              this.user = this.user = new UserProfile(user.id,
-                                                      user.username,
-                                                      user.first_name,
-                                                      user.last_name,
-                                                      user.email,
-                                                      user.password,
-                                                      user.nb_tries,
-                                                      user.is_active);
+              // this.user = this.user = new UserProfile(user.id,
+              //                                         user.username,
+              //                                         user.first_name,
+              //                                         user.last_name,
+              //                                         user.email,
+              //                                         user.password,
+              //                                         user.nb_tries,
+              //                                         user.is_active);
               this.userService.getUsers();
         });
           this.router.navigate(['/users']);

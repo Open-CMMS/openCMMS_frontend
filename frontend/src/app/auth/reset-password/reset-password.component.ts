@@ -9,6 +9,10 @@ import { Router, ActivatedRoute } from '@angular/router';
   templateUrl: './reset-password.component.html',
   styleUrls: ['./reset-password.component.scss']
 })
+/**
+ * Component ResetPasswordComponent
+ * This component is used when a user has to set or reset his password
+ */
 export class ResetPasswordComponent implements OnInit {
 
   // Local variables
@@ -20,11 +24,21 @@ export class ResetPasswordComponent implements OnInit {
   // Form
   setPasswordForm: FormGroup;
 
+  /**
+   * Constructor of ResetPasswordComponent
+   * @param formBuilder the service used to handle forms
+   * @param authenticationService the auth service
+   * @param router the service used to handle routind
+   * @param route the service used to get route information
+   */
   constructor(private formBuilder: FormBuilder,
               private authenticationService: AuthenticationService,
               private router: Router,
               private route: ActivatedRoute) { }
 
+  /**
+   * Function that initializes the component
+   */
   ngOnInit(): void {
     this.route.queryParams.subscribe(
       params => {
@@ -37,7 +51,7 @@ export class ResetPasswordComponent implements OnInit {
       this.authenticationService.verifyToken(this.username, this.token).subscribe(
         res => {
           // console.log(res);
-          if(!res) {
+          if (!res) {
             this.router.navigate(['']);
           }
         }
@@ -61,6 +75,9 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 
+  /**
+   * Function that call the set_password function in the API on click on the Set password button
+   */
   onSetPassword() {
     this.submitted = true;
 

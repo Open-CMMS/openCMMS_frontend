@@ -207,5 +207,25 @@ describe('UserService', () => {
     expect(req.request.method).toEqual('DELETE');
   });
 
+  it('should update a user\'s password', () => {
+    const mockUser = {
+      id: 3,
+      username: 'hmaricato',
+      first_name: 'Hugo',
+      last_name: 'Maricat',
+      email: 'hugo.maricato@insa-rouen.fr',
+      password: 'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=',
+      nb_tries: 0,
+      is_active: false
+    };
+
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
+    service.updateUserPassword(new UserProfile(3,  'hmaricato', 'Hugo', 'Maricat', 'hugo.maricato@insa-rouen.fr',
+    'pbkdf2_sha256$180000$3z7mTh3cm86A$X54aJoJJGnroNdBElFxP5hVCaFJSZGEYRvFuxMvuij0=', 0, false), 'toto')
+      .subscribe();
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/3/');
+    expect(req.request.method).toEqual('PUT');
+
+  });
 
 });
