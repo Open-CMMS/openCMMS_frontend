@@ -53,7 +53,7 @@ export class NewUserComponent implements OnInit {
   }
 
   /**
-   * Function that is triggered when a new Team is being created (when button "Create new team" is pressed)
+   * Function that is triggered when a new User is being created (when button "Create new User" is pressed)
    */
   onCreateUser() {
     this.submitted = true;

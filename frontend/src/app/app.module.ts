@@ -41,6 +41,7 @@ import { EquipmentService } from './services/equipments/equipment.service';
 import { TaskService } from './services/tasks/task.service';
 import { UtilsService } from './services/utils/utils.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FileService } from './services/files/file.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -116,7 +117,8 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     TaskService,
     EquipmentService,
     UtilsService,
-    EquipmentTypeService,
+    FileService,
+    EquipmentTypeService
   ],
   bootstrap: [AppComponent]
 })
