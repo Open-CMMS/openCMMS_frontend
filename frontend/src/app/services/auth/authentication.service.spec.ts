@@ -3,6 +3,7 @@ import { AuthenticationService } from './authentication.service';
 import { UserProfile } from 'src/app/models/user-profile';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from 'src/environments/environment';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AuthenticationService', () => {
   const BASE_URL_API = environment.baseUrl;
@@ -12,7 +13,7 @@ describe('AuthenticationService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ AuthenticationService ],
-      imports: [ HttpClientTestingModule ]
+      imports: [ HttpClientTestingModule, RouterTestingModule ]
     });
     authenticationService = TestBed.inject(AuthenticationService);
     httpTestingController = TestBed.inject(HttpTestingController);
@@ -61,5 +62,17 @@ describe('AuthenticationService', () => {
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/2/get_user_permissions');
     expect(req.request.method).toEqual('GET');
     req.flush(mockPerms);
+  });
+
+  it('should verify the token for setting password', () => {
+    authenticationService.verifyToken('username', 'token').subscribe();
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/check_token');
+    expect(req.request.method).toEqual('POST');
+  });
+
+  it('should set a password', () => {
+    authenticationService.setPassword('username', 'password', 'token').subscribe();
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/set_password');
+    expect(req.request.method).toEqual('POST');
   });
 });

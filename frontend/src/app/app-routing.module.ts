@@ -22,6 +22,7 @@ import { NewEquipmentComponent } from './tabs/equipments/new-equipment/new-equip
 import { EquipmentTypeManagementComponent } from './tabs/equipment-types/equipment-type-management/equipment-type-management.component';
 import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-type-details/equipment-type-details.component';
 import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 
 /**
  * List of the routes for the application and their associated permissions.
@@ -35,6 +36,12 @@ const appRoutes: Routes = [
   },
   {
     path: 'account-blocked', component: AccountBlockedComponent,
+    data: {
+      requiredPerms: []
+    }
+  },
+  {
+    path: 'reset-password', component: ResetPasswordComponent,
     data: {
       requiredPerms: []
     }

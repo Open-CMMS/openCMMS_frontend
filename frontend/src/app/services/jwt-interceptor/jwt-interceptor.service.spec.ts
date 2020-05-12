@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { JwtInterceptorService } from './jwt-interceptor.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from 'src/environments/environment';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('JwtInterceptorService', () => {
   let service: JwtInterceptorService;
@@ -12,7 +13,7 @@ describe('JwtInterceptorService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [ JwtInterceptorService ],
-      imports: [ HttpClientTestingModule ]
+      imports: [ HttpClientTestingModule, RouterTestingModule ]
     });
     service = TestBed.inject(JwtInterceptorService);
     httpTestingController = TestBed.inject(HttpTestingController);
