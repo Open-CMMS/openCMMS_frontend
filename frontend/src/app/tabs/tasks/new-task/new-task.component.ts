@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { EquipmentService } from 'src/app/services/equipments/equipment.service'
 import { Equipment } from 'src/app/models/equipment';
 import { Task } from 'src/app/models/task';
 import { TaskService } from 'src/app/services/tasks/task.service';
-import { faCalendar, faInfoCircle, faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faInfoCircle, faPlusSquare, faMinusCircle, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -30,6 +30,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
+  faMinusSquare = faMinusSquare;
   model: NgbDateStruct;
 
 
@@ -54,6 +55,12 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   endConditions = [];
   endConditionSelectTemplate = null;
 
+  // Files
+  filesSubject = new Subject<File[]>();
+  filesSubscription: Subscription;
+  myFiles: File[] = [];
+  files: number[] = [];
+
   // Forms
   createForm: FormGroup;
 
@@ -70,6 +77,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private teamService: TeamService,
               private equipmentService: EquipmentService,
+              private fileService: FileService,
               private formBuilder: FormBuilder
               ) { }
   /**
@@ -87,6 +95,11 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       (equipments: Equipment[]) => {
         this.equipments = equipments;
         this.initEquipmentsSelect();
+      }
+    );
+    this.filesSubscription = this.filesSubject.subscribe(
+      (files: File[]) => {
+        this.myFiles = files;
       }
     );
     this.initTriggerConditionsSelect();
@@ -235,6 +248,41 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function that is triggered when a or multiple files are chosen(when button "Browse" is pressed and files are chosen)
+   * Upload files if not already uploaded.
+   * @param event file selection event from input of type file
+   */
+  onFileUpload(event) {
+    let formData: FormData;
+    let i = 0;
+    for (i; i < event.target.files.length; i++) {
+      if (!this.myFiles.includes(event.target.files[i])) {
+        this.myFiles.push(event.target.files[i]);
+        formData = new FormData();
+        formData.append('file', event.target.files[i], event.target.files[i].name);
+        formData.append('is_manual', 'false' );
+        this.fileService.uploadFile(formData).subscribe(file => {
+          this.files.push(Number(file.id));
+        });
+      }
+    }
+    this.filesSubject.next(this.myFiles);
+  }
+
+  /**
+   * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
+   * @param file file that need to be removed
+   * Here we only need the index of the file from the local variable myFiles which is the same then in the variable files
+   * from file we then can get the id of the file in the databaseto remove it.
+   */
+  onRemoveFile(file: File) {
+    const index = this.myFiles.indexOf(file);
+    this.myFiles.splice(index, 1);
+    const id = this.files.splice(index, 1);
+    this.fileService.deleteFile(id[0]);
+  }
+
+  /**
    * Function that initialize the fields in the form to create a new Team
    */
   initForm() {
@@ -247,7 +295,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       time: ['', Validators.pattern(regex_time)],
       is_template: [false],
       equipment: [''],
-      teams: ['']
+      teams: [''],
+      file: ['']
     });
   }
 
@@ -355,6 +404,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function that clears subscriptions
    */
   ngOnDestroy(): void {
+    this.filesSubscription.unsubscribe();
     this.teamSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
   }
