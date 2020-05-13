@@ -140,6 +140,11 @@ export class TaskService {
     return this.httpClient.put<any>(this.BASE_URL_API + '/api/maintenancemanagement/addteamtotask', reqBody, httpOptions);
   }
 
+
+  /**
+   * Function to normalise the value of DatePicker inputs into a string with the correct format
+   * @param formEndDateInput value of the DatePicker input
+   */
   normaliseEndDateValue(formEndDateInput: any): string {
     let end_date: string;
     if (formEndDateInput) {
@@ -149,6 +154,60 @@ export class TaskService {
     }
     return end_date;
   }
+
+  /**
+   * Function to normalise the value of duration inputs into a string with the correct format
+   * @param formDurationInput value of the duration input
+   */
+  normaliseDurationValue(formDurationInput: string, separators: any[]): string {
+    const str_time = formDurationInput.trim();
+    let days = '';
+    let hours = '';
+    let minutes = '';
+    let pos_0_start: number;
+    let pos_0_end: number;
+    let pos_1_start: number;
+    let pos_1_end: number;
+    let pos_2_start: number;
+    let pos_2_end: number;
+
+    pos_0_start = 0;
+    pos_0_end = str_time.indexOf(separators[0]) !== -1 ? str_time.indexOf(separators[0]) : 0;
+
+    if (str_time.indexOf(separators[1]) === -1) {
+      pos_1_start = 0;
+      pos_1_end = 0;
+    } else if (pos_0_end === 0) {
+      pos_1_start = 0;
+      pos_1_end = str_time.indexOf(separators[1]);
+    } else {
+      pos_1_start = pos_0_end + 1;
+      pos_1_end = str_time.indexOf(separators[1]);
+    }
+
+    if (str_time.indexOf(separators[2]) === -1) {
+      pos_2_start = 0;
+      pos_2_end = 0;
+    } else if (pos_1_end === 0) {
+      if (pos_0_end === 0) {
+        pos_2_start = 0;
+      } else {
+        pos_2_start = pos_0_end + 1;
+      }
+      pos_2_end = str_time.indexOf(separators[2]);
+    } else {
+      pos_2_start = pos_1_end + 1;
+      pos_2_end = str_time.indexOf(separators[2]);
+    }
+
+    days = str_time.substring(pos_0_start, pos_0_end) === '' ? '0' : str_time.substring(pos_0_start, pos_0_end);
+    hours = str_time.substring(pos_1_start, pos_1_end) === '' ? '0' : str_time.substring(pos_1_start, pos_1_end);
+    minutes = str_time.substring(pos_2_start, pos_2_end) === '' ? '0' : str_time.substring(pos_2_start, pos_2_end);
+
+
+    return days.trim() + ' days, ' + hours.trim() + ':' + minutes.trim() + ':0';
+  }
+
   /**
    * Function that return the set of task of a specific user
    * @param userId the id of the user
@@ -157,12 +216,34 @@ export class TaskService {
     return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/usertasklist/' + userId);
   }
 
+  /**
+   * Function that return the set of field values for one field
+   * @param id_field the id of the field
+   */
   getFieldValues(id_field: number): Observable<any> {
     return this.httpClient.get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/fieldvalues_for_field/'
                                                         + id_field + '/');
   }
 
+  /**
+   * Function that return the set fields
+   */
   getFields(): Observable<any> {
     return this.httpClient.get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/fields/');
+  }
+
+  /**
+   * Function that creates a field object in the database
+   * @param field_object the field object to create
+   */
+  createFieldObject(field_object: any): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json'
+      })
+    };
+
+    const reqBody = JSON.stringify(field_object);
+    return this.httpClient.post<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/', reqBody, httpOptions);
   }
 }

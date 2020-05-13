@@ -104,16 +104,28 @@
                     popoverTitle="Info"
                     [pattern]="triggerConditionDurationRegex"
                     #triggerConditionDuration
+                    [(ngModel)]=triggerCondition.value
+                    [ngModelOptions]="{standalone: true}"
                     [ngClass]="{'alert-danger': triggerConditionDuration.validity.patternMismatch}">
                 </div>
                 
-                <input type="text" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Entier'" placeholder="value">
+                <input type="text" 
+                    *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Entier'"
+                    placeholder="value"
+                    [ngModelOptions]="{standalone: true}"
+                    [(ngModel)]=triggerCondition.value>
 
-                <input type="text" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Décimal'" placeholder="value">
+                <input type="text"
+                    *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Décimal'"
+                    placeholder="value"
+                    [ngModelOptions]="{standalone: true}"
+                    [(ngModel)]=triggerCondition.value>
 
                 <input type="text" 
                     *ngIf="triggerCondition.selectedTriggerCondition[0]"
                     placeholder="description"
+                    [ngModelOptions]="{standalone: true}"
+                    [(ngModel)]=triggerCondition.description
                     >
 
             </div>
@@ -144,6 +156,8 @@
                 <input type="text" 
                     *ngIf="endCondition.selectedEndCondition[0]"
                     placeholder="description"
+                    [(ngModel)]=endCondition.description
+                    [ngModelOptions]="{standalone: true}"
                     >
 
             </div>

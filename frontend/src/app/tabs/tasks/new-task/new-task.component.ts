@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription, Subject } from 'rxjs';
+import { Subscription, Subject, Observable } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -32,8 +32,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
   faMinusSquare = faMinusSquare;
+  faCalendar = faCalendar;
   model: NgbDateStruct;
-
 
   // Multiple Select
   teamsList = [];
@@ -65,7 +65,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   // Forms
   createForm: FormGroup;
 
-  faCalendar = faCalendar;
 
   /**
    * Constructor for the NewTeamComponent
@@ -109,16 +108,28 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
+  /**
+   * Function to add an end condition in the form
+   */
   addEndCondition() {
     const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     this.endConditions.push(objectCopy);
   }
 
+  /**
+   * Function to delete an end condition in the form
+   * @param i the index of the end condition
+   */
   deleteEndCondition(i: number) {
     this.endConditions.splice(i, 1);
   }
 
+  /**
+   * Function to initialize the template for end condition objects. It is used to initialize
+   * the dropdown selects as well
+   * @param end_conditions_types the array with the different types of end conditions
+   */
   initEndConditionSelectTemplate(end_conditions_types: any[]) {
     this.endConditionSelectTemplate = {
         selectedEndCondition: [],
@@ -129,11 +140,13 @@ export class NewTaskComponent implements OnInit, OnDestroy {
           textField: 'value',
           allowSearchFilter: true
         },
-        value: null,
         description: null
       };
   }
 
+  /**
+   * Function to get the different types of end conditions
+   */
   getEndConditionsTypes() {
     let id_field: number;
     const end_conditions_types = [];
@@ -156,20 +169,35 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Function to initialize the end conditions part of the form
+   */
   initEndConditionsSelect() {
     this.getEndConditionsTypes();
   }
 
+  /**
+   * Function to add a trigger condition in the form
+   */
   addTriggerCondition() {
     const jsonCopy = JSON.stringify(this.triggerConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     this.triggerConditions.push(objectCopy);
   }
 
+  /**
+   * Function to delete a trigger condition in the form
+   * @param i the index of the trigger condition
+   */
   deleteTriggerCondition(i: number) {
     this.triggerConditions.splice(i, 1);
   }
 
+  /**
+   * Function to initialize the template for trigger condition objects. It is used to initialize
+   * the dropdown selects as well
+   * @param trigger_conditions_types the array with the different types of trigger conditions
+   */
   initTriggerConditionSelectTemplate(trigger_conditions_types: any[]) {
     this.triggerConditionSelectTemplate = {
         selectedTriggerCondition: [],
@@ -185,6 +213,9 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       };
   }
 
+  /**
+   * Function to get the different trigger condition types
+   */
   getTriggerConditionsTypes() {
     let id_field: number;
     const trigger_conditions_types = [];
@@ -207,8 +238,61 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Function to initialize the trigger conditions part of the form
+   */
   initTriggerConditionsSelect() {
     this.getTriggerConditionsTypes();
+  }
+
+  /**
+   * Function to create the field_objects in the database for the end and trigger conditions
+   */
+  createFieldObjects(id_task: number) {
+    let id_field_trigger_condition: number;
+    let id_field_end_condition: number;
+    this.taskService.getFields().subscribe(
+      (fields) => {
+        fields.forEach(field => {
+          if (field.name === 'Trigger Conditions') {
+            id_field_trigger_condition = field.id;
+          } else if (field.name === 'End Conditions') {
+            id_field_end_condition = field.id;
+          }
+        });
+        this.triggerConditions.forEach(triggerCondition => {
+          let object_value: string;
+          switch (triggerCondition.selectedTriggerCondition[0].value) {
+            case 'Date':
+              object_value = this.taskService.normaliseEndDateValue(triggerCondition.value);
+              break;
+            case 'Duree':
+              object_value = this.taskService.normaliseDurationValue(triggerCondition.value, ['y', 'm', 'd']);
+              break;
+            default:
+              object_value = triggerCondition.value;
+              break;
+          }
+          const field_object = {
+            described_object: 'Task: ' + id_task,
+            field: id_field_trigger_condition,
+            field_value: triggerCondition.selectedTriggerCondition[0].id,
+            value: object_value,
+            description: triggerCondition.description
+          };
+          this.taskService.createFieldObject(field_object).subscribe();
+        });
+        this.endConditions.forEach(endCondition => {
+          const field_object = {
+            described_object: 'Task: ' + id_task,
+            field: id_field_end_condition,
+            field_value: endCondition.selectedEndCondition[0].id,
+            value: 'pending',
+            description: endCondition.description
+          };
+          this.taskService.createFieldObject(field_object).subscribe();
+        });
+      });
   }
 
   /**
@@ -280,7 +364,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     const index = this.myFiles.indexOf(file);
     this.myFiles.splice(index, 1);
     const id = this.files.splice(index, 1);
-    this.fileService.deleteFile(id[0]);
+    this.fileService.deleteFile(id[0]).subscribe();
   }
 
   /**
@@ -302,63 +386,20 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   }
 
 
-  normaliseDurationValue(formDurationInput: string): string {
-    const str_time = formDurationInput.trim();
-    let days = '';
-    let hours = '';
-    let minutes = '';
-    let pos_d_start: number;
-    let pos_d_end: number;
-    let pos_h_start: number;
-    let pos_h_end: number;
-    let pos_m_start: number;
-    let pos_m_end: number;
 
-    pos_d_start = 0;
-    pos_d_end = str_time.indexOf('d') !== -1 ? str_time.indexOf('d') : 0;
-
-    if (str_time.indexOf('h') === -1) {
-      pos_h_start = 0;
-      pos_h_end = 0;
-    } else if (pos_d_end === 0) {
-      pos_h_start = 0;
-      pos_h_end = str_time.indexOf('h');
-    } else {
-      pos_h_start = pos_d_end + 1;
-      pos_h_end = str_time.indexOf('h');
-    }
-
-    if (str_time.indexOf('m') === -1) {
-      pos_m_start = 0;
-      pos_m_end = 0;
-    } else if (pos_h_end === 0) {
-      if (pos_d_end === 0) {
-        pos_m_start = 0;
-      } else {
-        pos_m_start = pos_d_end + 1;
-      }
-      pos_m_end = str_time.indexOf('m');
-    } else {
-      pos_m_start = pos_h_end + 1;
-      pos_m_end = str_time.indexOf('m');
-    }
-
-    days = str_time.substring(pos_d_start, pos_d_end) === '' ? '0' : str_time.substring(pos_d_start, pos_d_end);
-    hours = str_time.substring(pos_h_start, pos_h_end) === '' ? '0' : str_time.substring(pos_h_start, pos_h_end);
-    minutes = str_time.substring(pos_m_start, pos_m_end) === '' ? '0' : str_time.substring(pos_m_start, pos_m_end);
-
-
-    return days.trim() + ' days, ' + hours.trim() + ':' + minutes.trim() + ':0';
-  }
-
+  /**
+   * Function to for the dev to test the form without sending the request
+   */
   testForm() {
-
+    console.log(this.triggerConditions);
+    console.log(this.endConditions);
+    this.onCreateTask(true);
   }
 
   /**
-   * Function that is triggered when a new Team is being created (when button "Create new team" is pressed)
+   * Function that is triggered when a new Task is being created (when button "Create new task" is pressed)
    */
-  onCreateTask() {
+  onCreateTask(test = false) {
     const formValues = this.createForm.value;
 
     const teams = [];
@@ -370,12 +411,13 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
     const equipment = formValues.equipment ? formValues.equipment[0].id : null;
 
-    const end_date = this.taskService.normaliseEndDateValue(formValues.end_date);
+    const end_date = formValues.end_date ? this.taskService.normaliseEndDateValue(formValues.end_date) : null;
 
-    const time = this.normaliseDurationValue(formValues.time);
+    const time = formValues.time ? this.taskService.normaliseDurationValue(formValues.time, ['d', 'h', 'm']) : '';
 
-    const task_type = null;
-    const file = [];
+    const files = this.files;
+
+    const task_type = 1;
     const over = false;
 
     const newTask = new Task(1,
@@ -387,18 +429,25 @@ export class NewTaskComponent implements OnInit, OnDestroy {
                             equipment,
                             teams,
                             task_type,
-                            file,
+                            files,
                             over);
 
-    this.taskService.createTask(newTask).subscribe(
-      (task: Task) => {
-        this.router.navigate(['/tasks']);
-        this.taskService.getTasks();
-      },
-      (error) => {
-        this.creationError = true;
-      }
-    );
+
+
+    if (test === true) {
+      console.log(newTask);
+    } else {
+      this.taskService.createTask(newTask).subscribe(
+        (task: Task) => {
+          this.createFieldObjects(task.id);
+          this.router.navigate(['/tasks']);
+          this.taskService.getTasks();
+        },
+        (error) => {
+          this.creationError = true;
+        }
+      );
+    }
   }
 
   /**

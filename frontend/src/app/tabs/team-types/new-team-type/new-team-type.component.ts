@@ -113,7 +113,7 @@ export class NewTeamTypeComponent implements OnInit {
   initForm() {
     this.teamTypeForm = this.formBuilder.group({
       name: ['', Validators.required],
-      permissions: ['', Validators.required],
+      permissions: [''],
       teams: ['']
     });
   }
@@ -131,9 +131,11 @@ export class NewTeamTypeComponent implements OnInit {
     const id = 0;
     const name = formValue[nameStr];
     const permissions = [];
-    formValue[permissionsStr].forEach(item => {
-      permissions.push(item.id);
-    });
+    if (formValue[permissionsStr]) {
+      formValue[permissionsStr].forEach(item => {
+        permissions.push(item.id);
+      });
+    }
     const teams = [];
     if (formValue[teamsStr]) {
       formValue[teamsStr].forEach(item => {

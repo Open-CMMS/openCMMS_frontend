@@ -203,10 +203,14 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   initDateInput() {
-    const tab_date = this.task.end_date.split('-');
-    this.date = {year: parseInt(tab_date[0], 10),
-                month: parseInt(tab_date[1], 10),
-                day: parseInt(tab_date[2], 10)};
+    if (this.task.end_date) {
+      const tab_date = this.task.end_date.split('-');
+      this.date = {year: parseInt(tab_date[0], 10),
+                  month: parseInt(tab_date[1], 10),
+                  day: parseInt(tab_date[2], 10)};
+    } else {
+      this.date = null;
+    }
   }
 
   formatDurationStringAndInitDurationInput() {
