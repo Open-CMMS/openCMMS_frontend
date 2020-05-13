@@ -3,7 +3,7 @@
         <h3 class="font-weight-bold">Users Management</h3>
     </div>
     <div class="container-fluid row my-3">
-        <button class="btn btn-primary" (click)="onCreateUser()"><fa-icon [icon]="faPlus"></fa-icon> Create new User</button>
+        <button class="btn btn-primary" (click)="onCreateUser()" *ngIf="onAddUserPermission()"><fa-icon [icon]="faPlus"></fa-icon> Create new User</button>
     </div>
     <app-users-list></app-users-list>
 </div>

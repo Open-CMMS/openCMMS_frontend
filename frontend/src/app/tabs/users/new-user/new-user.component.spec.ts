@@ -38,8 +38,6 @@ describe('NewUserComponent', () => {
     expect(component.createForm.contains('firstName')).toBe(true);
     expect(component.createForm.contains('lastName')).toBe(true);
     expect(component.createForm.contains('email')).toBe(true);
-    expect(component.createForm.contains('password')).toBe(true);
-    expect(component.createForm.contains('confPassword')).toBe(true);
   });
 
 });

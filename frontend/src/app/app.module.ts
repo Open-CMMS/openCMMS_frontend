@@ -41,11 +41,22 @@ import { EquipmentService } from './services/equipments/equipment.service';
 import { TaskService } from './services/tasks/task.service';
 import { UtilsService } from './services/utils/utils.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FileService } from './services/files/file.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { appRoutingModule } from './app-routing.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { JwtInterceptorService } from './services/jwt-interceptor/jwt-interceptor.service';
+<<<<<<< HEAD
 import { TaskTypeService } from './services/task-types/task-type.service';
+import { EquipmentTypeService } from './services/equipment-types/equipment-type.service';
+=======
+import { EquipmentTypeService } from './services/equipment-types/equipment-type.service';
+import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
+import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-type-details/equipment-type-details.component';
+import { EquipmentTypeManagementComponent } from './tabs/equipment-types/equipment-type-management/equipment-type-management.component';
+import { EquipmentTypesListComponent } from './tabs/equipment-types/equipment-types-list/equipment-types-list.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+>>>>>>> dev
 
 @NgModule({
   declarations: [
@@ -75,7 +86,12 @@ import { TaskTypeService } from './services/task-types/task-type.service';
     EquipmentManagementComponent,
     EquipmentsListComponent,
     EquipmentDetailsComponent,
-    NewEquipmentComponent
+    NewEquipmentComponent,
+    NewEquipmentTypeComponent,
+    EquipmentTypeDetailsComponent,
+    EquipmentTypeManagementComponent,
+    EquipmentTypesListComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -100,7 +116,9 @@ import { TaskTypeService } from './services/task-types/task-type.service';
     TaskService,
     EquipmentService,
     UtilsService,
-    TaskTypeService
+    TaskTypeService,
+    FileService,
+    EquipmentTypeService
   ],
   bootstrap: [AppComponent]
 })

@@ -40,6 +40,52 @@
     </div>
 </ng-template>
 
+<ng-template #contentSetPassword let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-modify">Set a new password</h4>
+    </div>
+    <div class="modal-body">
+        <div class="col-sm-8 col-sm-offset-2">
+            <form class="form" [formGroup]="setPasswordForm">
+                <div class="row justify-content-center">
+                    <div class="form-group">
+                        <label for="password">Password :</label>
+                        <input type="password" id="password" class="form-control" formControlName="password"
+                        [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.password.errors }" />
+                        <div *ngIf="submitted && this.setPasswordForm.controls.password.errors" class="invalid-feedback">
+                            <div *ngIf="this.setPasswordForm.controls.password.errors.required">
+                                Password is required
+                            </div>
+                            <div *ngIf="this.setPasswordForm.controls.password.errors.minlength">
+                                Password must be at least 7 characters
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="form-group">
+                        <label for="confPassword" >Confirm Password :</label>
+                        <input type="password" id="confPassword" class="form-control" formControlName="confPassword"
+                        [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.confPassword.errors }" />
+                        <div *ngIf="submitted && this.setPasswordForm.controls.confPassword.errors" class="invalid-feedback">
+                            <div *ngIf="this.setPasswordForm.controls.confPassword.errors.required">
+                                Confirm Password is required
+                            </div>
+                            <div *ngIf="this.setPasswordForm.controls.confPassword.errors.CrossMatch">
+                                Passwords must match
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Set new password</button>
+    </div>
+</ng-template>
+
 
 <div class="container-fluid col-10 mt-3 justify-content-center">
     <div class="container-fluid d-flex justify-content-between">
@@ -65,5 +111,47 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="row mt-5" *ngIf="onInfoPage">
+        <div class="col-12">
+            <button class="btn btn-primary" (click)="onActivateChangePassword()">Change Password</button>
+        </div>
+    </div>
+    <div class="col-12 mt-5">
+        <form class="form" [formGroup]="setPasswordForm" (ngSubmit)="onSetPassword()" *ngIf="changePwdActivated">
+            <div class="row">
+                <div class="form-group">
+                    <label for="password">Password :</label>
+                    <input type="password" id="password" class="form-control" formControlName="password"
+                    [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.password.errors }" />
+                    <div *ngIf="submitted && this.setPasswordForm.controls.password.errors" class="invalid-feedback">
+                        <div *ngIf="this.setPasswordForm.controls.password.errors.required">
+                            Password is required
+                        </div>
+                        <div *ngIf="this.setPasswordForm.controls.password.errors.minlength">
+                            Password must be at least 7 characters
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="confPassword" >Confirm Password :</label>
+                    <input type="password" id="confPassword" class="form-control" formControlName="confPassword"
+                    [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.confPassword.errors }" />
+                    <div *ngIf="submitted && this.setPasswordForm.controls.confPassword.errors" class="invalid-feedback">
+                        <div *ngIf="this.setPasswordForm.controls.confPassword.errors.required">
+                            Confirm Password is required
+                        </div>
+                        <div *ngIf="this.setPasswordForm.controls.confPassword.errors.CrossMatch">
+                            Passwords must match
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <button class="btn btn-primary mr-1">Set new password</button>
+            </div>
+        </form>
     </div>
 </div>

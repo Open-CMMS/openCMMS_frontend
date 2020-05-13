@@ -78,6 +78,28 @@ export class UserService {
   }
 
   /**
+   * Fonction to update a existing user in the database
+   * @param userModified User concerned with the modification and with modifications applied
+   */
+  updateUserPassword(userModified: UserProfile, newPassword: string) {
+
+    const password = newPassword;
+
+    const userJson = JSON.stringify({password});
+
+    const httpOptions = {
+      headers : new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.httpClient
+                      .put<UserProfile>(this.BASE_URL_API + '/api/usersmanagement/users/' + userModified.id + '/',
+                                  userJson,
+                                  httpOptions);
+  }
+
+  /**
    * Fonction to save a new user in the database
    * @param userToCreate User to be saved in the server's database
    */

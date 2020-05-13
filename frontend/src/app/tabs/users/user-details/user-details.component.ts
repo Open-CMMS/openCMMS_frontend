@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { faPencilAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FormBuilder, FormGroup} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { Subscription } from 'rxjs';
+import { CrossMatch } from 'src/app/shares/cross-match.validator';
 
 @Component({
   selector: 'app-user-details',
@@ -31,9 +32,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   last_name: string;
   email: string;
   user: UserProfile = null;
-  userUpdateForm: FormGroup;
   currentUserSubscription: Subscription;
   currentUser: UserProfile;
+  onInfoPage = false;
+  submitted = false;
+  changePwdActivated = false;
+
+  // Forms
+  userUpdateForm: FormGroup;
+  setPasswordForm: FormGroup;
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -67,8 +74,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       if (params.id) {
         id = +params.id;
+        this.onInfoPage = false;
       } else if (this.currentUser !== null) {
         id = this.currentUser.id;
+        this.onInfoPage = true;
       }
     });
     this.userService.getUser(id)
@@ -132,6 +141,29 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function to set a new password
+   */
+  onSetPassword() {
+    this.submitted = true;
+
+    if (this.setPasswordForm.invalid) {
+      return;
+    }
+
+    const formValues = this.setPasswordForm.value;
+    this.userService.updateUserPassword(this.user, formValues.password).subscribe(userUpdated => {
+      this.updateError = false;
+      this.onInfoPage = true;
+      this.changePwdActivated = false;
+      this.initForm();
+      this.userService.getUsers();
+    },
+    (error) => {
+      this.updateError = true;
+    });
+  }
+
+  /**
    * Function that opens the modal to confirm a deletion
    * @param content the modal template to load
    */
@@ -156,6 +188,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function that displays the form to change a user's
+   * password when Change password is clicked
+   */
+  onActivateChangePassword() {
+    this.changePwdActivated = true;
+    this.onInfoPage = false;
+  }
+
+  /**
    * Fonction that initialise the form with the right values
    */
   initForm() {
@@ -168,6 +209,12 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       lastName: this.user.last_name,
       firstName: this.user.first_name,
       email: this.user.email
+    });
+    this.setPasswordForm = this.formBuilder.group({
+      password: ['', [Validators.required, Validators.minLength(7)]],
+      confPassword: ['', Validators.required]
+    }, {
+      validator: CrossMatch('password', 'confPassword')
     });
   }
 

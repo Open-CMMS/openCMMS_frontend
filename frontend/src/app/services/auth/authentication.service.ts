@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { UserProfile } from '../../models/user-profile';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 
 @Injectable({providedIn: 'root'})
@@ -17,8 +18,9 @@ export class AuthenticationService {
   /**
    * Constructor of AutheticationService
    * @param httpClient The http instance
+   * @param router the service used to handle routing
    */
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private router: Router) {
     if (localStorage.getItem('currentUser') !== 'null' && localStorage.getItem('currentUserPerms') !== 'null') {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
       this.userPermissions = JSON.parse(localStorage.getItem('currentUserPerms'));
@@ -93,7 +95,10 @@ export class AuthenticationService {
                           resolve();
                         },
                         error => {
-                          console.log('Connection error !: ' + error);
+                          console.log(error.error.is_blocked);
+                          if (error.error.is_blocked === 'True') {
+                            this.router.navigate(['account-blocked']);
+                          }
                           reject(error);
                         }
                       );
@@ -138,5 +143,40 @@ export class AuthenticationService {
    */
   is_first_user() {
     return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/users/is_first_user');
+  }
+
+  /**
+   * Fuction that verifies is the access to set a password is valid
+   * @param username the user that wants to reset his password
+   * @param token the token given in the URL by the API
+   */
+  verifyToken(username: string, token: string) {
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+
+    const json = '{"username": "' + username + '", "token": "' + token + '"}';
+
+    return this.httpClient.post<any>(this.BASE_URL_API + '/api/usersmanagement/check_token', json, httpOptions );
+  }
+
+  /**
+   * Fuction that set the new password
+   * @param username the user that wants to set his password
+   * @param password the password to set
+   */
+  setPassword(username: string, password: string, token: string) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+
+    const json = '{"username": "' + username + '", "password": "' + password + '", "token": "' + token + '"}';
+
+    return this.httpClient.post<any>(this.BASE_URL_API + '/api/usersmanagement/set_password', json, httpOptions);
   }
 }
