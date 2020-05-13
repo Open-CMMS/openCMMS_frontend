@@ -42,9 +42,12 @@ const appRoutes: Routes = [
     }
   },
   {
-<<<<<<< HEAD
-    path: '', redirectTo: 'tasks', pathMatch: 'full'
-=======
+    path: '', redirectTo: 'tasks', pathMatch: 'full',
+    data: {
+      requiredPerms: []
+    }
+  },
+  {
     path: 'reset-password', component: ResetPasswordComponent,
     data: {
       requiredPerms: []
@@ -56,7 +59,6 @@ const appRoutes: Routes = [
     data: {
       requiredPerms: []
     }
->>>>>>> dev
   },
   {
     path: 'settings', component: SettingsComponent,

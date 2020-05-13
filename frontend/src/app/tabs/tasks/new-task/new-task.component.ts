@@ -11,6 +11,7 @@ import { Task } from 'src/app/models/task';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { faCalendar, faInfoCircle, faPlusSquare, faMinusCircle, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { FileService } from 'src/app/services/files/file.service';
 
 @Component({
   selector: 'app-new-task',
