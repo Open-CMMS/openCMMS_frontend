@@ -43,12 +43,10 @@ import { UtilsService } from './services/utils/utils.service';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FileService } from './services/files/file.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
 import { appRoutingModule } from './app-routing.module';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { JwtInterceptorService } from './services/jwt-interceptor/jwt-interceptor.service';
+import { TaskTypeService } from './services/task-types/task-type.service';
 import { EquipmentTypeService } from './services/equipment-types/equipment-type.service';
 import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
 import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-type-details/equipment-type-details.component';
@@ -99,9 +97,6 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     HttpClientModule,
     NgbModule,
     BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
     appRoutingModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
@@ -117,6 +112,7 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
     TaskService,
     EquipmentService,
     UtilsService,
+    TaskTypeService,
     FileService,
     EquipmentTypeService
   ],

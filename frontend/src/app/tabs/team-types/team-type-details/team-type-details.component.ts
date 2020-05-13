@@ -207,8 +207,8 @@ export class TeamTypeDetailsComponent implements OnInit {
   initForm() {
     this.teamTypeForm = this.formBuilder.group({
       name: ['', Validators.required],
-      permissions: ['', Validators.required],
-      teams: ['', Validators.required]
+      permissions: [''],
+      teams: ['']
     });
   }
 
@@ -225,13 +225,17 @@ export class TeamTypeDetailsComponent implements OnInit {
     const id = this.id;
     const name = formValue[nameStr];
     const permissions = [];
-    formValue[permissionsStr].forEach(item => {
-      permissions.push(item.id);
-    });
+    if (formValue[permissionsStr]) {
+      formValue[permissionsStr].forEach(item => {
+        permissions.push(item.id);
+      });
+    }
     const teams = [];
-    formValue[teamsStr].forEach(item => {
-      teams.push(item.id);
-    });
+    if (formValue[teamsStr]) {
+      formValue[teamsStr].forEach(item => {
+        teams.push(item.id);
+      });
+    }
     this.teamTypeService.updateTeamType(new TeamType(id, name, permissions, teams)).subscribe(
         team_type => {
           const old_team_type = this.teamTypeService.team_types.find((value) => {

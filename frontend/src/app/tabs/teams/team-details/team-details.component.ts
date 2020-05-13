@@ -80,6 +80,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
                     .subscribe((teamGet: Team) => {
                       this.team = new Team(teamGet.id, teamGet.name, teamGet.team_type, teamGet.user_set);
                       // Init team type
+                      // Nb: the team type is required
                       this.teamTypeService.getTeamType(this.team.team_type)
                                           .subscribe(
                                             teamType => {
@@ -105,6 +106,8 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
                   (error) => {
                     this.router.navigate(['/four-oh-four']);
                   });
+
+    // Loading team types and users for teams modification
     this.teamTypesSubscription = this.teamTypeService.team_types_subject.subscribe(
       (teamTypes: TeamType[]) => {
         this.teamTypes = teamTypes;

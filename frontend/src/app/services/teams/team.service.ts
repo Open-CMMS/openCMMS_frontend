@@ -85,7 +85,7 @@ export class TeamService {
 
   /**
    * Function that delete a Team object in database
-   * @param id  the id of the team tot delete
+   * @param id  the id of the team to delete
    */
   deleteTeam(id: number) {
     return this.httpClient.delete<Team>(this.BASE_URL_API + '/api/usersmanagement/teams/' + id);
