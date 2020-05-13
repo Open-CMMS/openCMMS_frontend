@@ -9,7 +9,7 @@ import { EquipmentService } from 'src/app/services/equipments/equipment.service'
 import { Equipment } from 'src/app/models/equipment';
 import { Task } from 'src/app/models/task';
 import { TaskService } from 'src/app/services/tasks/task.service';
-import { faCalendar, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faInfoCircle, faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -28,13 +28,31 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   creationError = false;
 
   faInfoCircle = faInfoCircle;
+  faPlusSquare = faPlusSquare;
+  faMinusCircle = faMinusCircle;
   model: NgbDateStruct;
+
 
   // Multiple Select
   teamsList = [];
   equipmentList = [];
+  triggerConditionsList = [];
+  selectedTriggerCondition = [];
+  endConditionsList = [];
+  selectedEndConditions = [];
   dropdownTeamsSettings: IDropdownSettings;
   dropdownEquipmentsSettings: IDropdownSettings;
+  dropdownTriggerConditionsSettings: IDropdownSettings;
+  dropdownEndConditionsSettings: IDropdownSettings;
+
+  // Trigger Conditions
+  triggerConditions = [];
+  triggerConditionSelectTemplate = null;
+  triggerConditionDurationRegex: string;
+
+  // End Conditions
+  endConditions = [];
+  endConditionSelectTemplate = null;
 
   // Forms
   createForm: FormGroup;
@@ -71,8 +89,112 @@ export class NewTaskComponent implements OnInit, OnDestroy {
         this.initEquipmentsSelect();
       }
     );
+    this.initTriggerConditionsSelect();
+    this.initEndConditionsSelect();
     this.equipmentService.emitEquipments();
     this.initForm();
+  }
+
+  addEndCondition() {
+    const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
+    const objectCopy = JSON.parse(jsonCopy);
+    this.endConditions.push(objectCopy);
+  }
+
+  deleteEndCondition(i: number) {
+    this.endConditions.splice(i, 1);
+  }
+
+  initEndConditionSelectTemplate(end_conditions_types: any[]) {
+    this.endConditionSelectTemplate = {
+        selectedEndCondition: [],
+        endConditionsList: end_conditions_types,
+        dropdownEndConditionsSettings: {
+          singleSelection: true,
+          idField: 'id',
+          textField: 'value',
+          allowSearchFilter: true
+        },
+        value: null,
+        description: null
+      };
+  }
+
+  getEndConditionsTypes() {
+    let id_field: number;
+    const end_conditions_types = [];
+    this.taskService.getFields().subscribe(
+      (fields) => {
+        fields.forEach(field => {
+          if (field.name === 'End Conditions') {
+            id_field = field.id;
+          }
+        });
+        this.taskService.getFieldValues(id_field).subscribe(
+          (field_values) => {
+            field_values.forEach(field_value => {
+              end_conditions_types.push({id: field_value.id, value: field_value.value});
+            });
+            this.initEndConditionSelectTemplate(end_conditions_types);
+          }
+        );
+      }
+    );
+  }
+
+  initEndConditionsSelect() {
+    this.getEndConditionsTypes();
+  }
+
+  addTriggerCondition() {
+    const jsonCopy = JSON.stringify(this.triggerConditionSelectTemplate);
+    const objectCopy = JSON.parse(jsonCopy);
+    this.triggerConditions.push(objectCopy);
+  }
+
+  deleteTriggerCondition(i: number) {
+    this.triggerConditions.splice(i, 1);
+  }
+
+  initTriggerConditionSelectTemplate(trigger_conditions_types: any[]) {
+    this.triggerConditionSelectTemplate = {
+        selectedTriggerCondition: [],
+        triggerConditionsList: trigger_conditions_types,
+        dropdownTriggerConditionsSettings: {
+          singleSelection: true,
+          idField: 'id',
+          textField: 'value',
+          allowSearchFilter: true
+        },
+        value: null,
+        description: null
+      };
+  }
+
+  getTriggerConditionsTypes() {
+    let id_field: number;
+    const trigger_conditions_types = [];
+    this.taskService.getFields().subscribe(
+      (fields) => {
+        fields.forEach(field => {
+          if (field.name === 'Trigger Conditions') {
+            id_field = field.id;
+          }
+        });
+        this.taskService.getFieldValues(id_field).subscribe(
+          (field_values) => {
+            field_values.forEach(field_value => {
+              trigger_conditions_types.push({id: field_value.id, value: field_value.value});
+            });
+            this.initTriggerConditionSelectTemplate(trigger_conditions_types);
+          }
+        );
+      }
+    );
+  }
+
+  initTriggerConditionsSelect() {
+    this.getTriggerConditionsTypes();
   }
 
   /**
@@ -116,6 +238,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function that initialize the fields in the form to create a new Team
    */
   initForm() {
+    this.triggerConditionDurationRegex = '^((([0-9]+)y)?\\s*(([0-9]+)m)?\\s*(([0-9]+)d)?)$';
     const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -127,6 +250,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       teams: ['']
     });
   }
+
 
   normaliseDurationValue(formDurationInput: string): string {
     const str_time = formDurationInput.trim();
@@ -178,36 +302,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   }
 
   testForm() {
-    const formValues = this.createForm.value;
 
-    const teams = [];
-    formValues.teams.forEach(item => {
-      teams.push(item.id);
-    });
-
-    const equipment = formValues.equipment[0].id;
-
-    const end_date = this.taskService.normaliseEndDateValue(formValues.end_date);
-
-    const time = this.normaliseDurationValue(formValues.time);
-
-    const task_type = null;
-    const file = [];
-    const over = false;
-
-    const newTask = new Task(1,
-                            formValues.name,
-                            formValues.description,
-                            end_date,
-                            time,
-                            formValues.is_template,
-                            equipment,
-                            teams,
-                            task_type,
-                            file,
-                            over);
-
-    console.log(newTask);
   }
 
   /**

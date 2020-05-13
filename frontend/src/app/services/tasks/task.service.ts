@@ -156,4 +156,13 @@ export class TaskService {
   getUserTasks(userId: number) {
     return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/usertasklist/' + userId);
   }
+
+  getFieldValues(id_field: number): Observable<any> {
+    return this.httpClient.get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/fieldvalues_for_field/'
+                                                        + id_field + '/');
+  }
+
+  getFields(): Observable<any> {
+    return this.httpClient.get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/fields/');
+  }
 }
