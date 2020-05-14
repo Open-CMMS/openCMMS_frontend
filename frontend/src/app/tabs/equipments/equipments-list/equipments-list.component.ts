@@ -16,7 +16,7 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
   equipments: Equipment[] = [];
-  equipmentsSubscription: Subscription;
+  equipmentsSubscription: Subscription = null;
 
   /**
    * Constructor for the equipmentList component
@@ -35,9 +35,11 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
    * on the backend database and saving them in a local variable.
    */
   ngOnInit(): void {
-    this.equipmentService.getEquipments();
+    this.equipmentsSubscription = null;
+    this.equipments = [];
     this.equipmentsSubscription = this.equipmentService.equipmentsSubject.subscribe(
       (eqs: Equipment[]) => {
+        this.equipments = [];
         this.equipments = eqs;
       }
     );
