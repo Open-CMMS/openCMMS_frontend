@@ -345,7 +345,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
         this.myFiles.push(event.target.files[i]);
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
-        formData.append('is_manual', 'false' );
+        formData.append('is_manual', 'true' );
         this.fileService.uploadFile(formData).subscribe(file => {
           this.files.push(Number(file.id));
         });

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Task } from 'src/app/models/task';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +14,8 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Equipment } from 'src/app/models/equipment';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Subscription } from 'rxjs';
+import { FileService } from 'src/app/services/files/file.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-task-details',
@@ -23,7 +25,7 @@ import { Subscription } from 'rxjs';
 /**
  * Component used to display the details of a task and to validate it.
  */
-export class TaskDetailsComponent implements OnInit {
+export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Icons
   faTrash = faTrash;
   faPlusSquare = faPlusSquare;
@@ -48,6 +50,18 @@ export class TaskDetailsComponent implements OnInit {
   date: NgbDateStruct;
   durationDays = 0;
   durationTime = null;
+  allFieldObjects: any[] = [];
+  taskFieldObjects: any[] = [];
+  endConditions: any[] = [];
+  triggerConditions: any[] = [];
+  fields: any[] = [];
+  files: any[] = [];
+  BASE_URL_API = environment.baseUrl;
+  endConditionValues: any[] = [];
+  fileToUpload: any[] = [];
+  validationError = false;
+  endConditionsOriginal: any[] = [];
+
 
   descriptionInputEnabled = false;
   dateInputEnabled = false;
@@ -55,6 +69,8 @@ export class TaskDetailsComponent implements OnInit {
   equipmentInputEnabled = false;
 
   teamSubscription: Subscription;
+  tasksSubscription: Subscription;
+  equipmentSubscription: Subscription;
 
   // Forms
   updateForm: FormGroup;
@@ -62,7 +78,19 @@ export class TaskDetailsComponent implements OnInit {
   dropdownTeamsSettings: IDropdownSettings;
   dropdownEquipmentsSettings: IDropdownSettings;
 
-
+  /**
+   * Constructor of TaskDetailsComponent
+   * @param taskService the service used to handle tasks
+   * @param route the service used to handle route parameters
+   * @param teamService the service used to handle teams
+   * @param equipmentService the service used to handle equipments
+   * @param router the service used to handle routing
+   * @param modalService the service used to handle modals
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the service used to handle authentication
+   * @param formBuilder the service used to handle forms
+   * @param fileService the srevice used to handle files
+   */
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,
               private teamService: TeamService,
@@ -71,7 +99,8 @@ export class TaskDetailsComponent implements OnInit {
               private modalService: NgbModal,
               private utilsService: UtilsService,
               private authenticationService: AuthenticationService,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private fileService: FileService) { }
 
   ngOnInit(): void {
     let id: number;
@@ -79,6 +108,7 @@ export class TaskDetailsComponent implements OnInit {
       id = +params.id;
     });
 
+    // Get the concerned task and its associated objects (equipment, teams, ...)
     this.taskService.getTask(id).subscribe(
       (task: Task) => {
         this.task = task;
@@ -98,29 +128,144 @@ export class TaskDetailsComponent implements OnInit {
             this.initTeamsDiff();
           });
         });
+        this.files = [];
+        if (this.task.files) {
+          this.task.files.forEach((fileId) => {
+            this.fileService.getFile(fileId).subscribe(
+              (res: any) => {
+                const file = {
+                  fileName: decodeURI(res.file.split('/')[1]),
+                  fileLink: '/' + res.file
+                };
+                this.files.push(file);
+              }
+            );
+          });
+        }
         this.loaded = true;
         this.formatDurationStringAndInitDurationInput();
         this.initDateInput();
       }
     );
 
-    this.teamService.teamSubject.subscribe(
+    // Subscribing to the teams list
+    this.teamSubscription = this.teamService.teamSubject.subscribe(
       (teams) => {
         this.teams = teams;
       }
     );
 
-    this.equipmentService.equipmentsSubject.subscribe(
+    // Subscribing to the equipments
+    this.equipmentSubscription = this.equipmentService.equipmentsSubject.subscribe(
       (equipments) => {
         this.equipments = equipments;
         this.initEquipmentsSelect();
       }
     );
+
+    // Subscribing to the field objects
+    this.tasksSubscription = this.taskService.fieldObjectSubject.subscribe(
+      (fieldObjects) => {
+        this.allFieldObjects = fieldObjects;
+        this.getTaskFieldObjects(id);
+      }
+    );
+
+    // Updating every subscriptions
     this.equipmentService.emitEquipments();
     this.teamService.emitTeams();
+    this.taskService.emitFieldObjects();
+
+    // Getting triggering and end conditions of the task separated
+    this.taskService.getFields().subscribe(
+      (fields) => {
+        this.fields = fields;
+        this.separateFieldsByTypes();
+      }
+    );
+
+    // initialize Forms
     this.initForm();
   }
 
+  /**
+   * Function that get field objects associated to the displayed task
+   * @param id the id of the displayed task
+   */
+  getTaskFieldObjects(id: number) {
+    this.taskFieldObjects = [];
+    this.allFieldObjects.forEach((fieldObject) => {
+      if (fieldObject.described_object === 'Task: ' + id) {
+        this.taskFieldObjects.push(fieldObject);
+      }
+    });
+  }
+
+  /**
+   * Functions that splits the field objects into two groups: triggerConditions and endConditions
+   */
+  separateFieldsByTypes() {
+    this.endConditions = [];
+    this.triggerConditions = [];
+    let typeOfField: string;
+    this.taskFieldObjects.forEach(field => {
+        if (this.fields[field.field - 1].name === 'End Conditions') {
+          this.endConditionsOriginal.push(field);
+          this.taskService.getFieldValues(field.field).subscribe(
+            (fieldValues) => {
+              fieldValues.forEach((fieldValue) => {
+                if (field.field_value === fieldValue.id) {
+                  typeOfField = fieldValue.value;
+                }
+              });
+              const endCondition = {
+                id: field.id,
+                type: typeOfField,
+                description: field.description,
+                value: field.value
+              };
+              this.endConditions.push(endCondition);
+
+              switch (endCondition.type) {
+                case 'Case a cocher':
+                  this.endConditionValues.push(false);
+                  break;
+                case 'Valeur numerique à rentrer':
+                  this.endConditionValues.push(null);
+                  break;
+                case 'Description':
+                  this.endConditionValues.push('');
+                  break;
+                case 'Photo':
+                  this.endConditionValues.push('');
+                  break;
+              }
+            }
+          );
+        } else if (this.fields[field.field - 1].name === 'Trigger Conditions') {
+          this.taskService.getFieldValues(field.field).subscribe(
+            (fieldValues) => {
+              fieldValues.forEach((fieldValue) => {
+                if (field.field_value === fieldValue.id) {
+                  typeOfField = fieldValue.value;
+                }
+              });
+              const triggerCondition = {
+                type: typeOfField,
+                description: field.description,
+                value: field.value
+              };
+              this.triggerConditions.push(triggerCondition);
+            }
+          );
+        }
+      }
+    );
+  }
+
+  /**
+   * Function that initializes the equipment multiselect
+   */
   initEquipmentsSelect() {
     this.equipmentsList = [];
     this.equipments.forEach(equipment => {
@@ -136,6 +281,9 @@ export class TaskDetailsComponent implements OnInit {
     };
   }
 
+  /**
+   * Function that initializes the Teams multiselect with only teams that are not on this task
+   */
   initTeamsDiff() {
     this.teamSubscription = this.teamService.teamSubject.subscribe(
       (teams: Team[]) => {
@@ -148,6 +296,10 @@ export class TaskDetailsComponent implements OnInit {
     );
   }
 
+  /**
+   * Function that enbles the input according to the attribute
+   * @param attribute the attribute describing the input type
+   */
   enableInput(attribute: string) {
     switch (attribute) {
       case 'description':
@@ -167,6 +319,10 @@ export class TaskDetailsComponent implements OnInit {
     }
   }
 
+  /**
+   * Function that saves the input according to its type
+   * @param attribute the attribute describing the type of input
+   */
   saveInput(attribute: string) {
     switch (attribute) {
       case 'description':
@@ -202,6 +358,9 @@ export class TaskDetailsComponent implements OnInit {
     );
   }
 
+  /**
+   * Function that initializes the date input
+   */
   initDateInput() {
     if (this.task.end_date) {
       const tab_date = this.task.end_date.split('-');
@@ -213,6 +372,9 @@ export class TaskDetailsComponent implements OnInit {
     }
   }
 
+  /**
+   * Function that realizes the shaping of the duration for communication with the API
+   */
   formatDurationStringAndInitDurationInput() {
     const days_time_separator = ' ';
     const hours_minutes_separator = ':';
@@ -252,6 +414,10 @@ export class TaskDetailsComponent implements OnInit {
     this.taskDuration = days_str + time;
   }
 
+  /**
+   * Function that navigate the equipment detail page linked to this task
+   * @param idEquipment the id of the equipment to consult
+   */
   onViewEquipment(idEquipment: number) {
     this.router.navigate(['/equipments', idEquipment]);
   }
@@ -415,6 +581,120 @@ export class TaskDetailsComponent implements OnInit {
         this.ngOnInit();
       }
     );
+  }
+
+  /**
+   * Function that realises all the requests to validate the task when the button is clicked
+   */
+  onValidateTask() {
+
+    if (this.checkFormContent()) {
+      // upload Files
+      const tempNewFilesIds: number[] = [];
+      let fileCount = 0;
+      if (this.fileToUpload.length > 0) {
+        for (const file of this.fileToUpload) {
+          this.fileService.uploadFile(file.data).subscribe(fileUploaded => {
+            tempNewFilesIds.push(fileUploaded.id);
+            fileCount++;
+            if (fileCount === this.fileToUpload.length) {
+              const tempTask = this.task;
+              for (const id of tempNewFilesIds) {
+                tempTask.files.push(id);
+              }
+              tempTask.over = true;
+              this.taskService.updateTask(tempTask.id, tempTask).subscribe(
+                (res) => {
+                  this.ngOnInit();
+                  this.router.navigate(['tasks-management']);
+                }
+              );
+            }
+          });
+        }
+      } else {
+        const tempTask = this.task;
+        tempTask.over = true;
+        this.taskService.updateTask(tempTask.id, tempTask).subscribe(
+          (res) => {
+            this.ngOnInit();
+            this.router.navigate(['tasks-management']);
+          }
+        );
+      }
+      // update FieldObjects values
+      let i = 0;
+      for (const endCondition of this.endConditionsOriginal) {
+        endCondition.value = this.endConditionValues[i].toString();
+        console.log(endCondition);
+        this.taskService.updateFieldObject(endCondition).subscribe();
+        i++;
+      }
+    } else {
+      this.validationError = true;
+    }
+
+  }
+
+  /**
+   * Function that registers the image to load
+   * @param event the event linked to the image field modification
+   */
+  onSetPhotoToUpload(i, event) {
+    if (this.fileToUpload.length > 0) {
+      this.removeOldFile(i);
+    }
+    let formData: FormData;
+    if (!this.files.includes(event.target.files[0])) {
+      formData = new FormData();
+      formData.append('file', event.target.files[0], event.target.files[0].name);
+      formData.append('is_manual', 'false' );
+      this.fileToUpload.push({id: i, data: formData});
+    }
+  }
+
+  /**
+   * Function that removes a file from the files to upload on change of a photo field
+   * @param fileId the id of the concerned photo field
+   */
+  removeOldFile(fileId) {
+    let i = 0;
+    let found = false;
+    while (!found && i < this.fileToUpload.length) {
+      if (fileId === this.fileToUpload[i].id) {
+        found = true;
+      } else {
+        i++;
+      }
+    }
+    if (found) {
+      this.fileToUpload.splice(i, 1);
+    }
+  }
+
+  /**
+   * Function that checks if the validation criterions are filled
+   */
+  checkFormContent() {
+    for (const element of this.endConditionValues) {
+      if (typeof element === typeof false) {
+        if (!element) { return false; }
+      } else if (typeof element === typeof 12) {
+        if (element === null) { return false; }
+      } else if (typeof element === typeof 'string') {
+        if (element === null || element === '') { return false; }
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Function that unsubscibe all the subscriptions
+   */
+  ngOnDestroy() {
+    this.teamSubscription.unsubscribe();
+    this.tasksSubscription.unsubscribe();
+    this.equipmentSubscription.unsubscribe();
   }
 
 }
