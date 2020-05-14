@@ -38,6 +38,7 @@
                 <div class="form-group">
                     <label for="type">Equipment type</label>
                     <input type="text" id="equipment_type" class="form-control" formControlName="equipment_type">
+
                 </div>
             </form>
         </div>
@@ -86,7 +87,7 @@
                 <div class="px-2 py-1">
                     <p *ngIf="loaded"><span class="font-weight-bold">Name :</span> {{ currentEquipment.name }} <p>
                     <p *ngIf="loaded"><span class="font-weight-bold">Id :</span> {{ currentEquipment.id }} </p>
-                    <p *ngIf="loaded"><span class="font-weight-bold">Equipment type :</span> {{ currentEquipment.equipment_type }} </p>
+                    <p *ngIf="loaded"><span class="font-weight-bold">Equipment type :</span> {{ equipmentTypeName }} </p>
                     <!-- <p *ngIf="loaded"><span class="font-weight-bold">Files :</span> </p>
                     <div class="list-group">
                         <ul class="list-group">
@@ -121,7 +122,7 @@
                     *ngFor="let filePath of myFilesPath"
                     >
                     <div class="container-fluid row justify-content-between">
-                        <a style="margin-bottom: 0px; vertical-align: middle;" [href] ="createDownloadLink(filePath)">{{filePath}})</a>
+                        <a style="margin-bottom: 0px; vertical-align: middle;" [href] ="createDownloadLink(filePath)">{{filePath}}</a>
                         <button class="btn btn-danger" (click)="openDeleteFile(filePath,contentDeleteFile)" *ngIf="onChangeEquipmentPermission()"><fa-icon [icon]="faMinusSquare" size="2x"></fa-icon></button>
                         <!-- <button class="btn btn-danger" (click)="openDeleteFile(filePath,contentDeleteFile)"><fa-icon [icon]="faMinusSquare" size="2x"></fa-icon></button> -->
                     </div>

@@ -41,6 +41,7 @@ describe('EquipmentDetailsComponent', () => {
     component.onDeleteEquipment();
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/');
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/NaN/');
+    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/6/');
     expect(req.request.method).toBe('DELETE');
     httpTestingController.verify();
@@ -52,6 +53,7 @@ describe('EquipmentDetailsComponent', () => {
     component.onModifyEquipment();
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/');
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/NaN/');
+    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/6/');
     expect(req.request.method).toBe('PUT');
     httpTestingController.verify();

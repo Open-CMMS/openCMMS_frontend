@@ -11,6 +11,9 @@ import { Subject } from 'rxjs/internal/Subject';
 import { FileService } from 'src/app/services/files/file.service';
 import { faMinusSquare } from '@fortawesome/free-regular-svg-icons';
 import { environment } from 'src/environments/environment';
+import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
+import { EquipmentType } from 'src/app/models/equipment-type';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-equipment-details',
@@ -31,10 +34,13 @@ export class EquipmentDetailsComponent implements OnInit {
   files: number[];
   equipment_type: number;
   currentEquipment: Equipment = null;
+  equipmentTypeName: string;
   equipmentUpdateForm: FormGroup;
   myFiles: File[] = [];
+  equipmentTypesSubscription: Subscription;
   myFilesPath: string[] = [];
   private BASE_URL_API = environment.baseUrl;
+  equipmentTypes: EquipmentType[];
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -45,6 +51,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param modalService the service used to handle modal windows
    * @param authenticationService the auth service
    * @param utilsService the service used for useful functions
+   * @param fileService the file service
    */
   constructor(private router: Router,
               private equipmentService: EquipmentService,
@@ -53,7 +60,8 @@ export class EquipmentDetailsComponent implements OnInit {
               private modalService: NgbModal,
               private authenticationService: AuthenticationService,
               private utilsService: UtilsService,
-              private fileService: FileService) { }
+              private fileService: FileService,
+              private equipmentTypeService: EquipmentTypeService) { }
 
   /**
    * Function that initialize the component when loaded
@@ -65,11 +73,16 @@ export class EquipmentDetailsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = +params.id;
     });
+    this.equipmentTypesSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
+      (equipmentTypes: EquipmentType[]) => {
+        this.equipmentTypes = equipmentTypes;
+    });
     this.equipmentService.getEquipment(this.id)
       .subscribe(eq => {
         this.currentEquipment = eq;
         this.name = this.currentEquipment.name;
         this.equipment_type = this.currentEquipment.equipment_type;
+        this.getEquipmentTypeName(this.currentEquipment.equipment_type);
         this.files = this.currentEquipment.files;
         this.loaded = true;
         this.initForm();
@@ -105,6 +118,7 @@ export class EquipmentDetailsComponent implements OnInit {
     }
     if (this.currentEquipment.equipment_type !== formValues.equipment_type) {
       this.currentEquipment.equipment_type = formValues.equipment_type;
+      this.getEquipmentTypeName(this.currentEquipment.equipment_type);
     }
     if (this.currentEquipment.files !== formValues.files) {
       this.currentEquipment.files = formValues.files;
@@ -192,10 +206,8 @@ export class EquipmentDetailsComponent implements OnInit {
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
         formData.append('is_manual', 'false' );
-        console.log(formData.toString());
         this.fileService.uploadFile(formData).subscribe(file => {
           this.files.push(Number(file.id));
-          console.log('ok');
         });
       }
     }
@@ -227,7 +239,6 @@ export class EquipmentDetailsComponent implements OnInit {
     if (index2 !== -1) {
         this.files.splice(index2, 1);
     }
-    console.log(fileId);
     this.fileService.deleteFile(fileId);
   }
 
@@ -261,5 +272,13 @@ export class EquipmentDetailsComponent implements OnInit {
    */
   createDownloadLink(filePath: string) {
     return this.BASE_URL_API + '/media/' + filePath;
+  }
+
+  getEquipmentTypeName(id: number) {
+    this.equipmentTypeService.getEquipmentType(id).subscribe(eqType => {
+      this.equipmentTypeName = eqType.name;
+    }
+
+    );
   }
 }
