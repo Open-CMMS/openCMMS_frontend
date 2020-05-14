@@ -36,7 +36,7 @@ describe('EquipmentDetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  it('should delete the user', () => {
+  it('should delete the equipment', () => {
     component.currentEquipment = new Equipment(6, 'test', 2, [0, 1]);
     component.onDeleteEquipment();
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/');
@@ -46,7 +46,7 @@ describe('EquipmentDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should update the user', () => {
+  it('should update the equipment', () => {
     component.currentEquipment = new Equipment(6, 'test', 2, [0, 1]);
     component.initForm();
     component.onModifyEquipment();
@@ -62,11 +62,11 @@ describe('EquipmentDetailsComponent', () => {
     component.initForm();
     expect(component.equipmentUpdateForm.contains('name')).toBe(true);
     expect(component.equipmentUpdateForm.contains('equipment_type')).toBe(true);
-    // expect(component.equipmentUpdateForm.contains('files')).toBe(true);
+    expect(component.equipmentUpdateForm.contains('files')).toBe(true);
 
 
     expect(component.equipmentUpdateForm.value.name).toBe(component.currentEquipment.name);
     expect(component.equipmentUpdateForm.value.equipment_type).toBe(component.currentEquipment.equipment_type);
-    // expect(component.equipmentUpdateForm.value.lastName).toBe(component.currentEquipment.last_name);
+    expect(component.equipmentUpdateForm.value.files).toBe(component.currentEquipment.files);
   });
 });
