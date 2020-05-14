@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-equipment-management',
@@ -7,6 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./equipment-management.component.scss']
 })
 export class EquipmentManagementComponent implements OnInit {
+  faPlus = faPlus;
   /**
    * Constructor for the UserManagement component
    * @param router the service used to handle redirection
