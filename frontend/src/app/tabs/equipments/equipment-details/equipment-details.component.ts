@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPencilAlt, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { Equipment } from 'src/app/models/equipment';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -7,6 +7,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { UtilsService } from 'src/app/services/utils/utils.service';
+import { Subject } from 'rxjs/internal/Subject';
+import { FileService } from 'src/app/services/files/file.service';
+import { faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-equipment-details',
@@ -15,16 +19,22 @@ import { UtilsService } from 'src/app/services/utils/utils.service';
 })
 export class EquipmentDetailsComponent implements OnInit {
 // Local variables
+  faPlusSquare = faPlusSquare;
   faPencilAlt = faPencilAlt;
   faTrash = faTrash;
+  faMinusSquare = faMinusSquare;
   loaded = false;
   updateError = false;
+  filesSubject = new Subject<File[]>();
   name: string;
   id: number;
   files: number[];
   equipment_type: number;
   currentEquipment: Equipment = null;
   equipmentUpdateForm: FormGroup;
+  myFiles: File[] = [];
+  myFilesPath: string[] = [];
+  private BASE_URL_API = environment.baseUrl;
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -42,12 +52,16 @@ export class EquipmentDetailsComponent implements OnInit {
               private formBuilder: FormBuilder,
               private modalService: NgbModal,
               private authenticationService: AuthenticationService,
-              private utilsService: UtilsService) { }
+              private utilsService: UtilsService,
+              private fileService: FileService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.myFiles = [];
+    this.myFilesPath = [];
+    let i = 0;
     this.route.params.subscribe(params => {
       this.id = +params.id;
     });
@@ -56,11 +70,17 @@ export class EquipmentDetailsComponent implements OnInit {
         this.currentEquipment = eq;
         this.name = this.currentEquipment.name;
         this.equipment_type = this.currentEquipment.equipment_type;
+        this.files = this.currentEquipment.files;
         this.loaded = true;
         this.initForm();
+        for (i; i < this.files.length; i++) {
+          this.fileService.getFile(this.files[i]).subscribe(df => {
+            this.myFilesPath.push(String(df.file).slice(6));
+          });
+        }
+        this.myFilesPath.splice(6);
       },
       (error) => this.router.navigate(['/four-oh-four']));
-    // this.files = this.currentEquipment.files;
   }
 
   /**
@@ -86,13 +106,13 @@ export class EquipmentDetailsComponent implements OnInit {
     if (this.currentEquipment.equipment_type !== formValues.equipment_type) {
       this.currentEquipment.equipment_type = formValues.equipment_type;
     }
-    // if (this.currentEquipment.files !== formValues.files) {
-    //   this.currentEquipment.files = formValues.files;
-    // }
+    if (this.currentEquipment.files !== formValues.files) {
+      this.currentEquipment.files = formValues.files;
+    }
     this.equipmentService.updateEquipment(this.currentEquipment).subscribe(equipmentUpdated => {
       this.updateError = false;
+      this.ngOnInit();
       this.initForm();
-      this.equipmentService.getEquipments();
     },
     (error) => {
       this.updateError = true;
@@ -129,13 +149,13 @@ export class EquipmentDetailsComponent implements OnInit {
   initForm() {
     this.equipmentUpdateForm = this.formBuilder.group({
       name: '',
-      equipment_type: ''
-      // files: '',
+      equipment_type: '',
+      files: '',
     });
     this.equipmentUpdateForm.setValue({
       name: this.currentEquipment.name,
       equipment_type: this.currentEquipment.equipment_type,
-      // files: this.currentEquipment.files;
+      files: this.currentEquipment.files
     });
   }
 
@@ -157,5 +177,89 @@ export class EquipmentDetailsComponent implements OnInit {
       this.authenticationService.getCurrentUserPermissions(),
       'delete_equipment'
       );
+  }
+  /**
+   * Function that is triggered when a or multiple files are chosen(when button "Browse" is pressed and files are chosen)
+   * Upload files if not already uploaded.
+   * @param event file selection event from input of type file
+   */
+  onFileUpload(event) {
+    let formData: FormData;
+    let i = 0;
+    for (i; i < event.target.files.length; i++) {
+      if (!this.myFiles.includes(event.target.files[i])) {
+        this.myFiles.push(event.target.files[i]);
+        formData = new FormData();
+        formData.append('file', event.target.files[i], event.target.files[i].name);
+        formData.append('is_manual', 'false' );
+        console.log(formData.toString());
+        this.fileService.uploadFile(formData).subscribe(file => {
+          this.files.push(Number(file.id));
+          console.log('ok');
+        });
+      }
+    }
+    this.filesSubject.next(this.myFiles);
+  }
+
+  /**
+   * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
+   * @param file file that need to be removed
+   * Here we only need the index of the file from the local variable myFiles which is the same then in the variable files
+   * from file we then can get the id of the file in the databaseto remove it.
+   */
+  onRemoveFile(file: File) {
+    const index = this.myFiles.indexOf(file);
+    this.myFiles.splice(index, 1);
+    const id = this.files.splice(index, 1);
+    this.fileService.deleteFile(id[0]);
+    this.ngOnInit();
+  }
+
+  /**
+   * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
+   * @param filePath path of the file that need to be removed
+   */
+  onRemoveFilePath(filePath: string) {
+    const index1: number = this.myFilesPath.indexOf(filePath);
+    const fileId: number = this.files[index1];
+    const index2: number = this.files.indexOf(fileId);
+    if (index2 !== -1) {
+        this.files.splice(index2, 1);
+    }
+    console.log(fileId);
+    this.fileService.deleteFile(fileId);
+  }
+
+  /**
+   * Function that opens the modal to confirm a deletion of a File.
+   * @param content the modal template to load
+   * @param filePath the filePath of the file we want to remove
+   */
+  openDeleteFile(filePath: string, content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-deleteFile'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onRemoveFilePath(filePath);
+        this.onModifyEquipment();
+      }
+    });
+  }
+  /**
+   * Function that opens the modal to handle a file upload.
+   * @param content the modal template to load
+   */
+  openUploadFile(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-addFile'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onModifyEquipment();
+      }
+    });
+  }
+  /**
+   * Function that create the array of files links.
+   * @param filePath the filePath of the file we want to remove
+   */
+  createDownloadLink(filePath: string) {
+    return this.BASE_URL_API + '/media/' + filePath;
   }
 }
