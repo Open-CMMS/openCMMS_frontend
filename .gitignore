@@ -2,3 +2,4 @@
 **/documentation
 **/coverage
 **/node_modules
+.angulardoc.json
