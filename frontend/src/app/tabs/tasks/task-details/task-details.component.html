@@ -91,7 +91,7 @@
                     </div>
                     <br>
                     <p><span class="font-weight-bold">Duration :</span></p>
-                    <div class="input-group row col-2" *ngIf="!durationInputEnabled">
+                    <div class="input-group row col-3" *ngIf="!durationInputEnabled">
                         <input class="form-control" [(ngModel)]="taskDuration" disabled>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="enableInput('duration')"><fa-icon [icon]="faPen"></fa-icon></button>
@@ -130,10 +130,35 @@
                             <button class="btn btn-outline-secondary" (click)="saveInput('equipment')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                     </div>
+                    <br>
+
+                    <p><span class="font-weight-bold">Files associated :</span></p>
+                    <ul class="col-12 list-group">
+                        <li
+                            class="container-fluid list-group-item"
+                            *ngFor="let file of files; let i = index"
+                            >
+                            <a href="{{ BASE_URL_API }}{{ file.fileLink }}" target="_blank">{{ file.fileName }}</a>
+                        </li>
+                    </ul>
+                    <span *ngIf="files.length === 0">No related files !</span>
+                    <br>
+
+                    <p><span class="font-weight-bold">Trigger conditions :</span></p>
+                    <ul class="col-12 list-group">
+                        <li
+                            class="container-fluid list-group-item"
+                            *ngFor="let triggerCondition of triggerConditions; let i = index"
+                            >
+                            <span><span class="font-weight-bold">{{ triggerCondition.type }}:</span> {{ triggerCondition.description }}</span><br>
+                            <span class="text-muted">{{ triggerCondition.value }}</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
+    
     <div class="card mt-5">
         <div class="card-header d-flex justify-content-between">
             <div class="d-flex">
@@ -158,10 +183,47 @@
             <span *ngIf="teamsTask.length === 0">No teams assigned !</span>
         </div>
     </div>
-    <!--
-        <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="updateError">
-            <p class="font-weight-bold">Error when updating the team properties:</p>
-            <p>This team name is invalid !</p>
+
+    <div class="card mt-5" *ngIf="!task.over">
+        <div class="card-header">
+            <div class="d-flex">
+                <h3 class="font-weight-bold"> Validation : </h3>
+            </div>
         </div>
-    -->
+        <div class="card-body d-flex row">
+            <form class="col-12">
+                <ul class="col-12 list-group">
+                    <li
+                        class="container-fluid col-12 list-group-item"
+                        *ngFor="let endCondition of endConditions; let i = index"
+                        >
+                        <span><span class="font-weight-bold">{{ endCondition.type }}:</span> {{ endCondition.description }}</span><br>
+                        <!-- Checkbox -->
+                        <div class="form-group" *ngIf="endCondition.type === 'Case a cocher'">
+                            <label ngbButtonLabel>
+                              <input type="checkbox" [(ngModel)]="endConditionValues[i]" [ngModelOptions]="{standalone: true}" ngbButton> Check-me
+                            </label>
+                        </div>
+                        <!-- Value -->
+                        <div class="form-group" *ngIf="endCondition.type === 'Valeur numerique à rentrer'">
+                            <input type="number" [(ngModel)]="endConditionValues[i]" [ngModelOptions]="{standalone: true}" placeholder="Realted value">
+                        </div>
+                        <!-- Description -->
+                        <div class="form-group" *ngIf="endCondition.type === 'Description'">
+                            <textarea [(ngModel)]="endConditionValues[i]" [ngModelOptions]="{standalone: true}" cols="50" placeholder="Your description ..."></textarea>
+                        </div>
+                        <!-- Photo -->
+                        <div class="form-group" *ngIf="endCondition.type === 'Photo'">
+                            <input [(ngModel)]="endConditionValues[i]" [ngModelOptions]="{standalone: true}" type="file" class="form-control" (change)="onSetPhotoToUpload(i, $event)">
+                        </div>
+                    </li>
+                </ul>
+                <button class="btn btn-success my-2" (click)="onValidateTask()">Validate the task</button>
+            </form>
+            <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="validationError">
+                <p class="font-weight-bold">Error when validating the task :</p>
+                <p>Check that you have filled all the conditions above !</p>
+            </div> 
+        </div>
+    </div>
 </div>

@@ -11,10 +11,15 @@ export class TaskService {
 
   private tasks: Task[];
   taskSubject = new Subject<Task[]>();
+
+  private fieldObject: any[];
+  fieldObjectSubject = new Subject<any[]>();
+
   private BASE_URL_API = environment.baseUrl;
 
   constructor(private httpClient: HttpClient) {
     this.getTasks();
+    this.getFieldObjects();
   }
 
   /**
@@ -22,6 +27,13 @@ export class TaskService {
    */
   emitTasks() {
     this.taskSubject.next(this.tasks);
+  }
+
+  /**
+   * Function that updates the subject fieldObjectSubject
+   */
+  emitFieldObjects() {
+    this.fieldObjectSubject.next(this.fieldObject);
   }
 
   /**
@@ -51,6 +63,20 @@ export class TaskService {
                         this.emitTasks();
                       }
                     );
+  }
+
+  /**
+   * Function that gets the field objects in the database
+   */
+  getFieldObjects() {
+    this.fieldObject = [];
+    this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/')
+                  .subscribe(
+                    (response) => {
+                      this.fieldObject = response;
+                      this.emitFieldObjects();
+                    }
+                  );
   }
 
   /**
@@ -252,4 +278,16 @@ export class TaskService {
     const reqBody = JSON.stringify(field_object);
     return this.httpClient.post<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/', reqBody, httpOptions);
   }
+
+  updateFieldObject(fieldObject: any) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json'
+      })
+    };
+
+    return this.httpClient.put<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + fieldObject.id + '/'
+                                    , fieldObject, httpOptions);
+  }
+
 }
