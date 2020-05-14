@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -17,13 +16,13 @@ export class FileService {
    * @param fileId the id attribut of a equipment
    * @return the specific Equipment
    */
-  getFile( fileId: number ): Observable<FormData> {
+  getFile( fileId: number ) {
     return this.httpClient
-      .get<FormData>(this.BASE_URL_API + '/api/maintenancemanagement/files/' + fileId + '/');
+      .get<any>(this.BASE_URL_API + '/api/maintenancemanagement/files/' + fileId + '/');
   }
 
   /**
-   * Fonction to save a new equipment in the database
+   * Function to save a new equipment in the database
    * @param file the file you want to upload
    */
   uploadFile(file: FormData): Observable<any> {
@@ -35,9 +34,8 @@ export class FileService {
             .post(this.BASE_URL_API + '/api/maintenancemanagement/files/', file, {params, headers});
   }
 
-
   /**
-   * Fonction that delete a file saved on the server's database
+   * Function that delete a file saved on the server's database
    * @param fileId id attribut of the file you want to delete
    */
   deleteFile(fileId: number) {
