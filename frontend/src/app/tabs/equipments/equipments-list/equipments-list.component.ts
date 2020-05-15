@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-equipments-list',
@@ -22,11 +24,15 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
    * Constructor for the equipmentList component
    * @param equipmentService The service to communicate with backend on Equipment objects
    * @param router The service used to handle redirections
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
   constructor(
     private equipmentService: EquipmentService,
     private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private utilsService: UtilsService,
+    private authenticationService: AuthenticationService
   ) { }
 
   /**
@@ -76,6 +82,17 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
       }
     );
   }
+
+  /**
+   * Function that display Delete button when having permission
+   */
+  onDeleteEquipmentPermission() {
+    return this.utilsService.isAUserPermission(
+        this.authenticationService.getCurrentUserPermissions(),
+        'delete_equipment'
+        );
+  }
+
   /**
    * Function to delete a equipment
    * @param equipment the equipment to delete

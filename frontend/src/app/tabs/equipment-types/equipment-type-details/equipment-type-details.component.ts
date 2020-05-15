@@ -8,6 +8,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-equipment-type-details',
@@ -43,13 +45,17 @@ export class EquipmentTypeDetailsComponent implements OnInit {
    * @param route the service to get the id of the equipmentType in the url
    * @param modalService the service to create popups
    * @param formBuilder the service to handle forms
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
   constructor(private router: Router,
               private equipmentTypeService: EquipmentTypeService,
               private equipmentService: EquipmentService,
               private route: ActivatedRoute,
               private modalService: NgbModal,
-              private formBuilder: FormBuilder) { }
+              private formBuilder: FormBuilder,
+              private utilsService: UtilsService,
+              private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initialize the component when loaded
@@ -183,6 +189,26 @@ export class EquipmentTypeDetailsComponent implements OnInit {
           this.initFields();
         });
     this.modalService.dismissAll();
+  }
+
+  /**
+   * Function that displays the Modify button when having permission
+   */
+  onChangeEquipmentTypePermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_equipmenttype'
+      );
+  }
+
+  /**
+   * Function that displays the Delete button when having permission
+   */
+  onDeleteEquipmentTypePermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_equipmenttype'
+      );
   }
 
 

@@ -23,7 +23,7 @@
                     
                     <div class="d-flex">
                         <button class="btn btn-info" (click)="onViewEquipmentType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
-                        <button class="btn btn-danger" (click)="openDelete(contentDelete, i)"><fa-icon [icon]="faTrash"></fa-icon></button>
+                        <button class="btn btn-danger" (click)="openDelete(contentDelete, i)" *ngIf="onDeleteEquipmentTypePermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
                     </div>
                 </div>
             </li>
