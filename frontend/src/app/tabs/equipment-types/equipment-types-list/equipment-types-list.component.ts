@@ -6,6 +6,8 @@ import { EquipmentType } from 'src/app/models/equipment-type';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-equipment-types-list',
@@ -24,11 +26,15 @@ export class EquipmentTypesListComponent implements OnInit, OnDestroy {
    * Constructor for the EquipmentTypeListComponent
    * @param equipmentTypeService the service to communicate with backend on EquipmentType objects
    * @param router the service used to handle redirections
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
   constructor(
     private equipmentTypeService: EquipmentTypeService,
     private router: Router,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    private utilsService: UtilsService,
+    private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initializes the component when loaded
@@ -71,6 +77,16 @@ export class EquipmentTypesListComponent implements OnInit, OnDestroy {
   onDeleteEquipmentType(i: number) {
     const equipment_type_id = this.equipmentTypes[i].id;
     this.equipmentTypeService.deleteEquipmentType(equipment_type_id);
+  }
+
+  /**
+   * Function that navigates to delete a TeamType
+   */
+  onDeleteEquipmentTypePermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_equipmenttype'
+      );
   }
 
   /**

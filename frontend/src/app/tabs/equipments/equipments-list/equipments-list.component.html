@@ -26,7 +26,7 @@
                         <button class="btn btn-info" (click)="onViewEquipment(equipment)">
                             <fa-icon [icon]="faInfoCircle"></fa-icon>
                         </button>
-                        <button class="btn btn-danger" (click)="openDelete(contentDelete, equipment)">
+                        <button class="btn btn-danger" (click)="openDelete(contentDelete, equipment)" *ngIf="onDeleteEquipmentPermission()">
                             <fa-icon [icon]="faTrash"></fa-icon>
                         </button>
                     </div>

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { UtilsService } from 'src/app/services/utils/utils.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
 @Component({
   selector: 'app-equipment-management',
@@ -12,9 +14,13 @@ export class EquipmentManagementComponent implements OnInit {
   /**
    * Constructor for the UserManagement component
    * @param router the service used to handle redirection
+   * @param utilsService the service used for useful methods
+   * @param authenticationService the authentication service
    */
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+              private utilsService: UtilsService,
+              private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initialize the component when loaded
@@ -27,6 +33,16 @@ export class EquipmentManagementComponent implements OnInit {
    */
   onCreateEquipment() {
     this.router.navigate(['/new-equipment']);
+  }
+
+  /**
+   * Function that display Create button when having permission
+   */
+  onAddEquipmentPermission() {
+    return this.utilsService.isAUserPermission(
+        this.authenticationService.getCurrentUserPermissions(),
+        'add_equipment'
+        );
   }
 
 }

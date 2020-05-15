@@ -73,7 +73,7 @@
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" *ngIf="descriptionInputEnabled" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
-                        <div class="input-group-append">
+                        <div class="input-group-append" *ngIf="onChangeTaskPermission()">
                             <button class="btn btn-outline-secondary" *ngIf="!descriptionInputEnabled" (click)="enableInput('description')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" *ngIf="dateInputEnabled" (click)="saveInput('end_date')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
-                        <div class="input-group-append">
+                        <div class="input-group-append" *ngIf="onChangeTaskPermission()">
                             <button class="btn btn-outline-secondary" *ngIf="!dateInputEnabled" (click)="datePicker.toggle(); enableInput('end_date')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                     <p><span class="font-weight-bold">Duration :</span></p>
                     <div class="input-group row col-3" *ngIf="!durationInputEnabled">
                         <input class="form-control" [(ngModel)]="taskDuration" disabled>
-                        <div class="input-group-append">
+                        <div class="input-group-append" *ngIf="onChangeTaskPermission()">
                             <button class="btn btn-outline-secondary" (click)="enableInput('duration')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                     <p><span class="font-weight-bold">Equipment :</span></p>
                     <div class="input-group row col-4" *ngIf="!equipmentInputEnabled">
                         <input class="form-control" [(ngModel)]="equipmentName" disabled>
-                        <div class="input-group-append">
+                        <div class="input-group-append" *ngIf="onChangeTaskPermission()">
                             <button class="btn btn-outline-secondary" (click)="enableInput('equipment')"><fa-icon [icon]="faPen"></fa-icon></button>
                             <button class="btn btn-info" (click)="onViewEquipment(task.equipment)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                         </div>
@@ -154,6 +154,7 @@
                             <span class="text-muted">{{ triggerCondition.value }}</span>
                         </li>
                     </ul>
+                    <span *ngIf="triggerConditions.length === 0">No trigger conditions !</span>
                 </div>
             </div>
         </div>
@@ -218,6 +219,7 @@
                         </div>
                     </li>
                 </ul>
+                <span *ngIf="endConditions.length === 0">No end conditions !</span>
                 <button class="btn btn-success my-2" (click)="onValidateTask()">Validate the task</button>
             </form>
             <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="validationError">
@@ -226,4 +228,8 @@
             </div> 
         </div>
     </div>
+
+    <div class="container-fluid alert alert-success mt-3" role="alert" *ngIf="task.over">
+        <p class="font-weight-bold">This task is validated !</p>
+    </div> 
 </div>
