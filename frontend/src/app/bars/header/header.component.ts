@@ -58,6 +58,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function that display Equipment button in navbar when current User has the correct permission
+   */
+  onViewEquipmentTypesPermission() {
+    return this.utilsService.isAUserPermission(
+        this.authenticationService.getCurrentUserPermissions(),
+        'view_equipmenttype'
+        );
+  }
+
+  /**
    * Function that display Teams button in navbar when current User has the correct permission
    */
   onViewTeamsPermission() {
