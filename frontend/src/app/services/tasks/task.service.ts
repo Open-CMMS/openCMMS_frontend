@@ -187,9 +187,9 @@ export class TaskService {
    */
   normaliseDurationValue(formDurationInput: string, separators: any[]): string {
     const str_time = formDurationInput.trim();
-    let days = '';
-    let hours = '';
-    let minutes = '';
+    let part1 = '';
+    let part2 = '';
+    let part3 = '';
     let pos_0_start: number;
     let pos_0_end: number;
     let pos_1_start: number;
@@ -226,12 +226,18 @@ export class TaskService {
       pos_2_end = str_time.indexOf(separators[2]);
     }
 
-    days = str_time.substring(pos_0_start, pos_0_end) === '' ? '0' : str_time.substring(pos_0_start, pos_0_end);
-    hours = str_time.substring(pos_1_start, pos_1_end) === '' ? '0' : str_time.substring(pos_1_start, pos_1_end);
-    minutes = str_time.substring(pos_2_start, pos_2_end) === '' ? '0' : str_time.substring(pos_2_start, pos_2_end);
+    part1 = str_time.substring(pos_0_start, pos_0_end) === '' ? '0' : str_time.substring(pos_0_start, pos_0_end);
+    part2 = str_time.substring(pos_1_start, pos_1_end) === '' ? '0' : str_time.substring(pos_1_start, pos_1_end);
+    part3 = str_time.substring(pos_2_start, pos_2_end) === '' ? '0' : str_time.substring(pos_2_start, pos_2_end);
 
 
-    return days.trim() + ' days, ' + hours.trim() + ':' + minutes.trim() + ':0';
+    if (separators[0] === 'd') {
+      return part1.trim() + ' days, ' + part2.trim() + ':' + part3.trim() + ':0';
+    } else if (separators[0] === 'y') {
+      return part1.trim() + ' years, ' + part2.trim() + ' months, ' + part3.trim() + ' days';
+    } else {
+      return part1.trim() + ', ' + part2.trim() + ', ' + part3.trim();
+    }
   }
 
   /**
