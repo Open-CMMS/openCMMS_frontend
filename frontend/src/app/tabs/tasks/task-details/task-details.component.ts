@@ -7,7 +7,7 @@ import { TeamService } from 'src/app/services/teams/team.service';
 import { NgbModal, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
-import { faTrash, faPen, faCalendar, faSave, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPen, faCalendar, faSave, faInfoCircle, faCheck, faBook } from '@fortawesome/free-solid-svg-icons';
 import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
@@ -34,6 +34,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   faCalendar = faCalendar;
   faSave = faSave;
   faInfoCircle = faInfoCircle;
+  faCheck = faCheck;
+  faBook = faBook;
 
   // Local variables
   task: Task = null;
@@ -135,7 +137,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               (res: any) => {
                 const file = {
                   fileName: decodeURI(res.file.split('/')[1]),
-                  fileLink: '/' + res.file
+                  fileLink: '/' + res.file,
+                  is_manual: res.is_manual
                 };
                 this.files.push(file);
               }

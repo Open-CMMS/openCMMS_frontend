@@ -40,10 +40,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   /**
    * Function that display User button in navbar when current User has the correct permission
    */
-  onViewUserPermission() {
+  onChangeUserPermission() {
     return this.utilsService.isAUserPermission(
         this.authenticationService.getCurrentUserPermissions(),
-        'view_userprofile'
+        'change_userprofile'
         );
   }
 
@@ -60,10 +60,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   /**
    * Function that display Equipment button in navbar when current User has the correct permission
    */
-  onViewEquipmentTypesPermission() {
+  onChangeEquipmentTypesPermission() {
     return this.utilsService.isAUserPermission(
         this.authenticationService.getCurrentUserPermissions(),
-        'view_equipmenttype'
+        'change_equipmenttype'
         );
   }
 

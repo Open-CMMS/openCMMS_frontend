@@ -60,7 +60,10 @@
             <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteTaskPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
         </div>
     </div>
-    <div class="card mt-5">
+    <div class="container-fluid alert alert-success mt-3" role="alert" *ngIf="task.over">
+        <p class="font-weight-bold">This task has already been completed !</p>
+    </div> 
+    <div class="card mt-3">
         <div class="card-header">
             <h3 class="font-weight-bold"> Task info : </h3>
         </div>
@@ -112,8 +115,8 @@
                     <p><span class="font-weight-bold">Equipment :</span></p>
                     <div class="input-group row col-4" *ngIf="!equipmentInputEnabled">
                         <input class="form-control" [(ngModel)]="equipmentName" disabled>
-                        <div class="input-group-append" *ngIf="onChangeTaskPermission()">
-                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment')"><fa-icon [icon]="faPen"></fa-icon></button>
+                        <div class="input-group-append" >
+                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
                             <button class="btn btn-info" (click)="onViewEquipment(task.equipment)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                         </div>
                     </div>
@@ -138,7 +141,7 @@
                             class="container-fluid list-group-item"
                             *ngFor="let file of files; let i = index"
                             >
-                            <a href="{{ BASE_URL_API }}{{ file.fileLink }}" target="_blank">{{ file.fileName }}</a>
+                            <a class="mr-2" href="{{ BASE_URL_API }}{{ file.fileLink }}" target="_blank">{{ file.fileName }}</a><fa-icon [icon]="faCheck" *ngIf="!file.is_manual" style="color: green;"></fa-icon><fa-icon [icon]="faBook" *ngIf="file.is_manual"></fa-icon>
                         </li>
                     </ul>
                     <span *ngIf="files.length === 0">No related files !</span>
@@ -177,7 +180,10 @@
                     >
                     <div class="container-fluid row justify-content-between">
                         <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
-                        <button class="btn btn-danger" (click)="onRemoveTeamFromTask(team)" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faMinusSquare" size="2x"></fa-icon></button>
+                        <div>
+                            <button class="btn btn-info" (click)="onViewTeam(team)"><fa-icon [icon]="faInfoCircle" size="2x"></fa-icon></button>
+                            <button class="btn btn-danger" (click)="onRemoveTeamFromTask(team)" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faMinusSquare" size="2x"></fa-icon></button>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -229,7 +235,5 @@
         </div>
     </div>
 
-    <div class="container-fluid alert alert-success mt-3" role="alert" *ngIf="task.over">
-        <p class="font-weight-bold">This task is validated !</p>
-    </div> 
+    
 </div>
