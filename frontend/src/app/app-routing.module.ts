@@ -85,7 +85,7 @@ const appRoutes: Routes = [
     path: 'tasks-management', component: TasksListComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_task']
+      requiredPerms: ['add_task']
     }
   },
   {
@@ -106,7 +106,7 @@ const appRoutes: Routes = [
     path: 'teams', component: TeamManagementComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_team']
+      requiredPerms: ['change_team']
     }
   },
   {
@@ -127,7 +127,7 @@ const appRoutes: Routes = [
     path: 'team-types', component: TeamTypeManagementComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_teamtype']
+      requiredPerms: ['change_teamtype']
     }
   },
   {
@@ -148,7 +148,7 @@ const appRoutes: Routes = [
     path: 'users', component: UserManagementComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_userprofile']
+      requiredPerms: ['change_userprofile']
     }
   },
   {
@@ -169,7 +169,7 @@ const appRoutes: Routes = [
     path: 'equipments', component: EquipmentManagementComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_equipment']
+      requiredPerms: ['change_equipment']
     }
   },
   {
@@ -190,7 +190,7 @@ const appRoutes: Routes = [
     path: 'equipment-types', component: EquipmentTypeManagementComponent,
     canActivate: [AuthGuardService],
     data: {
-      requiredPerms: ['view_equipmenttype']
+      requiredPerms: ['change_equipmenttype']
     }
   },
   {
