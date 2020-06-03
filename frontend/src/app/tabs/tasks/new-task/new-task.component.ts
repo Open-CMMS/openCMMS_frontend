@@ -292,6 +292,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
           };
           this.taskService.createFieldObject(field_object).subscribe();
         });
+        this.taskService.getFieldObjects();
       });
   }
 

@@ -286,6 +286,7 @@ export class TaskService {
       })
     };
 
+    console.log(fieldObject);
     return this.httpClient.put<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + fieldObject.id + '/'
                                     , fieldObject, httpOptions);
   }

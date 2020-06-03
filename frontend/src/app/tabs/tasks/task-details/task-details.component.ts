@@ -13,7 +13,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Equipment } from 'src/app/models/equipment';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { FileService } from 'src/app/services/files/file.service';
 import { environment } from 'src/environments/environment';
 
@@ -73,6 +73,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   teamSubscription: Subscription;
   tasksSubscription: Subscription;
   equipmentSubscription: Subscription;
+
+  endConditionsSubject = new Subject<any[]>();
+  endConditionSubscription: Subscription;
+
+  triggerConditionsSubject = new Subject<any[]>();
+  triggerConditionSubscription: Subscription;
 
   // Forms
   updateForm: FormGroup;
@@ -170,7 +176,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.tasksSubscription = this.taskService.fieldObjectSubject.subscribe(
       (fieldObjects) => {
         this.allFieldObjects = fieldObjects;
-        this.getTaskFieldObjects(id);
+      }
+    );
+
+    this.triggerConditionSubscription = this.triggerConditionsSubject.subscribe(
+      (triggerConditions) => {
+        this.triggerConditions = triggerConditions;
+      }
+    );
+
+    this.endConditionSubscription = this.endConditionsSubject.subscribe(
+      (endConditions) => {
+        this.endConditions = endConditions;
       }
     );
 
@@ -183,6 +200,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.taskService.getFields().subscribe(
       (fields) => {
         this.fields = fields;
+        this.getTaskFieldObjects(id);
         this.separateFieldsByTypes();
       }
     );
@@ -197,11 +215,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    */
   getTaskFieldObjects(id: number) {
     this.taskFieldObjects = [];
-    this.allFieldObjects.forEach((fieldObject) => {
+    for (const fieldObject of this.allFieldObjects) {
       if (fieldObject.described_object === 'Task: ' + id) {
         this.taskFieldObjects.push(fieldObject);
       }
-    });
+    }
   }
 
   /**
@@ -211,59 +229,61 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.endConditions = [];
     this.triggerConditions = [];
     let typeOfField: string;
-    this.taskFieldObjects.forEach(field => {
-        if (this.fields[field.field - 1].name === 'End Conditions') {
-          this.endConditionsOriginal.push(field);
-          this.taskService.getFieldValues(field.field).subscribe(
-            (fieldValues) => {
-              fieldValues.forEach((fieldValue) => {
-                if (field.field_value === fieldValue.id) {
-                  typeOfField = fieldValue.value;
-                }
-              });
-              const endCondition = {
-                id: field.id,
-                type: typeOfField,
-                description: field.description,
-                value: field.value
-              };
-              this.endConditions.push(endCondition);
-
-              switch (endCondition.type) {
-                case 'Case a cocher':
-                  this.endConditionValues.push(false);
-                  break;
-                case 'Valeur numerique à rentrer':
-                  this.endConditionValues.push(null);
-                  break;
-                case 'Description':
-                  this.endConditionValues.push('');
-                  break;
-                case 'Photo':
-                  this.endConditionValues.push('');
-                  break;
+    for (const field of this.taskFieldObjects) {
+      if (this.fields[field.field - 1].name === 'End Conditions') {
+        this.endConditionsOriginal.push(field);
+        this.taskService.getFieldValues(field.field).subscribe(
+          (fieldValues) => {
+            for (const fieldValue of fieldValues) {
+              if (field.field_value === fieldValue.id) {
+                typeOfField = fieldValue.value;
               }
             }
-          );
-        } else if (this.fields[field.field - 1].name === 'Trigger Conditions') {
-          this.taskService.getFieldValues(field.field).subscribe(
-            (fieldValues) => {
-              fieldValues.forEach((fieldValue) => {
-                if (field.field_value === fieldValue.id) {
-                  typeOfField = fieldValue.value;
-                }
-              });
-              const triggerCondition = {
-                type: typeOfField,
-                description: field.description,
-                value: field.value
-              };
-              this.triggerConditions.push(triggerCondition);
+            const endCondition = {
+              id: field.id,
+              type: typeOfField,
+              description: field.description,
+              value: field.value
+            };
+            this.endConditions.push(endCondition);
+            console.log('et de un');
+            this.endConditionsSubject.next(this.endConditions);
+
+            switch (endCondition.type) {
+              case 'Case a cocher':
+                this.endConditionValues.push(false);
+                break;
+              case 'Valeur numerique à rentrer':
+                this.endConditionValues.push(null);
+                break;
+              case 'Description':
+                this.endConditionValues.push('');
+                break;
+              case 'Photo':
+                this.endConditionValues.push('');
+                break;
             }
-          );
-        }
+          }
+        );
+      } else if (this.fields[field.field - 1].name === 'Trigger Conditions') {
+        this.taskService.getFieldValues(field.field).subscribe(
+          (fieldValues) => {
+            for (const fieldValue of fieldValues) {
+              if (field.field_value === fieldValue.id) {
+                typeOfField = fieldValue.value;
+              }
+            }
+            const triggerCondition = {
+              type: typeOfField,
+              description: field.description,
+              value: field.value
+            };
+            this.triggerConditions.push(triggerCondition);
+            this.triggerConditionsSubject.next(this.triggerConditions);
+          }
+        );
       }
-    );
+    }
   }
 
   /**
@@ -698,6 +718,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.teamSubscription.unsubscribe();
     this.tasksSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
+    this.triggerConditionSubscription.unsubscribe();
+    this.endConditionSubscription.unsubscribe();
   }
 
 }
