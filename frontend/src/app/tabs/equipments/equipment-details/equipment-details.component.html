@@ -86,21 +86,7 @@
             <div class="col-12">
                 <div class="px-2 py-1">
                     <p *ngIf="loaded"><span class="font-weight-bold">Name :</span> {{ currentEquipment.name }} <p>
-                    <p *ngIf="loaded"><span class="font-weight-bold">Id :</span> {{ currentEquipment.id }} </p>
                     <p *ngIf="loaded"><span class="font-weight-bold">Equipment type :</span> {{ equipmentTypeName }} </p>
-                    <!-- <p *ngIf="loaded"><span class="font-weight-bold">Files :</span> </p>
-                    <div class="list-group">
-                        <ul class="list-group">
-                            <li
-                                class="container-fluid list-group-item font-weight-bold "
-                                *ngFor="let filePath of myFilesPath;"
-                                >
-                                <div class="container-fluid row justify-content-between">
-                                    <a style="margin-bottom: 0px; vertical-align: middle;" [href] ="createDownloadLink(filePath)">{{ filePath }}</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div> -->
                 </div>
             </div>
         </div>
