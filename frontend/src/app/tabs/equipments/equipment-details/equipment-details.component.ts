@@ -127,6 +127,7 @@ export class EquipmentDetailsComponent implements OnInit {
       this.updateError = false;
       this.ngOnInit();
       this.initForm();
+      this.equipmentService.getEquipments();
     },
     (error) => {
       this.updateError = true;

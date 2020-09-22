@@ -45,7 +45,6 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
     this.equipments = [];
     this.equipmentsSubscription = this.equipmentService.equipmentsSubject.subscribe(
       (eqs: Equipment[]) => {
-        this.equipments = [];
         this.equipments = eqs;
       }
     );
@@ -100,5 +99,4 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.equipmentsSubscription.unsubscribe();
   }
-
 }

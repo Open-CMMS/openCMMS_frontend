@@ -1,4 +1,4 @@
-<div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom:100px">
+  <div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom:100px">
     <div class="d-flex">
         <h2 class="font-weight-bold">Create a new task</h2>
     </div>
@@ -10,7 +10,7 @@
         </div>
         <div class="form-group">
             <label for="description">Task Description* </label>
-            <input type="text" id="description" class="form-control" formControlName="description">
+            <textarea id="description" class="form-control" formControlName="description"></textarea>
         </div>
         <div class="form-group">
             <label for="teams">Teams</label>
@@ -47,10 +47,10 @@
             <div class="input-group">
                 <input type="text" name="time" id="time" class="form-control" formControlName="time">
                 <div class="input-group-append">
-                    <button class="btn btn-info" type="button" 
+                    <button class="btn btn-info" type="button"
                                                 ngbPopover="Examples : 10d 3h 45m, 5h15m, 4d45h 48m"
                                                 placement="right"
-                                                triggers="mouseenter:mouseleave" 
+                                                triggers="mouseenter:mouseleave"
                                                 popoverTitle="Info"
                                                 [closeDelay]="2000">
                 <fa-icon [icon]="faInfoCircle"></fa-icon></button>
@@ -92,16 +92,16 @@
                         [ngModelOptions]="{standalone: true}"
                     />
                     <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>
-                 
-                    
+
+
                 </div>
 
                 <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Duree'">
-                    <input type="text" 
+                    <input type="text"
                     placeholder="value"
                     ngbPopover="Examples : 1y5m, 3m 15d, 2y6m 15d"
                     placement="top"
-                    triggers="mouseenter:mouseleave" 
+                    triggers="mouseenter:mouseleave"
                     popoverTitle="Info"
                     [pattern]="triggerConditionDurationRegex"
                     #triggerConditionDuration
@@ -109,8 +109,8 @@
                     [ngModelOptions]="{standalone: true}"
                     [ngClass]="{'alert-danger': triggerConditionDuration.validity.patternMismatch}">
                 </div>
-                
-                <input type="text" 
+
+                <input type="text"
                     *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Entier'"
                     placeholder="value"
                     [ngModelOptions]="{standalone: true}"
@@ -122,7 +122,7 @@
                     [ngModelOptions]="{standalone: true}"
                     [(ngModel)]=triggerCondition.value>
 
-                <input type="text" 
+                <input type="text"
                     *ngIf="triggerCondition.selectedTriggerCondition[0]"
                     placeholder="description"
                     [ngModelOptions]="{standalone: true}"
@@ -154,7 +154,7 @@
                 >
                 </ng-multiselect-dropdown>
 
-                <input type="text" 
+                <input type="text"
                     *ngIf="endCondition.selectedEndCondition[0]"
                     placeholder="description"
                     [(ngModel)]=endCondition.description
