@@ -16,7 +16,7 @@ export class AuthenticationService {
   private userPermissions: any[] = [];
 
   /**
-   * Constructor of AutheticationService
+   * Constructor of AuthenticationService
    * @param httpClient The http instance
    * @param router the service used to handle routing
    */
