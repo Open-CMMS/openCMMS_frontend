@@ -285,7 +285,6 @@ export class TaskService {
         'Content-type': 'application/json'
       })
     };
-
     return this.httpClient.put<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + fieldObject.id + '/'
                                     , fieldObject, httpOptions);
   }

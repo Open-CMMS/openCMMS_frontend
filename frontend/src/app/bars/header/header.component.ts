@@ -40,60 +40,60 @@ export class HeaderComponent implements OnInit, OnDestroy {
   /**
    * Function that display User button in navbar when current User has the correct permission
    */
-  onViewUserPermission() {
+  onChangeUserPermission() {
     return this.utilsService.isAUserPermission(
         this.authenticationService.getCurrentUserPermissions(),
-        'view_userprofile'
+        'change_userprofile'
         );
   }
 
   /**
    * Function that display Equipment button in navbar when current User has the correct permission
    */
-  onViewEquipmentPermission() {
+  onChangeEquipmentPermission() {
     return this.utilsService.isAUserPermission(
         this.authenticationService.getCurrentUserPermissions(),
-        'view_equipment'
+        'change_equipment'
         );
   }
 
   /**
    * Function that display Equipment button in navbar when current User has the correct permission
    */
-  onViewEquipmentTypesPermission() {
+  onChangeEquipmentTypesPermission() {
     return this.utilsService.isAUserPermission(
         this.authenticationService.getCurrentUserPermissions(),
-        'view_equipmenttype'
+        'change_equipmenttype'
         );
   }
 
   /**
    * Function that display Teams button in navbar when current User has the correct permission
    */
-  onViewTeamsPermission() {
+  onChangeTeamsPermission() {
     return this.utilsService.isAUserPermission(
         this.authenticationService.getCurrentUserPermissions(),
-        'view_team'
+        'change_team'
         );
   }
 
   /**
    * Function that display TeamTypes button in navbar when current User has the correct permission
    */
-  onViewTeamTypesPermission() {
+  onChangeTeamTypesPermission() {
     return this.utilsService.isAUserPermission(
         this.authenticationService.getCurrentUserPermissions(),
-        'view_teamtype'
+        'change_teamtype'
         );
   }
 
   /**
    * Function that display TaskManagement button in navbar when current User has the correct permission
    */
-  onViewTasksPermission() {
+  onChangeTasksPermission() {
     return this.utilsService.isAUserPermission(
         this.authenticationService.getCurrentUserPermissions(),
-        'view_task'
+        'change_task'
         );
   }
 

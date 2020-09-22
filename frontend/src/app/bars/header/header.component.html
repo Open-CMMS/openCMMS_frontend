@@ -10,37 +10,37 @@
           <li routerLinkActive="active">
             <a class="nav-link" routerLink="tasks">My Tasks</a>
           </li>
-          <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onViewTasksPermission()">
+          <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onChangeTasksPermission()">
             <a class="nav-link dropdown-toggle" href="#" id="userDetails" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Tasks
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <div *ngIf="onViewTasksPermission()">
+            <div *ngIf="onChangeTasksPermission()">
               <a class="dropdown-item" routerLink="tasks-management">Task management</a>
             </div>
             </div>
           </li>
-          <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onViewTeamsPermission() || onViewTeamTypesPermission()">
+          <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onChangeTeamsPermission() || onChangeTeamTypesPermission()">
             <a class="nav-link dropdown-toggle" href="#" id="userDetails" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Teams
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" routerLink="teams" *ngIf="onViewTeamsPermission()">Teams Management</a>
+              <a class="dropdown-item" routerLink="teams" *ngIf="onChangeTeamsPermission()">Teams Management</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" routerLink="team-types" *ngIf="onViewTeamTypesPermission()">Team Types Management</a>
+              <a class="dropdown-item" routerLink="team-types" *ngIf="onChangeTeamTypesPermission()">Team Types Management</a>
             </div>
           </li>
-          <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onViewEquipmentPermission() || onViewEquipmentTypesPermission()">
+          <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onChangeEquipmentPermission() || onChangeEquipmentTypesPermission()">
             <a class="nav-link dropdown-toggle" href="#" id="userDetails" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Equipments
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" routerLink="equipments" *ngIf="onViewEquipmentPermission()">Equipments management</a>
+              <a class="dropdown-item" routerLink="equipments" *ngIf="onChangeEquipmentPermission()">Equipments management</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" routerLink="equipment-types" *ngIf="onViewEquipmentTypesPermission()">Equipment Types Management</a>
+              <a class="dropdown-item" routerLink="equipment-types" *ngIf="onChangeEquipmentTypesPermission()">Equipment Types Management</a>
             </div>
           </li>
-          <li routerLinkActive="active" *ngIf="onViewUserPermission()">
+          <li routerLinkActive="active" *ngIf="onChangeUserPermission()">
             <a class="nav-link" routerLink="users">Users</a>
         </li>
         </ul>

@@ -28,7 +28,10 @@
                     *ngFor="let task of tasks; let i = index"
                     >
                     <div class="container-fluid row justify-content-between">
-                        <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTask(task)">{{ task.name }}</h5>
+                        <div>
+                            <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTask(task)">{{ task.name }} <fa-icon class="ml-2" [icon]="faCheck" *ngIf="task.over" style="color: green;"></fa-icon></h5>
+                            
+                        </div>
                         <div>
                             <button class="btn btn-info" (click)="onViewTask(task)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                             <button class="btn btn-danger" (click)="openDelete(contentDelete, task)" *ngIf="onDeleteTaskPermission()"><fa-icon [icon]="faTrash"></fa-icon></button>

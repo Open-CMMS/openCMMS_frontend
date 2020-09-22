@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faTrash, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faInfoCircle, faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
@@ -20,10 +20,13 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
   faPlus = faPlus;
+  faCheck = faCheck;
+
   tasks: Task[] = [];
   currentUser: UserProfile;
   tasksSubscription: Subscription = null;
   currentUserSubscription: Subscription = null;
+  myTasks: boolean;
 
   /**
    * Constructor for the TasksList component
@@ -59,6 +62,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
               this.tasks = tasks;
             }
           );
+          this.myTasks = true;
         } else { // path equals tasks-management: all the tasks are displayed
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
@@ -66,6 +70,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
             }
           );
           this.taskService.emitTasks();
+          this.myTasks = false;
         }
       }
     );
