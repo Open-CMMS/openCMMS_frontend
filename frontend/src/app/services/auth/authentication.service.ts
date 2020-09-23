@@ -21,9 +21,8 @@ export class AuthenticationService {
    * @param router the service used to handle routing
    */
   constructor(private httpClient: HttpClient, private router: Router) {
-    if (localStorage.getItem('currentUser') !== 'null' && localStorage.getItem('currentUserPerms') !== 'null') {
+    if (localStorage.getItem('currentUser') !== 'null') {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      this.userPermissions = JSON.parse(localStorage.getItem('currentUserPerms'));
     } else {
       this.currentUser = null;
       this.userPermissions = [];
@@ -87,7 +86,6 @@ export class AuthenticationService {
                                             .subscribe(
                                               (perms) => {
                                                 this.userPermissions = perms;
-                                                localStorage.setItem('currentUserPerms', JSON.stringify(this.userPermissions));
                                               }
                                             );
                           }
@@ -121,7 +119,6 @@ export class AuthenticationService {
    */
   public logout() {
     localStorage.setItem('currentUser', null);
-    localStorage.setItem('currentUserPerms', null);
     window.location.reload();
     return new Promise(
       (resolve, reject) => {
