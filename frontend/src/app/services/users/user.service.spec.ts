@@ -55,7 +55,7 @@ describe('UserService', () => {
     req.flush(mockUsers);
   });
 
-  it('returnd Observable should match the right data', () => {
+  it('returned Observable should match the right data', () => {
     const mockUsers = [
       {
           id: 2,

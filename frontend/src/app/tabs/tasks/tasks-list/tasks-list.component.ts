@@ -35,6 +35,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
    * @param modalService the service to handle modal windows
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
+   * @param route the activated route
    */
   constructor(private taskService: TaskService,
               private router: Router,
@@ -77,7 +78,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that redirect to a precide Task details page
+   * Function that redirect to a precise Task details page
    * @param task The task to display
    */
   onViewTask(task: Task) {

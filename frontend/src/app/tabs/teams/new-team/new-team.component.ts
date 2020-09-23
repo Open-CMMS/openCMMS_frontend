@@ -41,6 +41,7 @@ export class NewTeamComponent implements OnInit, OnDestroy {
    * @param teamService the service to communicate with backend on Team objects
    * @param teamTypeService the service to communicate with backend on TeamType objects
    * @param formBuilder the service to handle forms
+   * @param userService the to communicate with backend on User objects
    */
   constructor(private router: Router,
               private teamService: TeamService,

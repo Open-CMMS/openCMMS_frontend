@@ -57,6 +57,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
    * @param modalService the service used to handle modal windows
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
+   * @param userService the service to communicate with backend on User objects
    */
   constructor(private router: Router,
               private teamService: TeamService,
