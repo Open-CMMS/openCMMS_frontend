@@ -117,7 +117,7 @@
                         <input class="form-control" [(ngModel)]="equipmentName" disabled>
                         <div class="input-group-append" >
                             <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
-                            <button class="btn btn-info" (click)="onViewEquipment(task.equipment)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                            <button class="btn btn-info" (click)="onViewEquipment(task.equipment)" [disabled]="task.equipment==null"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                         </div>
                     </div>
                     <div class="input-group row col-4" *ngIf="equipmentInputEnabled">

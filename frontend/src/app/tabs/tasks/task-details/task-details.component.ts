@@ -451,6 +451,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param idEquipment the id of the equipment to consult
    */
   onViewEquipment(idEquipment: number) {
+    console.log(idEquipment);
     this.router.navigate(['/equipments', idEquipment]);
   }
 
