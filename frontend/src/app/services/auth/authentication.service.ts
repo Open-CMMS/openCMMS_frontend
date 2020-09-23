@@ -47,7 +47,7 @@ export class AuthenticationService {
 
   /**
    * Login method.
-   * @param userName Name provided by user.
+   * @param username Name provided by user.
    * @param password Key provided by user.
    */
   public login(username: string, password: string) {
@@ -143,7 +143,7 @@ export class AuthenticationService {
   }
 
   /**
-   * Fuction that verifies is the access to set a password is valid
+   * Function that verifies is the access to set a password is valid
    * @param username the user that wants to reset his password
    * @param token the token given in the URL by the API
    */
@@ -161,9 +161,10 @@ export class AuthenticationService {
   }
 
   /**
-   * Fuction that set the new password
+   * Function that set the new password
    * @param username the user that wants to set his password
    * @param password the password to set
+   * @param token the token given in the URL by the API
    */
   setPassword(username: string, password: string, token: string) {
     const httpOptions = {

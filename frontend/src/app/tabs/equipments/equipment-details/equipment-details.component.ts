@@ -52,6 +52,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param authenticationService the auth service
    * @param utilsService the service used for useful functions
    * @param fileService the file service
+   * @param equipmentTypeService the equipment Type service
    */
   constructor(private router: Router,
               private equipmentService: EquipmentService,
@@ -219,7 +220,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
    * @param file file that need to be removed
    * Here we only need the index of the file from the local variable myFiles which is the same then in the variable files
-   * from file we then can get the id of the file in the databaseto remove it.
+   * from file we then can get the id of the file in the database to remove it.
    */
   onRemoveFile(file: File) {
     const index = this.myFiles.indexOf(file);

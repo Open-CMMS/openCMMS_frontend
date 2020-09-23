@@ -70,7 +70,9 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Constructor for the NewTeamComponent
    * @param router the service used to handle redirections
    * @param teamService the service to communicate with backend on Team objects
-   * @param teamTypeService the service to communicate with backend on TeamType objects
+   * @param taskService the service to communicate with backend on Task objects
+   * @param equipmentService the service to communicate with backend on Equipment
+   * @param fileService the service to communicate with backend on File
    * @param formBuilder the service to handle forms
    */
   constructor(private router: Router,
@@ -359,7 +361,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
    * @param file file that need to be removed
    * Here we only need the index of the file from the local variable myFiles which is the same then in the variable files
-   * from file we then can get the id of the file in the databaseto remove it.
+   * from file we then can get the id of the file in the database to remove it.
    */
   onRemoveFile(file: File) {
     const index = this.myFiles.indexOf(file);

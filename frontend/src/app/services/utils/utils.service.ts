@@ -10,7 +10,7 @@ export class UtilsService {
   constructor() { }
 
   /**
-   * Function that treats errors on erquests with HttpClient.
+   * Function that treats errors on requests with HttpClient.
    * @param error the error raised by the request.
    */
   public handleError(error: HttpErrorResponse) {

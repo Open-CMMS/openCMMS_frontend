@@ -21,6 +21,8 @@ export class UserManagementComponent implements OnInit {
   /**
    * Constructor for the UserManagement component
    * @param router the service used to handle redirection
+   * @param authenticationService the auth service
+   * @param utilsService the service used for useful functions
    */
 
   constructor(private router: Router,
