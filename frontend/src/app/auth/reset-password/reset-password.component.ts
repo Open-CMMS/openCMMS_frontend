@@ -28,7 +28,7 @@ export class ResetPasswordComponent implements OnInit {
    * Constructor of ResetPasswordComponent
    * @param formBuilder the service used to handle forms
    * @param authenticationService the auth service
-   * @param router the service used to handle routind
+   * @param router the service used to handle routing
    * @param route the service used to get route information
    */
   constructor(private formBuilder: FormBuilder,

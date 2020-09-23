@@ -97,7 +97,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param utilsService the service used for useful methods
    * @param authenticationService the service used to handle authentication
    * @param formBuilder the service used to handle forms
-   * @param fileService the srevice used to handle files
+   * @param fileService the service used to handle files
    */
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,
@@ -320,7 +320,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that enbles the input according to the attribute
+   * Function that enables the input according to the attribute
    * @param attribute the attribute describing the input type
    */
   enableInput(attribute: string) {
@@ -696,7 +696,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that checks if the validation criterions are filled
+   * Function that checks if the validation criterion are filled
    */
   checkFormContent() {
     for (const element of this.endConditionValues) {
@@ -712,7 +712,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that unsubscibe all the subscriptions
+   * Function that unsubscribe all the subscriptions
    */
   ngOnDestroy() {
     this.teamSubscription.unsubscribe();

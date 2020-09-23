@@ -34,7 +34,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   /**
    * Constructor for the NewEquipmentComponent
    * @param router the service used to handle redirections
-   * @param userService the service to communicate with backend on UserProfile objects
+   * @param equipmentService the service to handle equipment
+   * @param equipmentTypeService the service to handle equipment type
+   * @param fileService the service to handle file
    * @param formBuilder the service to handle forms
    */
   constructor(private router: Router,
@@ -124,7 +126,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
    * @param file file that need to be removed
    * Here we only need the index of the file from the local variable myFiles which is the same then in the variable files
-   * from file we then can get the id of the file in the databaseto remove it.
+   * from file we then can get the id of the file in the database to remove it.
    */
   onRemoveFile(file: File) {
     const index = this.myFiles.indexOf(file);

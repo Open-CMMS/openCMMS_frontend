@@ -29,7 +29,7 @@ export class AuthGuardService implements CanActivate {
      }
 
     /**
-     * Function that checks if you are allowed to acces a route.
+     * Function that checks if you are allowed to access a route.
      * @param route the requested route.
      */
     canActivate(route: ActivatedRouteSnapshot) {
