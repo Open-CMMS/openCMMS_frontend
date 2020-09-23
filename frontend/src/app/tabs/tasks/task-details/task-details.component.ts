@@ -594,7 +594,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that add a user in a team
+   * Function that returns the permissions from the team's users
    */
   onViewTeamsPermission() {
     return this.utilsService.isAUserPermission(
