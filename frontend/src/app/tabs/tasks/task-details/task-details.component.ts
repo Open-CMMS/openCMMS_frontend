@@ -246,7 +246,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               value: field.value
             };
             this.endConditions.push(endCondition);
-            //console.log('et de un');
             this.endConditionsSubject.next(this.endConditions);
 
             switch (endCondition.type) {
@@ -362,14 +361,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.task.time = this.durationDays + ' days, ' + this.durationTime.hour + ':' + this.durationTime.minute + ':00';
         break;
       case 'equipment':
-        //console.log(this.selectedEquipment);
         if(this.selectedEquipment[0] == null){
-          //console.log('hi!');
           this.equipmentInputEnabled = false;
           this.task.equipment = null;
           this.equipmentName = null;
         } else {
-          //console.log('hello!');
           this.equipmentInputEnabled = false;
           this.task.equipment = this.selectedEquipment[0].id;
           this.equipmentName = this.selectedEquipment[0].value;
@@ -451,7 +447,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param idEquipment the id of the equipment to consult
    */
   onViewEquipment(idEquipment: number) {
-    console.log(idEquipment);
     this.router.navigate(['/equipments', idEquipment]);
   }
 
