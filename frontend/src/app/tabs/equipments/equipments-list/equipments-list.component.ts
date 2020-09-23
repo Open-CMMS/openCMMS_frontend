@@ -76,7 +76,7 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
   onDeleteEquipment(equipment: Equipment) {
     this.equipmentService.deleteEquipment(equipment.id).subscribe(
       (resp) => {
-        this.router.navigate(['/users']);
+        this.router.navigate(['/equipments']);
         this.equipmentService.getEquipments();
       }
     );
