@@ -246,7 +246,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               value: field.value
             };
             this.endConditions.push(endCondition);
-            console.log('et de un');
+            //console.log('et de un');
             this.endConditionsSubject.next(this.endConditions);
 
             switch (endCondition.type) {
@@ -320,7 +320,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that enbles the input according to the attribute
+   * Function that enables the input according to the attribute
    * @param attribute the attribute describing the input type
    */
   enableInput(attribute: string) {
@@ -362,9 +362,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.task.time = this.durationDays + ' days, ' + this.durationTime.hour + ':' + this.durationTime.minute + ':00';
         break;
       case 'equipment':
-        this.equipmentInputEnabled = false;
-        this.task.equipment = this.selectedEquipment[0].id;
-        this.equipmentName = this.selectedEquipment[0].value;
+        //console.log(this.selectedEquipment);
+        if(this.selectedEquipment[0] == null){
+          //console.log('hi!');
+          this.equipmentInputEnabled = false;
+          this.task.equipment = null;
+          this.equipmentName = null;
+        } else {
+          //console.log('hello!');
+          this.equipmentInputEnabled = false;
+          this.task.equipment = this.selectedEquipment[0].id;
+          this.equipmentName = this.selectedEquipment[0].value;
+        }
         break;
       default:
         break;
@@ -595,9 +604,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that add a user in a team
+   * Function that removes a team from a task
    */
-  onRemoveTeamFromTask(team: Task) {
+  onRemoveTeamFromTask(team: Team) {
     this.taskService.removeTeamFromTask(this.task.id, team.id).subscribe(
       (res) => {
         this.taskService.getTasks();
@@ -649,7 +658,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       let i = 0;
       for (const endCondition of this.endConditionsOriginal) {
         endCondition.value = this.endConditionValues[i].toString();
-        console.log(endCondition);
+        //console.log(endCondition);
         this.taskService.updateFieldObject(endCondition).subscribe();
         i++;
       }
