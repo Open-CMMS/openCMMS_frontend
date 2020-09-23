@@ -119,7 +119,7 @@ describe('TeamTypeService', () => {
       };
 
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
-    const newTeamType = new TeamType(1, 'TeamTytpe 2', [1], []);
+    const newTeamType = new TeamType(1, 'TeamType 2', [1], []);
     service.createTeamType(newTeamType).subscribe(
       teamType => {
         expect(teamType.name).toBe('TeamType 2');

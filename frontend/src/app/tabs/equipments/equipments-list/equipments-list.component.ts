@@ -94,7 +94,6 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
 
   /**
    * Function to delete a equipment
-   * @param equipment the equipment to delete
    */
   ngOnDestroy() {
     this.equipmentsSubscription.unsubscribe();

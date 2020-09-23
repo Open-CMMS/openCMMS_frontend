@@ -22,7 +22,7 @@ export class TeamTypeDetailsComponent implements OnInit {
 
   faInfoCircle = faInfoCircle;
 
-  // local vaiables
+  // local variables
   id: number;
   name: string;
   perms: Permission[];

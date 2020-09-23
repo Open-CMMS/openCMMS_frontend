@@ -20,7 +20,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
 
   faInfoCircle = faInfoCircle;
 
-  // local vaiables
+  // local variables
   id: number;
   name: string;
   equipments: Equipment[];

@@ -7,7 +7,7 @@ export class Equipment {
     /**
      * @param id The id of the equipment
      * @param name The name of the equipment
-     * @param id_equipment_type The id that determine what type of equipment it is
+     * @param equipment_type The id that determine what type of equipment it is
      * @param list_of_files The list of possible files describing the equipment
      */
     constructor(id: number,

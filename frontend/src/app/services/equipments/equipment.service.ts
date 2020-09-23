@@ -79,7 +79,7 @@ export class EquipmentService {
   /**
    * Fonction to save a new equipment in the database
    * @param name the formal name of the equipment
-   * @param equipment_type number defining which type of euipment it is
+   * @param equipment_type number defining which type of equipment it is
    * @param files list of the id of the files concerning the equipment
    */
   createEquipment(name: string, equipment_type: number, files: number[]): Observable<any> {

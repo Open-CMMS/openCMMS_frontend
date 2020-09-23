@@ -50,7 +50,7 @@ export class TeamsListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that redirect to a precide Team details page
+   * Function that redirect to a precise Team details page
    * @param team The team to display
    */
   onViewTeam(team: Team) {
