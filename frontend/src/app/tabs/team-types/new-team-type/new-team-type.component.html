@@ -5,7 +5,7 @@
 
   <form [formGroup]="teamTypeForm" (ngSubmit)="onSubmit()" >
     <div class="form-group">
-      <label for="name">Nom</label>
+      <label for="name">Name</label>
       <input type="text" class='form-control' formControlName="name">
     </div>
     <div class="form-group">
@@ -19,7 +19,7 @@
       </ng-multiselect-dropdown>
     </div>
     <div class="form-group">
-      <label for="teams">Équipes</label>
+      <label for="teams">Teams</label>
       <ng-multiselect-dropdown
         [settings]="dropdownTeamsSettings"
         [data]="teamsList"
@@ -28,6 +28,6 @@
       >
       </ng-multiselect-dropdown>
     </div>
-    <button class="btn btn-primary" type="submit" [disabled]="teamTypeForm.invalid">Enregistrer</button>
+    <button class="btn btn-primary" type="submit" [disabled]="teamTypeForm.invalid">Create Team Type</button>
   </form>
 </div>
