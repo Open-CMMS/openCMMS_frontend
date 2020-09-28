@@ -29,7 +29,10 @@
             </select>
           -->
         </div>
-        <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create team</button>
+      <div class="d-flex justify-content-between align-items-center">
+          <button class="btn btn-danger nav-link" routerLink="/teams">Annuler</button>
+          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create team</button>
+      </div>
     </form>
     <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">
         <p class="font-weight-bold">Error when creating the team :</p>
