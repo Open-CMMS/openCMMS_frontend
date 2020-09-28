@@ -28,6 +28,9 @@
       >
       </ng-multiselect-dropdown>
     </div>
-    <button class="btn btn-primary" type="submit" [disabled]="teamTypeForm.invalid">Create Team Type</button>
+    <div class="d-flex justify-content-between align-items-center">
+      <button class="btn btn-danger nav-link" routerLink="/team-types">Annuler</button>
+      <button class="btn btn-primary" type="submit" [disabled]="teamTypeForm.invalid">Create Team Type</button>
+    </div>
   </form>
 </div>
