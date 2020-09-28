@@ -649,6 +649,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             this.router.navigate(['tasks-management']);
           }
         );
+        this.taskService.getTasks();
       }
       // update FieldObjects values
       let i = 0;
