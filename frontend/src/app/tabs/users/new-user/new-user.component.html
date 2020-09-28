@@ -2,12 +2,12 @@
     <div class="d-flex">
         <h2 class="font-weight-bold">Create a new User</h2>
     </div>
-    <form [formGroup]="createForm" (ngSubmit)="onCreateUser()">
+    <form [formGroup]="createForm">
         <div class="form-group">
             <label for="firstName">First Name :</label>
             <input type="text" id="first_name" class="form-control" formControlName="firstName"
             [ngClass]="{ 'is-invalid': submitted && this.createForm.controls.firstName.errors }" />
-            <div *ngIf="submitted && this.createForm.controls.firstName.errors" 
+            <div *ngIf="submitted && this.createForm.controls.firstName.errors"
             class="invalid-feedback">
                 <div *ngIf="this.createForm.controls.firstName.errors.required">
                     First Name is required
@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="form-group">
             <label for="confPassword" >Confirm Password :</label>
             <input type="password" id="confPassword" class="form-control" formControlName="confPassword"
@@ -68,8 +68,9 @@
             </div>
         </div>
     -->
-        <div>
-            <button class="btn btn-primary mr-1">Create User</button>
-        </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-danger nav-link" routerLink="/users">Annuler</button>
+        <button type="submit" [disabled]="createForm.invalid" (click)="onCreateUser()" class="btn btn-primary mr-1">Create User</button>
+      </div>
     </form>
 </div>
