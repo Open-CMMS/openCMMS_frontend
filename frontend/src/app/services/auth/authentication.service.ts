@@ -21,7 +21,7 @@ export class AuthenticationService {
    * @param router the service used to handle routing
    */
   constructor(private httpClient: HttpClient, private router: Router) {
-    if (localStorage.getItem('currentUser') !== 'null') {
+    if (JSON.parse(localStorage.getItem('currentUser')) !== null) {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
       this.getUserPermissions(this.currentUser.id).subscribe(
         (perms) => {
