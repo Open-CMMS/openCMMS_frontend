@@ -2,7 +2,7 @@
     <div class="d-flex">
       <h2 class="font-weight-bold">Create a new equipment type</h2>
     </div>
-  
+
     <form [formGroup]="equipmentTypeForm" (ngSubmit)="onSubmit()" >
       <div class="form-group">
         <label for="name">Name</label>
@@ -18,6 +18,9 @@
         >
         </ng-multiselect-dropdown>
       </div>
-      <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Save</button>
+      <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-danger nav-link" routerLink="/equipment-types">Annuler</button>
+        <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Save</button>
+      </div>
     </form>
   </div>
