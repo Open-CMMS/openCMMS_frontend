@@ -23,6 +23,11 @@ export class AuthenticationService {
   constructor(private httpClient: HttpClient, private router: Router) {
     if (localStorage.getItem('currentUser') !== 'null') {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.getUserPermissions(this.currentUser.id).subscribe(
+        (perms) => {
+          this.userPermissions = perms;
+        }
+      );
     } else {
       this.currentUser = null;
       this.userPermissions = [];

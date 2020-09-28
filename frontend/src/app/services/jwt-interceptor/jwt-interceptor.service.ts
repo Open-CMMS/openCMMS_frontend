@@ -16,7 +16,9 @@ export class JwtInterceptorService implements HttpInterceptor {
    * Constructor of JwtInterceptorService
    * @param authenticationService the auth service
    */
-  constructor(private authenticationService: AuthenticationService) { }
+  constructor(
+    // private authenticationService: AuthenticationService
+    ) { }
 
   /**
    * Function that intercepts the requests to add the JWT token in headers.
@@ -24,12 +26,13 @@ export class JwtInterceptorService implements HttpInterceptor {
    * @param next the HttpHandler
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    this.authenticationService.currentUserSubject.subscribe(
-      (currentUser) => {
-        this.currentUser = currentUser;
-      }
-    );
-    this.authenticationService.emitCurrentUser();
+    // this.authenticationService.currentUserSubject.subscribe(
+    //   (currentUser) => {
+    //     this.currentUser = currentUser;
+    //   }
+    // );
+    // this.authenticationService.emitCurrentUser();
+    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     if (this.currentUser && this.currentUser.token) {
       request = request.clone({
