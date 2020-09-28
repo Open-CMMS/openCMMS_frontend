@@ -11,7 +11,7 @@ export class TeamType {
      * @param perms The list of the Permissions associated to the GroupType
      * @param team_set The list of the team_set associated to the GroupType
      */
-    constructor(id: number, name: string, perms: number[], team_set: number[]) {
+    constructor(id: number, name?: string, perms?: number[], team_set?: number[]) {
         this.id = id;
         this.name = name;
         this.perms = perms;
