@@ -13,7 +13,7 @@ export class UserService {
   private BASE_URL_API = environment.baseUrl;
 
   constructor(private httpClient: HttpClient) {
-    this.getUsers();
+    // this.getUsers();
   }
 
   /**

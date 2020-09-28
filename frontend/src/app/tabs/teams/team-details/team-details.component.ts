@@ -32,8 +32,8 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
 
   // Local variables
   team: Team = null;
-  teamUsers: UserProfile[] = [];
-  teamType: TeamType;
+  teamUsers: any[] = [];
+  teamType = new TeamType(null);
   teamTypes: TeamType[];
   teamTypesSubscription: Subscription;
   updateError = false;
@@ -78,31 +78,15 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
       id = +params.id;
     });
     this.teamService.getTeam(id)
-                    .subscribe((teamGet: Team) => {
+                    .subscribe((teamGet: any) => {
                       this.team = new Team(teamGet.id, teamGet.name, teamGet.team_type, teamGet.user_set);
                       // Init team type
                       // Nb: the team type is required
-                      this.teamTypeService.getTeamType(this.team.team_type)
-                                          .subscribe(
-                                            teamType => {
-                                              this.teamType = teamType;
-                                              this.initForm();
-                                              this.loading = true;
-                                            }
-                                          );
-                      this.teamUsers = [];
-                      this.team.user_set.forEach(userId => {
-                        this.userService.getUser(userId).subscribe((user) => {
-                          this.teamUsers.push(new UserProfile(user.id,
-                                                              user.username,
-                                                              user.first_name,
-                                                              user.last_name,
-                                                              user.email,
-                                                              user.password,
-                                                              user.nb_tries,
-                                                              user.is_active));
-                        });
-                      });
+                      this.teamType.id = teamGet.team_type;
+                      this.teamType.name = teamGet.team_type_name;
+                      this.initForm();
+                      this.loading = true;
+                      this.teamUsers = teamGet.user_details;
                   },
                   (error) => {
                     this.router.navigate(['/four-oh-four']);

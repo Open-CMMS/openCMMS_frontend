@@ -25,8 +25,8 @@ export class TeamTypeDetailsComponent implements OnInit {
   // local variables
   id: number;
   name: string;
-  perms: Permission[];
-  teams: Team[];
+  perms: any[];
+  teams: any[];
 
   all_permissions: Permission[] = [];
   all_teams: Team[] = [];
@@ -93,20 +93,20 @@ export class TeamTypeDetailsComponent implements OnInit {
     });
     this.teamTypeService.getTeamType(this.id).subscribe((team_type: TeamType) => {
       this.name = team_type.name;
-      this.teams = Array();
-      team_type.team_set.forEach((id) => {
-        this.teamService.getTeam(id).subscribe((team: Team) => {
-          this.teams.push(team);
-          this.initSelectedTeams();
-        });
-      });
-      this.perms = Array();
-      team_type.perms.forEach((id) => {
-        this.permissionService.getPermission(id).subscribe((perm: Permission) => {
-          this.perms.push(perm);
-          this.initSelectedPerms();
-        });
-      });
+      this.teams = team_type.team_set;
+      // team_type.team_set.forEach((id) => {
+      //   this.teamService.getTeam(id).subscribe((team: Team) => {
+      //     this.teams.push(team);
+      //     this.initSelectedTeams();
+      //   });
+      // });
+      this.perms = team_type.perms;
+      // team_type.perms.forEach((id) => {
+      //   this.permissionService.getPermission(id).subscribe((perm: Permission) => {
+      //     this.perms.push(perm);
+      //     this.initSelectedPerms();
+      //   });
+      // });
     });
   }
 
