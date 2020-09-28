@@ -185,7 +185,10 @@
               <input type="checkbox" formControlName="is_template" ngbButton> Task Template
             </label>
         </div>
-        <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create task</button>
+        <div class="d-flex justify-content-between align-items-center">
+          <button class="btn btn-danger nav-link" routerLink="/tasks">Annuler</button>
+          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create task</button>
+        </div>
     </form>
     <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">
         <p class="font-weight-bold">Error when creating the task :</p>
