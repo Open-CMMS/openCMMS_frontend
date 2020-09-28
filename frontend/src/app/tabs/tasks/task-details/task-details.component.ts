@@ -361,7 +361,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.task.time = this.durationDays + ' days, ' + this.durationTime.hour + ':' + this.durationTime.minute + ':00';
         break;
       case 'equipment':
-        if(this.selectedEquipment[0] == null){
+        if (this.selectedEquipment[0] == null) {
           this.equipmentInputEnabled = false;
           this.task.equipment = null;
           this.equipmentName = null;
@@ -654,7 +654,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       let i = 0;
       for (const endCondition of this.endConditionsOriginal) {
         endCondition.value = this.endConditionValues[i].toString();
-        //console.log(endCondition);
         this.taskService.updateFieldObject(endCondition).subscribe();
         i++;
       }

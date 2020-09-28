@@ -19,7 +19,7 @@
                 *ngFor="let teamType of teamTypes; let i = index"
                 >
                 <div class="container-fluid row justify-content-between">
-                    <h5>{{ teamType.name }}</h5>
+                    <h5 (click)="onViewTeamType(i)">{{ teamType.name }}</h5>
 
                     <div class="d-flex">
                         <button class="btn btn-info" (click)="onViewTeamType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
