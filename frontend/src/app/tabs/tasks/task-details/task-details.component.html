@@ -57,7 +57,7 @@
         </div>
         <div class="d-flex btn-group" role="group">
             <!-- <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>-->
-            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteTaskPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
+            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteTaskPermission() && !task.over"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
         </div>
     </div>
     <div class="container-fluid alert alert-success mt-3" role="alert" *ngIf="task.over">
@@ -77,7 +77,7 @@
                             <button class="btn btn-outline-secondary" *ngIf="descriptionInputEnabled" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                         <div class="input-group-append" *ngIf="onChangeTaskPermission()">
-                            <button class="btn btn-outline-secondary" *ngIf="!descriptionInputEnabled" (click)="enableInput('description')"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="!descriptionInputEnabled && !task.over" (click)="enableInput('description')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
                     <br>
@@ -89,7 +89,7 @@
                             <button class="btn btn-outline-secondary" *ngIf="dateInputEnabled" (click)="saveInput('end_date')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                         <div class="input-group-append" *ngIf="onChangeTaskPermission()">
-                            <button class="btn btn-outline-secondary" *ngIf="!dateInputEnabled" (click)="datePicker.toggle(); enableInput('end_date')"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="!dateInputEnabled && !task.over" (click)="datePicker.toggle(); enableInput('end_date')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
                     <br>
@@ -97,7 +97,7 @@
                     <div class="input-group row col-3" *ngIf="!durationInputEnabled">
                         <input class="form-control" [(ngModel)]="taskDuration" disabled>
                         <div class="input-group-append" *ngIf="onChangeTaskPermission()">
-                            <button class="btn btn-outline-secondary" (click)="enableInput('duration')"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="!task.over" (click)="enableInput('duration')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
                     <div class="input-group row col-3" *ngIf="durationInputEnabled">
@@ -116,7 +116,7 @@
                     <div class="input-group row col-4" *ngIf="!equipmentInputEnabled">
                         <input class="form-control" [(ngModel)]="equipmentName" disabled>
                         <div class="input-group-append" >
-                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faPen"></fa-icon></button>
                             <button class="btn btn-info" (click)="onViewEquipment(task.equipment)" [disabled]="task.equipment==null"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                         </div>
                     </div>
@@ -169,7 +169,7 @@
                 <h3 class="font-weight-bold"> Teams : </h3>
             </div>
             <div class="d-flex">
-                <button class="d-flex btn btn-secondary" (click)="openAddTeam(contentAddTeam)" *ngIf="onChangeTaskPermission() && onViewTeamsPermission()"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
+                <button class="d-flex btn btn-secondary" (click)="openAddTeam(contentAddTeam)" *ngIf="onChangeTaskPermission() && onViewTeamsPermission() && !task.over"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
             </div>
         </div>
         <div class="card-body d-flex row">
@@ -182,7 +182,7 @@
                         <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
                         <div>
                             <button class="btn btn-info" (click)="onViewTeam(team)"><fa-icon [icon]="faInfoCircle" ></fa-icon></button>
-                            <button class="btn btn-danger" (click)="onRemoveTeamFromTask(team)" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faMinusSquare"></fa-icon></button>
+                            <button class="btn btn-danger" (click)="onRemoveTeamFromTask(team)" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faMinusSquare"></fa-icon></button>
                         </div>
                     </div>
                 </li>
