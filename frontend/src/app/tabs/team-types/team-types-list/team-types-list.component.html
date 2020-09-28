@@ -3,7 +3,7 @@
         <h4 class="modal-title" id="modal-delete">Delete TeamType</h4>
     </div>
     <div class="modal-body">
-        <p>Are you sure you want to delete this team type ? Be carefull the teams of this type will be deleted as well !</p>
+        <p>Are you sure you want to delete this team type ? Be careful the teams of this type will be deleted as well !</p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
@@ -19,8 +19,8 @@
                 *ngFor="let teamType of teamTypes; let i = index"
                 >
                 <div class="container-fluid row justify-content-between">
-                    <h5>{{ teamType.name }}</h5>
-                    
+                    <h5 (click)="onViewTeamType(i)">{{ teamType.name }}</h5>
+
                     <div class="d-flex">
                         <button class="btn btn-info" (click)="onViewTeamType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                         <button class="btn btn-danger" (click)="openDelete(contentDelete, i)" *ngIf="onDeleteTeamTypesPermission()"><fa-icon [icon]="faTrash"></fa-icon></button>

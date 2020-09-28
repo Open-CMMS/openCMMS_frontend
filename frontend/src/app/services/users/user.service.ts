@@ -13,7 +13,7 @@ export class UserService {
   private BASE_URL_API = environment.baseUrl;
 
   constructor(private httpClient: HttpClient) {
-    this.getUsers();
+    // this.getUsers();
   }
 
   /**
@@ -80,6 +80,7 @@ export class UserService {
   /**
    * Fonction to update a existing user in the database
    * @param userModified User concerned with the modification and with modifications applied
+   * @param newPassword the new password of the user
    */
   updateUserPassword(userModified: UserProfile, newPassword: string) {
 
@@ -101,7 +102,11 @@ export class UserService {
 
   /**
    * Fonction to save a new user in the database
-   * @param userToCreate User to be saved in the server's database
+   * @param username Username of the new user to be saved in the server's database
+   * @param first_name First name of the new user to be saved in the server's database
+   * @param last_name Last name of the new user to be saved in the server's database
+   * @param email Email of the new user to be saved in the server's database
+   * @param password Password of the new user to be saved in the server's database
    */
   createUser(username: string, first_name: string, last_name: string, email: string, password: string): Observable<any> {
     const userJson = JSON.stringify({username, first_name, last_name, email, password});
@@ -135,7 +140,7 @@ export class UserService {
   }
 
   /**
-   * getter on a possible suffix to add to the user's username, if userame is already used by another user
+   * getter on a possible suffix to add to the user's username, if username is already used by another user
    * @param username the username of the new possible user
    * @return a string containing the suffixe to be added to the current username
    */

@@ -60,7 +60,7 @@ export class EquipmentTypesListComponent implements OnInit, OnDestroy {
   /**
    * Function that opens the delete modal
    * @param contentDelete the content to put in the modal
-   * @param i the index of the equipmenttype to delete
+   * @param i the index of the equipment type to delete
    */
   openDelete(contentDelete, i: number) {
     this.modalService.open(contentDelete, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {

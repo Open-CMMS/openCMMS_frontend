@@ -3,6 +3,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import { UserService } from 'src/app/services/users/user.service';
 
 @Component({
   selector: 'app-user-management',
@@ -21,16 +22,20 @@ export class UserManagementComponent implements OnInit {
   /**
    * Constructor for the UserManagement component
    * @param router the service used to handle redirection
+   * @param authenticationService the auth service
+   * @param utilsService the service used for useful functions
    */
 
   constructor(private router: Router,
               private utilsService: UtilsService,
+              private userService: UserService,
               private authenticationService: AuthenticationService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.userService.getUsers();
   }
 
   /**

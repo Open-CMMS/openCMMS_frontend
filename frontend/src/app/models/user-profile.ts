@@ -12,7 +12,7 @@ export class UserProfile {
     /**
      * @param id The id of the user
      * @param username The username of the user
-     * @param firstName The user's firt name
+     * @param firstName The user's first name
      * @param lastName The user's last name
      * @param email The user's email
      * @param password The user's password

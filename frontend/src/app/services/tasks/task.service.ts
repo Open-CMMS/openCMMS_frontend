@@ -150,7 +150,7 @@ export class TaskService {
   /**
    * Function that remove a team from a task
    * @param idTask  the id of the task to update
-   * @param idTeam  the id of the teamù to remove
+   * @param idTeam  the id of the team to remove
    */
   removeTeamFromTask(idTask: number, idTeam: number) {
     const httpOptions = {
