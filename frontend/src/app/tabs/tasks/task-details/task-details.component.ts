@@ -644,12 +644,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             this.router.navigate(['tasks-management']);
           }
         );
+        this.taskService.getTasks();
       }
       // update FieldObjects values
       let i = 0;
       for (const endCondition of this.endConditionsOriginal) {
         endCondition.value = this.endConditionValues[i].toString();
-        console.log(endCondition);
         this.taskService.updateFieldObject(endCondition).subscribe();
         i++;
       }
