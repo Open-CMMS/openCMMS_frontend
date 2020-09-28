@@ -69,7 +69,7 @@ describe('TeamDetailsComponent', () => {
     component.teamType = new TeamType(2, 'Test TT', [], []);
     component.initForm();
     component.onRemoveUserFromTeam(new UserProfile(1, 'Maricato', 'Hugo', 'hmaricato', 'h.m@insa-rouen.fr', 'mdp', 2, true));
-    
+
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/NaN');
