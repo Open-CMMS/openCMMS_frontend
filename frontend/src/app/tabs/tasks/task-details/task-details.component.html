@@ -52,7 +52,9 @@
 
 <div class="container-fluid col-10 mt-3 justify-content-center" *ngIf="loaded">
     <div class="container-fluid d-flex justify-content-between">
-        <div class="d-flex">
+        <div class="d-flex justify-content-around">
+
+            <fa-icon class="comeBack" [icon]="faArrowAltCircleLeft" size="2x"></fa-icon>
             <h2 class="font-weight-bold">{{ task.name }}</h2>
         </div>
         <div class="d-flex btn-group" role="group">

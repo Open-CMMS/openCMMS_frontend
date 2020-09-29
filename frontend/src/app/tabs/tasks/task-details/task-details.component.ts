@@ -8,7 +8,7 @@ import { NgbModal, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { faTrash, faPen, faCalendar, faSave, faInfoCircle, faCheck, faBook } from '@fortawesome/free-solid-svg-icons';
-import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import { faPlusSquare, faMinusSquare, faArrowAltCircleLeft } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Equipment } from 'src/app/models/equipment';
@@ -36,6 +36,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   faCheck = faCheck;
   faBook = faBook;
+  faArrowAltCircleLeft = faArrowAltCircleLeft;
 
   // Local variables
   task: Task = null;
