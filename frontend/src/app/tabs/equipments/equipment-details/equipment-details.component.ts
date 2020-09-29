@@ -14,6 +14,7 @@ import { environment } from 'src/environments/environment';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentType } from 'src/app/models/equipment-type';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-equipment-details',
@@ -62,7 +63,8 @@ export class EquipmentDetailsComponent implements OnInit {
               private authenticationService: AuthenticationService,
               private utilsService: UtilsService,
               private fileService: FileService,
-              private equipmentTypeService: EquipmentTypeService) { }
+              private equipmentTypeService: EquipmentTypeService,
+              private location: Location) { }
 
   /**
    * Function that initialize the component when loaded
@@ -282,5 +284,10 @@ export class EquipmentDetailsComponent implements OnInit {
     }
 
     );
+  }
+
+  goBack(){
+    this.location.back();
+    console.log('Bonswaaaaaar');
   }
 }

@@ -54,7 +54,7 @@
     <div class="container-fluid d-flex justify-content-between">
         <div class="d-flex justify-content-around">
 
-            <fa-icon class="comeBack" [icon]="faArrowAltCircleLeft" size="2x"></fa-icon>
+            <button class="btn" (click)="goBack()"><fa-icon class="comeBack" [icon]="faArrowAltCircleLeft" size="2x"></fa-icon></button>
             <h2 class="font-weight-bold">{{ task.name }}</h2>
         </div>
         <div class="d-flex btn-group" role="group">

@@ -16,6 +16,7 @@ import { EquipmentService } from 'src/app/services/equipments/equipment.service'
 import { Subscription, Subject } from 'rxjs';
 import { FileService } from 'src/app/services/files/file.service';
 import { environment } from 'src/environments/environment';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-task-details',
@@ -109,7 +110,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               private utilsService: UtilsService,
               private authenticationService: AuthenticationService,
               private formBuilder: FormBuilder,
-              private fileService: FileService) { }
+              private fileService: FileService,
+              private location: Location){ }
 
   ngOnInit(): void {
     let id: number;
@@ -725,6 +727,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.equipmentSubscription.unsubscribe();
     this.triggerConditionSubscription.unsubscribe();
     this.endConditionSubscription.unsubscribe();
+  }
+
+  goBack(){
+    this.location.back();
+    console.log('Bonswaaaaaar');
   }
 
 }
