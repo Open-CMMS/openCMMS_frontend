@@ -113,6 +113,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
                 user.is_active));
               });
             });
+    this.userService.getUsers();
     this.userService.emitUsers();
   }
 
