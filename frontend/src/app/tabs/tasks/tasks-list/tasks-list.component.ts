@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faTrash, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faInfoCircle, faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
@@ -20,10 +20,13 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
   faPlus = faPlus;
+  faCheck = faCheck;
+
   tasks: Task[] = [];
   currentUser: UserProfile;
   tasksSubscription: Subscription = null;
   currentUserSubscription: Subscription = null;
+  myTasks: boolean;
 
   /**
    * Constructor for the TasksList component
@@ -32,6 +35,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
    * @param modalService the service to handle modal windows
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
+   * @param route the activated route
    */
   constructor(private taskService: TaskService,
               private router: Router,
@@ -59,6 +63,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
               this.tasks = tasks;
             }
           );
+          this.myTasks = true;
         } else { // path equals tasks-management: all the tasks are displayed
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
@@ -66,13 +71,14 @@ export class TasksListComponent implements OnInit, OnDestroy {
             }
           );
           this.taskService.emitTasks();
+          this.myTasks = false;
         }
       }
     );
   }
 
   /**
-   * Function that redirect to a precide Task details page
+   * Function that redirect to a precise Task details page
    * @param task The task to display
    */
   onViewTask(task: Task) {
@@ -141,10 +147,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
       const dateB = new Date(b.end_date);
       // @ts-ignore
       return dateB - dateA;
-    });
-    this.tasks.map( (task) => {
-      const dateA = new Date(task.end_date);
-      console.log(dateA);
     });
   }
 
