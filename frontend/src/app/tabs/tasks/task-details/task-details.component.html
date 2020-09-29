@@ -84,7 +84,11 @@
                     <p><span class="font-weight-bold">End date :</span></p>
                     <div class="input-group row col-2">
                         <input class="form-control"
-                                ngbDatepicker #datePicker="ngbDatepicker" [(ngModel)]="date" [disabled]="!dateInputEnabled ? '' : null">
+                               [placeholder]="task.end_date? task.end_date : ''"
+                               ngbDatepicker
+                               #datePicker="ngbDatepicker"
+                               [(ngModel)]="date"
+                               [disabled]="!dateInputEnabled ? '' : null">
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" *ngIf="dateInputEnabled" (click)="saveInput('end_date')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
