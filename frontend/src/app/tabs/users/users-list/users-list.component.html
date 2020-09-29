@@ -23,7 +23,7 @@
                 <div class="container-fluid row justify-content-between">
                     <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewUser(user)">{{ user.first_name }} {{ user.last_name }}</h5>
                     <div>
-                        <button class="btn btn-info" (click)="onViewUser(user)">
+                        <button class="btn btn-info mx-2" (click)="onViewUser(user)">
                             <fa-icon [icon]="faInfoCircle"></fa-icon>
                         </button>
                         <button class="btn btn-danger" (click)="openDelete(contentDelete, user)" *ngIf="onDeleteUserPermission()">
