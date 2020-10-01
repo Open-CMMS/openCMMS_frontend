@@ -17,29 +17,18 @@
         <div class="my-3" *ngIf="onAddTeamPermission()">
           <button class="btn btn-primary" *ngIf="onAddTeamPermission" (click)="onCreateTask()"><fa-icon [icon]="faPlus"></fa-icon> Create new task</button>
         </div>
-        <div class="d-flex justify-content-end my-1">
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Dropdown button
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                  <div class="dropdown-divider"></div>
-                </div>
-              </div>
-          <div class="dropdown">
-            <button class="btn btn-link btn-sort dropdown-toggle" (click)="sortingByEndDate()" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sort</button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div>
+    </div>
+    <div class="d-flex justify-content-end my-1">
+      <div class="dropdown">
+        <button class="btn btn-link btn-sort dropdown-toggle"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sort</button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" (click)="sortingByEndDate()">Date</a>
+          <a class="dropdown-item">Another action</a>
+          <a class="dropdown-item">Something else here</a>
         </div>
       </div>
     </div>
+    <!-- </div> -->
     <!-- <div class="d-flex justify-content-end my-1">
         <button class="btn btn-success" (click)="sortingByEndDate()">Sort</button>
     </div> -->
