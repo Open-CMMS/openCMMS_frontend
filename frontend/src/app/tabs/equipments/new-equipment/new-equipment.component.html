@@ -13,6 +13,34 @@
                     <option *ngFor="let equipmentType of equipmentTypes" [value]="equipmentType.id">{{ equipmentType.name }}</option>
             </select>
         </div>
+      <div class="list-group">
+        <ul class="list-group">
+          <li class="container-fluid list-group-item">
+              <h6>Name</h6>
+              <label for="field-value">Value</label>
+              <!--            <input type="text" id="field-value" class="form-control">-->
+              <select id="field-value" class="form-control">
+                <option value="Value"></option>
+              </select>
+              <label for="field-description">Description</label>
+              <input type="text" id="field-description" class="form-control">
+          </li>
+          <div class="my-2">
+            <button class="btn btn-primary">Create new field</button>
+          </div>
+<!--          <li class="container-fluid list-group-item">-->
+<!--            <label for="create-filed-name">Name</label>-->
+<!--            <input type="text" class="form-control">-->
+<!--            <label for="field-value">Value</label>-->
+<!--            &lt;!&ndash;            <input type="text" id="field-value" class="form-control">&ndash;&gt;-->
+<!--            <select id="field-value" class="form-control">-->
+<!--              <option value="Value"></option>-->
+<!--            </select>-->
+<!--            <label for="field-description">Description</label>-->
+<!--            <input type="text" id="field-description" class="form-control">-->
+<!--          </li>-->
+        </ul>
+      </div>
         <div class="form-group">
             <label for="file">Upload File</label>
             <input formControlName="file" id="file" type="file" multiple class="form-control" (change)="onFileUpload($event)">
