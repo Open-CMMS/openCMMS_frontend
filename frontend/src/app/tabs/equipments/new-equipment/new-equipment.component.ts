@@ -8,6 +8,7 @@ import { Subscription, Subject } from 'rxjs';
 import { EquipmentType } from 'src/app/models/equipment-type';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
@@ -38,12 +39,14 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * @param equipmentTypeService the service to handle equipment type
    * @param fileService the service to handle file
    * @param formBuilder the service to handle forms
+   * @param modalService the service used to handle modal windows
    */
   constructor(private router: Router,
               private equipmentService: EquipmentService,
               private equipmentTypeService: EquipmentTypeService,
               private fileService: FileService,
-              private formBuilder: FormBuilder
+              private formBuilder: FormBuilder,
+              private modalService: NgbModal
               ) { }
 
   /**
@@ -131,6 +134,18 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.myFiles.splice(index, 1);
     const id = this.files.splice(index, 1);
     this.fileService.deleteFile(id[0]);
+  }
+
+  /**
+   * Function that opens the modal to confirm a addition
+   * @param content the modal template to load
+   */
+  openAdd(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-modify'}).result.then((result) => {
+      if (result === 'OK') {
+        console.log('field added');
+      }
+    });
   }
 
   ngOnDestroy() {

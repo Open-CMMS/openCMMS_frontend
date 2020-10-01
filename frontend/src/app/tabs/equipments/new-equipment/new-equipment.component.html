@@ -1,3 +1,33 @@
+<ng-template #addField let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-modify">Add Field </h4>
+  </div>
+  <div class="modal-body">
+    <div class="col-sm-8 col-sm-offset-2">
+      <form class="form">
+        <div class="form-group">
+          <label for="new-field-name">Name</label>
+          <input type="text" id="new-field-name" class="form-control">
+          <label for="new-field-value">Value</label>
+          <!--            <input type="text" id="new-field-value" class="form-control">-->
+          <select id="new-field-value" class="form-control">
+            <option value="Value"></option>
+          </select>
+          <label for="new-field-description">Description</label>
+          <input type="text" id="new-field-description" class="form-control">
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+    <button type="button" class="btn btn-success" (click)="modal.close('OK')">Add</button>
+  </div>
+</ng-template>
+
+
+
+
 <div class="container-fluid col-10 mt-3 justify-content-center">
     <div class="d-flex">
         <h2 class="font-weight-bold">Create a new Equipment</h2>
@@ -25,21 +55,10 @@
               <label for="field-description">Description</label>
               <input type="text" id="field-description" class="form-control">
           </li>
-          <div class="my-2">
-            <button class="btn btn-primary">Create new field</button>
-          </div>
-<!--          <li class="container-fluid list-group-item">-->
-<!--            <label for="create-filed-name">Name</label>-->
-<!--            <input type="text" class="form-control">-->
-<!--            <label for="field-value">Value</label>-->
-<!--            &lt;!&ndash;            <input type="text" id="field-value" class="form-control">&ndash;&gt;-->
-<!--            <select id="field-value" class="form-control">-->
-<!--              <option value="Value"></option>-->
-<!--            </select>-->
-<!--            <label for="field-description">Description</label>-->
-<!--            <input type="text" id="field-description" class="form-control">-->
-<!--          </li>-->
         </ul>
+        <div class="my-2">
+          <button class="btn btn-secondary" (click)="openAdd(addField)">Create new field</button>
+        </div>
       </div>
         <div class="form-group">
             <label for="file">Upload File</label>
