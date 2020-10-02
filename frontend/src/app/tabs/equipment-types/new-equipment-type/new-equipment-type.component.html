@@ -18,6 +18,44 @@
         >
         </ng-multiselect-dropdown>
       </div>
+      <div class="form-group">
+        <label>Fields</label>
+        <br>
+        <button class="btn btn-outline-secondary" (click)="onAddField()">
+          <span class="mr-3">Add Field</span>
+          <fa-icon [icon]="faPlusSquare"></fa-icon>
+        </button>
+      </div>
+      <div class="form-group" *ngFor="let field of fields; let i = index">
+        <div class="form-row">
+          <button class="btn btn-danger" (click)="deleteField(i)">
+            <fa-icon [icon]="faMinusCircle"></fa-icon>
+          </button>
+          <ng-multiselect-dropdown
+            [settings]="dropdownFieldsSettings"
+            [data]="fieldsList"
+            [(ngModel)]="selectedField"
+            [ngModelOptions]="{standalone: true}"
+            name="field"
+            class="col-3"
+            style="margin-right:10px"
+          >
+          </ng-multiselect-dropdown>
+
+<!--          <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Date'">-->
+<!--            <input placeholder="yyyy-mm-dd"-->
+<!--                   name="dateTriggerCondition"-->
+<!--                   ngbDatepicker-->
+<!--                   #datePicker="ngbDatepicker"-->
+<!--                   [(ngModel)]=triggerCondition.value-->
+<!--                   [ngModelOptions]="{standalone: true}"-->
+<!--            />-->
+<!--            <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>-->
+
+
+<!--          </div>-->
+        </div>
+      </div>
       <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-danger nav-link" routerLink="/equipment-types">Annuler</button>
         <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Save</button>

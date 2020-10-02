@@ -7,6 +7,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router } from '@angular/router';
+import { faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-equipment-type',
@@ -26,6 +27,20 @@ export class NewEquipmentTypeComponent implements OnInit {
 
   // Forms :
   equipmentTypeForm: FormGroup;
+
+  // Icons
+  faPlusSquare = faPlusSquare;
+  faMinusCircle = faMinusCircle;
+
+  // Fields
+  fields = [];
+  fieldSelectTemplate = null;
+
+  // Multiple select
+  fieldsList = [];
+  selectedField = [];
+  dropdownFieldsSettings: IDropdownSettings;
+
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -49,7 +64,29 @@ export class NewEquipmentTypeComponent implements OnInit {
     });
     this.equipmentService.emitEquipments();
     this.initForm();
-  }
+
+    // A supprimer, uniquement pour les tests ici
+    this.fieldsList = [
+      { item_id: 1, item_text: 'Mumbai' },
+      { item_id: 2, item_text: 'Bangaluru' },
+      { item_id: 3, item_text: 'Pune' },
+      { item_id: 4, item_text: 'Navsari' },
+      { item_id: 5, item_text: 'New Delhi' }
+    ];
+    this.selectedField = [
+      { item_id: 3, item_text: 'Pune' },
+      { item_id: 4, item_text: 'Navsari' }
+    ];
+    this.dropdownFieldsSettings = {
+      singleSelection: false,
+      idField: 'item_id',
+      textField: 'item_text',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true
+    };
+  };
 
   /**
    * Function that initialize the dropdown select for equipments
@@ -78,6 +115,36 @@ export class NewEquipmentTypeComponent implements OnInit {
       name: ['', Validators.required],
       equipments: ['']
     });
+  }
+
+  /**
+   * Function to initialize the template for trigger condition objects. It is used to initialize
+   * the dropdown selects as well
+   * @param trigger_conditions_types the array with the different types of trigger conditions
+   */
+  initFieldSelectTemplate(fields_types: any[]) {
+    this.fieldSelectTemplate = {
+      selectedField: [],
+      fieldsList: fields_types,
+      dropdownFieldSettings: {
+        singleSelection: true,
+        idField: 'id',
+        textField: 'value',
+        allowSearchFilter: true
+      },
+      value: null,
+      description: null
+    };
+  }
+
+  onAddField() {
+    const jsonCopy = JSON.stringify(this.fieldSelectTemplate);
+    const objectCopy = JSON.parse(jsonCopy);
+    this.fields.push(objectCopy);
+  }
+
+  deleteField(i: number){
+    this.fields.splice(i, 1);
   }
 
   /**
