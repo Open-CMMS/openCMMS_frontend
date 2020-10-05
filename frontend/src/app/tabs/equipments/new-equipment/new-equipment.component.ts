@@ -7,8 +7,11 @@ import { EquipmentService } from 'src/app/services/equipments/equipment.service'
 import { Subscription, Subject } from 'rxjs';
 import { EquipmentType } from 'src/app/models/equipment-type';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
-import { faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import { faMinusSquare, faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { Field } from '../../../models/field';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../../environments/environment';
 
 
 @Component({
@@ -19,19 +22,29 @@ import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 export class NewEquipmentComponent implements OnInit, OnDestroy {
   // Icon
   faMinusSquare = faMinusSquare;
+  faPlusSquare = faPlusSquare;
+  faMinusCircle = faMinusCircle;
   // Local variables
   creationError = false;
   submitted = false;
   equipment: Equipment;
   equipmentTypes: EquipmentType[];
+  equipmentTypeId: number;
+  equipmentType: EquipmentType;
   equipmentTypesSubscription: Subscription;
   filesSubject = new Subject<File[]>();
   filesSubscription: Subscription;
   myFiles: File[] = [];
   files: number[] = [];
+  // Fields
+  field = null;
+  fields: Field[] = [];
+  fieldAdded = false;
+  fieldTemplate = null;
   // Forms
   createForm: FormGroup;
   addFieldForm: FormGroup;
+  private BASE_URL_API = environment.baseUrl;
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -40,6 +53,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * @param equipmentTypeService the service to handle equipment type
    * @param fileService the service to handle file
    * @param formBuilder the service to handle forms
+   * @param httpClient the
    * @param modalService the service used to handle modal windows
    */
   constructor(private router: Router,
@@ -47,6 +61,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
               private equipmentTypeService: EquipmentTypeService,
               private fileService: FileService,
               private formBuilder: FormBuilder,
+              private httpClient: HttpClient,
               private modalService: NgbModal
               ) { }
 
@@ -66,6 +81,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.equipmentTypeService.emitEquipmentTypes();
     this.equipmentService.emitEquipments();
     this.initForm();
+    this.initAddFieldTemplate();
   }
 
   /**
@@ -78,9 +94,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
       file: ['']
     });
     this.addFieldForm = this.formBuilder.group({
-      name: '',
-      value: '',
-      description: ''
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      value: ['', [Validators.required]],
+      description: ['']
     });
   }
 
@@ -142,24 +158,55 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.fileService.deleteFile(id[0]);
   }
 
-  // onAddFieldToEquipment() {
-  //   this.equipment.fields_set.push(this.addFieldForm);
-  //   this.equipmentService.updateEquipment(tempEquipment);
-  // }
+  /**
+   * Function to add a field in the form
+   */
+  addField() {
+    console.log(this.equipmentTypes);
+    this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/' + 10 + '/').subscribe(
+      (response) => {
+        // this.equipmentType = response;
+        // this.fields = response.fields_groups;
+        console.log(response);
+        console.log(response.id);
+        console.log(response.fields_groups);
+      }
+    );
+    this.httpClient.get<Field>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + 4 + '/').subscribe(
+      (response) => {
+        console.log(response);
+      }
+    );
+    console.log('equipment type', this.equipmentTypeId);
+
+    this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/requirements').subscribe(
+      (response) => {
+        console.log('requirements', response);
+      }
+    );
+
+    const jsonCopy = JSON.stringify(this.fieldTemplate);
+    const objectCopy = JSON.parse(jsonCopy);
+    this.fields.push(objectCopy);
+  }
 
   /**
-   * Function that opens the modal to confirm a addition
-   * @param content the modal template to load
+   * Function to initialize the template for field objects.
    */
-  openAddField(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-modify'}).result.then((result) => {
-      if (result === 'OK') {
-        // this.onAddFieldToEquipment();
-        console.log('field added');
-        console.log(this.addFieldForm.value);
-      }
-    },
-      (error) => {});
+  initAddFieldTemplate() {
+    this.fieldTemplate = {
+      name: '',
+      value: '',
+      description: ''
+    };
+  }
+
+  /**
+   * Function to delete a field in the form
+   * @param i the index of the field
+   */
+  deleteField(i: number) {
+    this.fields.splice(i, 1);
   }
 
   ngOnDestroy() {

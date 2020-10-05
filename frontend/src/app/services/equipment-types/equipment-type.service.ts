@@ -12,6 +12,7 @@ export class EquipmentTypeService {
   private BASE_URL_API = environment.baseUrl;
 
   equipment_types: EquipmentType[] = [];
+  equipment_types_requirements = [];
   equipment_types_subject = new Subject<EquipmentType[]>();
 
   constructor(private httpClient: HttpClient) {
@@ -69,6 +70,14 @@ export class EquipmentTypeService {
   }
 
   /**
+   * Function that returns the objects in the FieldGroup database
+   * @param field_objects_id the id of the FieldObjects to be returned
+   */
+  getFieldObjects(field_objects_id: number): Observable<any> {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + field_objects_id + '/');
+  }
+
+  /**
    * Function that returns all an equipment types in the EquipmentType database
    */
   getEquipmentTypes() {
@@ -87,6 +96,22 @@ export class EquipmentTypeService {
           console.log('Erreur ! :' + error);
         }
       );
+  }
+
+  /**
+   *  Function that returns the list of equipment types with their fields and the values associated.
+   */
+  getEquipmentTypesRequirements() {
+    this.httpClient
+      .get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/requirements')
+      .subscribe(
+        (response) => {
+          this.equipment_types_requirements = [];
+          response.forEach(element => {
+            console.log(element);
+          });
+        }
+    );
   }
 
   /**
