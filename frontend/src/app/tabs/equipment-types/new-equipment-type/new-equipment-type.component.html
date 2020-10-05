@@ -9,38 +9,66 @@
         <input type="text" class='form-control' formControlName="name">
       </div>
       <div class="form-group">
-        <label for="equipments">Equipments</label>
-        <ng-multiselect-dropdown
-          [settings]="dropdownEquipmentsSettings"
-          [data]="equipmentsList"
-          formControlName="equipments"
-          name="equipments"
-        >
-        </ng-multiselect-dropdown>
-      </div>
-      <div class="form-group">
         <label>Fields</label>
         <br>
-        <button class="btn btn-outline-secondary" (click)="onAddField()">
+        <button class="btn btn-outline-secondary" (click)="onOpenField()">
           <span class="mr-3">Add Field</span>
           <fa-icon [icon]="faPlusSquare"></fa-icon>
         </button>
       </div>
-      <div class="form-group" *ngFor="let field of fields; let i = index">
-        <div class="form-row">
-          <button class="btn btn-danger" (click)="deleteField(i)">
-            <fa-icon [icon]="faMinusCircle"></fa-icon>
-          </button>
-          <ng-multiselect-dropdown
-            [settings]="dropdownFieldsSettings"
-            [data]="fieldsList"
-            [(ngModel)]="selectedField"
-            [ngModelOptions]="{standalone: true}"
-            name="field"
-            class="col-3"
-            style="margin-right:10px"
-          >
-          </ng-multiselect-dropdown>
+      <form [formGroup]="fieldForm" (ngSubmit)="onSubmitField()">
+        <div class="form-group" *ngIf='openField'>
+          <div class="form-row">
+            <button class="btn btn-danger mr-3">
+              <fa-icon [icon]="faMinusCircle"></fa-icon>
+            </button>
+            <input 
+              type="text" 
+              placeholder="Field name"
+              class='form-control' 
+              formControlName="fieldName"
+              class="col-3 mr-3">
+              <input 
+              type="text" 
+              placeholder="Field value"
+              class='form-control' 
+              formControlName="fieldValue"
+              class="col-3 mr-3">
+            <button 
+            class="btn btn-primary"
+            (click)="onAddField()">
+              Add
+            </button>
+            <div *ngIf="f.fieldName.errors" class="invalid-feedback">
+              <div *ngIf="f.fieldName.errors.required">Field name is required</div>
+          </div>
+          </div>
+        </div>
+        <div class="form-group" *ngFor="let field of fields | keyvalue">
+          <div class="form-row">
+            <button class="btn btn-danger mr-3"
+              (click)="deleteField(field.key)"
+            >
+              <fa-icon [icon]="faMinusCircle"></fa-icon>
+            </button>
+            <input 
+            type="text" 
+            class='form-control' 
+            value="{{field.key}}"
+            class="col-3 mr-3"
+            disabled="disabled">
+            <input 
+            type="text" 
+            class='form-control' 
+            value="{{field.value}}"
+            class="col-3 mr-3"
+            disabled="disabled"
+            [ngClass]="{ 'is-invalid': submitted && f.fieldName.errors }">
+          </div>
+         
+        </div>
+      </form>
+      
 
 <!--          <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Date'">-->
 <!--            <input placeholder="yyyy-mm-dd"-->
@@ -53,9 +81,9 @@
 <!--            <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>-->
 
 
-<!--          </div>-->
-        </div>
-      </div>
+         <!-- </div>
+        </div> -->
+      <!-- </div> -->
       <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-danger nav-link" routerLink="/equipment-types">Annuler</button>
         <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Save</button>
