@@ -31,6 +31,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   files: number[] = [];
   // Forms
   createForm: FormGroup;
+  addFieldForm: FormGroup;
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -68,13 +69,18 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that initialize the fields in the form to create a new Team
+   * Function that initialize the different forms used in the component
    */
   initForm() {
     this.createForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       equipmentType: ['', Validators.required],
       file: ['']
+    });
+    this.addFieldForm = this.formBuilder.group({
+      name: '',
+      value: '',
+      description: ''
     });
   }
 
@@ -136,16 +142,24 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.fileService.deleteFile(id[0]);
   }
 
+  // onAddFieldToEquipment() {
+  //   this.equipment.fields_set.push(this.addFieldForm);
+  //   this.equipmentService.updateEquipment(tempEquipment);
+  // }
+
   /**
    * Function that opens the modal to confirm a addition
    * @param content the modal template to load
    */
-  openAdd(content) {
+  openAddField(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-modify'}).result.then((result) => {
       if (result === 'OK') {
+        // this.onAddFieldToEquipment();
         console.log('field added');
+        console.log(this.addFieldForm.value);
       }
-    });
+    },
+      (error) => {});
   }
 
   ngOnDestroy() {
