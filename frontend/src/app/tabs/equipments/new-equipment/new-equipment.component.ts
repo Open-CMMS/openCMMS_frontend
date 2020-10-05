@@ -9,7 +9,6 @@ import { EquipmentType } from 'src/app/models/equipment-type';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { faMinusSquare, faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import { Field } from '../../../models/field';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../../environments/environment';
 
@@ -38,7 +37,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   files: number[] = [];
   // Fields
   field = null;
-  fields: Field[] = [];
+  fields = [];
   fieldAdded = false;
   fieldTemplate = null;
   // Forms
@@ -172,7 +171,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
         console.log(response.fields_groups);
       }
     );
-    this.httpClient.get<Field>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + 4 + '/').subscribe(
+    this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + 4 + '/').subscribe(
       (response) => {
         console.log(response);
       }
