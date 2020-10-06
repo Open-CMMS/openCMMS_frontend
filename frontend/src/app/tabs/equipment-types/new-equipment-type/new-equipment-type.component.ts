@@ -74,35 +74,34 @@ export class NewEquipmentTypeComponent implements OnInit {
   get f() { return this.fieldForm.controls; }
 
 
-  onOpenField(){
+  onOpenField() {
     this.openField = true;
   }
-  
   onAddField() {
     const formValue = this.fieldForm.value;
-    const fieldName = formValue['fieldName'];
-    const fieldValue = formValue['fieldValue'];
+    const fieldName = formValue.fieldName;
+    const fieldValue = formValue.fieldValue;
     const fieldNameJsonCopy = JSON.stringify(fieldName);
-    const fieldValueJsonCopy = JSON.stringify(fieldValue)
+    const fieldValueJsonCopy = JSON.stringify(fieldValue);
     const objectFieldName = JSON.parse(fieldNameJsonCopy);
     const objectFieldValue = JSON.parse(fieldValueJsonCopy);
     this.fields[objectFieldName] = objectFieldValue;
-    this.fieldForm.controls['fieldName'].setValue('');
-    this.fieldForm.controls['fieldValue'].setValue('');
+    this.fieldForm.controls.fieldName.setValue('');
+    this.fieldForm.controls.fieldValue.setValue('');
   }
 
-  deleteField(key: string){
-    delete this.fields[key]
+  deleteField(key: string) {
+    delete this.fields[key];
   }
 
   dictToTable(fields: { [fieldName: string]: string } ) {
-    let tableFields = [];
-    for (let key in fields) {
+    const tableFields = [];
+    for (const key of Object.keys(fields)) {
       (fields[key] === '') ?
-      tableFields.push({"name": key}) : 
-      tableFields.push({"name": key, "value": [fields[key]]})
+      tableFields.push({name: key}) :
+      tableFields.push({name: key, value: [fields[key]]});
     }
-    return tableFields
+    return tableFields;
   }
 
   /**
