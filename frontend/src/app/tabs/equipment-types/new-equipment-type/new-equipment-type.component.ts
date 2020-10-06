@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Equipment } from 'src/app/models/equipment';
 import { Subscription } from 'rxjs';
 import { EquipmentType } from 'src/app/models/equipment-type';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
