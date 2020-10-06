@@ -19,7 +19,10 @@ export class NewEquipmentTypeComponent implements OnInit {
   // Local variables
   equipmentsSubscription: Subscription;
   newEquipmentType: EquipmentType;
-  submitted = false;
+  openField = false;
+  fields = {};
+  fieldName: string;
+
 
   // Forms :
   equipmentTypeForm: FormGroup;
@@ -28,13 +31,6 @@ export class NewEquipmentTypeComponent implements OnInit {
   // Icons
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
-
-  openField = false;
-  fields = {};
-  fieldName: string;
-
-
-
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -70,8 +66,6 @@ export class NewEquipmentTypeComponent implements OnInit {
       name: ['', Validators.required]
     });
   }
-
-  get f() { return this.fieldForm.controls; }
 
   /**
    * Function that set openField to true.
@@ -122,7 +116,6 @@ export class NewEquipmentTypeComponent implements OnInit {
    * Function that submits the form to create a new equipment type
    */
   onSubmit() {
-    this.submitted = true;
     if (this.equipmentTypeForm.invalid) {
       return;
     }
@@ -135,8 +128,9 @@ export class NewEquipmentTypeComponent implements OnInit {
         this.equipmentTypeService.equipment_types.push(equipment_type);
         this.equipmentTypeService.emitEquipmentTypes();
         this.equipmentTypeForm.reset();
-        this.router.navigate(['/equipment-types']);
       });
+    this.router.navigate(['/equipment-types']);
+
   }
 
   onSubmitField() {
