@@ -73,10 +73,20 @@ export class NewEquipmentTypeComponent implements OnInit {
 
   get f() { return this.fieldForm.controls; }
 
-
+  /**
+   * Function that set openField to true.
+   */
   onOpenField() {
     this.openField = true;
   }
+
+  /**
+   * Function that set openField to false.
+   */
+  onCloseField() {
+    this.openField = false;
+  }
+
   onAddField() {
     const formValue = this.fieldForm.value;
     const fieldName = formValue.fieldName;
@@ -88,6 +98,10 @@ export class NewEquipmentTypeComponent implements OnInit {
     this.fields[objectFieldName] = objectFieldValue;
     this.fieldForm.controls.fieldName.setValue('');
     this.fieldForm.controls.fieldValue.setValue('');
+  }
+
+  isEmpty(obj) {
+    return Object.keys(obj).length === 0;
   }
 
   deleteField(key: string) {

@@ -19,7 +19,7 @@
       <form [formGroup]="fieldForm" (ngSubmit)="onSubmitField()">
         <div class="form-group" *ngIf='openField'>
           <div class="form-row">
-            <button class="btn btn-danger mr-3">
+            <button class="btn btn-danger mr-3" (click)="onCloseField()" [disabled]='!isEmpty(fields)'>
               <fa-icon [icon]="faMinusCircle"></fa-icon>
             </button>
             <input 
@@ -39,9 +39,9 @@
             (click)="onAddField()">
               Add
             </button>
-            <div *ngIf="f.fieldName.errors" class="invalid-feedback">
+            <!-- <div *ngIf="f.fieldName.errors" class="invalid-feedback">
               <div *ngIf="f.fieldName.errors.required">Field name is required</div>
-          </div>
+          </div> -->
           </div>
         </div>
         <div class="form-group" *ngFor="let field of fields | keyvalue">
