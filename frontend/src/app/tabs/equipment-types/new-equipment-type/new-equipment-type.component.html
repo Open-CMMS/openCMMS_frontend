@@ -34,12 +34,17 @@
               class='form-control' 
               formControlName="fieldValue"
               class="col-3 mr-3">
-            <button 
-            class="btn btn-primary"
-            (click)="onAddField()"
-            [disabled]="fieldForm.invalid">
-              Add
-            </button>
+            <span 
+              data-toggle="tooltip" 
+              title="Field name required">
+              <button 
+              class="btn btn-primary"
+              (click)="onAddField()"
+              [disabled]="fieldForm.invalid"
+              >
+                Add
+              </button>
+            </span>
           </div>
         </div>
         <div class="form-group" *ngFor="let field of fields | keyvalue">
@@ -66,21 +71,6 @@
         </div>
       </form>
       
-
-<!--          <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Date'">-->
-<!--            <input placeholder="yyyy-mm-dd"-->
-<!--                   name="dateTriggerCondition"-->
-<!--                   ngbDatepicker-->
-<!--                   #datePicker="ngbDatepicker"-->
-<!--                   [(ngModel)]=triggerCondition.value-->
-<!--                   [ngModelOptions]="{standalone: true}"-->
-<!--            />-->
-<!--            <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>-->
-
-
-         <!-- </div>
-        </div> -->
-      <!-- </div> -->
       <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-danger nav-link" routerLink="/equipment-types">Cancel</button>
         <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Save</button>
