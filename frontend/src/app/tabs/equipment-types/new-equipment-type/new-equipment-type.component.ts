@@ -86,7 +86,6 @@ export class NewEquipmentTypeComponent implements OnInit {
     const fieldValueJsonCopy = JSON.stringify(fieldValue)
     const objectFieldName = JSON.parse(fieldNameJsonCopy);
     const objectFieldValue = JSON.parse(fieldValueJsonCopy);
-    console.log(this.fields);
     this.fields[objectFieldName] = objectFieldValue;
     this.fieldForm.controls['fieldName'].setValue('');
     this.fieldForm.controls['fieldValue'].setValue('');
@@ -94,6 +93,16 @@ export class NewEquipmentTypeComponent implements OnInit {
 
   deleteField(key: string){
     delete this.fields[key]
+  }
+
+  dictToTable(fields: { [fieldName: string]: string } ) {
+    let tableFields = [];
+    for (let key in fields) {
+      (fields[key] === '') ?
+      tableFields.push({"name": key}) : 
+      tableFields.push({"name": key, "value": [fields[key]]})
+    }
+    return tableFields
   }
 
   /**
@@ -108,7 +117,7 @@ export class NewEquipmentTypeComponent implements OnInit {
     const nameStr = 'name';
     const id = 0;
     const name = formValue[nameStr];
-    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.fields)).subscribe(
+    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.dictToTable(this.fields))).subscribe(
       equipment_type => {
         this.equipmentTypeService.equipment_types.push(equipment_type);
         this.equipmentTypeService.emitEquipmentTypes();

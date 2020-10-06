@@ -30,7 +30,6 @@ export class EquipmentTypeService {
    * @param newEquipmentType the new equipmentType to be created
    */
   createEquipmentType(newEquipmentType: EquipmentType): Observable<any> {
-    console.log(newEquipmentType);
     const ttJson = JSON.stringify(newEquipmentType);
     console.log(ttJson);
     const httpOptions = {
@@ -79,7 +78,7 @@ export class EquipmentTypeService {
         (response) => {
           this.equipment_types = [];
           response.forEach(element => {
-            const gt = new EquipmentType(element.id, element.name, {});
+            const gt = new EquipmentType(element.id, element.name, []);
             this.equipment_types.push(gt);
           });
           this.emitEquipmentTypes();

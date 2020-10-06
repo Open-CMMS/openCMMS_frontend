@@ -1,7 +1,7 @@
 export class EquipmentType {
     id: number;
     name: string;
-    fields: { [fieldName: string]: string } 
+    fields: any[]
 
     /**
      *
@@ -11,7 +11,7 @@ export class EquipmentType {
      */
 
     // const dictionary: { [fieldName: string]: string } 
-    constructor(id: number, name: string, fields:{ [fieldName: string]: string }) {
+    constructor(id: number, name: string, fields: any[]) {
         this.id = id;
         this.name = name;
         this.fields = fields;
@@ -44,7 +44,7 @@ export class EquipmentType {
     /**
      * Getter on the dictionnary fields of the EquipmentType
      */
-    getFields(): { [fieldName: string]: string } {
+    getFields(): any[] {
         return this.fields;
     }
 
@@ -52,7 +52,7 @@ export class EquipmentType {
      * Setter on the ditionnary fields of the EquipmentType
      * @param fields 
      */
-    setField(fields: { [fieldName: string]: string }) {
+    setField(fields: any[]) {
         this.fields = fields;
     }
 }

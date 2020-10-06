@@ -176,7 +176,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
     formValue[equipmentsStr].forEach(item => {
       equipments.push(item.id);
     });
-    this.equipmentTypeService.updateEquipmentType(new EquipmentType(id, name, {})).subscribe(
+    this.equipmentTypeService.updateEquipmentType(new EquipmentType(id, name, [])).subscribe(
         equipment_type => {
           const old_equipment_type = this.equipmentTypeService.equipment_types.find((value) => {
             return value.id === equipment_type.id;
