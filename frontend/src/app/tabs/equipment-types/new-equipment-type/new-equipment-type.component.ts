@@ -103,10 +103,15 @@ export class NewEquipmentTypeComponent implements OnInit {
 
   dictToTable(fields: { [fieldName: string]: string } ) {
     const tableFields = [];
+    let valuesStr: string[]
     for (const key of Object.keys(fields)) {
-      (fields[key] === '') ?
-      tableFields.push({name: key}) :
-      tableFields.push({name: key, value: [fields[key]]});
+      if (fields[key] === '') {
+        tableFields.push({name: key});
+      }
+      else {
+        valuesStr = fields[key].split(',');
+        tableFields.push({name: key, value: valuesStr});
+      }
     }
     return tableFields;
   }

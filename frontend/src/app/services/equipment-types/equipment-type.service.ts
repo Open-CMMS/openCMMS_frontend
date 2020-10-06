@@ -31,7 +31,6 @@ export class EquipmentTypeService {
    */
   createEquipmentType(newEquipmentType: EquipmentType): Observable<any> {
     const ttJson = JSON.stringify(newEquipmentType);
-    console.log(ttJson);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
