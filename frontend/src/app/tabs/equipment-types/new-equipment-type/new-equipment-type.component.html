@@ -1,3 +1,9 @@
+<script>
+  $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+</script>
+
 <div class="container-fluid col-10 mt-3 justify-content-center">
     <div class="d-flex">
       <h2 class="font-weight-bold">Create a new equipment type</h2>
@@ -12,7 +18,7 @@
         <label>Fields</label>
         <br>
         <button class="btn btn-outline-secondary" type="button" (click)="onOpenField()">
-          <span class="mr-3">Add Field</span>
+          <span class="mr-3">New Field</span>
           <fa-icon [icon]="faPlusSquare"></fa-icon>
         </button>
       </div>
@@ -33,7 +39,9 @@
               placeholder="Field value"
               class='form-control' 
               formControlName="fieldValue"
-              class="col-3 mr-3">
+              class="col-3 mr-3"
+              data-toggle="tooltip" 
+              title="You can enter multiple values separated by a comma.">
             <span 
               data-toggle="tooltip" 
               title="Field name required">
