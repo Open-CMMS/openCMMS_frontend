@@ -64,12 +64,8 @@ describe('EquipmentTypeService', () => {
                           expect(equipmentTypes.length).toBe(2);
                           expect(equipmentTypes[0].id).toBe(0);
                           expect(equipmentTypes[0].name).toBe('EquipmentType 1');
-                          expect(equipmentTypes[0].equipment_set.length).toBe(2);
-                          expect(equipmentTypes[0].equipment_set[0]).toBe(1);
-                          expect(equipmentTypes[0].equipment_set[1]).toBe(2);
                           expect(equipmentTypes[1].id).toBe(1);
                           expect(equipmentTypes[1].name).toBe('EquipmentType 2');
-                          expect(equipmentTypes[1].equipment_set.length).toBe(1);
                         });
 
     const req = httpTestingController.match(BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/');
@@ -87,9 +83,6 @@ describe('EquipmentTypeService', () => {
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/');
     service.getEquipmentType(1).subscribe((equipmentType: EquipmentType) => {
       expect(equipmentType.name).toBe('EquipmentType 1');
-      expect(equipmentType.equipment_set.length).toBe(2);
-      expect(equipmentType.equipment_set[0]).toBe(1);
-      expect(equipmentType.equipment_set[1]).toBe(2);
     });
 
     const req2 = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/1/');

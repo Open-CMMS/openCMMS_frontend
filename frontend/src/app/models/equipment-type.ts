@@ -1,7 +1,7 @@
 export class EquipmentType {
     id: number;
     name: string;
-    fields: any[]
+    fields: any[];
 
     /**
      *
@@ -10,7 +10,7 @@ export class EquipmentType {
      * @param equipment_set The list of the equipment_set associated to the EquipmentType
      */
 
-    // const dictionary: { [fieldName: string]: string } 
+    // const dictionary: { [fieldName: string]: string }
     constructor(id: number, name: string, fields: any[]) {
         this.id = id;
         this.name = name;
@@ -50,7 +50,7 @@ export class EquipmentType {
 
     /**
      * Setter on the ditionnary fields of the EquipmentType
-     * @param fields 
+     * @param fields Array of fields.
      */
     setField(fields: any[]) {
         this.fields = fields;
