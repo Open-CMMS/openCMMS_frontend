@@ -99,22 +99,6 @@ export class EquipmentTypeService {
   }
 
   /**
-   *  Function that returns the list of equipment types with their fields and the values associated.
-   */
-  getEquipmentTypesRequirements() {
-    this.httpClient
-      .get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/requirements')
-      .subscribe(
-        (response) => {
-          this.equipment_types_requirements = [];
-          response.forEach(element => {
-            console.log(element);
-          });
-        }
-    );
-  }
-
-  /**
    * Function that deletes an equipment type in the EquipmentType database
    * @param id_equipment_type the if of the EquipmentType to be deleted
    */

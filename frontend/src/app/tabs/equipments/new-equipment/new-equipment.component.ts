@@ -10,7 +10,7 @@ import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment
 import { faMinusSquare, faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../../environments/environment';
+import {Field} from '../../../models/field';
 
 
 @Component({
@@ -28,7 +28,8 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   submitted = false;
   equipment: Equipment;
   equipmentTypes: EquipmentType[];
-  equipmentTypeId: number;
+  equipmentTypesRequirement = [];
+  equipmentTypeFields: Field[] = [];
   equipmentType: EquipmentType;
   equipmentTypesSubscription: Subscription;
   filesSubject = new Subject<File[]>();
@@ -43,7 +44,6 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   // Forms
   createForm: FormGroup;
   addFieldForm: FormGroup;
-  private BASE_URL_API = environment.baseUrl;
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -110,12 +110,13 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     const formValues = this.createForm.value;
-    this.equipmentService.createEquipment(formValues.name, formValues.equipmentType, this.files)
+    this.equipmentService.createEquipment(formValues.name, formValues.equipmentType, this.files, this.fields)
       .subscribe((equipment: Equipment) => {
                 this.equipment = new Equipment(equipment.id,
                                               equipment.name,
                                               equipment.equipment_type,
                                               equipment.files,
+                                              equipment.fields,
                                               );
           });
     this.router.navigate(['/equipments']);
@@ -161,29 +162,6 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * Function to add a field in the form
    */
   addField() {
-    console.log(this.equipmentTypes);
-    this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/' + 10 + '/').subscribe(
-      (response) => {
-        // this.equipmentType = response;
-        // this.fields = response.fields_groups;
-        console.log(response);
-        console.log(response.id);
-        console.log(response.fields_groups);
-      }
-    );
-    this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + 4 + '/').subscribe(
-      (response) => {
-        console.log(response);
-      }
-    );
-    console.log('equipment type', this.equipmentTypeId);
-
-    this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/requirements').subscribe(
-      (response) => {
-        console.log('requirements', response);
-      }
-    );
-
     const jsonCopy = JSON.stringify(this.fieldTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     this.fields.push(objectCopy);
@@ -198,6 +176,20 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
       value: '',
       description: ''
     };
+  }
+
+  /**
+   * Function to initialize the fields of the selected equipment type
+   * @param event The EquipmentType selected
+   */
+  initEquipmentTypeFields(event) {
+    this.equipmentTypeService.getEquipmentType(Number(event))
+      .subscribe(
+        (response) => {
+          this.equipmentType = response;
+          this.equipmentTypeFields = response.field;
+        }
+      );
   }
 
   /**
