@@ -8,6 +8,7 @@ export class Template {
     equipment?: any;
     teams?: any[];
     files?: any[];
+    end_conditions?: any[];
 
     /**
      * Constructor of the Task object
@@ -28,7 +29,8 @@ export class Template {
         duration?: string,
         equipment?: any,
         teams?: any[],
-        files?: any[]) {
+        files?: any[],
+        end_conditions?: any[]) {
             this.id = id;
             this.name = name;
             this.description = description;
@@ -37,5 +39,6 @@ export class Template {
             this.equipment = equipment;
             this.teams = teams;
             this.files = files;
+            this.end_conditions = end_conditions;
         }
 }

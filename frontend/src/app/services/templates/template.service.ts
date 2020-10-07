@@ -53,6 +53,26 @@ export class TemplateService {
    * @param id  the id of the template to delete
    */
   deleteTemplate(id: number) {
-    return this.httpClient.delete<Template>(this.BASE_URL_API + '/api/maintenancemanagement/tasks/' + id);
+    return this.httpClient.delete<Template>(this.BASE_URL_API + '/api/maintenancemanagement/tasks/' + id + '/');
+  }
+
+  /**
+   * Function that saves a new team in the Team database
+   * @param newTeam the new team to be created
+   */
+  createTemplate(newTemplate: Template): Observable<any> {
+    const templateJson = JSON.stringify(newTemplate);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json'
+      })
+    };
+
+    return this.httpClient.post<Template>(this.BASE_URL_API + '/api/maintenancemanagement/tasks/', templateJson, httpOptions);
+  }
+
+  getConditionsTypes() {
+      return this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/tasks/requirements');
   }
 }

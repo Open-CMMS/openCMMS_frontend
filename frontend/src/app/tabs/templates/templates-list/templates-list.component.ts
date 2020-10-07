@@ -73,7 +73,7 @@ export class TemplatesListComponent implements OnInit, OnDestroy {
     this.templateService.deleteTemplate(template.id).subscribe(
       (resp) => {
         this.templateService.getTemplates();
-        this.router.navigate(['/teams']);
+        this.router.navigate(['/template-management']);
       }
     );
   }

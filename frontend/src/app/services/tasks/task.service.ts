@@ -19,7 +19,7 @@ export class TaskService {
 
   constructor(private httpClient: HttpClient) {
     this.getTasks();
-    this.getFieldObjects();
+    // this.getFieldObjects();
   }
 
   /**
