@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Equipment } from '../../models/equipment';
 import { Subject, Observable } from 'rxjs';
+import {Field} from '../../models/field';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class EquipmentService {
                   .subscribe(
                     (response) => {
                       response.forEach(element => {
-                        const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files);
+                        const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files, element.fields);
                         this.equipments.push(equipment);
                       });
                       this.emitEquipments();
@@ -61,8 +62,9 @@ export class EquipmentService {
     const name = equipmentModified.name;
     const equipment_type = equipmentModified.equipment_type;
     const files = equipmentModified.files;
+    const fields = equipmentModified.fields;
 
-    const userJson = JSON.stringify({name, equipment_type, files});
+    const userJson = JSON.stringify({name, equipment_type, files, fields});
 
     const httpOptions = {
       headers : new HttpHeaders({
@@ -81,9 +83,10 @@ export class EquipmentService {
    * @param name the formal name of the equipment
    * @param equipment_type number defining which type of equipment it is
    * @param files list of the id of the files concerning the equipment
+   * @param fields list of the fields of the equipment
    */
-  createEquipment(name: string, equipment_type: number, files: number[]): Observable<any> {
-    const equipmentJson = JSON.stringify({name, equipment_type, files});
+  createEquipment(name: string, equipment_type: number, files: number[], fields: Field[]): Observable<any> {
+    const equipmentJson = JSON.stringify({name, equipment_type, files, fields});
 
     const httpOptions = {
       headers : new HttpHeaders({
