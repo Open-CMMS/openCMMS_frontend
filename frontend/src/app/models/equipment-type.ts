@@ -2,7 +2,7 @@ export class EquipmentType {
     id: number;
     name: string;
     fields: any[];
-
+    equipments: any[];
     /**
      *
      * @param id The id of the equipment type
@@ -54,5 +54,20 @@ export class EquipmentType {
      */
     setField(fields: any[]) {
         this.fields = fields;
+    }
+
+    /**
+     * Getter on the table equipments of the EquipmentType
+     */
+    getEquipments(): any[] {
+        return this.equipments;
+    }
+
+    /**
+     * Setter on the table equipments of the EquipmentType
+     * @param fields Array of fields.
+     */
+    setEquipments(equipments: any[]) {
+        this.equipments = equipments;
     }
 }

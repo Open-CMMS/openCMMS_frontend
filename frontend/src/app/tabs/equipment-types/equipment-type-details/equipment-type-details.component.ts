@@ -80,7 +80,8 @@ export class EquipmentTypeDetailsComponent implements OnInit {
     });
     this.equipmentTypeService.getEquipmentType(this.id).subscribe((equipment_type: EquipmentType) => {
       this.name = equipment_type.name;
-      this.equipments = Array();
+      this.equipments = equipment_type.equipments;
+      this.fields = equipment_type.fields;
       // equipment_type.equipment_set.forEach((id) => {
       //   this.equipmentService.getEquipment(id).subscribe((equipment: Equipment) => {
       //     this.equipments.push(equipment);
@@ -174,9 +175,9 @@ export class EquipmentTypeDetailsComponent implements OnInit {
     const id = this.id;
     const name = formValue[nameStr];
     const equipments = [];
-    formValue[equipmentsStr].forEach(item => {
-      equipments.push(item.id);
-    });
+    // formValue[equipmentsStr].forEach(item => {
+    //   equipments.push(item.id);
+    // });
     this.equipmentTypeService.updateEquipmentType(new EquipmentType(id, name, [])).subscribe(
         equipment_type => {
           const old_equipment_type = this.equipmentTypeService.equipment_types.find((value) => {
