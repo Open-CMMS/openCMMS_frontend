@@ -6,7 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router } from '@angular/router';
-import { faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPlusSquare, faMinusCircle, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-equipment-type',
@@ -21,6 +21,7 @@ export class NewEquipmentTypeComponent implements OnInit {
   openField = false;
   fields = {};
   fieldName: string;
+  editingField= true;
 
 
   // Forms :
@@ -30,6 +31,7 @@ export class NewEquipmentTypeComponent implements OnInit {
   // Icons
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
+  faPencilAlt = faPencilAlt;
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -99,6 +101,11 @@ export class NewEquipmentTypeComponent implements OnInit {
 
   deleteField(key: string) {
     delete this.fields[key];
+  }
+
+  onEditField(key:string) {
+    this.editingField = !this.editingField;
+    console.log(key);
   }
 
   dictToTable(fields: { [fieldName: string]: string } ) {
