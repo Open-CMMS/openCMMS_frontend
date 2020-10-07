@@ -124,7 +124,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     console.log(objectCopy);
-    console.log(this.endConditions)
+    console.log(this.endConditions);
     this.endConditions.push(objectCopy);
   }
 
