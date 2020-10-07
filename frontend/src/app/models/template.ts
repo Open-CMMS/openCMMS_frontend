@@ -6,6 +6,7 @@ export class Template {
     duration?: string; // au format X days, hh:mm:ss
     is_template = true;
     equipment?: any;
+    equipment_type?: any;
     teams?: any[];
     files?: any[];
     end_conditions?: any[];
@@ -28,6 +29,7 @@ export class Template {
         end_date?: string,
         duration?: string,
         equipment?: any,
+        equipment_type?: any,
         teams?: any[],
         files?: any[],
         end_conditions?: any[]) {
@@ -37,6 +39,7 @@ export class Template {
             this.end_date = end_date;
             this.duration = duration;
             this.equipment = equipment;
+            this.equipment_type = equipment_type;
             this.teams = teams;
             this.files = files;
             this.end_conditions = end_conditions;

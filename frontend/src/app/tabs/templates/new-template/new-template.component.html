@@ -24,23 +24,31 @@
         </div>
         <div class="form-group">
             <label for="equipmentType">Equipment type</label>
-            <ng-multiselect-dropdown
+            <select class="form-control" formControlName="equipmentType" name="equipmentType" (change)="updateEquipmentsSelect(createForm.value.equipmentType)">
+                <option default value=''></option>
+                <option *ngFor="let equipmentType of equipmentTypesList" [value]="equipmentType.id">{{ equipmentType.value }}</option>
+            </select>
+            <!-- <ng-multiselect-dropdown
               [settings]="dropdownEquipmentTypesSettings"
-              [data]="equipmentTypeList"
+              [data]="equipmentTypesList"
               formControlName="equipmentType"
               name="equipmentType"
             >
-            </ng-multiselect-dropdown>
-          </div>
-        <div class="form-group" *ngIf="createForm.value.equipmentType">
-          <label for="equipment">Equipment</label>
-          <ng-multiselect-dropdown
-            [settings]="dropdownEquipmentsSettings"
-            [data]="equipmentList"
-            formControlName="equipment"
-            name="equipment"
-          >
-          </ng-multiselect-dropdown>
+            </ng-multiselect-dropdown> -->
+        </div>
+        <div class="form-group" *ngIf="createForm.value.equipmentType !== ''">
+            <label for="equipment">Equipment</label>
+            <select class="form-control" formControlName="equipment" name="equipment">
+                <option default value=''></option>
+                <option *ngFor="let equipment of equipmentList" [value]="equipment.id">{{ equipment.value }}</option>
+            </select>
+            <!-- <ng-multiselect-dropdown
+                [settings]="dropdownEquipmentsSettings"
+                [data]="equipmentList"
+                formControlName="equipment"
+                name="equipment"
+            >
+            </ng-multiselect-dropdown> -->
         </div>
         <div class="form-group row col-4">
             <label for="time">Task duration </label>

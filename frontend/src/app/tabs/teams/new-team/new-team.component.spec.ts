@@ -45,6 +45,7 @@ describe('NewTeamComponent', () => {
   it('should call the creation method of Team', () => {
     component.onCreateTeam();
 
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     const req = httpTestingController.match(BASE_URL_API + '/api/usersmanagement/teams/');
     expect(req[1].request.method).toBe('POST');

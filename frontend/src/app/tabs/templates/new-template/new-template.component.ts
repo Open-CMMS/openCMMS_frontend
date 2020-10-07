@@ -9,6 +9,7 @@ import { Equipment } from 'src/app/models/equipment';
 import { EquipmentType } from 'src/app/models/equipment-type';
 import { Team } from 'src/app/models/team';
 import { Template } from 'src/app/models/template';
+import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { FileService } from 'src/app/services/files/file.service';
 import { TaskService } from 'src/app/services/tasks/task.service';
@@ -42,10 +43,12 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   // Multiple Select
   teamsList = [];
   equipmentList = [];
+  equipmentTypesList = [];
   endConditionsList = [];
   selectedEndConditions = [];
   dropdownTeamsSettings: IDropdownSettings;
   dropdownEquipmentsSettings: IDropdownSettings;
+  dropdownEquipmentTypesSettings: IDropdownSettings;
   dropdownEndConditionsSettings: IDropdownSettings;
 
   // End Conditions
@@ -76,6 +79,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
               private taskService: TaskService,
               private teamService: TeamService,
               private equipmentService: EquipmentService,
+              private equipmentTypeService: EquipmentTypeService,
               private fileService: FileService,
               private formBuilder: FormBuilder
               ) { }
@@ -93,13 +97,13 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     this.equipmentSubscription = this.equipmentService.equipmentsSubject.subscribe(
       (equipments: Equipment[]) => {
         this.equipments = equipments;
-        this.initEquipmentsSelect();
+        // this.initEquipmentsSelect();
       }
     );
-    this.equipmentTypesSubscription = this.equipmentTypeService.equipmentTypessSubject.subscribe(
+    this.equipmentTypeSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
       (equipmentTypes: EquipmentType[]) => {
         this.equipmentTypes = equipmentTypes;
-        this.initEquipmentsSelect();
+        this.initEquipmentTypesSelect();
       }
     );
     this.filesSubscription = this.filesSubject.subscribe(
@@ -221,36 +225,31 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    */
   initTeamsSelect() {
     this.teamsList = [];
-    this.teams.forEach(team => {
+    for (const team of this.teams) {
       this.teamsList.push({id: team.id.toString(), value: team.name});
-    });
-    this.dropdownTeamsSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 4,
-      allowSearchFilter: true
-    };
+    }
   }
 
   /**
    * Function that initialize the select for the equipment
    */
-  initEquipmentsSelect() {
+  updateEquipmentsSelect(equipmentTypeId: number) {
     this.equipmentList = [];
-    this.equipments.forEach(equipment => {
-      this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
-    });
-    this.dropdownEquipmentsSettings = {
-      singleSelection: true,
-      idField: 'id',
-      textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      allowSearchFilter: true
-    };
+    for (const equipment of this.equipments) {
+      if (equipment.equipment_type.toString() === equipmentTypeId.toString()) {
+        this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
+      }
+    }
+  }
+
+  /**
+   * Function that initialize the select for the equipment types
+   */
+  initEquipmentTypesSelect() {
+    this.equipmentTypesList = [];
+    for (const equipmentType of this.equipmentTypes) {
+      this.equipmentTypesList.push({id: equipmentType.id.toString(), value: equipmentType.name});
+    }
   }
 
   /**
@@ -298,6 +297,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
       description: ['', Validators.required],
       time: ['', Validators.pattern(regex_time)],
       equipment: [''],
+      equipmentType: [''],
       teams: [''],
       file: ['']
     });
@@ -306,7 +306,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   /**
    * Function that is triggered when a new Task is being created (when button "Create new task" is pressed)
    */
-  onCreateTemplate(test = false) {
+  onCreateTemplate() {
     const formValues = this.createForm.value;
 
     const teams = [];
@@ -327,12 +327,13 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
         });
     }
 
-    const equipment = formValues.equipment ? formValues.equipment[0].id : null;
+    const equipment = formValues.equipment !== '' ? formValues.equipment : null;
 
     const end_date = formValues.end_date ? this.taskService.normaliseEndDateValue(formValues.end_date) : null;
 
     const time = formValues.time ? this.taskService.normaliseDurationValue(formValues.time, ['d', 'h', 'm']) : '';
 
+    const equipment_type = formValues.equipmentType !== '' ? formValues.equipmentType : null;
     const files = this.files;
 
     const task_type = 1;
@@ -344,27 +345,21 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
                             end_date,
                             time,
                             equipment,
+                            equipment_type,
                             teams,
                             files,
                             end_conditions);
 
-
-
-    if (test === true) {
-      // console.log(newTask);
-    } else {
-      console.log(newTemplate);
-      this.templateService.createTemplate(newTemplate).subscribe(
-        (template: Template) => {
-          // this.createFieldObjects(template.id);
-          this.router.navigate(['/template-management']);
-          this.templateService.getTemplates();
-        },
-        (error) => {
-          this.creationError = true;
-        }
-      );
-    }
+    this.templateService.createTemplate(newTemplate).subscribe(
+      (template: Template) => {
+        // this.createFieldObjects(template.id);
+        this.router.navigate(['/template-management']);
+        this.templateService.getTemplates();
+      },
+      (error) => {
+        this.creationError = true;
+      }
+    );
   }
 
   /**
