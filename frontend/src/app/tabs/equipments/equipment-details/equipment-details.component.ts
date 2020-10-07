@@ -83,7 +83,10 @@ export class EquipmentDetailsComponent implements OnInit {
         this.currentEquipment = eq;
         this.name = this.currentEquipment.name;
         this.equipment_type = this.currentEquipment.equipment_type;
-        this.getEquipmentTypeName(this.currentEquipment.equipment_type);
+        this.getEquipmentTypeName(this.currentEquipment.equipment_type.id);
+        // Erreur Property 'id' does not exist on type 'number' mais si on ne le met pas erreur dans la requête Get equipmentType
+        // Incohérence entre le get et le post d'un equipment type, le premier renvoie un EquipmentType mais le deuxième créer
+          // un equipment en envoyé juste l'id de l'equipment type pas un type Equipment type
         this.files = this.currentEquipment.files;
         this.loaded = true;
         this.initForm();
@@ -119,7 +122,7 @@ export class EquipmentDetailsComponent implements OnInit {
     }
     if (this.currentEquipment.equipment_type !== formValues.equipment_type) {
       this.currentEquipment.equipment_type = formValues.equipment_type;
-      this.getEquipmentTypeName(this.currentEquipment.equipment_type);
+      this.getEquipmentTypeName(this.currentEquipment.equipment_type.id);
     }
     if (this.currentEquipment.files !== formValues.files) {
       this.currentEquipment.files = formValues.files;
