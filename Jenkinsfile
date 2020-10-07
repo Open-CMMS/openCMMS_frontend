@@ -241,5 +241,15 @@ pipeline{
                 }
             }
         }
+
+        stage('CLEAN NPM') {
+            steps {
+                dir("frontend"){
+                sh '''
+                    npm uninstall -d
+                    '''
+                }
+            }
+        }
     }
 }
