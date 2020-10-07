@@ -246,7 +246,7 @@ pipeline{
             steps {
                 dir("frontend"){
                 sh '''
-                    npm uninstall -d
+                    rm -rf $WORKSPACE/frontend/node_modules
                     '''
                 }
             }
