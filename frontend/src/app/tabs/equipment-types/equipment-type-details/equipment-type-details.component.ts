@@ -25,6 +25,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   name: string;
   equipments: Equipment[];
   all_equipments: Equipment[] = [];
+  fields = [];
 
   equipment_type: EquipmentType;
 
