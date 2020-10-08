@@ -1,18 +1,20 @@
 export class EquipmentType {
     id: number;
     name: string;
-    equipment_set: number[];
-
+    fields: any[];
+    equipments: any[];
     /**
      *
      * @param id The id of the equipment type
      * @param name The name of the equipment type
      * @param equipment_set The list of the equipment_set associated to the EquipmentType
      */
-    constructor(id: number, name: string, equipment_set: number[]) {
+
+    // const dictionary: { [fieldName: string]: string }
+    constructor(id: number, name: string, fields: any[]) {
         this.id = id;
         this.name = name;
-        this.equipment_set = equipment_set;
+        this.fields = fields;
     }
 
     /**
@@ -32,14 +34,6 @@ export class EquipmentType {
     }
 
     /**
-     * Getter on the equipment_set list field of the EquipmentType
-     * @returns The equipment list of the EquipmentType
-     */
-    getEquipments(): number[] {
-        return this.equipment_set;
-    }
-
-    /**
      * Setter on the name field of the Right
      * @param name The new name to set
      */
@@ -48,10 +42,32 @@ export class EquipmentType {
     }
 
     /**
-     * Setter on the equipment_set list field of the EquipmentType
-     * @param equipment_set The new equipment_set list to set
+     * Getter on the dictionnary fields of the EquipmentType
      */
-    setEquipments(equipment_set: number[]) {
-        this.equipment_set = equipment_set;
+    getFields(): any[] {
+        return this.fields;
+    }
+
+    /**
+     * Setter on the ditionnary fields of the EquipmentType
+     * @param fields Array of fields.
+     */
+    setField(fields: any[]) {
+        this.fields = fields;
+    }
+
+    /**
+     * Getter on the table equipments of the EquipmentType
+     */
+    getEquipments(): any[] {
+        return this.equipments;
+    }
+
+    /**
+     * Setter on the table equipments of the EquipmentType
+     * @param fields Array of fields.
+     */
+    setEquipments(equipments: any[]) {
+        this.equipments = equipments;
     }
 }

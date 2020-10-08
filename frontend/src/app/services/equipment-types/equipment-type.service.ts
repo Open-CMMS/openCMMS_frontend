@@ -31,7 +31,6 @@ export class EquipmentTypeService {
    */
   createEquipmentType(newEquipmentType: EquipmentType): Observable<any> {
     const ttJson = JSON.stringify(newEquipmentType);
-
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -78,7 +77,7 @@ export class EquipmentTypeService {
         (response) => {
           this.equipment_types = [];
           response.forEach(element => {
-            const gt = new EquipmentType(element.id, element.name, element.equipment_set);
+            const gt = new EquipmentType(element.id, element.name, []);
             this.equipment_types.push(gt);
           });
           this.emitEquipmentTypes();
