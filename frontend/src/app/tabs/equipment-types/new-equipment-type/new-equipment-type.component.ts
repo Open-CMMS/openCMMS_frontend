@@ -91,7 +91,7 @@ export class NewEquipmentTypeComponent implements OnInit {
     const objectFieldName = JSON.parse(fieldNameJsonCopy);
     const objectFieldValue = JSON.parse(fieldValueJsonCopy);
     objectFieldValue === '' ?
-      this.fieldList.push({name: objectFieldName}) : this.fieldList.push({name: objectFieldName, value: objectFieldValue.split(',')});
+      this.fieldList.push({name: objectFieldName}) : this.fieldList.push({name: objectFieldName, value: objectFieldValue});
     this.editingField.push(false);
     this.fieldForm.controls.fieldName.setValue('');
     this.fieldForm.controls.fieldValue.setValue('');
@@ -116,12 +116,11 @@ export class NewEquipmentTypeComponent implements OnInit {
     return this.editingField[indexOf];
   }
 
-  // formatFieldPayload(){
-  //   for (var field in this.fieldList) {
-  //
-  //   }
-  //
-  // }
+  formatFieldPayload() {
+    this.fieldList.forEach((field) => {
+      field['value'] = field['value'].split(',');
+    });
+  }
 
   /**
    * Function that submits the form to create a new equipment type
@@ -134,6 +133,7 @@ export class NewEquipmentTypeComponent implements OnInit {
     const nameStr = 'name';
     const id = 0;
     const name = formValue[nameStr];
+    this.formatFieldPayload();
     this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.fieldList)).subscribe(
       equipment_type => {
         this.equipmentTypeService.equipment_types.push(equipment_type);
