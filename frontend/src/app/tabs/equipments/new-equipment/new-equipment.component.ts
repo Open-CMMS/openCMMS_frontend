@@ -191,9 +191,10 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.equipmentTypeService.getEquipmentType(Number(event))
       .subscribe(
         (response) => {
-          console.log(response);
           this.equipmentType = response;
-          this.equipmentTypeFields = response.field;
+          this.equipmentTypeFields = response.fields;
+          console.log('this.fields', this.fields);
+          console.log('this.equipmentFields', this.equipmentFields);
         }
       );
   }
