@@ -30,6 +30,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   equipmentTypes: EquipmentType[];
   equipmentTypesRequirement = [];
   equipmentTypeFields: Field[] = [];
+  equipmentFields: Field[] = [];
   equipmentType: EquipmentType;
   equipmentTypesSubscription: Subscription;
   filesSubject = new Subject<File[]>();
@@ -108,7 +109,8 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
       return;
     }
     this.submitted = true;
-
+    console.log('this.fields', this.fields);
+    console.log('this.equipmentFields', this.equipmentFields);
     const formValues = this.createForm.value;
     this.equipmentService.createEquipment(formValues.name, formValues.equipmentType, this.files, this.fields)
       .subscribe((equipment: Equipment) => {
@@ -162,9 +164,12 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * Function to add a field in the form
    */
   addField() {
+    console.log('this.fields avant', this.fields);
     const jsonCopy = JSON.stringify(this.fieldTemplate);
     const objectCopy = JSON.parse(jsonCopy);
+    console.log('objectCopy', objectCopy);
     this.fields.push(objectCopy);
+    console.log('this.fields après', this.fields);
   }
 
   /**
@@ -186,10 +191,29 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.equipmentTypeService.getEquipmentType(Number(event))
       .subscribe(
         (response) => {
+          console.log(response);
           this.equipmentType = response;
           this.equipmentTypeFields = response.field;
         }
       );
+  }
+
+  modifyEquipmentTypeFieldValue(event, fieldId) {
+    this.equipmentFields = this.equipmentTypeFields.slice();
+    console.log('here1', fieldId);
+    console.log('equip', this.equipmentFields);
+    console.log('equiptype', this.equipmentTypeFields);
+    if (event) {
+      this.equipmentFields.forEach(element => {
+        if (element.id === fieldId) {
+          element.value = event;
+        }
+      });
+    }
+    console.log('equip1', this.equipmentFields);
+    console.log('equiptype2', this.equipmentTypeFields);
+    console.log('here', event);
+    console.log('here2', fieldId);
   }
 
   /**

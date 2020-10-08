@@ -97,7 +97,7 @@ export class NewEquipmentTypeComponent implements OnInit {
         equipments.push(item.id);
       });
     }
-    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, equipments)).subscribe(
+    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, [], equipments)).subscribe(
       equipment_type => {
         this.equipmentTypeService.equipment_types.push(equipment_type);
         this.equipmentTypeService.emitEquipmentTypes();
