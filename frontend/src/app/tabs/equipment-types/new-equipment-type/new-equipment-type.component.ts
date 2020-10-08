@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Equipment } from 'src/app/models/equipment';
-import { Subscription } from 'rxjs';
+// import { Subscription } from 'rxjs';
 import { EquipmentType } from 'src/app/models/equipment-type';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router } from '@angular/router';
-import { faPlusSquare, faMinusCircle, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPlusSquare, faMinusCircle, faPencilAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-equipment-type',
@@ -16,13 +16,12 @@ import { faPlusSquare, faMinusCircle, faPencilAlt } from '@fortawesome/free-soli
 export class NewEquipmentTypeComponent implements OnInit {
 
   // Local variables
-  equipmentsSubscription: Subscription;
+  // equipmentsSubscription: Subscription;
   newEquipmentType: EquipmentType;
   openField = false;
-  fields = {};
   fieldName: string;
-  editingField= true;
-
+  editingField = [];
+  fieldList = [];
 
   // Forms :
   equipmentTypeForm: FormGroup;
@@ -32,6 +31,7 @@ export class NewEquipmentTypeComponent implements OnInit {
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
   faPencilAlt = faPencilAlt;
+  faSave = faSave;
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -90,7 +90,9 @@ export class NewEquipmentTypeComponent implements OnInit {
     const fieldValueJsonCopy = JSON.stringify(fieldValue);
     const objectFieldName = JSON.parse(fieldNameJsonCopy);
     const objectFieldValue = JSON.parse(fieldValueJsonCopy);
-    this.fields[objectFieldName] = objectFieldValue;
+    objectFieldValue === '' ?
+      this.fieldList.push({name: objectFieldName}) : this.fieldList.push({name: objectFieldName, value: objectFieldValue.split(',')});
+    this.editingField.push(false);
     this.fieldForm.controls.fieldName.setValue('');
     this.fieldForm.controls.fieldValue.setValue('');
   }
@@ -100,28 +102,26 @@ export class NewEquipmentTypeComponent implements OnInit {
   }
 
   deleteField(key: string) {
-    delete this.fields[key];
+    const indexOf = this.fieldList.indexOf(key);
+    this.fieldList.splice(indexOf, 1);
   }
 
-  onEditField(key:string) {
-    this.editingField = !this.editingField;
-    console.log(key);
+  onEditField(key) {
+    const indexOf = this.fieldList.indexOf(key);
+    this.editingField[indexOf] = !this.editingField[indexOf];
   }
 
-  dictToTable(fields: { [fieldName: string]: string } ) {
-    const tableFields = [];
-    let valuesStr: string[]
-    for (const key of Object.keys(fields)) {
-      if (fields[key] === '') {
-        tableFields.push({name: key});
-      }
-      else {
-        valuesStr = fields[key].split(',');
-        tableFields.push({name: key, value: valuesStr});
-      }
-    }
-    return tableFields;
+  isEditingField(key) {
+    const indexOf = this.fieldList.indexOf(key);
+    return this.editingField[indexOf];
   }
+
+  // formatFieldPayload(){
+  //   for (var field in this.fieldList) {
+  //
+  //   }
+  //
+  // }
 
   /**
    * Function that submits the form to create a new equipment type
@@ -134,7 +134,7 @@ export class NewEquipmentTypeComponent implements OnInit {
     const nameStr = 'name';
     const id = 0;
     const name = formValue[nameStr];
-    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.dictToTable(this.fields))).subscribe(
+    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.fieldList)).subscribe(
       equipment_type => {
         this.equipmentTypeService.equipment_types.push(equipment_type);
         this.equipmentTypeService.emitEquipmentTypes();

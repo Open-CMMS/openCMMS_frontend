@@ -1,4 +1,4 @@
-<div class="container-fluid col-5 mt-3 justify-content-center">
+<div class="container-fluid col-8 mt-3 justify-content-center">
     <div class="d-flex">
       <h2 class="font-weight-bold">Create a new equipment type</h2>
     </div>
@@ -19,26 +19,26 @@
       <form [formGroup]="fieldForm" (ngSubmit)="onSubmitField()">
         <div class="form-group" *ngIf='openField'>
           <div class="form-row d-flex justify-content-between">
-            <button class="btn btn-danger ml-1" (click)="onCloseField()" [disabled]='!isEmpty(fields)'>
+            <button class="btn btn-danger ml-1" (click)="onCloseField()" [disabled]='!isEmpty(fieldList)'>
               <fa-icon [icon]="faMinusCircle"></fa-icon>
             </button>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Field name"
-              class='form-control col-5' 
+              class='form-control col-5'
               formControlName="fieldName"
               >
-              <input 
-              type="text" 
+              <input
+              type="text"
               placeholder="Field value"
-              class='form-control col-5' 
+              class='form-control col-5'
               formControlName="fieldValue"
-              data-toggle="tooltip" 
+              data-toggle="tooltip"
               title="You can enter multiple values separated by a comma.">
-            <span 
-              data-toggle="tooltip" 
+            <span
+              data-toggle="tooltip"
               title="Field name required">
-              <button 
+              <button
               class="btn btn-primary mr-1"
               (click)="onAddField()"
               [disabled]="fieldForm.invalid"
@@ -48,36 +48,51 @@
             </span>
           </div>
         </div>
-        <div class="form-group" *ngFor="let field of fields | keyvalue">
+        <div class="form-group" *ngFor="let field of fieldList">
           <div class="form-row d-flex justify-content-between">
             <button class="btn btn-danger ml-1"
-              (click)="deleteField(field.key)"
+              (click)="deleteField(field)"
             >
               <fa-icon [icon]="faMinusCircle"></fa-icon>
             </button>
             <input
-              type="text" 
-              class="form-control col-5" 
-              value="{{field.key}}"
+              type="text"
+              class="form-control col-5"
+              [(ngModel)]="field['name']"
               class="col-5"
-              disabled="disabled">
-            <input 
-            type="text" 
-            class='form-control' 
-            value="{{field.value}}"
+              [attr.disabled]="!isEditingField(field) ? '' : null"
+              [ngModelOptions]="{standalone: true}"
+            >
+            <input
+            type="text"
+            class='form-control'
+            [(ngModel)]="field['value']"
             class="col-5"
-            [attr.disabled]="editingField ? '' : null"
-            > 
-            <button 
-            class="btn btn-link"
-            (click)="onEditField(field.key)"
-            style="
-            color:grey;
-            margin-left:4px;
-            margin-right:12px"
+            [attr.disabled]="!isEditingField(field)? '' : null"
+            [ngModelOptions]="{standalone: true}"
+            >
+            <button
+              *ngIf="!isEditingField(field)"
+              class="btn btn-link"
+              (click)="onEditField(field)"
+              style="
+                color:grey;
+                margin-left:4px;
+                margin-right:12px"
             >
               <fa-icon [icon]="faPencilAlt"></fa-icon>
-          </button>
+            </button>
+            <button
+              *ngIf="isEditingField(field)"
+              class="btn btn-link"
+              (click)="onEditField(field)"
+              style="
+                color:grey;
+                margin-left:4px;
+                margin-right:12px"
+              >
+              <fa-icon [icon]="faSave"></fa-icon>
+            </button>
           </div>
         </div>
       </form>
