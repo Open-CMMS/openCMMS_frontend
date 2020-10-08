@@ -1,11 +1,10 @@
 import {Field} from './field';
-import {Equipment} from './equipment';
 
 export class EquipmentType {
   id: number;
   name: string;
   field: Field[];
-  equipments: Equipment[];
+  equipments: number[];
   /**
    *
    * @param id The id of the equipment type
@@ -14,7 +13,7 @@ export class EquipmentType {
    * @param equipments The equipments of the equipment type
    */
 
-  constructor(id: number, name: string, field: Field[], equipments: Equipment[]) {
+  constructor(id: number, name: string, field: Field[], equipments: number[]) {
     this.id = id;
     this.name = name;
     this.field = field;
@@ -62,7 +61,7 @@ export class EquipmentType {
   /**
    * Getter on the table equipments of the EquipmentType
    */
-  getEquipments(): Equipment[] {
+  getEquipments(): number[] {
     return this.equipments;
   }
 
