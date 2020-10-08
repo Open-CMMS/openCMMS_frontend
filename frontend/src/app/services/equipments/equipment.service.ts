@@ -83,10 +83,10 @@ export class EquipmentService {
    * @param name the formal name of the equipment
    * @param equipment_type number defining which type of equipment it is
    * @param files list of the id of the files concerning the equipment
-   * @param fields list of the fields of the equipment
+   * @param field list of the fields of the equipment
    */
-  createEquipment(name: string, equipment_type: number, files: number[], fields: Field[]): Observable<any> {
-    const equipmentJson = JSON.stringify({name, equipment_type, files, fields});
+  createEquipment(name: string, equipment_type: number, files: number[], field: Field[]): Observable<any> {
+    const equipmentJson = JSON.stringify({name, equipment_type, files, field});
 
     const httpOptions = {
       headers : new HttpHeaders({

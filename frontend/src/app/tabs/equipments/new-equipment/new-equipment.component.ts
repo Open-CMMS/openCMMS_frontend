@@ -10,7 +10,7 @@ import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment
 import { faMinusSquare, faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClient} from '@angular/common/http';
-import {Field} from '../../../models/field';
+import {Field} from 'src/app/models/field';
 
 
 @Component({
