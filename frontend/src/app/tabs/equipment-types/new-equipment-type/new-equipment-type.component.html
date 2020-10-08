@@ -1,4 +1,4 @@
-<div class="container-fluid col-10 mt-3 justify-content-center">
+<div class="container-fluid col-8 mt-3 justify-content-center">
     <div class="d-flex">
       <h2 class="font-weight-bold">Create a new equipment type</h2>
     </div>
@@ -9,18 +9,96 @@
         <input type="text" class='form-control' formControlName="name">
       </div>
       <div class="form-group">
-        <label for="equipments">Equipments</label>
-        <ng-multiselect-dropdown
-          [settings]="dropdownEquipmentsSettings"
-          [data]="equipmentsList"
-          formControlName="equipments"
-          name="equipments"
-        >
-        </ng-multiselect-dropdown>
+        <label>Fields</label>
+        <br>
+        <button class="btn btn-outline-secondary" type="button" (click)="onOpenField()">
+          <span class="mr-3">New Field</span>
+          <fa-icon [icon]="faPlusSquare"></fa-icon>
+        </button>
       </div>
+      <form [formGroup]="fieldForm" (ngSubmit)="onSubmitField()">
+        <div class="form-group" *ngIf='openField'>
+          <div class="form-row d-flex justify-content-between">
+            <button class="btn btn-danger ml-1" (click)="onCloseField()" [disabled]='!isEmpty(fieldList)'>
+              <fa-icon [icon]="faMinusCircle"></fa-icon>
+            </button>
+            <input
+              type="text"
+              placeholder="Field name"
+              class='form-control col-5'
+              formControlName="fieldName"
+              >
+              <input
+              type="text"
+              placeholder="Field value"
+              class='form-control col-5'
+              formControlName="fieldValue"
+              data-toggle="tooltip"
+              title="You can enter multiple values separated by a comma.">
+            <span
+              data-toggle="tooltip"
+              title="Field name required">
+              <button
+              class="btn btn-primary mr-1"
+              (click)="onAddField()"
+              [disabled]="fieldForm.invalid"
+              >
+                Add
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="form-group" *ngFor="let field of fieldList">
+          <div class="form-row d-flex justify-content-between">
+            <button class="btn btn-danger ml-1"
+              (click)="deleteField(field)"
+            >
+              <fa-icon [icon]="faMinusCircle"></fa-icon>
+            </button>
+            <input
+              type="text"
+              class="form-control col-5"
+              [(ngModel)]="field['name']"
+              class="col-5"
+              [attr.disabled]="!isEditingField(field) ? '' : null"
+              [ngModelOptions]="{standalone: true}"
+            >
+            <input
+            type="text"
+            class='form-control'
+            [(ngModel)]="field['value']"
+            class="col-5"
+            [attr.disabled]="!isEditingField(field)? '' : null"
+            [ngModelOptions]="{standalone: true}"
+            >
+            <button
+              *ngIf="!isEditingField(field)"
+              class="btn btn-link"
+              (click)="onEditField(field)"
+              style="
+                color:grey;
+                margin-left:4px;
+                margin-right:12px"
+            >
+              <fa-icon [icon]="faPencilAlt"></fa-icon>
+            </button>
+            <button
+              *ngIf="isEditingField(field)"
+              class="btn btn-link"
+              (click)="onEditField(field)"
+              style="
+                color:grey;
+                margin-left:4px;
+                margin-right:12px"
+              >
+              <fa-icon [icon]="faSave"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </form>
       <div class="d-flex justify-content-between align-items-center">
-        <button class="btn btn-danger nav-link" routerLink="/equipment-types">Annuler</button>
-        <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Save</button>
+        <button class="btn btn-danger nav-link" routerLink="/equipment-types">Cancel</button>
+        <button class="btn btn-primary" [disabled]="equipmentTypeForm.invalid">Save</button>
       </div>
     </form>
   </div>

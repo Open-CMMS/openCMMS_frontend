@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Equipment } from 'src/app/models/equipment';
-import { Subscription } from 'rxjs';
+// import { Subscription } from 'rxjs';
 import { EquipmentType } from 'src/app/models/equipment-type';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router } from '@angular/router';
+import { faPlusSquare, faMinusCircle, faPencilAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-equipment-type',
@@ -16,16 +16,22 @@ import { Router } from '@angular/router';
 export class NewEquipmentTypeComponent implements OnInit {
 
   // Local variables
-  equipments: Equipment[] = [];
-  equipmentsSubscription: Subscription;
+  // equipmentsSubscription: Subscription;
   newEquipmentType: EquipmentType;
-
-  // variables for the dropdown selects
-  equipmentsList = [];
-  dropdownEquipmentsSettings: IDropdownSettings;
+  openField = false;
+  fieldName: string;
+  editingField = [];
+  fieldList = [];
 
   // Forms :
   equipmentTypeForm: FormGroup;
+  fieldForm: FormGroup;
+
+  // Icons
+  faPlusSquare = faPlusSquare;
+  faMinusCircle = faMinusCircle;
+  faPencilAlt = faPencilAlt;
+  faSave = faSave;
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -44,30 +50,13 @@ export class NewEquipmentTypeComponent implements OnInit {
    */
   ngOnInit(): void {
     this.equipmentService.equipmentsSubject.subscribe((equipments: Equipment[]) => {
-      this.equipments = equipments;
-      this.initEquipmentsSelect();
     });
     this.equipmentService.emitEquipments();
     this.initForm();
-  }
-
-  /**
-   * Function that initialize the dropdown select for equipments
-   */
-  initEquipmentsSelect() {
-    this.equipmentsList = [];
-    this.equipments.forEach(equipment => {
-      this.equipmentsList.push({id: equipment.id.toString(), value: equipment.name.toString()});
+    this.fieldForm = this.formBuilder.group({
+      fieldName: ['', Validators.required],
+      fieldValue: ['']
     });
-    this.dropdownEquipmentsSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 4,
-      allowSearchFilter: true
-    };
   }
 
   /**
@@ -75,8 +64,61 @@ export class NewEquipmentTypeComponent implements OnInit {
    */
   initForm() {
     this.equipmentTypeForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      equipments: ['']
+      name: ['', Validators.required]
+    });
+  }
+
+  /**
+   * Function that set openField to true.
+   */
+  onOpenField() {
+    this.openField = true;
+  }
+
+  /**
+   * Function that set openField to false.
+   */
+  onCloseField() {
+    this.openField = false;
+  }
+
+  onAddField() {
+    const formValue = this.fieldForm.value;
+    const fieldName = formValue.fieldName;
+    const fieldValue = formValue.fieldValue;
+    const fieldNameJsonCopy = JSON.stringify(fieldName);
+    const fieldValueJsonCopy = JSON.stringify(fieldValue);
+    const objectFieldName = JSON.parse(fieldNameJsonCopy);
+    const objectFieldValue = JSON.parse(fieldValueJsonCopy);
+    objectFieldValue === '' ?
+      this.fieldList.push({name: objectFieldName}) : this.fieldList.push({name: objectFieldName, value: objectFieldValue});
+    this.editingField.push(false);
+    this.fieldForm.controls.fieldName.setValue('');
+    this.fieldForm.controls.fieldValue.setValue('');
+  }
+
+  isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
+
+  deleteField(key: string) {
+    const indexOf = this.fieldList.indexOf(key);
+    this.fieldList.splice(indexOf, 1);
+  }
+
+  onEditField(key) {
+    const indexOf = this.fieldList.indexOf(key);
+    this.editingField[indexOf] = !this.editingField[indexOf];
+  }
+
+  isEditingField(key) {
+    const indexOf = this.fieldList.indexOf(key);
+    return this.editingField[indexOf];
+  }
+
+  formatFieldPayload() {
+    this.fieldList.forEach((field) => {
+      field['value'] = field['value'].split(',');
     });
   }
 
@@ -84,25 +126,27 @@ export class NewEquipmentTypeComponent implements OnInit {
    * Function that submits the form to create a new equipment type
    */
   onSubmit() {
+    if (this.equipmentTypeForm.invalid) {
+      return;
+    }
     const formValue = this.equipmentTypeForm.value;
-
     const nameStr = 'name';
-    const equipmentsStr = 'equipments';
-
     const id = 0;
     const name = formValue[nameStr];
-    const equipments = [];
-    if (formValue[equipmentsStr]) {
-      formValue[equipmentsStr].forEach(item => {
-        equipments.push(item.id);
-      });
-    }
-    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, [], equipments)).subscribe(
+    this.formatFieldPayload();
+    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.fieldList)).subscribe(
       equipment_type => {
         this.equipmentTypeService.equipment_types.push(equipment_type);
         this.equipmentTypeService.emitEquipmentTypes();
         this.equipmentTypeForm.reset();
-        this.router.navigate(['/equipment-types']);
       });
+    this.router.navigate(['/equipment-types']);
+
+  }
+
+  onSubmitField() {
+    if (this.fieldForm.invalid) {
+      return;
+    }
   }
 }
