@@ -119,9 +119,8 @@ export class NewEquipmentTypeComponent implements OnInit {
   formatFieldPayload() {
     this.fieldList.forEach((field) => {
       if (field['value']) {
-        field['value'] = field['value'].split(',');
-        field['value'] = field['value'].map(
-          s => s = s.trim()
+        field['value'] = field['value'].split(',').map(
+          s => s.trim()
         );
       }
     });
