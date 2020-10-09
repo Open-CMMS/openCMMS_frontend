@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Equipment } from 'src/app/models/equipment';
-// import { Subscription } from 'rxjs';
 import { EquipmentType } from 'src/app/models/equipment-type';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
@@ -16,7 +14,6 @@ import { faPlusSquare, faMinusCircle, faPencilAlt, faSave } from '@fortawesome/f
 export class NewEquipmentTypeComponent implements OnInit {
 
   // Local variables
-  // equipmentsSubscription: Subscription;
   newEquipmentType: EquipmentType;
   openField = false;
   fieldName: string;
@@ -32,6 +29,13 @@ export class NewEquipmentTypeComponent implements OnInit {
   faMinusCircle = faMinusCircle;
   faPencilAlt = faPencilAlt;
   faSave = faSave;
+
+  // Consts
+  FIELDVALUE_NAME = 'value';
+  FIELDNAME_NAME = 'name';
+  INIT_NAME = '';
+  INIT_FIELD_NAME = '';
+  INIT_FIELD_VALUE = '';
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -49,22 +53,29 @@ export class NewEquipmentTypeComponent implements OnInit {
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
-    this.equipmentService.equipmentsSubject.subscribe((equipments: Equipment[]) => {
+    this.equipmentService.equipmentsSubject.subscribe(() => {
     });
     this.equipmentService.emitEquipments();
-    this.initForm();
-    this.fieldForm = this.formBuilder.group({
-      fieldName: ['', Validators.required],
-      fieldValue: ['']
-    });
+    this.initGeneralForm();
+    this.initFieldForm();
   }
 
   /**
    * Function that initialize the fields in the form to create a new EquipmentType
    */
-  initForm() {
+  initGeneralForm() {
     this.equipmentTypeForm = this.formBuilder.group({
-      name: ['', Validators.required]
+      name: [this.INIT_NAME, Validators.required]
+    });
+  }
+
+  /**
+   * Function that initialize the field in the field form to create a new Field
+   */
+  initFieldForm() {
+    this.fieldForm = this.formBuilder.group({
+      fieldName: [this.INIT_FIELD_NAME, Validators.required],
+      fieldValue: [this.INIT_FIELD_VALUE]
     });
   }
 
@@ -82,6 +93,9 @@ export class NewEquipmentTypeComponent implements OnInit {
     this.openField = false;
   }
 
+  /**
+   * Function to add a field with fieldName and fieldValue
+   */
   onAddField() {
     const formValue = this.fieldForm.value;
     const fieldName = formValue.fieldName;
@@ -90,36 +104,56 @@ export class NewEquipmentTypeComponent implements OnInit {
     const fieldValueJsonCopy = JSON.stringify(fieldValue);
     const objectFieldName = JSON.parse(fieldNameJsonCopy);
     const objectFieldValue = JSON.parse(fieldValueJsonCopy);
+    // Si le fieldValue === '', on ajoute uniquement le name=fieldName. Sinon on ajoute le name=fieldName et value=fieldValue
     objectFieldValue === '' ?
       this.fieldList.push({name: objectFieldName}) : this.fieldList.push({name: objectFieldName, value: objectFieldValue});
     this.editingField.push(false);
-    this.fieldForm.controls.fieldName.setValue('');
-    this.fieldForm.controls.fieldValue.setValue('');
+    this.fieldForm.controls.fieldName.setValue(this.INIT_FIELD_NAME);
+    this.fieldForm.controls.fieldValue.setValue(this.INIT_FIELD_VALUE);
   }
 
+  /**
+   * Function to know if a object is empty
+   * @param obj the object
+   */
   isEmpty(obj) {
     return Object.keys(obj).length === 0;
   }
 
+  /**
+   * Function to delete a specific field in the fieldList
+   * @param key the key
+   */
   deleteField(key: string) {
     const indexOf = this.fieldList.indexOf(key);
     this.fieldList.splice(indexOf, 1);
   }
 
+  /**
+   * Function to edit a specific field in the fieldList
+   * @param key the key
+   */
   onEditField(key) {
     const indexOf = this.fieldList.indexOf(key);
     this.editingField[indexOf] = !this.editingField[indexOf];
   }
 
+  /**
+   * Function to know if we are editing a specific field.
+   * @param key the key
+   */
   isEditingField(key) {
     const indexOf = this.fieldList.indexOf(key);
     return this.editingField[indexOf];
   }
 
+  /**
+   * Function to format the Field 'fields' in the payload.
+   */
   formatFieldPayload() {
     this.fieldList.forEach((field) => {
-      if (field['value']) {
-        field['value'] = field['value'].split(',').map(
+      if (field[this.FIELDVALUE_NAME]) {
+        field[this.FIELDVALUE_NAME] = field[this.FIELDVALUE_NAME].split(',').map(
           s => s.trim()
         );
       }
@@ -137,7 +171,7 @@ export class NewEquipmentTypeComponent implements OnInit {
     const nameStr = 'name';
     const id = 0;
     const name = formValue[nameStr];
-    this.formatFieldPayload();
+    this.formatFieldPayload(); // format this.fieldList before send to service
     this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.fieldList)).subscribe(
       equipment_type => {
         this.equipmentTypeService.equipment_types.push(equipment_type);
@@ -148,6 +182,9 @@ export class NewEquipmentTypeComponent implements OnInit {
 
   }
 
+  /**
+   * Function call on submit fieldForm form.
+   */
   onSubmitField() {
     if (this.fieldForm.invalid) {
       return;
