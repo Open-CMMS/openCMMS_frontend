@@ -81,7 +81,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
     this.equipmentTypeService.getEquipmentType(this.id).subscribe((equipment_type: EquipmentType) => {
       this.name = equipment_type.name;
       this.equipments = equipment_type.equipments;
-      this.fields = equipment_type.fields;
+      this.fields = equipment_type.field;
       // equipment_type.equipment_set.forEach((id) => {
       //   this.equipmentService.getEquipment(id).subscribe((equipment: Equipment) => {
       //     this.equipments.push(equipment);

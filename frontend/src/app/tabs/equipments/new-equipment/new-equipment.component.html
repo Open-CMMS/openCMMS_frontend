@@ -13,7 +13,7 @@
                     <option *ngFor="let equipmentType of equipmentTypes" [value]="equipmentType.id">{{ equipmentType.name }}</option>
             </select>
         </div>
-      <div class="list-group-item form-group" *ngFor="let field of equipmentTypeFields" (change)="modifyEquipmentTypeFieldValue($event.target.value, field.id)">
+      <div class="list-group-item form-group" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyEquipmentTypeFieldValue($event.target.value, i)">
         <div class="input-group-append" style="margin-bottom: 10px">
               <p style="width: 270px"><span class="col-3" style="margin-right: 10px;">{{ field.name }}</span></p>
               <input id="field-value-text" type="text" placeholder="value" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length === 0" >
