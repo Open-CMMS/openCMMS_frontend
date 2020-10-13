@@ -28,6 +28,9 @@ export class TasksListComponent implements OnInit, OnDestroy {
   currentUserSubscription: Subscription = null;
   myTasks: boolean;
 
+  //Search text
+  searchText='';
+
   /**
    * Constructor for the TasksList component
    * @param taskService the service used to handle tasks
