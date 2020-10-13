@@ -21,9 +21,9 @@
                 *ngFor="let equipment of equipments;"
                 >
                 <div class="container-fluid row justify-content-between">
-                    <h3 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewEquipment(equipment)">{{ equipment.name }} {{ equipment.list_of_files }}</h3>
+                    <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewEquipment(equipment)">{{ equipment.name }} {{ equipment.list_of_files }}</h5>
                     <div>
-                        <button class="btn btn-info" (click)="onViewEquipment(equipment)">
+                        <button class="btn btn-info mx-2" (click)="onViewEquipment(equipment)">
                             <fa-icon [icon]="faInfoCircle"></fa-icon>
                         </button>
                         <button class="btn btn-danger" (click)="openDelete(contentDelete, equipment)" *ngIf="onDeleteEquipmentPermission()">

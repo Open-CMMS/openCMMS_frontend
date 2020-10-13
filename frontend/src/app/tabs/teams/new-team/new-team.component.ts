@@ -65,6 +65,7 @@ export class NewTeamComponent implements OnInit, OnDestroy {
         this.initUsersSelect();
       }
     );
+    this.userService.getUsers();
     this.userService.emitUsers();
     this.initForm();
   }

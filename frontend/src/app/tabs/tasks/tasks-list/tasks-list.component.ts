@@ -139,6 +139,18 @@ export class TasksListComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function called when the tasks need to be sorting by end_date
+   */
+  sortingByEndDate() {
+    this.tasks.sort( (a, b) => {
+      const dateA = new Date(a.end_date);
+      const dateB = new Date(b.end_date);
+      // @ts-ignore
+      return dateB - dateA;
+    });
+  }
+
+  /**
    * Function called at the destruction of the component
    */
   ngOnDestroy() {
@@ -149,5 +161,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
       this.currentUserSubscription.unsubscribe();
     }
   }
+
 
 }
