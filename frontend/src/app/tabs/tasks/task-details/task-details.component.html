@@ -1,3 +1,5 @@
+<!-- ##########  MODALS ########## -->
+
 <ng-template #contentDelete let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-delete">Delete Task</h4>
@@ -50,13 +52,14 @@
     </div>
 </ng-template>
 
+<!-- ########## PAGE ########## -->
+
 <div class="container-fluid col-10 mt-3 justify-content-center" *ngIf="loaded">
     <div class="container-fluid d-flex justify-content-between">
         <div class="d-flex">
-            <h2 class="font-weight-bold">{{ task.name }}</h2>
+            <h2 class="font-weight-bold">{{ task?.name }}</h2>
         </div>
         <div class="d-flex btn-group" role="group">
-            <!-- <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeTaskPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>-->
             <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteTaskPermission() && !task.over"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
         </div>
     </div>
@@ -72,39 +75,39 @@
                 <div class="px-2 py-1">
                     <p><span class="font-weight-bold">Description :</span></p>
                     <div class="input-group row col-6">
-                        <textarea class="form-control" [attr.disabled]="!descriptionInputEnabled ? '' : null" [(ngModel)]="description"></textarea>
+                        <textarea class="form-control" [attr.disabled]="!inputEnabled.description ? '' : null" [(ngModel)]="task.description"></textarea>
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" *ngIf="descriptionInputEnabled" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="inputEnabled.description" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                         <div class="input-group-append" *ngIf="onChangeTaskPermission()">
-                            <button class="btn btn-outline-secondary" *ngIf="!descriptionInputEnabled && !task.over" (click)="enableInput('description')"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.description && !task.over" (click)="enableInput('description')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
                     <br>
                     <p><span class="font-weight-bold">End date :</span></p>
-                    <div class="input-group row col-2">
+                    <div class="input-group row col-3">
                         <input class="form-control"
                                [placeholder]="task.end_date? task.end_date : ''"
                                ngbDatepicker
                                #datePicker="ngbDatepicker"
                                [(ngModel)]="date"
-                               [disabled]="!dateInputEnabled ? '' : null">
+                               [disabled]="!inputEnabled.date ? '' : null">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" *ngIf="dateInputEnabled" (click)="saveInput('end_date')"><fa-icon [icon]="faSave"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="inputEnabled.date" (click)="saveInput('end_date')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                         <div class="input-group-append" *ngIf="onChangeTaskPermission()">
-                            <button class="btn btn-outline-secondary" *ngIf="!dateInputEnabled && !task.over" (click)="datePicker.toggle(); enableInput('end_date')"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.date && !task.over" (click)="datePicker.toggle(); enableInput('end_date')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
                     <br>
                     <p><span class="font-weight-bold">Duration :</span></p>
-                    <div class="input-group row col-3" *ngIf="!durationInputEnabled">
+                    <div class="input-group row col-3" *ngIf="!inputEnabled.duration">
                         <input class="form-control" [(ngModel)]="taskDuration" disabled>
                         <div class="input-group-append" *ngIf="onChangeTaskPermission()">
                             <button class="btn btn-outline-secondary" *ngIf="!task.over" (click)="enableInput('duration')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
-                    <div class="input-group row col-3" *ngIf="durationInputEnabled">
+                    <div class="input-group row col-3" *ngIf="inputEnabled.duration">
                         <input class="form-control col-2 text-center" [(ngModel)]="durationDays">
                         <div class="input-group-append">
                             <span class="input-group-text">days</span>
@@ -117,22 +120,17 @@
                     </div>
                     <br>
                     <p><span class="font-weight-bold">Equipment :</span></p>
-                    <div class="input-group row col-4" *ngIf="!equipmentInputEnabled">
-                        <input class="form-control" [(ngModel)]="equipmentName" disabled>
+                    <div class="input-group row col-4" *ngIf="!inputEnabled.equipment">
+                        <input class="form-control" [(ngModel)]="task.equipment.name" disabled>
                         <div class="input-group-append" >
                             <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faPen"></fa-icon></button>
-                            <button class="btn btn-info" (click)="onViewEquipment(task.equipment)" [disabled]="task.equipment==null"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                            <button class="btn btn-info" (click)="onViewEquipment(task.equipment.id)" [disabled]="task.equipment==null"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                         </div>
                     </div>
-                    <div class="input-group row col-4" *ngIf="equipmentInputEnabled">
-                        <ng-multiselect-dropdown
-                            [settings]="dropdownEquipmentsSettings"
-                            [(ngModel)]="selectedEquipment"
-                            [data]="equipmentsList"
-                            name="equipment"
-                            class="form-control"
-                        >
-                        </ng-multiselect-dropdown>
+                    <div class="input-group row col-4" *ngIf="inputEnabled.equipment">
+                        <select class="form-control" [(ngModel)]="task.equipment.id">
+                            <option *ngFor="let equipment of this.equipments" [value]="equipment.id" [defaultSelected]="task.equipment.id === equipment.id ? 'selected' : ''">{{ equipment.name }}</option>
+                        </select> 
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="saveInput('equipment')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
@@ -155,13 +153,13 @@
                     <ul class="col-12 list-group">
                         <li
                             class="container-fluid list-group-item"
-                            *ngFor="let triggerCondition of triggerConditions; let i = index"
+                            *ngFor="let triggerCondition of task.trigger_conditions; let i = index"
                             >
-                            <span><span class="font-weight-bold">{{ triggerCondition.type }}:</span> {{ triggerCondition.description }}</span><br>
+                            <span><span class="font-weight-bold">{{ triggerCondition.field_name }}:</span> {{ triggerCondition.description }}</span><br>
                             <span class="text-muted">{{ triggerCondition.value }}</span>
                         </li>
                     </ul>
-                    <span *ngIf="triggerConditions.length === 0">No trigger conditions !</span>
+                    <span *ngIf="task.trigger_conditions.length === 0">No trigger conditions !</span>
                 </div>
             </div>
         </div>
@@ -179,8 +177,8 @@
         <div class="card-body d-flex row">
             <ul class="col-12 list-group">
                 <li
-                    class="container-fluid list-group-item font-weight-bold "
-                    *ngFor="let team of teamsTask; let i = index"
+                    class="list-group-item font-weight-bold "
+                    *ngFor="let team of task.teams"
                     >
                     <div class="container-fluid row justify-content-between">
                         <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
@@ -191,7 +189,7 @@
                     </div>
                 </li>
             </ul>
-            <span *ngIf="teamsTask.length === 0">No teams assigned !</span>
+            <span *ngIf="task.teams.length === 0">No teams assigned !</span>
         </div>
     </div>
 
@@ -206,61 +204,43 @@
             <form class="col-12">
                 <ul class="col-12 list-group">
                     <li
-                        class="container-fluid col-12 list-group-item"
-                        *ngFor="let endCondition of endConditions; let i = index"
+                        class="container-fluid list-group-item row d-flex justify-content-between align-items-center"
+                        *ngFor="let endCondition of task.end_conditions;let i = index;"
                         >
-                        <span><span class="font-weight-bold">{{ endCondition.type }}:</span> {{ endCondition.description }}</span><br>
-                        <!-- Checkbox -->
-                        <div *ngIf="endCondition.type === 'Case a cocher'">
-                            <label ngbButtonLabel>
-                              <input type="checkbox" [(ngModel)]="endConditionValues[i]" [ngModelOptions]="{standalone: true}" ngbButton> Check-me
-                            </label>
+                        <div class="col-10">
+                            <span><span class="font-weight-bold">{{ endCondition.field_name }}:</span> {{ endCondition.description }}</span><br>
+                            <!-- Checkbox -->
+                            <div *ngIf="endCondition.field_name === 'Checkbox'">
+                                <label ngbButtonLabel>
+                                  <input type="checkbox" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" ngbButton> Check-me
+                                </label>
+                            </div>
+                            <!-- Value -->
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Integer'">
+                                <input type="number" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" placeholder="Related value">
+                            </div>
+                            <!-- Description -->
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Description'">
+                                <textarea [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" cols="50" placeholder="Your description ..."></textarea>
+                            </div>
+                            <!-- Photo -->
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Photo'">
+                                <input [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" type="file" class="form-control" (change)="onSetPhotoToUpload(i, $event)">
+                            </div>
                         </div>
-                        <!-- Value -->
-                        <div class="form-group" *ngIf="endCondition.type === 'Valeur numerique à rentrer'">
-                            <input type="number" [(ngModel)]="endConditionValues[i]" [ngModelOptions]="{standalone: true}" placeholder="Related value">
-                        </div>
-                        <!-- Description -->
-                        <div class="form-group" *ngIf="endCondition.type === 'Description'">
-                            <textarea [(ngModel)]="endConditionValues[i]" [ngModelOptions]="{standalone: true}" cols="50" placeholder="Your description ..."></textarea>
-                        </div>
-                        <!-- Photo -->
-                        <div class="form-group" *ngIf="endCondition.type === 'Photo'">
-                            <input [(ngModel)]="endConditionValues[i]" [ngModelOptions]="{standalone: true}" type="file" class="form-control" (change)="onSetPhotoToUpload(i, $event)">
+                        <div class="col-1">
+                            <button class="btn btn-outline-dark" (click)="onValidateEndCondition(endCondition)" *ngIf="endCondition.value === null && isAValidValue(endCondition)"><fa-icon [icon]="faCheck"></fa-icon></button>
+                            <fa-icon [icon]="faCheckCircle" style="color: green;" *ngIf="endCondition.value !== null"></fa-icon>
                         </div>
                     </li>
                 </ul>
-                <span *ngIf="endConditions.length === 0">No end conditions !</span>
-                <button class="btn btn-success my-2" (click)="onValidateTask()">Validate the task</button>
+                <span *ngIf="task.end_conditions.length === 0">No end conditions !</span>
+                <!-- <button class="btn btn-success my-2" (click)="onValidateTask()">Validate the task</button> -->
             </form>
             <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="validationError">
                 <p class="font-weight-bold">Error when validating the task :</p>
                 <p>Check that you have filled all the conditions above !</p>
             </div>
-        </div>
-        <!-- If task is already validated -->
-        <div class="card-body d-flex row" *ngIf="task.over">
-                <ul class="col-12 list-group">
-                    <li
-                        class="container-fluid col-12 list-group-item"
-                        *ngFor="let endCondition of endConditions; let i = index"
-                        >
-                        <span><span class="font-weight-bold">{{ endCondition.type }}:</span> {{ endCondition.description }}</span><br>
-                        <!-- Checkbox -->
-                        <span *ngIf="endCondition.type === 'Case a cocher'">
-                            <fa-icon [icon]="faCheck" *ngIf="endCondition.value === 'true'" style="color: green;"></fa-icon>
-                        </span>
-                        <!-- Value -->
-                        <span *ngIf="endCondition.type === 'Valeur numerique à rentrer'">
-                            <span class="text-muted">{{ endCondition.value }}</span>
-                        </span>
-                        <!-- Description -->
-                        <span *ngIf="endCondition.type === 'Description'">
-                            <span class="text-muted">{{ endCondition.value }}</span>
-                        </span>
-                    </li>
-                </ul>
-                <span *ngIf="endConditions.length === 0">No end conditions !</span>
         </div>
     </div>
 

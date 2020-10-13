@@ -150,25 +150,25 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function to get the different types of end conditions
    */
   getEndConditionsTypes() {
-    let id_field: number;
-    const end_conditions_types = [];
-    this.taskService.getFields().subscribe(
-      (fields) => {
-        fields.forEach(field => {
-          if (field.name === 'End Conditions') {
-            id_field = field.id;
-          }
-        });
-        this.taskService.getFieldValues(id_field).subscribe(
-          (field_values) => {
-            field_values.forEach(field_value => {
-              end_conditions_types.push({id: field_value.id, value: field_value.value});
-            });
-            this.initEndConditionSelectTemplate(end_conditions_types);
-          }
-        );
-      }
-    );
+    // let id_field: number;
+    // const end_conditions_types = [];
+    // this.taskService.getFields().subscribe(
+    //   (fields) => {
+    //     fields.forEach(field => {
+    //       if (field.name === 'End Conditions') {
+    //         id_field = field.id;
+    //       }
+    //     });
+    //     this.taskService.getFieldValues(id_field).subscribe(
+    //       (field_values) => {
+    //         field_values.forEach(field_value => {
+    //           end_conditions_types.push({id: field_value.id, value: field_value.value});
+    //         });
+    //         this.initEndConditionSelectTemplate(end_conditions_types);
+    //       }
+    //     );
+    //   }
+    // );
   }
 
   /**
@@ -219,25 +219,25 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function to get the different trigger condition types
    */
   getTriggerConditionsTypes() {
-    let id_field: number;
-    const trigger_conditions_types = [];
-    this.taskService.getFields().subscribe(
-      (fields) => {
-        fields.forEach(field => {
-          if (field.name === 'Trigger Conditions') {
-            id_field = field.id;
-          }
-        });
-        this.taskService.getFieldValues(id_field).subscribe(
-          (field_values) => {
-            field_values.forEach(field_value => {
-              trigger_conditions_types.push({id: field_value.id, value: field_value.value});
-            });
-            this.initTriggerConditionSelectTemplate(trigger_conditions_types);
-          }
-        );
-      }
-    );
+    // let id_field: number;
+    // const trigger_conditions_types = [];
+    // this.taskService.getFields().subscribe(
+    //   (fields) => {
+    //     fields.forEach(field => {
+    //       if (field.name === 'Trigger Conditions') {
+    //         id_field = field.id;
+    //       }
+    //     });
+    //     this.taskService.getFieldValues(id_field).subscribe(
+    //       (field_values) => {
+    //         field_values.forEach(field_value => {
+    //           trigger_conditions_types.push({id: field_value.id, value: field_value.value});
+    //         });
+    //         this.initTriggerConditionSelectTemplate(trigger_conditions_types);
+    //       }
+    //     );
+    //   }
+    // );
   }
 
   /**
@@ -251,51 +251,51 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function to create the field_objects in the database for the end and trigger conditions
    */
   createFieldObjects(id_task: number) {
-    let id_field_trigger_condition: number;
-    let id_field_end_condition: number;
-    this.taskService.getFields().subscribe(
-      (fields) => {
-        fields.forEach(field => {
-          if (field.name === 'Trigger Conditions') {
-            id_field_trigger_condition = field.id;
-          } else if (field.name === 'End Conditions') {
-            id_field_end_condition = field.id;
-          }
-        });
-        this.triggerConditions.forEach(triggerCondition => {
-          let object_value: string;
-          switch (triggerCondition.selectedTriggerCondition[0].value) {
-            case 'Date':
-              object_value = this.taskService.normaliseEndDateValue(triggerCondition.value);
-              break;
-            case 'Duree':
-              object_value = this.taskService.normaliseDurationValue(triggerCondition.value, ['y', 'm', 'd']);
-              break;
-            default:
-              object_value = triggerCondition.value;
-              break;
-          }
-          const field_object = {
-            described_object: 'Task: ' + id_task,
-            field: id_field_trigger_condition,
-            field_value: triggerCondition.selectedTriggerCondition[0].id,
-            value: object_value,
-            description: triggerCondition.description
-          };
-          this.taskService.createFieldObject(field_object).subscribe();
-        });
-        this.endConditions.forEach(endCondition => {
-          const field_object = {
-            described_object: 'Task: ' + id_task,
-            field: id_field_end_condition,
-            field_value: endCondition.selectedEndCondition[0].id,
-            value: 'pending',
-            description: endCondition.description
-          };
-          this.taskService.createFieldObject(field_object).subscribe();
-        });
-        this.taskService.getFieldObjects();
-      });
+    // let id_field_trigger_condition: number;
+    // let id_field_end_condition: number;
+    // this.taskService.getFields().subscribe(
+    //   (fields) => {
+    //     fields.forEach(field => {
+    //       if (field.name === 'Trigger Conditions') {
+    //         id_field_trigger_condition = field.id;
+    //       } else if (field.name === 'End Conditions') {
+    //         id_field_end_condition = field.id;
+    //       }
+    //     });
+    //     this.triggerConditions.forEach(triggerCondition => {
+    //       let object_value: string;
+    //       switch (triggerCondition.selectedTriggerCondition[0].value) {
+    //         case 'Date':
+    //           object_value = this.taskService.normaliseEndDateValue(triggerCondition.value);
+    //           break;
+    //         case 'Duree':
+    //           object_value = this.taskService.normaliseDurationValue(triggerCondition.value, ['y', 'm', 'd']);
+    //           break;
+    //         default:
+    //           object_value = triggerCondition.value;
+    //           break;
+    //       }
+    //       const field_object = {
+    //         described_object: 'Task: ' + id_task,
+    //         field: id_field_trigger_condition,
+    //         field_value: triggerCondition.selectedTriggerCondition[0].id,
+    //         value: object_value,
+    //         description: triggerCondition.description
+    //       };
+    //       this.taskService.createFieldObject(field_object).subscribe();
+    //     });
+    //     this.endConditions.forEach(endCondition => {
+    //       const field_object = {
+    //         described_object: 'Task: ' + id_task,
+    //         field: id_field_end_condition,
+    //         field_value: endCondition.selectedEndCondition[0].id,
+    //         value: 'pending',
+    //         description: endCondition.description
+    //       };
+    //       this.taskService.createFieldObject(field_object).subscribe();
+    //     });
+    //     this.taskService.getFieldObjects();
+    //   });
   }
 
   /**
@@ -431,7 +431,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
                             formValues.is_template,
                             equipment,
                             teams,
-                            task_type,
                             files,
                             over);
 
