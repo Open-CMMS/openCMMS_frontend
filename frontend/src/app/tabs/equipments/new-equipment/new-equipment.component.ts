@@ -204,6 +204,28 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     const objectCopy = JSON.parse(jsonCopy);
     console.log(objectCopy);
     this.initialFields.splice(index, 1, objectCopy);
+    console.log('initialFields', this.initialFields);
+  }
+
+  /**
+   * Function to verify if the values of the fields of the equipment type are not missing
+   */
+  missingEquipmentTypeFieldsValue() {
+    let missing_value = false;
+    if (this.initialFields.length !== 0) {
+      if ((this.equipmentTypeFields.length === this.initialFields.length)) {
+        this.initialFields.forEach(element => {
+          if (!(element.value)) {
+            missing_value = true;
+          }
+        });
+      } else {
+        missing_value = true;
+      }
+    } else {
+      missing_value = true;
+    }
+    return missing_value;
   }
 
   /**
