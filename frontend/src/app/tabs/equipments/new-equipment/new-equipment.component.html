@@ -13,12 +13,13 @@
                     <option *ngFor="let equipmentType of equipmentTypes" [value]="equipmentType.id">{{ equipmentType.name }}</option>
             </select>
         </div>
-      <div class="list-group-item form-group" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyEquipmentTypeFieldValue($event.target.value, i)">
-        <div class="input-group-append" style="margin-bottom: 10px">
+      <div class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyEquipmentTypeFieldValue($event.target.value, i)">
+        <div class="input-group-append form-group" style="margin-bottom: 10px">
               <p style="width: 270px"><span class="col-3" style="margin-right: 10px;">{{ field.name }}</span></p>
               <input id="field-value-text" type="text" placeholder="value" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length === 0" >
-              <select id="field-value-select" class="form-control" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length !== 0" >
-                <option *ngFor="let fieldValue of field.value" [value]="fieldValue">{{ fieldValue }}</option>
+              <select id="field-value-select" class="form-control" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length !== 0">
+                <option disabled selected value> -- select an option -- </option>
+                <option *ngFor="let fieldValue of field.value" [value]="fieldValue" placeholder="value">{{ fieldValue }}</option>
               </select>
           <input type="text" placeholder="description" style="width: 900px;" *ngIf="field.description">
         </div>

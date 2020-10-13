@@ -109,7 +109,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     }
     this.submitted = true;
     this.fields.forEach(element => {
+      console.log(this.initialFields);
       this.initialFields.push(element);
+      console.log(this.initialFields);
     });
     const formValues = this.createForm.value;
     this.equipmentService.createEquipment(formValues.name, formValues.equipmentType, this.files, this.initialFields)
@@ -195,12 +197,13 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   }
 
   modifyEquipmentTypeFieldValue(event, index) {
-    const id = this.equipmentTypeFields[index].id;
+    const field = this.equipmentTypeFields[index].id;
     const name = this.equipmentTypeFields[index].name;
     const value = event;
-    const jsonCopy = JSON.stringify({id, name, value});
+    const jsonCopy = JSON.stringify({field, name, value});
     const objectCopy = JSON.parse(jsonCopy);
-    this.initialFields.push(objectCopy);
+    console.log(objectCopy);
+    this.initialFields.splice(index, 1, objectCopy);
   }
 
   /**
