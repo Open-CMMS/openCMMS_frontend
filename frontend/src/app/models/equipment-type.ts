@@ -1,7 +1,7 @@
 export class EquipmentType {
     id: number;
     name: string;
-    fields: any[];
+    field;
     equipments: any[];
     /**
      *
@@ -14,7 +14,7 @@ export class EquipmentType {
     constructor(id: number, name: string, fields: any[]) {
         this.id = id;
         this.name = name;
-        this.fields = fields;
+        this.field = fields;
     }
 
     /**
@@ -45,7 +45,7 @@ export class EquipmentType {
      * Getter on the dictionnary fields of the EquipmentType
      */
     getFields(): any[] {
-        return this.fields;
+        return this.field;
     }
 
     /**
@@ -53,7 +53,7 @@ export class EquipmentType {
      * @param fields Array of fields.
      */
     setField(fields: any[]) {
-        this.fields = fields;
+        this.field = fields;
     }
 
     /**
