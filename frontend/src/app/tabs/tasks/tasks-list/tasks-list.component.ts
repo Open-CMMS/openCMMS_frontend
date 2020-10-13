@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faTrash, faInfoCircle, faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faInfoCircle, faPlus, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
@@ -21,6 +21,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   faPlus = faPlus;
   faCheck = faCheck;
+  faSearch= faSearch;
 
   tasks: Task[] = [];
   currentUser: UserProfile;

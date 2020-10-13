@@ -1,8 +1,13 @@
-import { Pipe, PipeTransform} from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
+import { Pipe, PipeTransform, ɵALLOW_MULTIPLE_PLATFORMS} from '@angular/core';
+import { Team } from 'src/app/models/team';
+import { TeamService } from 'src/app/services/teams/team.service';
 @Pipe({ name: 'appFilter'})
 export class FilterPipe implements PipeTransform {
 
+  constructor(private httpClient: HttpClient,
+              private teamService: TeamService ) { }
+              
   transform(items: any[], searchText: string): any[] {
     if (!items) {
       return [];
@@ -11,8 +16,13 @@ export class FilterPipe implements PipeTransform {
       return items;
     }
     searchText = searchText.toLocaleLowerCase();
+    let all_teams = []
     return items.filter(it => {
-      return it.name.toLocaleLowerCase().includes(searchText);
+      all_teams = []
+      it.teams.forEach(team => {
+        all_teams.push(team.name.toLocaleLowerCase())
+      });
+      return it.name.toLocaleLowerCase().includes(searchText) || all_teams.includes(searchText);
     });
   }
 }
