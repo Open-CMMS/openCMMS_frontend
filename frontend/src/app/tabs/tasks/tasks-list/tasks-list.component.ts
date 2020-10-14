@@ -22,7 +22,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faPlus = faPlus;
   faCheck = faCheck;
   faSearch = faSearch;
-  faQuestion = faQuestion;
 
   tasks: Task[] = [];
   currentUser: UserProfile;
