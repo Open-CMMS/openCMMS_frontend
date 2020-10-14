@@ -95,11 +95,11 @@ export class EquipmentDetailsComponent implements OnInit {
       });
     this.equipmentService.getEquipment(this.id)
       .subscribe(eq => {
-          this.currentEquipment = eq;
+          this.currentEquipment = new Equipment(eq.id, eq.name, eq.equipment_type,eq.files,eq.field);
           this.name = this.currentEquipment.name;
           this.equipment_type = this.currentEquipment.equipment_type;
           this.getEquipmentTypeName(this.currentEquipment.equipment_type.id);
-          this.fields = this.currentEquipment.field;
+          this.fields = this.currentEquipment.fields;
           this.files = this.currentEquipment.files;
           this.loaded = true;
           this.initForm();

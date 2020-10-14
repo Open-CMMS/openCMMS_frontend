@@ -10,13 +10,13 @@ export class Equipment {
     /**
      * @param id The id of the equipment
      * @param name The name of the equipment
-     * @param equipment_type The id that determine what type of equipment it is
+     * @param equipment_type The equipment type
      * @param list_of_files The list of possible files describing the equipment
      * @param list_of_fields The list of fields of the equipment
      */
     constructor(id: number,
                 name: string,
-                equipment_type: number,
+                equipment_type: any,
                 list_of_files: number[],
                 list_of_fields: Field[],
                 ) {
