@@ -29,8 +29,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
   currentUserSubscription: Subscription = null;
   myTasks: boolean;
 
-  //Search text
-  searchText='';
+  // Search text
+  searchText = '';
 
   /**
    * Constructor for the TasksList component
@@ -144,8 +144,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
   /**
    * Compare function call by sort when neeeded to sort by date.
-   * @param a
-   * @param b
+   * @param a a date
+   * @param b b date
    */
   compareDate(a: Task, b: Task) {
     const dateA = new Date(a.end_date);

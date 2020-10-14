@@ -16,31 +16,20 @@ export class FilterPipe implements PipeTransform {
       return items;
     }
     searchText = searchText.toLocaleLowerCase();
-    if (searchText[0]=="@") {
-      let searchTextWithout = searchText.substring(1);
-      let all_teams = ''
+    if (searchText[0] === '@') {
+      const searchTextWithout = searchText.substring(1);
+      let all_teams = '';
       return items.filter( it => {
-        all_teams = ''
+        all_teams = '';
         it.teams.forEach( team => {
-          all_teams = all_teams.concat(team.name.toLocaleLowerCase()+' ')
+          all_teams = all_teams.concat(team.name.toLocaleLowerCase() + ' ');
         });
-        console.log(searchTextWithout)
-        console.log(all_teams)
-        return all_teams.includes(searchTextWithout)
-      })
+        return all_teams.includes(searchTextWithout);
+      });
     } else {
       return items.filter( it => {
-        return it.name.toLocaleLowerCase().includes(searchText)
-      })
+        return it.name.toLocaleLowerCase().includes(searchText);
+      });
     }
-      //   let all_teams = []
-      //   return items.filter(it => {
-      //     all_teams = []
-      //     it.teams.forEach(team => {
-      //       all_teams.push(team.name.toLocaleLowerCase())
-      //     });
-      //     return it.name.toLocaleLowerCase().includes(searchText) || all_teams.includes(searchText);
-      //   })
-      // )
   }
 }
