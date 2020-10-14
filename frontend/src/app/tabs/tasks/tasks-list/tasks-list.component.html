@@ -20,7 +20,7 @@
     </div>
     <div class="d-flex justify-content-between my-1">
       <div></div>
-      <div class="d-flex align-items-center">
+      <div class="d-flex align-items-center mt-0">
         <input type="text"
                id="search-text"
                aria-labelledby="search-text"
@@ -34,7 +34,22 @@
                 border-color: #D3D3D3	;
                "
         >
-        <fa-icon style="margin-left:-17px;color:#D3D3D3;"[icon]="faSearch"></fa-icon>
+        <fa-icon
+          [icon]="faSearch"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="@ pour une team .. à réécrire"
+          style="
+            margin-left:-18px;
+            margin-bottom: 3px;
+            color:#D3D3D3;">
+        </fa-icon>
+        <fa-icon
+          [icon]="faQuestion"
+          style="
+            margin-left: 8px;
+            margin-bottom: 3px;
+            color:#D3D3D3;"></fa-icon>
       </div>
       <div class="dropdown">
         <button class="btn btn-link btn-sort dropdown-toggle"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sort</button>
