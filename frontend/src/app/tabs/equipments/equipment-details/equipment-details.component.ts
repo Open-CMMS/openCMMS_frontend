@@ -1,19 +1,21 @@
-import { Component, OnInit} from '@angular/core';
-import { faTrash, faPencilAlt, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import { Equipment } from 'src/app/models/equipment';
-import { EquipmentService } from 'src/app/services/equipments/equipment.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { AuthenticationService } from 'src/app/services/auth/authentication.service';
-import { UtilsService } from 'src/app/services/utils/utils.service';
-import { Subject } from 'rxjs/internal/Subject';
-import { FileService } from 'src/app/services/files/file.service';
-import { faMinusSquare } from '@fortawesome/free-regular-svg-icons';
-import { environment } from 'src/environments/environment';
-import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
-import { EquipmentType } from 'src/app/models/equipment-type';
-import { Subscription } from 'rxjs/internal/Subscription';
+import {Component, OnInit} from '@angular/core';
+import {faTrash, faPencilAlt, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
+import {Equipment} from 'src/app/models/equipment';
+import {EquipmentService} from 'src/app/services/equipments/equipment.service';
+import {Router, ActivatedRoute} from '@angular/router';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FormGroup, FormBuilder} from '@angular/forms';
+import {AuthenticationService} from 'src/app/services/auth/authentication.service';
+import {UtilsService} from 'src/app/services/utils/utils.service';
+import {Subject} from 'rxjs/internal/Subject';
+import {FileService} from 'src/app/services/files/file.service';
+import {faMinusSquare, faMinusCircle, faSave } from '@fortawesome/free-solid-svg-icons';
+import {environment} from 'src/environments/environment';
+import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
+import {EquipmentType} from 'src/app/models/equipment-type';
+import {Subscription} from 'rxjs/internal/Subscription';
+import {Field} from '../../../models/field';
+import {element} from "protractor";
 
 @Component({
   selector: 'app-equipment-details',
@@ -24,6 +26,8 @@ export class EquipmentDetailsComponent implements OnInit {
 // Local variables
   faPlusSquare = faPlusSquare;
   faPencilAlt = faPencilAlt;
+  faMinusCircle = faMinusCircle;
+  faSave = faSave;
   faTrash = faTrash;
   faMinusSquare = faMinusSquare;
   loaded = false;
@@ -31,8 +35,16 @@ export class EquipmentDetailsComponent implements OnInit {
   filesSubject = new Subject<File[]>();
   name: string;
   id: number;
+  fields: any[] = [];
+  new_fields: Field[] = [];
   files: number[];
   equipment_type: number;
+  equipmentType: EquipmentType;
+  newEquipmentTypeId: number = null;
+  equipmentTypeFields: Field[] = [];
+  currentEquipmentTypeFields = [];
+  initialFields = [];
+  modifyFields = false;
   currentEquipment: Equipment = null;
   equipmentTypeName: string;
   equipmentUpdateForm: FormGroup;
@@ -41,6 +53,8 @@ export class EquipmentDetailsComponent implements OnInit {
   myFilesPath: string[] = [];
   private BASE_URL_API = environment.baseUrl;
   equipmentTypes: EquipmentType[];
+  fieldTemplate = null;
+  equipmentTypeModified = false;
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -62,7 +76,8 @@ export class EquipmentDetailsComponent implements OnInit {
               private authenticationService: AuthenticationService,
               private utilsService: UtilsService,
               private fileService: FileService,
-              private equipmentTypeService: EquipmentTypeService) { }
+              private equipmentTypeService: EquipmentTypeService) {
+  }
 
   /**
    * Function that initialize the component when loaded
@@ -77,24 +92,26 @@ export class EquipmentDetailsComponent implements OnInit {
     this.equipmentTypesSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
       (equipmentTypes: EquipmentType[]) => {
         this.equipmentTypes = equipmentTypes;
-    });
+      });
     this.equipmentService.getEquipment(this.id)
       .subscribe(eq => {
-        this.currentEquipment = eq;
-        this.name = this.currentEquipment.name;
-        this.equipment_type = this.currentEquipment.equipment_type;
-        this.getEquipmentTypeName(this.currentEquipment.equipment_type);
-        this.files = this.currentEquipment.files;
-        this.loaded = true;
-        this.initForm();
-        for (i; i < this.files.length; i++) {
-          this.fileService.getFile(this.files[i]).subscribe(df => {
-            this.myFilesPath.push(String(df.file).slice(6));
-          });
-        }
-        this.myFilesPath.splice(6);
-      },
-      (error) => this.router.navigate(['/four-oh-four']));
+          this.currentEquipment = eq;
+          this.name = this.currentEquipment.name;
+          this.equipment_type = this.currentEquipment.equipment_type;
+          this.getEquipmentTypeName(this.currentEquipment.equipment_type.id);
+          this.fields = this.currentEquipment.field;
+          this.files = this.currentEquipment.files;
+          this.loaded = true;
+          this.initForm();
+          for (i; i < this.files.length; i++) {
+            this.fileService.getFile(this.files[i]).subscribe(df => {
+              this.myFilesPath.push(String(df.file).slice(6));
+            });
+          }
+          this.myFilesPath.splice(6);
+        },
+        (error) => this.router.navigate(['/four-oh-four']));
+    this.initAddFieldTemplate();
   }
 
   /**
@@ -124,15 +141,31 @@ export class EquipmentDetailsComponent implements OnInit {
     if (this.currentEquipment.files !== formValues.files) {
       this.currentEquipment.files = formValues.files;
     }
+
+    if (!(this.equipmentTypeModified)) {
+      if (this.modifyFields) {
+        // recupérer valeurs modifiées
+        console.log('modifiedFields', this.modifyFields);
+      }
+    } else {
+      this.new_fields.forEach(element => {
+        this.initialFields.push(element);
+        this.currentEquipment.fields = this.initialFields;
+      });
+    }
+    console.log('fields', this.fields);
+    console.log('new_fields', this.new_fields);
+    console.log('equipmentTypeFields', this.equipmentTypeFields);
+    console.log('initialFields', this.initialFields);
     this.equipmentService.updateEquipment(this.currentEquipment).subscribe(equipmentUpdated => {
-      this.updateError = false;
-      this.ngOnInit();
-      this.initForm();
-      this.equipmentService.getEquipments();
-    },
-    (error) => {
-      this.updateError = true;
-    });
+        this.updateError = false;
+        this.ngOnInit();
+        this.initForm();
+        this.equipmentService.getEquipments();
+      },
+      (error) => {
+        this.updateError = true;
+      });
   }
 
   /**
@@ -155,8 +188,29 @@ export class EquipmentDetailsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-modify'}).result.then((result) => {
       if (result === 'OK') {
         this.onModifyEquipment();
+        this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== this.newEquipmentTypeId);
+        this.equipmentTypeService.getEquipmentType(Number(this.newEquipmentTypeId))
+          .subscribe(
+            (response) => {
+              this.equipmentType = response;
+              this.equipmentTypeFields = response.field;
+            }
+          );
       }
     });
+  }
+
+  openModifyField() {
+    this.modifyFields = true;
+    console.log('equipment type', this.currentEquipment.equipment_type);
+    this.equipmentTypeService.getEquipmentType(this.currentEquipment.equipment_type.id)
+      .subscribe(
+        (response) => {
+          console.log(response);
+          this.currentEquipmentTypeFields = response.field;
+          console.log('fields',this.currentEquipmentTypeFields);
+        }
+      );
   }
 
   /**
@@ -182,7 +236,7 @@ export class EquipmentDetailsComponent implements OnInit {
     return this.utilsService.isAUserPermission(
       this.authenticationService.getCurrentUserPermissions(),
       'change_equipment'
-      );
+    );
   }
 
   /**
@@ -192,8 +246,9 @@ export class EquipmentDetailsComponent implements OnInit {
     return this.utilsService.isAUserPermission(
       this.authenticationService.getCurrentUserPermissions(),
       'delete_equipment'
-      );
+    );
   }
+
   /**
    * Function that is triggered when a or multiple files are chosen(when button "Browse" is pressed and files are chosen)
    * Upload files if not already uploaded.
@@ -207,7 +262,7 @@ export class EquipmentDetailsComponent implements OnInit {
         this.myFiles.push(event.target.files[i]);
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
-        formData.append('is_manual', 'false' );
+        formData.append('is_manual', 'false');
         this.fileService.uploadFile(formData).subscribe(file => {
           this.files.push(Number(file.id));
         });
@@ -239,7 +294,7 @@ export class EquipmentDetailsComponent implements OnInit {
     const fileId: number = this.files[index1];
     const index2: number = this.files.indexOf(fileId);
     if (index2 !== -1) {
-        this.files.splice(index2, 1);
+      this.files.splice(index2, 1);
     }
     this.fileService.deleteFile(fileId);
   }
@@ -257,6 +312,7 @@ export class EquipmentDetailsComponent implements OnInit {
       }
     });
   }
+
   /**
    * Function that opens the modal to handle a file upload.
    * @param content the modal template to load
@@ -268,6 +324,7 @@ export class EquipmentDetailsComponent implements OnInit {
       }
     });
   }
+
   /**
    * Function that create the array of files links.
    * @param filePath the filePath of the file we want to remove
@@ -278,9 +335,118 @@ export class EquipmentDetailsComponent implements OnInit {
 
   getEquipmentTypeName(id: number) {
     this.equipmentTypeService.getEquipmentType(id).subscribe(eqType => {
-      this.equipmentTypeName = eqType.name;
-    }
-
+        this.equipmentTypeName = eqType.name;
+      }
     );
+  }
+  /**
+   * Function to initialize the fields of the selected equipment type
+   * @param event The EquipmentType selected
+   */
+  initEquipmentTypeFields(event) {
+    this.newEquipmentTypeId = event;
+    // this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== event);
+    // this.equipmentTypeService.getEquipmentType(Number(event))
+    //   .subscribe(
+    //     (response) => {
+    //       this.equipmentType = response;
+    //       this.equipmentTypeFields = response.field;
+    //     }
+    //   );
+  }
+
+  /**
+   * Fonction to modify the value of the field that correspond to the selected equipment type
+   * @param event the value of the field
+   * @param index the index of the modified field
+   */
+  modifyEquipmentTypeFieldValue(event, index) {
+
+    const field = this.fields[index].id;
+    this.fields.forEach(element => {
+      if (element.field === field) {
+          element.value = event.value;
+      }
+    });
+    console.log('this.fields', this.fields);
+  }
+
+  /**
+   * Fonction to modify the value of the field that correspond to the new selected equipment type
+   * @param event the value of the field
+   * @param index the index of the modified field
+   */
+  modifyNewEquipmentTypeFieldValue(event, index) {
+    const field = this.equipmentTypeFields[index].id;
+    const name = this.equipmentTypeFields[index].name;
+    const value = ((event.id === 'field-value-text') || (event.id === 'field-value-select')) ? event.value : '';
+    const description = (event.id === 'field-description') ? event.value : '';
+    let alreadyInInitialFields = false;
+    this.initialFields.forEach(element => {
+      if (element.field === field) {
+        alreadyInInitialFields = true;
+        if ((event.id === 'field-value-text') || (event.id === 'field-value-select')) {
+          element.value = event.value;
+        } else {
+          element.description = event.value;
+        }
+      }
+    });
+    if (!(alreadyInInitialFields)) {
+      const jsonCopy = JSON.stringify({field, name, value, description});
+      const objectCopy = JSON.parse(jsonCopy);
+      this.initialFields.splice(index, 1, objectCopy);
+    }
+  }
+
+  /**
+   * Function to add a field in the form
+   */
+  addField() {
+    const jsonCopy = JSON.stringify(this.fieldTemplate);
+    const objectCopy = JSON.parse(jsonCopy);
+    this.new_fields.push(objectCopy);
+  }
+
+  /**
+   * Function to initialize the template for field objects.
+   */
+  initAddFieldTemplate() {
+    this.fieldTemplate = {
+      name: '',
+      value: '',
+      description: ''
+    };
+  }
+
+  /**
+   * Function to verify if the values of the fields of the equipment type are not missing
+   */
+  missingEquipmentTypeFieldsValue() {
+    let missing_value = false;
+    if ((this.equipmentTypeFields.length === this.initialFields.length)) {
+      if ((this.equipmentTypeFields.length !== 0)) {
+        this.initialFields.forEach(element => {
+          if (!(element.value)) {
+            missing_value = true;
+          }
+        });
+      }
+    } else {
+      missing_value = true;
+    }
+    return missing_value;
+  }
+
+  /**
+   * Function to delete a field in the form
+   * @param i the index of the field
+   */
+  deleteField(i: number) {
+    this.new_fields.splice(i, 1);
+  }
+
+  saveField(){
+
   }
 }
