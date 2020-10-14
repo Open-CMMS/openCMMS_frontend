@@ -3,7 +3,7 @@ import {Field} from './field';
 export class Equipment {
     id: number;
     name: string;
-    equipment_type: number;
+    equipment_type: any;
     files: number[];
     fields: Field[];
 
