@@ -195,32 +195,6 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to create the field_objects in the database for the end and trigger conditions
-   */
-  // createFieldObjects(id_task: number) {
-  //   let id_field_end_condition: number;
-  //   this.taskService.getFields().subscribe(
-  //     (fields) => {
-  //       fields.forEach(field => {
-  //         if (field.name === 'End Conditions') {
-  //           id_field_end_condition = field.id;
-  //         }
-  //       });
-  //       this.endConditions.forEach(endCondition => {
-  //         const field_object = {
-  //           described_object: 'Task: ' + id_task,
-  //           field: id_field_end_condition,
-  //           field_value: endCondition.selectedEndCondition[0].id,
-  //           value: 'pending',
-  //           description: endCondition.description
-  //         };
-  //         this.taskService.createFieldObject(field_object).subscribe();
-  //       });
-  //       this.taskService.getFieldObjects();
-  //     });
-  // }
-
-  /**
    * Function that initialize the multiselect for Teams
    */
   initTeamsSelect() {
@@ -228,6 +202,15 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     for (const team of this.teams) {
       this.teamsList.push({id: team.id.toString(), value: team.name});
     }
+    this.dropdownTeamsSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'value',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 4,
+      allowSearchFilter: true
+    };
   }
 
   /**
@@ -240,6 +223,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
         this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
       }
     }
+
   }
 
   /**

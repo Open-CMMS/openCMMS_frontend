@@ -12,6 +12,8 @@ import { TaskService } from 'src/app/services/tasks/task.service';
 import { faCalendar, faInfoCircle, faPlusSquare, faMinusCircle, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FileService } from 'src/app/services/files/file.service';
+import { Template } from 'src/app/models/template';
+import { TemplateService } from 'src/app/services/templates/template.service';
 
 @Component({
   selector: 'app-new-task',
@@ -65,6 +67,12 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   // Forms
   createForm: FormGroup;
 
+  // Templates
+  templates: Template[] = [];
+  templatesSubscription: Subscription;
+  selectedTemplate: Template = null;
+  requirements: any = null;
+
 
   /**
    * Constructor for the NewTeamComponent
@@ -80,12 +88,19 @@ export class NewTaskComponent implements OnInit, OnDestroy {
               private teamService: TeamService,
               private equipmentService: EquipmentService,
               private fileService: FileService,
-              private formBuilder: FormBuilder
+              private formBuilder: FormBuilder,
+              private templateService: TemplateService
               ) { }
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.taskService.getTaskCreationRequirements().subscribe(
+      (requirements: any) => {
+        this.requirements = requirements;
+        console.log(requirements);
+      }
+    );
     this.teamSubscription = this.teamService.teamSubject.subscribe(
       (teams: Team[]) => {
         this.teams = teams;
@@ -108,6 +123,27 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     this.initEndConditionsSelect();
     this.equipmentService.emitEquipments();
     this.initForm();
+  }
+
+  onChangeTaskTemplate() {
+    console.log(this.selectedTemplate);
+    if (this.selectedTemplate === null) {
+      this.initForm();
+    } else {
+      const tempTeams: any[] = [];
+      for (const team of this.selectedTemplate.teams) {
+        tempTeams.push({id: team.id.toString, value: team.name});
+      }
+      this.createForm.setValue({
+        name: '',
+        description: this.selectedTemplate.description,
+        end_date: this.selectedTemplate.end_date,
+        duration: this.selectedTemplate.duration,
+        equipment: this.selectedTemplate.equipment.id.toString(),
+        teams: tempTeams,
+        file: ''
+      });
+    }
   }
 
   /**
@@ -376,12 +412,12 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   initForm() {
     this.triggerConditionDurationRegex = '^((([0-9]+)y)?\\s*(([0-9]+)m)?\\s*(([0-9]+)d)?)$';
     const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
+
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       end_date: [null],
-      time: ['', Validators.pattern(regex_time)],
-      is_template: [false],
+      duration: ['', Validators.pattern(regex_time)],
       equipment: [''],
       teams: [''],
       file: ['']
@@ -428,7 +464,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
                             formValues.description,
                             end_date,
                             time,
-                            formValues.is_template,
+                            false,
                             equipment,
                             teams,
                             files,

@@ -124,61 +124,58 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     // Get the concerned task and its associated objects (equipment, teams, ...)
     this.taskService.getTask(id).subscribe(
       (task: Task) => {
-        console.log(task);
         this.task = task;
-        // this.teamsTask = [];
-        // this.task.teams.forEach(teamId => {
-        //   this.teamService.getTeam(teamId).subscribe((team: Team) => {
-        //     this.teamsTask.push(team);
-        //     this.initTeamsDiff();
-        //   });
-        // });
-        this.files = [];
-        if (this.task.files) {
-          this.task.files.forEach((fileId) => {
-            this.fileService.getFile(fileId).subscribe(
-              (res: any) => {
-                const file = {
-                  fileName: decodeURI(res.file.split('/')[1]),
-                  fileLink: '/' + res.file,
-                  is_manual: res.is_manual
-                };
-                this.files.push(file);
-              }
-            );
-          });
-        }
+        // Set up files format with right URIs
+        this.initFiles();
+        // Set duration to the right format
         this.formatDurationStringAndInitDurationInput();
+        // Initialize the Date
         this.initDateInput();
+        // Initialize the select content of Team
         this.initTeamsDiff();
+        // Initialize values of endConditions for display purposes
         this.initEndConditionValues();
+        // initialize Forms
+        this.initForm();
         this.loaded = true;
-      }
-      );
+    });
 
-      // Subscribing to the teams list
+    // Subscribing to the teams list
     this.teamSubscription = this.teamService.teamSubject.subscribe(
       (teams) => {
         this.teams = teams;
-      }
-    );
+    });
 
     // Subscribing to the equipments
     this.equipmentSubscription = this.equipmentService.equipmentsSubject.subscribe(
       (equipments) => {
         this.equipments = equipments;
-      }
-    );
+    });
 
     // Updating every subscriptions
     this.equipmentService.emitEquipments();
     this.teamService.emitTeams();
-
-    // initialize Forms
-    this.initForm();
-
   }
 
+  /**
+   * Function that builds up the files array with required fields for display purposes
+   */
+  initFiles() {
+    this.files = [];
+    for (const file of this.task.files) {
+      const temp = {
+        fileName: decodeURI(file.file.split('/')[1]),
+        fileLink: '/' + file.file,
+        is_manual: file.is_manual
+      };
+      this.files.push(temp);
+    }
+  }
+
+  /**
+   * Function that builds the end condition values for ngModeling in order to keep the values unchanged until the update
+   * in database.
+   */
   initEndConditionValues() {
     for (const endCondition of this.task.end_conditions) {
       this.endConditionValues[endCondition.id] = endCondition.value;
@@ -262,8 +259,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       },
       (error) => {
         this.router.navigate(['four-oh-four']);
-      }
-    );
+    });
   }
 
   /**
@@ -287,11 +283,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     const days_time_separator = ' ';
     const hours_minutes_separator = ':';
     const init_str = this.task.duration;
+
     let days: string;
     let time: string;
     let right_part: string;
     let left_part: string;
     let days_str: string;
+
     if (this.task.duration) {
       [left_part, right_part] = init_str.split(days_time_separator);
       if (right_part) {
@@ -304,6 +302,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
           time = left_part;
         }
       }
+
       if (days) {
         const plurel = parseInt(days, 10) > 1 ? 's' : '';
         days_str = parseInt(days, 10) > 0 ? days + 'day' + plurel + ', ' : '';
@@ -361,8 +360,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       (resp) => {
         this.teamService.getTeams();
         this.router.navigate(['/tasks']);
-      }
-    );
+    });
   }
 
   /**
@@ -382,7 +380,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     return this.utilsService.isAUserPermission(
       this.authenticationService.getCurrentUserPermissions(),
       'change_task'
-      );
+    );
   }
 
   /**
@@ -430,8 +428,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         (res) => {
           this.taskService.getTasks();
           this.ngOnInit();
-        }
-      );
+      });
     });
   }
 
@@ -462,67 +459,17 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       (res) => {
         this.taskService.getTasks();
         this.ngOnInit();
-      }
-    );
+    });
   }
 
-  // /**
-  //  * Function that realises all the requests to validate the task when the button is clicked
-  //  */
-  // onValidateTask() {
-
-  //   if (this.checkFormContent()) {
-  //     // upload Files
-  //     const tempNewFilesIds: number[] = [];
-  //     let fileCount = 0;
-  //     if (this.fileToUpload.length > 0) {
-  //       for (const file of this.fileToUpload) {
-  //         this.fileService.uploadFile(file.data).subscribe(fileUploaded => {
-  //           tempNewFilesIds.push(fileUploaded.id);
-  //           fileCount++;
-  //           if (fileCount === this.fileToUpload.length) {
-  //             const tempTask = this.task;
-  //             for (const id of tempNewFilesIds) {
-  //               tempTask.files.push(id);
-  //             }
-  //             tempTask.over = true;
-  //             this.taskService.updateTask(tempTask.id, tempTask).subscribe(
-  //               (res) => {
-  //                 this.ngOnInit();
-  //                 this.router.navigate(['tasks-management']);
-  //               }
-  //             );
-  //           }
-  //         });
-  //       }
-  //     } else {
-  //       const tempTask = this.task;
-  //       tempTask.over = true;
-  //       this.taskService.updateTask(tempTask.id, tempTask).subscribe(
-  //         (res) => {
-  //           this.ngOnInit();
-  //           this.router.navigate(['tasks-management']);
-  //         }
-  //       );
-  //       this.taskService.getTasks();
-  //     }
-  //     // update FieldObjects values
-  //     let i = 0;
-  //     for (const endCondition of this.endConditionsOriginal) {
-  //       endCondition.value = this.endConditionValues[i].toString();
-  //       this.taskService.updateFieldObject(endCondition).subscribe();
-  //       i++;
-  //     }
-  //   } else {
-  //     this.validationError = true;
-  //   }
-
-  // }
-
+  /**
+   * Function that check if the value of a endCondition is valid in order to display the validation button.
+   * @param condition the condition concerned.
+   */
   isAValidValue(condition) {
     switch (condition.field_name) {
       case 'Photo':
-        return this.fileToUpload.length > 0;
+        return this.fileToUpload.find(file => file.id === condition.id);
       case 'Checkbox':
         return this.endConditionValues[condition.id];
       case 'Integer':
@@ -532,57 +479,90 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Function that apply the validation of an update on an end condition in database.
+   * @param condition the condition concerned.
+   */
   onValidateEndCondition(condition) {
-    console.log(condition);
     const updatedCondition: any[] = [];
     const finalData: any = {end_conditions: updatedCondition};
     if (this.isAValidValue(condition)) {
       this.validationError = false;
       switch (condition.field_name) {
         case 'Photo':
+          this.fileService.uploadFile(this.fileToUpload[0].value).subscribe(
+            (file) => {
+              updatedCondition.push({id: condition.id, file: file.id});
+              this.updateTask(finalData);
+          });
+          // Update fileToUpload
+          this.removeOldFile(condition.id);
           break;
         case 'Checkbox':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
+          this.updateTask(finalData);
           break;
         case 'Integer':
+          updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
+          this.updateTask(finalData);
+          break;
+        case 'Description':
+          updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
+          this.updateTask(finalData);
           break;
         default:
           break;
       }
 
-      this.taskService.updateTask(this.task.id, finalData).subscribe(
-        (response) => {
-          console.log(response);
-          this.taskService.getTask(this.task.id).subscribe(
-            (task: Task) => {
-              this.task = task;
-              this.formatDurationStringAndInitDurationInput();
-              this.initDateInput();
-            }
-          );
-        }
-      );
     } else {
       this.validationError = true;
     }
   }
 
   /**
+   * Function that do the update on the Task by calling the function of the TaskService.
+   * @param finalData the data to send for update.
+   */
+  updateTask(finalData) {
+    this.taskService.updateTask(this.task.id, finalData).subscribe(
+      (response) => {
+        this.taskService.getTask(this.task.id).subscribe(
+          (task: Task) => {
+            this.task = task;
+            this.formatDurationStringAndInitDurationInput();
+            this.initDateInput();
+            this.initFiles();
+        });
+    });
+  }
+
+  /**
+   * Function that tests if an end condition file is beeing selected.
+   * @param condition the condition concerned.
+   */
+  isSelectedFile(condition) {
+    return this.fileToUpload.find(file => file.id === condition.id);
+  }
+
+  /**
    * Function that registers the image to load
    * @param event the event linked to the image field modification
    */
-  onSetPhotoToUpload(i, event) {
-      if (this.fileToUpload.length > 0) {
-        this.removeOldFile(i);
-      }
-      let formData: FormData;
-      if (event.target.files[0] && !this.files.includes(event.target.files[0])) {
-        formData = new FormData();
-        formData.append('file', event.target.files[0], event.target.files[0].name);
-        formData.append('is_manual', 'false' );
-        this.fileToUpload.push({id: i, data: formData});
-      }
+  onSetPhotoToUpload(condition, event) {
+    if (this.fileToUpload.length > 0) {
+      this.removeOldFile(condition.id);
     }
+    let formData: FormData;
+    if (event.target.files[0] && !this.files.includes(event.target.files[0])) {
+      formData = new FormData();
+      console.log(event.target.files[0]);
+      formData.append('file', event.target.files[0], event.target.files[0].name);
+      console.log(formData);
+      formData.append('is_manual', 'false');
+      console.log(formData);
+      this.fileToUpload.push({id: condition.id, value: formData});
+    }
+  }
 
   /**
    * Function that removes a file from the files to upload on change of a photo field

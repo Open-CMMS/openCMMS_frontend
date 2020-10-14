@@ -3,6 +3,13 @@
         <h2 class="font-weight-bold">Create a new task</h2>
     </div>
     <!-- <button class="btn btn-warning" (click)="testForm()" >Test form</button> -->
+    <div class="form-group">
+        <label for="name">Task template </label>
+        <select id="template" class="form-control" [(ngModel)]="selectedTemplate" (change)="onChangeTaskTemplate()">
+            <option [value]="null" defaultSelected="selected">None</option>
+            <option *ngFor="let template of this.requirements?.task_templates" [ngValue]="template">{{ template.name }}</option>
+        </select>
+    </div>
     <form [formGroup]="createForm" (ngSubmit)="onCreateTask()">
         <div class="form-group">
             <label for="name">Task Name* </label>
@@ -23,14 +30,18 @@
             </ng-multiselect-dropdown>
         </div>
         <div class="form-group">
-          <label for="equipment">Equipment</label>
-          <ng-multiselect-dropdown
+            <label for="equipment">Equipment</label>
+            <select id="equipment" class="form-control" formControlName="equipment">
+                <option [value]="null" defaultSelected="selected">None</option>
+                <option *ngFor="let equipment of this.equipments" [value]="equipment.id">{{ equipment.name }}</option>
+            </select>
+          <!-- <ng-multiselect-dropdown
             [settings]="dropdownEquipmentsSettings"
             [data]="equipmentList"
             formControlName="equipment"
             name="equipment"
           >
-          </ng-multiselect-dropdown>
+          </ng-multiselect-dropdown> -->
         </div>
         <div class="form-group">
             <label for="end_date">Task end date </label>
@@ -45,7 +56,7 @@
         <div class="form-group row col-4">
             <label for="time">Task duration </label>
             <div class="input-group">
-                <input type="text" name="time" id="time" class="form-control" formControlName="time">
+                <input type="text" name="time" id="duration" class="form-control" formControlName="duration">
                 <div class="input-group-append">
                     <button class="btn btn-info" type="button"
                                                 ngbPopover="Examples : 10d 3h 45m, 5h15m, 4d45h 48m"
@@ -56,7 +67,7 @@
                 <fa-icon [icon]="faInfoCircle"></fa-icon></button>
                 </div>
             </div>
-            <div *ngIf="createForm.controls.time.status == 'INVALID'" class="alert alert-danger">
+            <div *ngIf="createForm.controls.duration.status == 'INVALID'" class="alert alert-danger">
                 Enter a duration with the correct pattern
             </div>
         </div>
@@ -178,11 +189,6 @@
                     </div>
                 </li>
             </ul>
-        </div>
-        <div class="form-group">
-            <label ngbButtonLabel>
-              <input type="checkbox" formControlName="is_template" ngbButton> Task Template
-            </label>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <button class="btn btn-danger nav-link" routerLink="/tasks">Annuler</button>

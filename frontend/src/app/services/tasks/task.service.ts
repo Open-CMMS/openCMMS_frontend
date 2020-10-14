@@ -36,7 +36,6 @@ export class TaskService {
     this.httpClient.get<Task[]>(this.BASE_URL_API + '/api/maintenancemanagement/tasks/')
                    .subscribe(
                       (response) => {
-                        console.log('TasksService -> getTasks() :', response);
                         response.forEach(element => {
                           const task = new Task(
                             element.id,
@@ -225,6 +224,10 @@ export class TaskService {
    */
   getUserTasks(userId: number) {
     return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/usertasklist/' + userId);
+  }
+
+  getTaskCreationRequirements(): Observable<any> {
+    return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/tasks/requirements');
   }
 
 }

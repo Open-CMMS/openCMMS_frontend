@@ -120,7 +120,7 @@
                     </div>
                     <br>
                     <p><span class="font-weight-bold">Equipment :</span></p>
-                    <div class="input-group row col-4" *ngIf="!inputEnabled.equipment">
+                    <div class="input-group row col-4" *ngIf="!inputEnabled.equipment && task.equipment">
                         <input class="form-control" [(ngModel)]="task.equipment.name" disabled>
                         <div class="input-group-append" >
                             <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faPen"></fa-icon></button>
@@ -199,38 +199,46 @@
                 <h3 class="font-weight-bold"> Validation : </h3>
             </div>
         </div>
-        <!-- If task is not validated yet -->
-        <div class="card-body d-flex row" *ngIf="!task.over">
+        <div class="card-body d-flex row">
             <form class="col-12">
-                <ul class="col-12 list-group">
+                <ul class="col-12">
                     <li
                         class="container-fluid list-group-item row d-flex justify-content-between align-items-center"
-                        *ngFor="let endCondition of task.end_conditions;let i = index;"
+                        *ngFor="let endCondition of task.end_conditions;"
                         >
                         <div class="col-10">
                             <span><span class="font-weight-bold">{{ endCondition.field_name }}:</span> {{ endCondition.description }}</span><br>
                             <!-- Checkbox -->
-                            <div *ngIf="endCondition.field_name === 'Checkbox'">
+                            <div *ngIf="endCondition.field_name === 'Checkbox' && endCondition.value === null">
                                 <label ngbButtonLabel>
                                   <input type="checkbox" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" ngbButton> Check-me
                                 </label>
                             </div>
                             <!-- Value -->
-                            <div class="form-group" *ngIf="endCondition.field_name === 'Integer'">
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Integer' && endCondition.value === null ">
                                 <input type="number" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" placeholder="Related value">
                             </div>
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Integer' && endCondition.value !== null ">
+                                {{ endCondition.value }}
+                            </div>
                             <!-- Description -->
-                            <div class="form-group" *ngIf="endCondition.field_name === 'Description'">
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Description' && endCondition.value === null">
                                 <textarea [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" cols="50" placeholder="Your description ..."></textarea>
                             </div>
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Description' && endCondition.value !== null ">
+                                {{ endCondition.value }}
+                            </div>
                             <!-- Photo -->
-                            <div class="form-group" *ngIf="endCondition.field_name === 'Photo'">
-                                <input [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" type="file" class="form-control" (change)="onSetPhotoToUpload(i, $event)">
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Photo' && endCondition.value === null">
+                                <input [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" type="file" class="form-control-file" [disabled]="!isSelectedFile(endCondition) && fileToUpload.length > 0" (change)="onSetPhotoToUpload(endCondition, $event)">
+                            </div>
+                            <div class="form-group" *ngIf="endCondition.field_name === 'Photo' && endCondition.value !== null ">
+                                <a class="mr-2" href="{{ BASE_URL_API }}{{ '/' +endCondition.value.split('/')[2] + '/' + endCondition.value.split('/')[3] }}" target="_blank">See the photo</a>
                             </div>
                         </div>
                         <div class="col-1">
                             <button class="btn btn-outline-dark" (click)="onValidateEndCondition(endCondition)" *ngIf="endCondition.value === null && isAValidValue(endCondition)"><fa-icon [icon]="faCheck"></fa-icon></button>
-                            <fa-icon [icon]="faCheckCircle" style="color: green;" *ngIf="endCondition.value !== null"></fa-icon>
+                            <fa-icon [icon]="faCheckCircle" size="2x" style="color: green;" *ngIf="endCondition.value !== null"></fa-icon>
                         </div>
                     </li>
                 </ul>
