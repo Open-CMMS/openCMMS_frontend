@@ -5,7 +5,7 @@ export class Equipment {
     name: string;
     equipment_type: any;
     files: number[];
-    fields: Field[];
+    fields: any[];
 
     /**
      * @param id The id of the equipment

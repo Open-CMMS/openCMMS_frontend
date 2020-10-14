@@ -58,13 +58,12 @@ export class EquipmentService {
    * @param equipmentModified Equipment concerned with the modification and with modifications applied
    */
   updateEquipment(equipmentModified: Equipment) {
-
     const name = equipmentModified.name;
     const equipment_type = equipmentModified.equipment_type;
     const files = equipmentModified.files;
-    const fields = equipmentModified.fields;
+    const field = equipmentModified.fields;
 
-    const userJson = JSON.stringify({name, equipment_type, files, fields});
+    const userJson = JSON.stringify({name, equipment_type, files, field});
 
     const httpOptions = {
       headers : new HttpHeaders({

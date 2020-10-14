@@ -135,7 +135,7 @@
     <div class="card-header d-flex justify-content-between">
       <h3 class="font-weight-bold">Fields : </h3>
       <button class="d-flex btn btn-secondary" (click)="openModifyField()" *ngIf="onChangeEquipmentPermission() &&  (!(modifyFields) && !(equipmentTypeModified))"><fa-icon [icon]="faPencilAlt"></fa-icon></button>
-      <button class="d-flex btn btn-secondary" (click)="saveField()" *ngIf="onChangeEquipmentPermission() && (modifyFields || equipmentTypeModified)"><fa-icon [icon]="faSave"></fa-icon></button>
+      <button class="d-flex btn btn-secondary" (click)="saveFields()" *ngIf="onChangeEquipmentPermission() && (modifyFields || equipmentTypeModified)"><fa-icon [icon]="faSave"></fa-icon></button>
     </div>
     <div class="card-body d-flex row" *ngIf="!(equipmentTypeModified)">
       <ul class="col-12 list-group">
@@ -146,20 +146,20 @@
         </div>
         <li
           class="list-group-item font-weight"
-          *ngFor="let field of fields; let i = index; let currentEquipmentTypeField of currentEquipmentTypeFields"
+          *ngFor="let field of fields; let i = index;"
           (change)="modifyEquipmentTypeFieldValue($event.target, i)"
           >
           <div class="row container-fluid">
             <p style="width: 270px"><span class="font-weight-bold">{{ field.field_name }}</span></p>
             <p style="width: 270px" *ngIf="field.value.length > 0">
               <span *ngIf="((field.value.length > 0) && !(modifyFields))">{{ field.value }}</span>
-              <input type="text" placeholder="value" *ngIf="((field.value.length > 0) && modifyFields)" [(ngModel)]=field.value>
+              <input id='fieldValueText' type="text" placeholder="value" *ngIf="((field.value.length > 0) && modifyFields)" [(ngModel)]=field.value>
             </p>
             <p style="width: 270px" *ngIf="field.field_value">
               <span *ngIf="(field.field_value && !(modifyFields))">{{ field.field_value.value}}</span>
-              <select class="form-control" *ngIf="(field.field_value && modifyFields)">
-                <option disabled selected value> -- select an option -- </option>
-                <option *ngFor="let fieldValue of field.field_value" [value]="fieldValue" placeholder="value">{{ fieldValue }}</option>
+              <select id='fieldValueSelect' class="form-control" *ngIf="(field.field_value && modifyFields)" (click)="getFieldsEquipmentTypes(field.field)">
+                <option disabled selected value> {{ field.field_value.value}} </option>
+                <option *ngFor="let fieldValue of currentSelectFields" [value]="fieldValue" placeholder="value">{{ fieldValue }}</option>
               </select>
             </p>
             <p style="width: 270px" *ngIf="field.description"><span *ngIf="field.description">{{ field.description}}</span></p>

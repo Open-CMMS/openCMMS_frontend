@@ -15,7 +15,6 @@ import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-t
 import {EquipmentType} from 'src/app/models/equipment-type';
 import {Subscription} from 'rxjs/internal/Subscription';
 import {Field} from '../../../models/field';
-import {element} from "protractor";
 
 @Component({
   selector: 'app-equipment-details',
@@ -55,6 +54,7 @@ export class EquipmentDetailsComponent implements OnInit {
   equipmentTypes: EquipmentType[];
   fieldTemplate = null;
   equipmentTypeModified = false;
+  currentSelectFields: [];
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -95,7 +95,7 @@ export class EquipmentDetailsComponent implements OnInit {
       });
     this.equipmentService.getEquipment(this.id)
       .subscribe(eq => {
-          this.currentEquipment = new Equipment(eq.id, eq.name, eq.equipment_type,eq.files,eq.field);
+          this.currentEquipment = new Equipment(eq.id, eq.name, eq.equipment_type, eq.files, eq.field);
           this.name = this.currentEquipment.name;
           this.equipment_type = this.currentEquipment.equipment_type;
           this.getEquipmentTypeName(this.currentEquipment.equipment_type.id);
@@ -135,28 +135,20 @@ export class EquipmentDetailsComponent implements OnInit {
       this.currentEquipment.name = formValues.name;
     }
     if (this.currentEquipment.equipment_type !== formValues.equipment_type) {
-      this.currentEquipment.equipment_type = formValues.equipment_type;
+      this.currentEquipment.equipment_type = formValues.equipment_type.id;
       this.getEquipmentTypeName(this.currentEquipment.equipment_type);
+    } else {
+      this.currentEquipment.equipment_type = this.currentEquipment.equipment_type.id;
     }
+
     if (this.currentEquipment.files !== formValues.files) {
       this.currentEquipment.files = formValues.files;
     }
 
-    if (!(this.equipmentTypeModified)) {
-      if (this.modifyFields) {
-        // recupérer valeurs modifiées
-        console.log('modifiedFields', this.modifyFields);
-      }
-    } else {
-      this.new_fields.forEach(element => {
-        this.initialFields.push(element);
-        this.currentEquipment.fields = this.initialFields;
-      });
+    if (this.modifyFields) {
+      this.currentEquipment.fields = this.fields;
     }
-    console.log('fields', this.fields);
-    console.log('new_fields', this.new_fields);
-    console.log('equipmentTypeFields', this.equipmentTypeFields);
-    console.log('initialFields', this.initialFields);
+
     this.equipmentService.updateEquipment(this.currentEquipment).subscribe(equipmentUpdated => {
         this.updateError = false;
         this.ngOnInit();
@@ -166,6 +158,10 @@ export class EquipmentDetailsComponent implements OnInit {
       (error) => {
         this.updateError = true;
       });
+
+    if (!(this.updateError)) {
+      this.fields = this.currentEquipment.fields;
+    }
   }
 
   /**
@@ -202,13 +198,10 @@ export class EquipmentDetailsComponent implements OnInit {
 
   openModifyField() {
     this.modifyFields = true;
-    console.log('equipment type', this.currentEquipment.equipment_type);
     this.equipmentTypeService.getEquipmentType(this.currentEquipment.equipment_type.id)
       .subscribe(
         (response) => {
-          console.log(response);
           this.currentEquipmentTypeFields = response.field;
-          console.log('fields',this.currentEquipmentTypeFields);
         }
       );
   }
@@ -345,14 +338,6 @@ export class EquipmentDetailsComponent implements OnInit {
    */
   initEquipmentTypeFields(event) {
     this.newEquipmentTypeId = event;
-    // this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== event);
-    // this.equipmentTypeService.getEquipmentType(Number(event))
-    //   .subscribe(
-    //     (response) => {
-    //       this.equipmentType = response;
-    //       this.equipmentTypeFields = response.field;
-    //     }
-    //   );
   }
 
   /**
@@ -361,14 +346,18 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param index the index of the modified field
    */
   modifyEquipmentTypeFieldValue(event, index) {
-
-    const field = this.fields[index].id;
+    const field = this.fields[index].field;
     this.fields.forEach(element => {
       if (element.field === field) {
+        if (event.id === 'fieldValueText') {
           element.value = event.value;
+        } else {
+          if (event.id === 'fieldValueSelect') {
+            element.field_value.value = event.value;
+          }
+        }
       }
     });
-    console.log('this.fields', this.fields);
   }
 
   /**
@@ -397,6 +386,18 @@ export class EquipmentDetailsComponent implements OnInit {
       const objectCopy = JSON.parse(jsonCopy);
       this.initialFields.splice(index, 1, objectCopy);
     }
+  }
+
+  /**
+   * Function to get the different possible values of the values of a field related to an equipment type
+   * @param id the id of the equipment type
+   */
+  getFieldsEquipmentTypes(id: number) {
+    this.currentEquipmentTypeFields.forEach(element => {
+      if (element.id === id) {
+        this.currentSelectFields = element.value;
+      }
+    });
   }
 
   /**
@@ -446,7 +447,11 @@ export class EquipmentDetailsComponent implements OnInit {
     this.new_fields.splice(i, 1);
   }
 
-  saveField(){
-
+  /**
+   * Function to save the modification of the values of the fields
+   */
+  saveFields() {
+    this.onModifyEquipment();
+    this.modifyFields = false;
   }
 }
