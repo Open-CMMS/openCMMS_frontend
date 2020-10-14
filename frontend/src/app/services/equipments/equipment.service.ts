@@ -48,9 +48,9 @@ export class EquipmentService {
    * @param id the id attribut of a equipment
    * @return the specific Equipment
    */
-  getEquipment(id: number ): Observable<Equipment> {
+  getEquipment(id: number ): Observable<any> {
     return this.httpClient
-      .get<Equipment>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + id + '/');
+      .get<any>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + id + '/');
   }
 
   /**
