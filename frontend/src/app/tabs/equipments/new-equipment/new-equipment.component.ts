@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { FileService } from 'src/app/services/files/file.service';
-import { Equipment } from 'src/app/models/equipment';
-import { EquipmentService } from 'src/app/services/equipments/equipment.service';
-import { Subscription, Subject } from 'rxjs';
-import { EquipmentType } from 'src/app/models/equipment-type';
-import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
-import { faMinusSquare, faPlusSquare, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {FileService} from 'src/app/services/files/file.service';
+import {Equipment} from 'src/app/models/equipment';
+import {EquipmentService} from 'src/app/services/equipments/equipment.service';
+import {Subscription, Subject} from 'rxjs';
+import {EquipmentType} from 'src/app/models/equipment-type';
+import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
+import {faMinusSquare, faPlusSquare, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClient} from '@angular/common/http';
 import {Field} from 'src/app/models/field';
@@ -62,7 +62,8 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private httpClient: HttpClient,
               private modalService: NgbModal
-              ) { }
+  ) {
+  }
 
   /**
    * Function that initialize the component when loaded
@@ -76,7 +77,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.equipmentTypesSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
       (equipmentTypes: EquipmentType[]) => {
         this.equipmentTypes = equipmentTypes;
-    });
+      });
     this.equipmentTypeService.emitEquipmentTypes();
     this.equipmentService.emitEquipments();
     this.initForm();
@@ -116,16 +117,16 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     const formValues = this.createForm.value;
     this.equipmentService.createEquipment(formValues.name, formValues.equipmentType, this.files, this.initialFields)
       .subscribe((equipment: Equipment) => {
-                this.equipment = new Equipment(equipment.id,
-                                              equipment.name,
-                                              equipment.equipment_type,
-                                              equipment.files,
-                                              equipment.fields,
-                                              );
-          });
+        this.equipment = new Equipment(equipment.id,
+          equipment.name,
+          equipment.equipment_type,
+          equipment.files,
+          equipment.fields,
+        );
+      });
     this.router.navigate(['/equipments']);
     this.equipmentService.getEquipments();
-    }
+  }
 
   /**
    * Function that is triggered when a or multiple files are chosen(when button "Browse" is pressed and files are chosen)
@@ -140,7 +141,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
         this.myFiles.push(event.target.files[i]);
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
-        formData.append('is_manual', 'false' );
+        formData.append('is_manual', 'false');
         this.fileService.uploadFile(formData).subscribe(file => {
           this.files.push(Number(file.id));
         });
@@ -212,15 +213,13 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    */
   missingEquipmentTypeFieldsValue() {
     let missing_value = false;
-    if (this.initialFields.length !== 0) {
-      if ((this.equipmentTypeFields.length === this.initialFields.length)) {
+    if ((this.equipmentTypeFields.length === this.initialFields.length)) {
+      if ((this.equipmentTypeFields.length !== 0)) {
         this.initialFields.forEach(element => {
           if (!(element.value)) {
             missing_value = true;
           }
         });
-      } else {
-        missing_value = true;
       }
     } else {
       missing_value = true;
