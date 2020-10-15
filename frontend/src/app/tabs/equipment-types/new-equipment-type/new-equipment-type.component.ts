@@ -21,7 +21,7 @@ export class NewEquipmentTypeComponent implements OnInit {
   openField = false;
   fields = {};
   fieldName: string;
-  editingField= true;
+  editingField = true;
 
 
   // Forms :
@@ -103,19 +103,18 @@ export class NewEquipmentTypeComponent implements OnInit {
     delete this.fields[key];
   }
 
-  onEditField(key:string) {
+  onEditField(key: string) {
     this.editingField = !this.editingField;
     console.log(key);
   }
 
   dictToTable(fields: { [fieldName: string]: string } ) {
     const tableFields = [];
-    let valuesStr: string[]
+    let valuesStr: string[];
     for (const key of Object.keys(fields)) {
       if (fields[key] === '') {
         tableFields.push({name: key});
-      }
-      else {
+      } else {
         valuesStr = fields[key].split(',');
         tableFields.push({name: key, value: valuesStr});
       }

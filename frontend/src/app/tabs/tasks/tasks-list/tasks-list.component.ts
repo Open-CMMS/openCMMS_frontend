@@ -106,7 +106,11 @@ export class TasksListComponent implements OnInit, OnDestroy {
     this.taskService.deleteTask(task.id).subscribe(
       (resp) => {
         this.taskService.getTasks();
-        // this.router.navigate(['/tasks']); // Modify to take the current link into account
+        this.taskService.getUserTasks(this.currentUser.id).subscribe(
+          (tasks: Task[]) => {
+            this.tasks = tasks;
+          }
+        );
       }
     );
   }
@@ -140,8 +144,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
   /**
    * Compare function call by sort when neeeded to sort by date.
-   * @param a
-   * @param b
+   * @param a the date a
+   * @param b the date b
    */
   compareDate(a: Task, b: Task) {
     const dateA = new Date(a.end_date);
