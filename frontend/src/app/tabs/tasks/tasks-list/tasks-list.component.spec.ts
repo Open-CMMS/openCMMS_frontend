@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TasksListComponent } from './tasks-list.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
+import { FilterPipe } from './utils/search-filter.pipe';
 
 describe('TasksListComponent', () => {
   let component: TasksListComponent;
@@ -13,7 +13,7 @@ describe('TasksListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TasksListComponent ],
+      declarations: [ TasksListComponent, FilterPipe ],
       imports: [ RouterTestingModule, HttpClientTestingModule ]
     })
     .compileComponents();

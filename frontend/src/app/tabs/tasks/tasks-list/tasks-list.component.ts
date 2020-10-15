@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faTrash, faInfoCircle, faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faInfoCircle, faPlus, faCheck, faSearch, faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
@@ -21,12 +21,16 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   faPlus = faPlus;
   faCheck = faCheck;
+  faSearch = faSearch;
 
   tasks: Task[] = [];
   currentUser: UserProfile;
   tasksSubscription: Subscription = null;
   currentUserSubscription: Subscription = null;
   myTasks: boolean;
+
+  // Search text
+  searchText = '';
 
   /**
    * Constructor for the TasksList component
@@ -139,15 +143,22 @@ export class TasksListComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Compare function call by sort when neeeded to sort by date.
+   * @param a a date
+   * @param b b date
+   */
+  compareDate(a: Task, b: Task) {
+    const dateA = new Date(a.end_date);
+    const dateB = new Date(b.end_date);
+    // @ts-ignore
+    return dateB - dateA;
+  }
+
+  /**
    * Function called when the tasks need to be sorting by end_date
    */
   sortingByEndDate() {
-    this.tasks.sort( (a, b) => {
-      const dateA = new Date(a.end_date);
-      const dateB = new Date(b.end_date);
-      // @ts-ignore
-      return dateB - dateA;
-    });
+    this.tasks.sort(this.compareDate);
   }
 
   /**
