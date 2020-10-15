@@ -42,6 +42,7 @@ describe('TeamDetailsComponent', () => {
     component.team = new Team(1, 'Test', 2, []);
     component.onDeleteTeam();
 
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/NaN');
@@ -56,6 +57,7 @@ describe('TeamDetailsComponent', () => {
     component.initForm();
     component.onModifyTeam();
 
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/NaN');
@@ -70,6 +72,7 @@ describe('TeamDetailsComponent', () => {
     component.initForm();
     component.onRemoveUserFromTeam(new UserProfile(1, 'Maricato', 'Hugo', 'hmaricato', 'h.m@insa-rouen.fr', 'mdp', 2, true));
 
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/NaN');
