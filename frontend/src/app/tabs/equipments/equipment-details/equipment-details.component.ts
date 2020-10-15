@@ -153,7 +153,7 @@ export class EquipmentDetailsComponent implements OnInit {
     } else {
       if (this.filesAdded || this.filesDeleted) {
         this.currentEquipment.files = this.filesId;
-        this.equipmentService.updateEquipmentFile(this.currentEquipment.files, this.currentEquipment.id).subscribe(equipmentFilesUpdated => {
+        this.equipmentService.updateEquipmentFile(this.currentEquipment.files, this.currentEquipment.id).subscribe(filesUpdated => {
           this.updateError = false;
           // this.filesId = [];
           this.ngOnInit();
@@ -483,8 +483,14 @@ export class EquipmentDetailsComponent implements OnInit {
       } else {
         missing_value = true;
       }
-      return missing_value;
+    } else {
+      this.fields.forEach(element => {
+        if ((element.value.length === 0) && !(element.field_value)) {
+          missing_value = true;
+        }
+      });
     }
+    return missing_value;
   }
 
   /**

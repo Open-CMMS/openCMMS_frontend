@@ -135,7 +135,7 @@
         <div class="px-2 py-1">
           <p *ngIf="loaded && !(modifyFields)"><span class="font-weight-bold" >Equipment type :</span> {{ equipmentTypeName }} </p>
             <label for="type"  class="font-weight-bold" *ngIf="modifyFields">Equipment type </label>
-            <select id="type" class="form-control" *ngIf="modifyFields" (change)="initEquipmentTypeFields($event.target.value)">
+            <select id="type" class="form-control" *ngIf="modifyFields" (change)="initEquipmentTypeFields($event.target.value)" style="margin-bottom: 10px; width: 350px;">
               <option disabled selected value> {{ equipmentTypeName}} </option>
               <option *ngFor="let equipmentType of equipmentTypes" [value]="equipmentType.id" placeholder="value">{{ equipmentType.name }}</option>
             </select>
@@ -144,7 +144,7 @@
     </div>
     <div class="card-body d-flex row" *ngIf="!(equipmentTypeModified)">
       <ul class="col-12 list-group">
-        <div class="container-fluid row">
+        <div class="container-fluid row offset-sm-0">
           <p style="width: 270px"><span class="font-weight-bold">Name</span></p>
           <p style="width: 270px"><span class="font-weight-bold">Value</span></p>
           <p style="width: 270px"><span class="font-weight-bold">Description</span></p>
@@ -157,8 +157,8 @@
           <div class="row container-fluid">
             <p style="width: 270px"><span class="font-weight-bold">{{ field.field_name }}</span></p>
             <p style="width: 270px" *ngIf="field.value.length > 0">
-              <span *ngIf="((field.value.length > 0) && !(modifyFields))">{{ field.value }}</span>
-              <input id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [(ngModel)]=field.value>
+              <span *ngIf="(!(field.field_value) && !(modifyFields))">{{ field.value }}</span>
+              <input id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [ngModel]=field.value>
             </p>
             <p style="width: 270px" *ngIf="field.field_value">
               <span *ngIf="(field.field_value && !(modifyFields))">{{ field.field_value.value}}</span>
@@ -173,8 +173,13 @@
       </ul>
     </div>
     <div *ngIf="equipmentTypeModified">
+      <div class="container-fluid row offset-sm-0">
+        <p style="width: 270px"><span class="font-weight-bold">Name</span></p>
+        <p style="width: 270px"><span class="font-weight-bold">Value</span></p>
+        <p style="width: 270px"><span class="font-weight-bold">Description</span></p>
+      </div>
       <div class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
-        <div class="input-group-append form-group" style="margin-bottom: 10px">
+        <div class="input-group-append form-group container-fluid" style="margin-bottom: 10px">
           <p style="width: 270px"><span class="col-3" style="margin-right: 10px;">{{ field.name }}</span></p>
           <input id="field-value-text" type="text" placeholder="value" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length === 0" >
           <select id="field-value-select" class="form-control" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length !== 0">
