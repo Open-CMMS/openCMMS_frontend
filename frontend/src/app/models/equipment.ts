@@ -4,7 +4,7 @@ export class Equipment {
     id: number;
     name: string;
     equipment_type: any;
-    files: number[];
+    files: any[];
     fields: Field[];
 
     /**
@@ -17,7 +17,7 @@ export class Equipment {
     constructor(id: number,
                 name: string,
                 equipment_type: any,
-                list_of_files: number[],
+                list_of_files: any[],
                 list_of_fields: Field[],
                 ) {
         this.id = id;

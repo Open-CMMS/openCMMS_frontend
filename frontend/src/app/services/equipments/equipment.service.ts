@@ -78,6 +78,52 @@ export class EquipmentService {
   }
 
   /**
+   * Fonction to update the name of an existing equipment in the database
+   * @param equipmentNameModified the new name of the equipment
+   * @param equipmentId the id of the equipment to modified
+   */
+  updateEquipmentName(equipmentNameModified: string, equipmentId: number) {
+    const name = equipmentNameModified;
+
+    const userJson = JSON.stringify({name});
+    console.log('userJson modify name', userJson);
+
+    const httpOptions = {
+      headers : new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.httpClient
+      .put<Equipment>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + equipmentId + '/',
+        userJson,
+        httpOptions);
+  }
+
+  /**
+   * Fonction to update the name of an existing equipment in the database
+   * @param equipmentFileModified Array of id of files
+   * @param equipmentId the id of the equipment to modified
+   */
+  updateEquipmentFile(equipmentFileModified: number[], equipmentId: number) {
+    const files = equipmentFileModified;
+
+    const userJson = JSON.stringify({files});
+    console.log('userJson modify files', userJson);
+
+    const httpOptions = {
+      headers : new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.httpClient
+      .put<Equipment>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + equipmentId + '/',
+        userJson,
+        httpOptions);
+  }
+
+  /**
    * Fonction to save a new equipment in the database
    * @param name the formal name of the equipment
    * @param equipment_type number defining which type of equipment it is

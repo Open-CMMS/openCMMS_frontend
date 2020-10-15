@@ -36,13 +36,16 @@ export class EquipmentDetailsComponent implements OnInit {
   id: number;
   fields: any[] = [];
   new_fields: Field[] = [];
-  files: number[];
+  files: any[];
+  filesId: number[] = [];
   equipment_type: number;
   equipmentType: EquipmentType;
-  newEquipmentTypeId: number = null;
   equipmentTypeFields: Field[] = [];
   currentEquipmentTypeFields = [];
+  newEquipmentTypeId: number = null;
   initialFields = [];
+  filesAdded = false;
+  filesDeleted = false;
   modifyFields = false;
   currentEquipment: Equipment = null;
   equipmentTypeName: string;
@@ -83,6 +86,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.filesId = [];
     this.myFiles = [];
     this.myFilesPath = [];
     let i = 0;
@@ -101,10 +105,13 @@ export class EquipmentDetailsComponent implements OnInit {
           this.getEquipmentTypeName(this.currentEquipment.equipment_type.id);
           this.fields = this.currentEquipment.fields;
           this.files = this.currentEquipment.files;
+          this.currentEquipment.files.forEach(element => {
+            this.filesId.push(element.id);
+          });
           this.loaded = true;
           this.initForm();
-          for (i; i < this.files.length; i++) {
-            this.fileService.getFile(this.files[i]).subscribe(df => {
+          for (i; i < this.filesId.length; i++) {
+            this.fileService.getFile(this.filesId[i]).subscribe(df => {
               this.myFilesPath.push(String(df.file).slice(6));
             });
           }
@@ -130,54 +137,74 @@ export class EquipmentDetailsComponent implements OnInit {
    * Function to modify a equipment
    */
   onModifyEquipment() {
-    let equipment_type_id = this.currentEquipment.equipment_type.id;
     const formValues = this.equipmentUpdateForm.value;
+
     if (this.currentEquipment.name !== formValues.name) {
       this.currentEquipment.name = formValues.name;
-    }
-    if (this.currentEquipment.equipment_type !== formValues.equipment_type) {
-      this.currentEquipment.equipment_type = formValues.equipment_type;
-      equipment_type_id = this.currentEquipment.equipment_type;
-      this.currentEquipment.fields = [];
-      this.getEquipmentTypeName(this.currentEquipment.equipment_type);
+      this.equipmentService.updateEquipmentName(this.currentEquipment.name, this.currentEquipment.id).subscribe(equipmentNameUpdated => {
+          this.updateError = false;
+          this.ngOnInit();
+          this.initForm();
+          this.equipmentService.getEquipments();
+        },
+        (error) => {
+          this.updateError = true;
+        });
     } else {
-      this.currentEquipment.equipment_type = this.currentEquipment.equipment_type.id;
-    }
+      if (this.filesAdded || this.filesDeleted) {
+        this.currentEquipment.files = this.filesId;
+        this.equipmentService.updateEquipmentFile(this.currentEquipment.files, this.currentEquipment.id).subscribe(equipmentFilesUpdated => {
+          this.updateError = false;
+          // this.filesId = [];
+          this.ngOnInit();
+          this.initForm();
+          this.equipmentService.getEquipments();
+          this.filesAdded = false;
+          this.filesDeleted = false;
+        },
+          (error) => {
+            this.updateError = true;
+          });
+      } else {
+        this.currentEquipment.files = this.filesId;
+        this.newEquipmentTypeId = this.currentEquipment.equipment_type.id;
+        if (this.equipmentType) {
+          this.currentEquipment.equipment_type = this.equipmentType.id;
+          this.newEquipmentTypeId = this.currentEquipment.equipment_type;
+          this.getEquipmentTypeName(this.currentEquipment.equipment_type);
+        } else {
+          this.currentEquipment.equipment_type = this.currentEquipment.equipment_type.id;
+        }
 
-    if (this.currentEquipment.files !== formValues.files) {
-      this.currentEquipment.files = formValues.files;
-    }
-
-    if (this.modifyFields) {
-      this.currentEquipment.fields = this.fields;
-      this.modifyFields = false;
-    }
-
-    if (this.equipmentTypeModified) {
-      this.currentEquipment.fields = this.initialFields;
-      console.log('this.currentEquipment.fields', this.currentEquipment.fields);
-      this.equipmentTypeModified = false;
-    }
-
-    this.equipmentService.updateEquipment(this.currentEquipment).subscribe(equipmentUpdated => {
-        this.updateError = false;
-        this.ngOnInit();
-        this.initForm();
-        this.equipmentService.getEquipments();
-      },
-      (error) => {
-        this.updateError = true;
-      });
-
-    if (!(this.updateError)) {
-      this.fields = this.currentEquipment.fields;
-      this.equipmentTypeService.getEquipmentType(equipment_type_id)
-        .subscribe(
-          (response) => {
-            this.currentEquipment.equipment_type = response;
+        if (this.modifyFields) {
+          this.currentEquipment.fields = this.fields;
+          this.modifyFields = false;
+          if (this.equipmentTypeModified) {
+            this.currentEquipment.fields = this.initialFields;
+            this.equipmentTypeModified = false;
           }
-        );
+        }
+        this.equipmentService.updateEquipment(this.currentEquipment).subscribe(equipmentUpdated => {
+            this.updateError = false;
+            // this.filesId = [];
+            this.ngOnInit();
+            this.initForm();
+            this.equipmentService.getEquipments();
+          },
+          (error) => {
+            this.updateError = true;
+          });
 
+        if (!(this.updateError)) {
+          this.fields = this.currentEquipment.fields;
+          this.equipmentTypeService.getEquipmentType(this.newEquipmentTypeId)
+            .subscribe(
+              (response) => {
+                this.currentEquipment.equipment_type = response;
+              }
+            );
+      }
+      }
     }
   }
 
@@ -197,18 +224,10 @@ export class EquipmentDetailsComponent implements OnInit {
    * Function that opens the modal to confirm a deletion
    * @param content the modal template to load
    */
-  openModify(content) {
+  openModifyName(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-modify'}).result.then((result) => {
       if (result === 'OK') {
         this.onModifyEquipment();
-        // this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== this.newEquipmentTypeId);
-        // this.equipmentTypeService.getEquipmentType(Number(this.newEquipmentTypeId))
-        //   .subscribe(
-        //     (response) => {
-        //       this.equipmentType = response;
-        //       this.equipmentTypeFields = response.field;
-        //     }
-        //   );
       }
     });
   }
@@ -274,7 +293,7 @@ export class EquipmentDetailsComponent implements OnInit {
         formData.append('file', event.target.files[i], event.target.files[i].name);
         formData.append('is_manual', 'false');
         this.fileService.uploadFile(formData).subscribe(file => {
-          this.files.push(Number(file.id));
+          this.filesId.push(Number(file.id));
         });
       }
     }
@@ -290,7 +309,7 @@ export class EquipmentDetailsComponent implements OnInit {
   onRemoveFile(file: File) {
     const index = this.myFiles.indexOf(file);
     this.myFiles.splice(index, 1);
-    const id = this.files.splice(index, 1);
+    const id = this.filesId.splice(index, 1);
     this.fileService.deleteFile(id[0]);
     this.ngOnInit();
   }
@@ -301,10 +320,10 @@ export class EquipmentDetailsComponent implements OnInit {
    */
   onRemoveFilePath(filePath: string) {
     const index1: number = this.myFilesPath.indexOf(filePath);
-    const fileId: number = this.files[index1];
-    const index2: number = this.files.indexOf(fileId);
+    const fileId: number = this.filesId[index1];
+    const index2: number = this.filesId.indexOf(fileId);
     if (index2 !== -1) {
-      this.files.splice(index2, 1);
+      this.filesId.splice(index2, 1);
     }
     this.fileService.deleteFile(fileId);
   }
@@ -317,6 +336,7 @@ export class EquipmentDetailsComponent implements OnInit {
   openDeleteFile(filePath: string, content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-deleteFile'}).result.then((result) => {
       if (result === 'OK') {
+        this.filesDeleted = true;
         this.onRemoveFilePath(filePath);
         this.onModifyEquipment();
       }
@@ -330,6 +350,7 @@ export class EquipmentDetailsComponent implements OnInit {
   openUploadFile(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-addFile'}).result.then((result) => {
       if (result === 'OK') {
+        this.filesAdded = true;
         this.onModifyEquipment();
       }
     });
@@ -355,7 +376,14 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param event The EquipmentType selected
    */
   initEquipmentTypeFields(event) {
-    this.newEquipmentTypeId = event;
+    this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== event);
+    this.equipmentTypeService.getEquipmentType(Number(event))
+      .subscribe(
+        (response) => {
+          this.equipmentType = response;
+          this.equipmentTypeFields = response.field;
+        }
+      );
   }
 
   /**
@@ -404,7 +432,6 @@ export class EquipmentDetailsComponent implements OnInit {
       const objectCopy = JSON.parse(jsonCopy);
       this.initialFields.splice(index, 1, objectCopy);
     }
-    console.log('this.initialFields', this.initialFields);
   }
 
   /**
@@ -426,7 +453,6 @@ export class EquipmentDetailsComponent implements OnInit {
     const jsonCopy = JSON.stringify(this.fieldTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     this.new_fields.push(objectCopy);
-    console.log('this.new_fields', this.new_fields);
   }
 
   /**
@@ -445,7 +471,6 @@ export class EquipmentDetailsComponent implements OnInit {
    */
   missingEquipmentTypeFieldsValue() {
     let missing_value = false;
-    console.log('this.equipmentTypeFields', this.equipmentTypeFields);
     if (this.equipmentTypeModified) {
       if ((this.equipmentTypeFields.length === this.initialFields.length)) {
         if ((this.equipmentTypeFields.length !== 0)) {
@@ -474,12 +499,9 @@ export class EquipmentDetailsComponent implements OnInit {
    * Function to save the modification of the values of the fields
    */
   saveFields() {
-    console.log('this.equipmentTypeModified', this.equipmentTypeModified);
     if (this.equipmentTypeModified) {
       this.new_fields.forEach(element => {
-        console.log('this.initialFields before', this.initialFields);
         this.initialFields.push(element);
-        console.log('this.intialFields after', this.initialFields);
       });
     }
     this.onModifyEquipment();
