@@ -201,14 +201,14 @@ export class EquipmentDetailsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-modify'}).result.then((result) => {
       if (result === 'OK') {
         this.onModifyEquipment();
-        this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== this.newEquipmentTypeId);
-        this.equipmentTypeService.getEquipmentType(Number(this.newEquipmentTypeId))
-          .subscribe(
-            (response) => {
-              this.equipmentType = response;
-              this.equipmentTypeFields = response.field;
-            }
-          );
+        // this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== this.newEquipmentTypeId);
+        // this.equipmentTypeService.getEquipmentType(Number(this.newEquipmentTypeId))
+        //   .subscribe(
+        //     (response) => {
+        //       this.equipmentType = response;
+        //       this.equipmentTypeFields = response.field;
+        //     }
+        //   );
       }
     });
   }
@@ -445,18 +445,21 @@ export class EquipmentDetailsComponent implements OnInit {
    */
   missingEquipmentTypeFieldsValue() {
     let missing_value = false;
-    if ((this.equipmentTypeFields.length === this.initialFields.length)) {
-      if ((this.equipmentTypeFields.length !== 0)) {
-        this.initialFields.forEach(element => {
-          if (!(element.value)) {
-            missing_value = true;
-          }
-        });
+    console.log('this.equipmentTypeFields', this.equipmentTypeFields);
+    if (this.equipmentTypeModified) {
+      if ((this.equipmentTypeFields.length === this.initialFields.length)) {
+        if ((this.equipmentTypeFields.length !== 0)) {
+          this.initialFields.forEach(element => {
+            if (!(element.value)) {
+              missing_value = true;
+            }
+          });
+        }
+      } else {
+        missing_value = true;
       }
-    } else {
-      missing_value = true;
+      return missing_value;
     }
-    return missing_value;
   }
 
   /**
