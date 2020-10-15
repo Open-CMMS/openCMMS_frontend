@@ -9,7 +9,7 @@ import {AuthenticationService} from 'src/app/services/auth/authentication.servic
 import {UtilsService} from 'src/app/services/utils/utils.service';
 import {Subject} from 'rxjs/internal/Subject';
 import {FileService} from 'src/app/services/files/file.service';
-import {faMinusSquare, faMinusCircle, faSave } from '@fortawesome/free-solid-svg-icons';
+import {faMinusSquare, faMinusCircle, faSave} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
 import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
 import {EquipmentType} from 'src/app/models/equipment-type';
@@ -130,12 +130,15 @@ export class EquipmentDetailsComponent implements OnInit {
    * Function to modify a equipment
    */
   onModifyEquipment() {
+    let equipment_type_id = this.currentEquipment.equipment_type.id;
     const formValues = this.equipmentUpdateForm.value;
     if (this.currentEquipment.name !== formValues.name) {
       this.currentEquipment.name = formValues.name;
     }
     if (this.currentEquipment.equipment_type !== formValues.equipment_type) {
-      this.currentEquipment.equipment_type = formValues.equipment_type.id;
+      this.currentEquipment.equipment_type = formValues.equipment_type;
+      equipment_type_id = this.currentEquipment.equipment_type;
+      this.currentEquipment.fields = [];
       this.getEquipmentTypeName(this.currentEquipment.equipment_type);
     } else {
       this.currentEquipment.equipment_type = this.currentEquipment.equipment_type.id;
@@ -147,6 +150,13 @@ export class EquipmentDetailsComponent implements OnInit {
 
     if (this.modifyFields) {
       this.currentEquipment.fields = this.fields;
+      this.modifyFields = false;
+    }
+
+    if (this.equipmentTypeModified) {
+      this.currentEquipment.fields = this.initialFields;
+      console.log('this.currentEquipment.fields', this.currentEquipment.fields);
+      this.equipmentTypeModified = false;
     }
 
     this.equipmentService.updateEquipment(this.currentEquipment).subscribe(equipmentUpdated => {
@@ -161,6 +171,13 @@ export class EquipmentDetailsComponent implements OnInit {
 
     if (!(this.updateError)) {
       this.fields = this.currentEquipment.fields;
+      this.equipmentTypeService.getEquipmentType(equipment_type_id)
+        .subscribe(
+          (response) => {
+            this.currentEquipment.equipment_type = response;
+          }
+        );
+
     }
   }
 
@@ -332,6 +349,7 @@ export class EquipmentDetailsComponent implements OnInit {
       }
     );
   }
+
   /**
    * Function to initialize the fields of the selected equipment type
    * @param event The EquipmentType selected
@@ -386,6 +404,7 @@ export class EquipmentDetailsComponent implements OnInit {
       const objectCopy = JSON.parse(jsonCopy);
       this.initialFields.splice(index, 1, objectCopy);
     }
+    console.log('this.initialFields', this.initialFields);
   }
 
   /**
@@ -407,6 +426,7 @@ export class EquipmentDetailsComponent implements OnInit {
     const jsonCopy = JSON.stringify(this.fieldTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     this.new_fields.push(objectCopy);
+    console.log('this.new_fields', this.new_fields);
   }
 
   /**
@@ -451,7 +471,14 @@ export class EquipmentDetailsComponent implements OnInit {
    * Function to save the modification of the values of the fields
    */
   saveFields() {
+    console.log('this.equipmentTypeModified', this.equipmentTypeModified);
+    if (this.equipmentTypeModified) {
+      this.new_fields.forEach(element => {
+        console.log('this.initialFields before', this.initialFields);
+        this.initialFields.push(element);
+        console.log('this.intialFields after', this.initialFields);
+      });
+    }
     this.onModifyEquipment();
-    this.modifyFields = false;
   }
 }
