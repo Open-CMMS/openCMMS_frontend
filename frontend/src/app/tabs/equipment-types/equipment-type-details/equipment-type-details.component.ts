@@ -61,7 +61,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
     });
     this.equipmentService.emitEquipments();
     this.initForm();
-    console.log(this.fields)
+    console.log(this.fields);
   }
 
   /**

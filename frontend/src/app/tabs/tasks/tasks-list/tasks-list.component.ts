@@ -140,8 +140,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
   /**
    * Compare function call by sort when neeeded to sort by date.
-   * @param a
-   * @param b
+   * @param a the date a
+   * @param b the date b
    */
   compareDate(a: Task, b: Task) {
     const dateA = new Date(a.end_date);
