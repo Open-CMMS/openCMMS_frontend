@@ -226,6 +226,9 @@ export class TaskService {
     return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/usertasklist/' + userId);
   }
 
+  /**
+   * Function that triggers a request to get the data required to create a new Task
+   */
   getTaskCreationRequirements(): Observable<any> {
     return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/tasks/requirements');
   }
