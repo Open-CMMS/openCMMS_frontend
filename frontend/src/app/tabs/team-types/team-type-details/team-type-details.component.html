@@ -20,11 +20,12 @@
             <div class="col-sm-8 col-sm-offset-2">
               <div class="form-group">
                 <label for="name">Nom</label>
-                <input type="text" class='form-control' formControlName="name" [(ngModel)]="name">
+                <input type="text" class='form-control' formControlName="name" id="name" [(ngModel)]="name">
               </div>
               <div class="form-group">
                 <label for="permissions">Permissions</label>
                 <ng-multiselect-dropdown
+                  id="permissions"
                   [settings]="dropdownPermsSettings"
                   [data]="permsList"
                   [(ngModel)]="selectedPerms"
@@ -81,8 +82,8 @@
                 <h3 class="font-weight-bold"> Teams : </h3>
             </div>
         </div>
-        <div class="card-body d-flex row">
-            <ul class="col-12 list-group">
+        <div class="d-flex">
+            <ul class="list-group w-100">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
                     *ngFor="let team of teams; let i = index">
@@ -102,8 +103,8 @@
                 <h3 class="font-weight-bold"> Permissions : </h3>
             </div>
         </div>
-        <div class="card-body d-flex row">
-            <ul class="col-12 list-group">
+        <div class="d-flex">
+            <ul class="w-100 list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
                     *ngFor="let perm of perms; let i = index">
