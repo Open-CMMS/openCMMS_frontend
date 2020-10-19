@@ -234,8 +234,8 @@ pipeline{
                 stage('Deploy on distant server'){
                     steps{
                         sh '''
-                            ssh root@192.168.101.9 'rm -rf /var/www/pic-slalom/dist/*';
-                            scp -r -p $WORKSPACE/frontend/dist/* root@192.168.101.9:/var/www/pic-slalom/dist/;
+                            ssh root@192.168.101.9 'rm -rf /var/www/pic-slalom/*';
+                            scp -r -p $WORKSPACE/frontend/dist/pic-slalom/* root@192.168.101.9:/var/www/pic-slalom/;
                         '''
                     }
                 }
