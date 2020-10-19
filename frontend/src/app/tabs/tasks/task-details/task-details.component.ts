@@ -556,11 +556,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     let formData: FormData;
     if (event.target.files[0] && !this.files.includes(event.target.files[0])) {
       formData = new FormData();
-      console.log(event.target.files[0]);
       formData.append('file', event.target.files[0], event.target.files[0].name);
-      console.log(formData);
       formData.append('is_manual', 'false');
-      console.log(formData);
       this.fileToUpload.push({id: condition.id, value: formData});
     }
   }
