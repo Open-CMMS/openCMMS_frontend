@@ -110,7 +110,11 @@ export class TasksListComponent implements OnInit, OnDestroy {
     this.taskService.deleteTask(task.id).subscribe(
       (resp) => {
         this.taskService.getTasks();
-        // this.router.navigate(['/tasks']); // Modify to take the current link into account
+        this.taskService.getUserTasks(this.currentUser.id).subscribe(
+          (tasks: Task[]) => {
+            this.tasks = tasks;
+          }
+        );
       }
     );
   }

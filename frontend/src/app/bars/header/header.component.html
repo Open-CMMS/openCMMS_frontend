@@ -18,6 +18,9 @@
             <div *ngIf="onChangeTasksPermission()">
               <a class="dropdown-item" routerLink="tasks-management">Task management</a>
             </div>
+            <div *ngIf="onChangeTasksPermission()">
+              <a class="dropdown-item" routerLink="template-management">Template management</a>
+            </div>
             </div>
           </li>
           <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onChangeTeamsPermission() || onChangeTeamTypesPermission()">
