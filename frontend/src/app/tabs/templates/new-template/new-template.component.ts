@@ -87,6 +87,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.equipmentTypeService.getEquipmentTypes();
     this.teamSubscription = this.teamService.teamSubject.subscribe(
       (teams: Team[]) => {
         this.teams = teams;
@@ -97,7 +98,6 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     this.equipmentSubscription = this.equipmentService.equipmentsSubject.subscribe(
       (equipments: Equipment[]) => {
         this.equipments = equipments;
-        // this.initEquipmentsSelect();
       }
     );
     this.equipmentTypeSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
@@ -168,23 +168,6 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
         this.initEndConditionSelectTemplate(end_conditions_types);
       }
     );
-    // this.taskService.getFields().subscribe(
-    //   (fields) => {
-    //     fields.forEach(field => {
-    //       if (field.name === 'End Conditions') {
-    //         id_field = field.id;
-    //       }
-    //     });
-    //     this.taskService.getFieldValues(id_field).subscribe(
-    //       (field_values) => {
-    //         field_values.forEach(field_value => {
-    //           end_conditions_types.push({id: field_value.id, value: field_value.value});
-    //         });
-    //         this.initEndConditionSelectTemplate(end_conditions_types);
-    //       }
-    //     );
-    //   }
-    // );
   }
 
   /**
@@ -336,7 +319,6 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
 
     this.templateService.createTemplate(newTemplate).subscribe(
       (template: Template) => {
-        // this.createFieldObjects(template.id);
         this.router.navigate(['/template-management']);
         this.templateService.getTemplates();
       },
