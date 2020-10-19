@@ -1,0 +1,32 @@
+<ng-template #contentDelete let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-delete">Delete Equipment</h4>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to delete this equipment type ? Be careful the equipments of this type will be deleted as well !</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
+    </div>
+</ng-template>
+
+<div class="container-fluid col-12" style="padding: 0px;">
+    <div class="list-group">
+        <ul class="list-group">
+            <li
+                class="container-fluid list-group-item font-weight-bold"
+                *ngFor="let equipmentType of equipmentTypes; let i = index"
+                >
+                <div class="container-fluid row justify-content-between">
+                    <h5>{{ equipmentType.name }}</h5>
+
+                    <div class="d-flex">
+                        <button class="btn btn-info mx-2" (click)="onViewEquipmentType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                        <button class="btn btn-danger" (click)="openDelete(contentDelete, i)" *ngIf="onDeleteEquipmentTypePermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,1 +1,196 @@
-<p>new-task works!</p>
+  <div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom:100px">
+    <div class="d-flex">
+        <h2 class="font-weight-bold">Create a new task</h2>
+    </div>
+    <div class="form-group my-5">
+        <label for="name">Task template </label>
+        <select id="template" class="form-control" [(ngModel)]="selectedTemplate" (ngModelChange)="onChangeTaskTemplate()">
+            <option [ngValue]="null" defaultSelected="selected">---</option>
+            <option *ngFor="let template of this.requirements?.task_templates" [ngValue]="template">{{ template.name }}</option>
+        </select>
+        <small class="text-muted">The template presets will be applied to the corresponding fields of the task.</small>
+    </div>
+    <form [formGroup]="createForm" (ngSubmit)="onCreateTask()">
+        <div class="form-group">
+            <label for="name">Task Name* </label>
+            <input type="text" id="name" class="form-control" formControlName="name">
+        </div>
+        <div class="form-group">
+            <label for="description">Task Description* </label>
+            <textarea [ngStyle]="{'background-color': (selectedTemplate?.description) ? 'rgb(255, 255, 202)' : '#ffffff'}" id="description" class="form-control" formControlName="description" ></textarea>
+        </div>
+        <div class="form-group">
+            <label for="teams">Teams</label>
+            <ng-multiselect-dropdown
+              [ngStyle]="{'border-color': (selectedTemplate?.teams) ? 'rgb(255, 255, 202)' : '#ffffff'}"
+              [settings]="dropdownTeamsSettings"
+              [data]="teamsList"
+              formControlName="teams"
+              name="teams"
+            >
+            </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group">
+            <label for="equipment">Equipment</label>
+            <select id="equipment" class="form-control" formControlName="equipment" [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}">
+                <option [value]="" defaultSelected="selected">---</option>
+                <option *ngFor="let equipment of this.equipments" [value]="equipment.id">{{ equipment.name }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="end_date">Task end date </label>
+            <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                        name="end_date" ngbDatepicker #endDatePicker="ngbDatepicker" formControlName="end_date">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" (click)="endDatePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row col-4">
+            <label for="time">Task duration </label>
+            <div class="input-group">
+                <input type="text" name="time" id="duration" class="form-control" formControlName="duration" [ngStyle]="{'background-color': (selectedTemplate?.duration) ? 'rgb(255, 255, 202)' : '#ffffff'}">
+                <div class="input-group-append">
+                    <button class="btn btn-info" type="button"
+                                                ngbPopover="Examples : 10d 3h 45m, 5h15m, 4d45h 48m"
+                                                placement="right"
+                                                triggers="mouseenter:mouseleave"
+                                                popoverTitle="Info"
+                                                [closeDelay]="2000">
+                <fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                </div>
+            </div>
+            <div *ngIf="createForm.controls.duration.status == 'INVALID'" class="alert alert-danger">
+                Enter a duration with the correct pattern
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Trigger Conditions </label><br>
+            <button type="button" class="btn btn-outline-secondary" (click)="addTriggerCondition()">
+                <span style="margin-right: 10px;">Add Trigger Condition</span>
+                <fa-icon [icon]="faPlusSquare"></fa-icon>
+            </button>
+        </div>
+        <div class="form-group" *ngFor="let triggerCondition of triggerConditions; let i = index">
+            <div class="input-group">
+                <button class="btn btn-danger" type="button" (click)="deleteTriggerCondition(i)">
+                    <fa-icon [icon]="faMinusCircle"></fa-icon>
+                </button>
+                <ng-multiselect-dropdown
+                    [settings]="triggerCondition.dropdownTriggerConditionsSettings"
+                    [data]="triggerCondition.triggerConditionsList"
+                    [(ngModel)]="triggerCondition.selectedTriggerCondition"
+                    [ngModelOptions]="{standalone: true}"
+                    name="triggerCondition"
+                    class="col-5"
+                    style="margin-right: 10px;"
+                >
+                </ng-multiselect-dropdown>
+
+                <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Date'">
+                    <input placeholder="yyyy-mm-dd"
+                        name="dateTriggerCondition"
+                        ngbDatepicker
+                        #datePicker="ngbDatepicker"
+                        [(ngModel)]=triggerCondition.value
+                        [ngModelOptions]="{standalone: true}"
+                    />
+                    <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>
+
+
+                </div>
+
+                <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Duration'">
+                    <input type="text"
+                    placeholder="value"
+                    ngbPopover="Examples : 1y5m, 3m 15d, 2y6m 15d"
+                    placement="top"
+                    triggers="mouseenter:mouseleave"
+                    popoverTitle="Info"
+                    [pattern]="triggerConditionDurationRegex"
+                    #triggerConditionDuration
+                    [(ngModel)]=triggerCondition.value
+                    [ngModelOptions]="{standalone: true}"
+                    [ngClass]="{'alert-danger': triggerConditionDuration.validity.patternMismatch}">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>End Conditions </label><br>
+            <button type="button" class="btn btn-outline-secondary" (click)="addEndCondition()">
+                <span style="margin-right: 10px;">Add End Condition</span>
+                <fa-icon [icon]="faPlusSquare"></fa-icon>
+            </button>
+        </div>
+        <div class="form-group" *ngFor="let endCondition of endConditions; let i = index">
+            <div class="input-group">
+                <button class="btn btn-danger" type="button" (click)="deleteEndCondition(i)">
+                    <fa-icon [icon]="faMinusCircle"></fa-icon>
+                </button>
+                <ng-multiselect-dropdown
+                    [settings]="endCondition.dropdownEndConditionsSettings"
+                    [data]="endCondition.endConditionsList"
+                    [(ngModel)]="endCondition.selectedEndCondition"
+                    [ngModelOptions]="{standalone: true}"
+                    name="endCondition"
+                    class="col-5"
+                    style="margin-right: 10px;"
+                >
+                </ng-multiselect-dropdown>
+
+                <input type="text"
+                    *ngIf="endCondition.selectedEndCondition[0]"
+                    placeholder="description"
+                    [(ngModel)]=endCondition.description
+                    [ngModelOptions]="{standalone: true}"
+                    >
+
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="file">Upload File</label>
+            <input formControlName="file" id="file" type="file" multiple class="form-control" (change)="onAddFile($event)">
+        </div>
+        <div class="list-group">
+            <ul class="list-group">
+                <li
+                    class="container-fluid list-group-item font-weight-bold "
+                    *ngFor="let file of templateFiles;"
+                    >
+                    <div class="container-fluid row justify-content-between align-items-center">
+                        <div class="col-8">
+                            <h5 style="margin-bottom: 0px; vertical-align: middle;">{{ file.name }}</h5>
+                            <span class="badge badge-pill badge-secondary" style="font-size: 10px;"><fa-icon [icon]="faFileDownload" size="xs"></fa-icon> From template</span>
+                        </div>
+                        <div class="col-1">
+                            <button class="btn btn-danger" (click)="onRemoveFile(templateFiles, file.id)"><fa-icon [icon]="faMinusSquare" size="lg"></fa-icon></button>
+                        </div>
+                    </div>
+                </li>
+                <li
+                    class="container-fluid list-group-item font-weight-bold "
+                    *ngFor="let file of newFiles;"
+                    >
+                    <div class="container-fluid row justify-content-between align-items-center">
+                        <div class="col-8">
+                            <h5 style="margin-bottom: 0px; vertical-align: middle;">{{ file.name }} </h5>
+                            <span class="badge badge-pill badge-success" style="font-size: 10px;"><fa-icon [icon]="faPlus" size="xs"></fa-icon> Additionnal file</span>
+                        </div>
+                        <div class="col-1">
+                            <button class="btn btn-danger" (click)="onRemoveFile(newFiles, file.data)"><fa-icon [icon]="faMinusSquare" size="lg"></fa-icon></button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <button class="btn btn-danger nav-link" routerLink="/tasks">Annuler</button>
+          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create task</button>
+        </div>
+    </form>
+    <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">
+        <p class="font-weight-bold">Error when creating the task :</p>
+        <p>This task name is probably invalid !</p>
+    </div>
+</div>

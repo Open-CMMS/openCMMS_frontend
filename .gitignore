@@ -1,3 +1,5 @@
 **/reports/junit.xml
 **/documentation
 **/coverage
+**/node_modules
+.angulardoc.json

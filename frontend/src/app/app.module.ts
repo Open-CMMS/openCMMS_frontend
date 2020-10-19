@@ -1,15 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { Routes, RouterModule } from '@angular/router';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SigninComponent } from './auth/signin/signin.component';
-import { SignupComponent } from './auth/signup/signup.component';
 import { AccountBlockedComponent } from './auth/account-blocked/account-blocked.component';
-import { WelcomeFirstConnectionComponent } from './auth/welcome-first-connection/welcome-first-connection.component';
 import { HeaderComponent } from './bars/header/header.component';
 import { FooterComponent } from './bars/footer/footer.component';
 import { HomeComponent } from './tabs/home/home.component';
@@ -17,14 +14,14 @@ import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
 import { TasksListComponent } from './tabs/tasks/tasks-list/tasks-list.component';
 import { TaskDetailsComponent } from './tabs/tasks/task-details/task-details.component';
 import { NewTaskComponent } from './tabs/tasks/new-task/new-task.component';
-import { GroupManagementComponent } from './tabs/groups/group-management/group-management.component';
-import { GroupsListComponent } from './tabs/groups/groups-list/groups-list.component';
-import { GroupDetailsComponent } from './tabs/groups/group-details/group-details.component';
-import { NewGroupComponent } from './tabs/groups/new-group/new-group.component';
-import { GroupTypeManagementComponent } from './tabs/group-types/group-type-management/group-type-management.component';
-import { GroupTypesListComponent } from './tabs/group-types/group-types-list/group-types-list.component';
-import { GroupTypeDetailsComponent } from './tabs/group-types/group-type-details/group-type-details.component';
-import { NewGroupTypeComponent } from './tabs/group-types/new-group-type/new-group-type.component';
+import { TeamManagementComponent } from './tabs/teams/team-management/team-management.component';
+import { TeamsListComponent } from './tabs/teams/teams-list/teams-list.component';
+import { TeamDetailsComponent } from './tabs/teams/team-details/team-details.component';
+import { NewTeamComponent } from './tabs/teams/new-team/new-team.component';
+import { TeamTypeManagementComponent } from './tabs/team-types/team-type-management/team-type-management.component';
+import { TeamTypesListComponent } from './tabs/team-types/team-types-list/team-types-list.component';
+import { TeamTypeDetailsComponent } from './tabs/team-types/team-type-details/team-type-details.component';
+import { NewTeamTypeComponent } from './tabs/team-types/new-team-type/new-team-type.component';
 import { UserManagementComponent } from './tabs/users/user-management/user-management.component';
 import { UsersListComponent } from './tabs/users/users-list/users-list.component';
 import { UserDetailsComponent } from './tabs/users/user-details/user-details.component';
@@ -36,57 +33,50 @@ import { EquipmentDetailsComponent } from './tabs/equipments/equipment-details/e
 import { NewEquipmentComponent } from './tabs/equipments/new-equipment/new-equipment.component';
 import { AuthenticationService } from './services/auth/authentication.service';
 import { AuthGuardService } from './services/auth/auth-guard.service';
-import { GroupService } from './services/groups/group.service';
-import { GroupTypeService } from './services/group-types/group-type.service';
+import { TeamService } from './services/teams/team.service';
+import { TeamTypeService } from './services/team-types/team-type.service';
 import { UserService } from './services/users/user.service';
 import { PermissionService } from './services/permissions/permission.service';
 import { EquipmentService } from './services/equipments/equipment.service';
 import { TaskService } from './services/tasks/task.service';
 import { UtilsService } from './services/utils/utils.service';
-
-const appRoutes: Routes = [
-  {path: '', component: HomeComponent},
-  {path: 'sign-in', component: SigninComponent},
-  {path: 'sign-up', component: SignupComponent},
-  {path: 'account-blocked', component: AccountBlockedComponent},
-  {path: 'first-connection', component: WelcomeFirstConnectionComponent},
-  {path: 'first-connection/sign-up', component: SignupComponent},
-  {path: 'settings', component: SettingsComponent},
-  {path: 'infos', component: UserDetailsComponent},
-  {path: 'tasks/:id', component: TaskDetailsComponent},
-  {path: 'groups', component: GroupManagementComponent},
-  {path: 'groups/:id', component: GroupDetailsComponent},
-  {path: 'group-types', component: GroupTypeManagementComponent},
-  {path: 'group-types/:id', component: GroupTypeDetailsComponent},
-  {path: 'users', component: UserManagementComponent},
-  {path: 'users/:id', component: UserDetailsComponent},
-  {path: 'equipments', component: EquipmentManagementComponent},
-  {path: 'equipments/:id', component: EquipmentDetailsComponent},
-  {path: '**', component: FourOhFourComponent}
-];
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FileService } from './services/files/file.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { appRoutingModule } from './app-routing.module';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { JwtInterceptorService } from './services/jwt-interceptor/jwt-interceptor.service';
+import { TaskTypeService } from './services/task-types/task-type.service';
+import { EquipmentTypeService } from './services/equipment-types/equipment-type.service';
+import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
+import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-type-details/equipment-type-details.component';
+import { EquipmentTypeManagementComponent } from './tabs/equipment-types/equipment-type-management/equipment-type-management.component';
+import { EquipmentTypesListComponent } from './tabs/equipment-types/equipment-types-list/equipment-types-list.component';
+import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { TemplatesListComponent } from './tabs/templates/templates-list/templates-list.component';
+import { NewTemplateComponent } from './tabs/templates/new-template/new-template.component';
+import { FilterPipe } from './tabs/tasks/tasks-list/utils/search-filter.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    WelcomeFirstConnectionComponent,
     SigninComponent,
-    SignupComponent,
     AccountBlockedComponent,
     HomeComponent,
     FourOhFourComponent,
     TasksListComponent,
     TaskDetailsComponent,
     NewTaskComponent,
-    GroupManagementComponent,
-    GroupsListComponent,
-    GroupDetailsComponent,
-    NewGroupComponent,
-    GroupTypeManagementComponent,
-    GroupTypesListComponent,
-    GroupTypeDetailsComponent,
-    NewGroupTypeComponent,
+    TeamManagementComponent,
+    TeamsListComponent,
+    TeamDetailsComponent,
+    NewTeamComponent,
+    TeamTypeManagementComponent,
+    TeamTypesListComponent,
+    TeamTypeDetailsComponent,
+    NewTeamTypeComponent,
     UserManagementComponent,
     UsersListComponent,
     UserDetailsComponent,
@@ -95,7 +85,15 @@ const appRoutes: Routes = [
     EquipmentManagementComponent,
     EquipmentsListComponent,
     EquipmentDetailsComponent,
-    NewEquipmentComponent
+    NewEquipmentComponent,
+    NewEquipmentTypeComponent,
+    EquipmentTypeDetailsComponent,
+    EquipmentTypeManagementComponent,
+    EquipmentTypesListComponent,
+    ResetPasswordComponent,
+    TemplatesListComponent,
+    NewTemplateComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
@@ -103,18 +101,26 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(appRoutes)
+    NgbModule,
+    BrowserAnimationsModule,
+    appRoutingModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptorService, multi: true},
+    HttpClientModule,
     AuthenticationService,
     AuthGuardService,
-    GroupService,
-    GroupTypeService,
+    TeamService,
+    TeamTypeService,
     UserService,
     PermissionService,
     TaskService,
     EquipmentService,
-    UtilsService
+    UtilsService,
+    TaskTypeService,
+    FileService,
+    EquipmentTypeService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NewTaskComponent } from './new-task.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 describe('NewTaskComponent', () => {
   let component: NewTaskComponent;
@@ -8,7 +13,8 @@ describe('NewTaskComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewTaskComponent ]
+      declarations: [ NewTaskComponent ],
+      imports: [ NgbModule, RouterTestingModule, FormsModule, HttpClientTestingModule, ReactiveFormsModule, NgMultiSelectDropDownModule ]
     })
     .compileComponents();
   }));
