@@ -184,7 +184,7 @@ pipeline{
                     steps{
                         dir("frontend"){
                             sh '''
-                                \$(npm bin)/ng build --build-optimizer
+                                \$(npm bin)/ng build --build-optimizer --configuration=dev
                                 '''
                         }
                     }
@@ -238,6 +238,16 @@ pipeline{
                             scp -r -p $WORKSPACE/frontend/dist/pic-slalom/* root@192.168.101.9:/var/www/pic-slalom/;
                         '''
                     }
+                }
+            }
+        }
+
+        stage('CLEAN NPM') {
+            steps {
+                dir("frontend"){
+                sh '''
+                    rm -rf $WORKSPACE/frontend/node_modules
+                    '''
                 }
             }
         }
