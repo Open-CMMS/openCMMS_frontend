@@ -155,7 +155,6 @@ export class EquipmentDetailsComponent implements OnInit {
         this.currentEquipment.files = this.filesId;
         this.equipmentService.updateEquipmentFile(this.currentEquipment.files, this.currentEquipment.id).subscribe(filesUpdated => {
           this.updateError = false;
-          // this.filesId = [];
           this.ngOnInit();
           this.initForm();
           this.equipmentService.getEquipments();
@@ -186,7 +185,6 @@ export class EquipmentDetailsComponent implements OnInit {
         }
         this.equipmentService.updateEquipment(this.currentEquipment).subscribe(equipmentUpdated => {
             this.updateError = false;
-            // this.filesId = [];
             this.ngOnInit();
             this.initForm();
             this.equipmentService.getEquipments();

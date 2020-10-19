@@ -86,7 +86,6 @@ export class EquipmentService {
     const name = equipmentNameModified;
 
     const userJson = JSON.stringify({name});
-    console.log('userJson modify name', userJson);
 
     const httpOptions = {
       headers : new HttpHeaders({
@@ -109,7 +108,6 @@ export class EquipmentService {
     const files = equipmentFileModified;
 
     const userJson = JSON.stringify({files});
-    console.log('userJson modify files', userJson);
 
     const httpOptions = {
       headers : new HttpHeaders({
