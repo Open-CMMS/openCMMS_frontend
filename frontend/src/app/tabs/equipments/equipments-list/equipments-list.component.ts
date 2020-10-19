@@ -24,6 +24,7 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
    * Constructor for the equipmentList component
    * @param equipmentService The service to communicate with backend on Equipment objects
    * @param router The service used to handle redirections
+   * @param modalService the service used to handle modal windows
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
    */

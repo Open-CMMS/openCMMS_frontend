@@ -1,13 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { FileService } from 'src/app/services/files/file.service';
-import { Equipment } from 'src/app/models/equipment';
-import { EquipmentService } from 'src/app/services/equipments/equipment.service';
-import { Subscription, Subject } from 'rxjs';
-import { EquipmentType } from 'src/app/models/equipment-type';
-import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
-import { faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {FileService} from 'src/app/services/files/file.service';
+import {Equipment} from 'src/app/models/equipment';
+import {EquipmentService} from 'src/app/services/equipments/equipment.service';
+import {Subscription, Subject} from 'rxjs';
+import {EquipmentType} from 'src/app/models/equipment-type';
+import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
+import {faMinusSquare, faPlusSquare, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {HttpClient} from '@angular/common/http';
+import {Field} from 'src/app/models/field';
 
 
 @Component({
@@ -18,18 +21,29 @@ import { faMinusSquare } from '@fortawesome/free-regular-svg-icons';
 export class NewEquipmentComponent implements OnInit, OnDestroy {
   // Icon
   faMinusSquare = faMinusSquare;
+  faPlusSquare = faPlusSquare;
+  faMinusCircle = faMinusCircle;
   // Local variables
-  creationError = false;
   submitted = false;
   equipment: Equipment;
   equipmentTypes: EquipmentType[];
+  equipmentTypesRequirement = [];
+  equipmentTypeFields: Field[] = [];
+  equipmentFields: Field[] = [];
+  equipmentType: EquipmentType;
   equipmentTypesSubscription: Subscription;
   filesSubject = new Subject<File[]>();
   filesSubscription: Subscription;
   myFiles: File[] = [];
   files: number[] = [];
+  // Fields
+  field = null;
+  fields = [];
+  initialFields = [];
+  fieldTemplate = null;
   // Forms
   createForm: FormGroup;
+  addFieldForm: FormGroup;
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -38,13 +52,18 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * @param equipmentTypeService the service to handle equipment type
    * @param fileService the service to handle file
    * @param formBuilder the service to handle forms
+   * @param httpClient the
+   * @param modalService the service used to handle modal windows
    */
   constructor(private router: Router,
               private equipmentService: EquipmentService,
               private equipmentTypeService: EquipmentTypeService,
               private fileService: FileService,
-              private formBuilder: FormBuilder
-              ) { }
+              private formBuilder: FormBuilder,
+              private httpClient: HttpClient,
+              private modalService: NgbModal
+  ) {
+  }
 
   /**
    * Function that initialize the component when loaded
@@ -58,20 +77,26 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.equipmentTypesSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
       (equipmentTypes: EquipmentType[]) => {
         this.equipmentTypes = equipmentTypes;
-    });
+      });
     this.equipmentTypeService.emitEquipmentTypes();
     this.equipmentService.emitEquipments();
     this.initForm();
+    this.initAddFieldTemplate();
   }
 
   /**
-   * Function that initialize the fields in the form to create a new Team
+   * Function that initialize the different forms used in the component
    */
   initForm() {
     this.createForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       equipmentType: ['', Validators.required],
       file: ['']
+    });
+    this.addFieldForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      value: ['', [Validators.required]],
+      description: ['']
     });
   }
 
@@ -84,19 +109,22 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
       return;
     }
     this.submitted = true;
-
+    this.fields.forEach(element => {
+      this.initialFields.push(element);
+    });
     const formValues = this.createForm.value;
-    this.equipmentService.createEquipment(formValues.name, formValues.equipmentType, this.files)
+    this.equipmentService.createEquipment(formValues.name, formValues.equipmentType, this.files, this.initialFields)
       .subscribe((equipment: Equipment) => {
-                this.equipment = new Equipment(equipment.id,
-                                              equipment.name,
-                                              equipment.equipment_type,
-                                              equipment.files,
-                                              );
-          });
+        this.equipment = new Equipment(equipment.id,
+          equipment.name,
+          equipment.equipment_type,
+          equipment.files,
+          equipment.fields,
+        );
+      });
     this.router.navigate(['/equipments']);
     this.equipmentService.getEquipments();
-    }
+  }
 
   /**
    * Function that is triggered when a or multiple files are chosen(when button "Browse" is pressed and files are chosen)
@@ -111,7 +139,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
         this.myFiles.push(event.target.files[i]);
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
-        formData.append('is_manual', 'false' );
+        formData.append('is_manual', 'false');
         this.fileService.uploadFile(formData).subscribe(file => {
           this.files.push(Number(file.id));
         });
@@ -131,6 +159,95 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.myFiles.splice(index, 1);
     const id = this.files.splice(index, 1);
     this.fileService.deleteFile(id[0]);
+  }
+
+  /**
+   * Function to add a field in the form
+   */
+  addField() {
+    const jsonCopy = JSON.stringify(this.fieldTemplate);
+    const objectCopy = JSON.parse(jsonCopy);
+    this.fields.push(objectCopy);
+  }
+
+  /**
+   * Function to initialize the template for field objects.
+   */
+  initAddFieldTemplate() {
+    this.fieldTemplate = {
+      name: '',
+      value: '',
+      description: ''
+    };
+  }
+
+  /**
+   * Function to initialize the fields of the selected equipment type
+   * @param event The EquipmentType selected
+   */
+  initEquipmentTypeFields(event) {
+    this.equipmentTypeService.getEquipmentType(Number(event))
+      .subscribe(
+        (response) => {
+          this.equipmentType = response;
+          this.equipmentTypeFields = response.field;
+        }
+      );
+  }
+
+  /**
+   * Fonction to modify the value of the field that correspond to the selected equipment type
+   * @param event the value of the field
+   * @param index the index of the modified field
+   */
+  modifyEquipmentTypeFieldValue(event, index) {
+    const field = this.equipmentTypeFields[index].id;
+    const name = this.equipmentTypeFields[index].name;
+    const value = ((event.id === 'field-value-text') || (event.id === 'field-value-select')) ? event.value : '';
+    const description = (event.id === 'field-description') ? event.value : '';
+    let alreadyInInitialFields = false;
+    this.initialFields.forEach(element => {
+      if (element.field === field) {
+        alreadyInInitialFields = true;
+        if ((event.id === 'field-value-text') || (event.id === 'field-value-select')) {
+          element.value = event.value;
+        } else {
+          element.description = event.value;
+        }
+      }
+    });
+    if (!(alreadyInInitialFields)) {
+      const jsonCopy = JSON.stringify({field, name, value, description});
+      const objectCopy = JSON.parse(jsonCopy);
+      this.initialFields.splice(index, 1, objectCopy);
+    }
+  }
+
+  /**
+   * Function to verify if the values of the fields of the equipment type are not missing
+   */
+  missingEquipmentTypeFieldsValue() {
+    let missing_value = false;
+    if ((this.equipmentTypeFields.length === this.initialFields.length)) {
+      if ((this.equipmentTypeFields.length !== 0)) {
+        this.initialFields.forEach(element => {
+          if (!(element.value)) {
+            missing_value = true;
+          }
+        });
+      }
+    } else {
+      missing_value = true;
+    }
+    return missing_value;
+  }
+
+  /**
+   * Function to delete a field in the form
+   * @param i the index of the field
+   */
+  deleteField(i: number) {
+    this.fields.splice(i, 1);
   }
 
   ngOnDestroy() {

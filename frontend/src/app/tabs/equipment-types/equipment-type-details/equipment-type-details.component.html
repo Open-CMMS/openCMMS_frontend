@@ -22,17 +22,6 @@
                 <label for="name">Nom</label>
                 <input type="text" class='form-control' formControlName="name" [(ngModel)]="name">
               </div>
-              <div class="form-group">
-                <label for="equipments">Équipements</label>
-                <ng-multiselect-dropdown
-                  [settings]="dropdownEquipmentsSettings"
-                  [data]="equipmentsList"
-                  [(ngModel)]="selectedEquipments"
-                  formControlName="equipments"
-                  name="equipments"
-                >
-                </ng-multiselect-dropdown>
-              </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -96,7 +85,8 @@
                 <li 
                 class="container-fluid list-group-item font-weight-bold"
                 *ngFor="let field of fields; let i=index">
-                {{field}}
+                {{field.name}}
+                <span *ngIf="field.value!=''">: {{field.value}}</span>
                 </li>
             </ul>
         </div>
