@@ -181,6 +181,75 @@ describe('EquipmentService', () => {
     req.flush(mockEquipment);
   });
 
+  it('returned Observable should match the right data on update of the name', () => {
+    const mockFields =  [new Field(1, 'name', ['value1', 'value2'], 'description'),
+      new Field(2, 'name2', ['value12', 'value22'], 'description2')];
+    const mockEquipment = {
+      id: 1,
+      name: 'clé-anglaise',
+      equipment_type: 1,
+      files: [1, 2, 3],
+      fields: mockFields
+    };
+
+    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/');
+    service.updateEquipmentName('clé', 1)
+      .subscribe(equipment => {
+        expect(equipment.name).toEqual('clé-anglaise');
+        expect(equipment.equipment_type).toEqual(1);
+        expect(equipment.files[0]).toEqual(1);
+        expect(equipment.files[1]).toEqual(2);
+        expect(equipment.files[2]).toEqual(3);
+        expect(equipment.fields[0].id).toEqual(1);
+        expect(equipment.fields[1].id).toEqual(2);
+        expect(equipment.fields[0].name).toEqual('name');
+        expect(equipment.fields[1].name).toEqual('name2');
+        expect(equipment.fields[0].value).toEqual(['value1', 'value2']);
+        expect(equipment.fields[1].value).toEqual(['value12', 'value22']);
+        expect(equipment.fields[0].description).toEqual('description');
+        expect(equipment.fields[1].description).toEqual('description2');
+      });
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/1/');
+
+    expect(req.request.method).toEqual('PUT');
+
+    req.flush(mockEquipment);
+  });
+
+  it('returned Observable should match the right data on update of the files', () => {
+    const mockFields =  [new Field(1, 'name', ['value1', 'value2'], 'description'),
+      new Field(2, 'name2', ['value12', 'value22'], 'description2')];
+    const mockEquipment = {
+      id: 1,
+      name: 'clé-anglaise',
+      equipment_type: 1,
+      files: [1, 2, 3],
+      fields: mockFields
+    };
+
+    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/');
+    service.updateEquipmentFile([1, 2, 3], 1)
+      .subscribe(equipment => {
+        expect(equipment.name).toEqual('clé-anglaise');
+        expect(equipment.equipment_type).toEqual(1);
+        expect(equipment.files[0]).toEqual(1);
+        expect(equipment.files[1]).toEqual(2);
+        expect(equipment.files[2]).toEqual(3);
+        expect(equipment.fields[0].id).toEqual(1);
+        expect(equipment.fields[1].id).toEqual(2);
+        expect(equipment.fields[0].name).toEqual('name');
+        expect(equipment.fields[1].name).toEqual('name2');
+        expect(equipment.fields[0].value).toEqual(['value1', 'value2']);
+        expect(equipment.fields[1].value).toEqual(['value12', 'value22']);
+        expect(equipment.fields[0].description).toEqual('description');
+        expect(equipment.fields[1].description).toEqual('description2');
+      });
+    const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/1/');
+
+    expect(req.request.method).toEqual('PUT');
+
+    req.flush(mockEquipment);
+  });
 
   it('returned Observable should match the right data on creating new equipment', () => {
     const mockFields = [new Field(1, 'name', ['value1', 'value2'], 'description')];
