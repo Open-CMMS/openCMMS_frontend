@@ -19,7 +19,7 @@
               <input id="field-value-text" type="text" placeholder="value" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length === 0" >
               <select id="field-value-select" class="form-control" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length !== 0">
                 <option disabled selected value> -- select an option -- </option>
-                <option *ngFor="let fieldValue of field.value" [value]="fieldValue" placeholder="value">{{ fieldValue }}</option>
+                <option *ngFor="let fieldValue of field.value" [value]="fieldValue">{{ fieldValue }}</option>
               </select>
           <input id="field-description" type="text" placeholder="description" style="width: 900px;">
         </div>

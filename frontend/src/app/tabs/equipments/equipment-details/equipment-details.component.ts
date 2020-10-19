@@ -232,6 +232,9 @@ export class EquipmentDetailsComponent implements OnInit {
     });
   }
 
+  /**
+   * Fonction that allows to modify the fields
+   */
   openModifyField() {
     this.modifyFields = true;
     this.equipmentTypeService.getEquipmentType(this.currentEquipment.equipment_type.id)
