@@ -55,6 +55,7 @@ import { EquipmentTypesListComponent } from './tabs/equipment-types/equipment-ty
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { TemplatesListComponent } from './tabs/templates/templates-list/templates-list.component';
 import { NewTemplateComponent } from './tabs/templates/new-template/new-template.component';
+import { FilterPipe } from './tabs/tasks/tasks-list/utils/search-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -91,7 +92,8 @@ import { NewTemplateComponent } from './tabs/templates/new-template/new-template
     EquipmentTypesListComponent,
     ResetPasswordComponent,
     TemplatesListComponent,
-    NewTemplateComponent
+    NewTemplateComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
