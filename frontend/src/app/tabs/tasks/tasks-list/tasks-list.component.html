@@ -14,11 +14,36 @@
 <div class="container-fluid justify-content-center col-10 mt-3">
     <div class="d-flex justify-content-between align-items-center">
       <h3 class="font-weight-bold">Tasks Management</h3>
-        <div class="my-3" *ngIf="onAddTeamPermission()">
-          <button class="btn btn-primary" *ngIf="onAddTeamPermission" (click)="onCreateTask()"><fa-icon [icon]="faPlus"></fa-icon> Create new task</button>
-        </div>
+      <div class="my-3" *ngIf="onAddTeamPermission()">
+        <button class="btn btn-primary" *ngIf="onAddTeamPermission" (click)="onCreateTask()"><fa-icon [icon]="faPlus"></fa-icon> Create new task</button>
+      </div>
     </div>
-    <div class="d-flex justify-content-end my-1">
+    <div class="d-flex justify-content-between my-1">
+      <div></div>
+      <div class="d-flex align-items-center mt-0">
+        <input type="text"
+               id="search-text"
+               aria-labelledby="search-text"
+               [(ngModel)]="searchText"
+               autofocus
+               placeholder="Search"
+               style="
+                border-top:0;
+                border-left:0;
+                border-right:0;
+                border-color: #D3D3D3	;
+               "
+        >
+        <fa-icon
+          [icon]="faSearch"
+          placement="top"
+          ngbTooltip="Tip : Use @ for team filtering."
+          style="
+            margin-left:-18px;
+            margin-bottom: 3px;
+            color:#D3D3D3;">
+        </fa-icon>
+      </div>
       <div class="dropdown">
         <button class="btn btn-link btn-sort dropdown-toggle"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sort</button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -31,7 +56,7 @@
             <ul class="list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
-                    *ngFor="let task of tasks; let i = index"
+                    *ngFor="let task of tasks | appFilter:searchText"
                     >
                     <div class="container-fluid row justify-content-between">
                         <div>

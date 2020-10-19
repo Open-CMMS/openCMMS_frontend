@@ -6,7 +6,7 @@
     <form [formGroup]="equipmentTypeForm" (ngSubmit)="onSubmit()" >
       <div class="form-group">
         <label for="name">Name</label>
-        <input type="text" class='form-control' formControlName="name">
+        <input type="text" class='form-control' formControlName="name" id="name">
       </div>
       <div class="form-group">
         <label>Fields</label>
@@ -58,7 +58,7 @@
             <input
               type="text"
               class="form-control col-5"
-              [(ngModel)]="field['name']"
+              [(ngModel)]="field[FIELDNAME_NAME]"
               class="col-5"
               [attr.disabled]="!isEditingField(field) ? '' : null"
               [ngModelOptions]="{standalone: true}"
@@ -66,7 +66,7 @@
             <input
             type="text"
             class='form-control'
-            [(ngModel)]="field['value']"
+            [(ngModel)]="field[FIELDVALUE_NAME]"
             class="col-5"
             [attr.disabled]="!isEditingField(field)? '' : null"
             [ngModelOptions]="{standalone: true}"
@@ -98,7 +98,7 @@
       </form>
       <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-danger nav-link" routerLink="/equipment-types">Cancel</button>
-        <button class="btn btn-primary" [disabled]="equipmentTypeForm.invalid">Save</button>
+        <button class="btn btn-primary" [disabled]="equipmentTypeForm.invalid">Create Equipment Type</button>
       </div>
     </form>
   </div>
