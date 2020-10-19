@@ -155,7 +155,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     const dateA = new Date(a.end_date);
     const dateB = new Date(b.end_date);
     // @ts-ignore
-    return dateB - dateA;
+    return dateA - dateB;
   }
 
   /**
@@ -163,6 +163,13 @@ export class TasksListComponent implements OnInit, OnDestroy {
    */
   sortingByEndDate() {
     this.tasks.sort(this.compareDate);
+    this.tasks.forEach(task => {
+      if (task.end_date == null) {
+        let index = this.tasks.indexOf(task);
+        this.tasks.splice(index,1)
+        this.tasks.push(task)
+      }
+    });
   }
 
   /**
