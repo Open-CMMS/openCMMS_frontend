@@ -18,9 +18,6 @@ describe('TaskService', () => {
 
     service = TestBed.inject(TaskService);
     httpTestingController = TestBed.inject(HttpTestingController);
-
-    // const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
-    // expect(req.request.method).toEqual('GET');
   });
 
   afterEach(() => {

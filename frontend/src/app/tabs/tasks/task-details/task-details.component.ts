@@ -124,7 +124,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     // Get the concerned task and its associated objects (equipment, teams, ...)
     this.taskService.getTask(id).subscribe(
       (task: Task) => {
-        console.log(task);
         this.task = task;
         // Set up files format with right URIs
         this.initFiles();

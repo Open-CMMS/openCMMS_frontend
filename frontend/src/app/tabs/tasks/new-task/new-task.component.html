@@ -2,7 +2,6 @@
     <div class="d-flex">
         <h2 class="font-weight-bold">Create a new task</h2>
     </div>
-    <!-- <button class="btn btn-warning" (click)="testForm()" >Test form</button> -->
     <div class="form-group my-5">
         <label for="name">Task template </label>
         <select id="template" class="form-control" [(ngModel)]="selectedTemplate" (ngModelChange)="onChangeTaskTemplate()">
@@ -115,25 +114,6 @@
                     [ngModelOptions]="{standalone: true}"
                     [ngClass]="{'alert-danger': triggerConditionDuration.validity.patternMismatch}">
                 </div>
-
-                <!-- <input type="text"
-                    *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Entier'"
-                    placeholder="value"
-                    [ngModelOptions]="{standalone: true}"
-                    [(ngModel)]=triggerCondition.value>
-
-                <input type="text"
-                    *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Décimal'"
-                    placeholder="value"
-                    [ngModelOptions]="{standalone: true}"
-                    [(ngModel)]=triggerCondition.value>
-
-                <input type="text"
-                    *ngIf="triggerCondition.selectedTriggerCondition[0]"
-                    placeholder="description"
-                    [ngModelOptions]="{standalone: true}"
-                    [(ngModel)]=triggerCondition.description
-                    > -->
             </div>
         </div>
         <div class="form-group">
@@ -170,7 +150,6 @@
         </div>
         <div class="form-group">
             <label for="file">Upload File</label>
-            <!-- <input formControlName="file" id="file" type="file" multiple class="form-control" (change)="onFileUpload($event)"> -->
             <input formControlName="file" id="file" type="file" multiple class="form-control" (change)="onAddFile($event)">
         </div>
         <div class="list-group">
