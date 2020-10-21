@@ -184,8 +184,13 @@
                 </li>
             </ul>
         </div>
+        <div class="form-group">
+            <label ngbButtonLabel>
+              <input type="checkbox" formControlName="is_template" ngbButton> Task Template
+            </label>
+        </div>
         <div class="d-flex justify-content-between align-items-center mt-3">
-          <button class="btn btn-danger nav-link" routerLink="/tasks">Annuler</button>
+          <button class="btn btn-danger nav-link" routerLink="/tasks">Cancel</button>
           <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create task</button>
         </div>
     </form>
