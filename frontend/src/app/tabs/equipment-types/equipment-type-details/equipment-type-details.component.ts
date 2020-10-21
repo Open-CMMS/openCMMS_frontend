@@ -20,19 +20,13 @@ export class EquipmentTypeDetailsComponent implements OnInit {
 
   faInfoCircle = faInfoCircle;
 
-  // local variables
+  // Local variables
   id: number;
   name: string;
   equipments: Equipment[];
   all_equipments: Equipment[] = [];
-
+  fields = [];
   equipment_type: EquipmentType;
-
-  // variables for the dropdown selects in the modify form
-  equipmentsList = [];
-  selectedEquipments = [];
-  dropdownEquipmentsSettings: IDropdownSettings;
-
 
   // the Forms
   equipmentTypeForm: FormGroup;
@@ -64,7 +58,6 @@ export class EquipmentTypeDetailsComponent implements OnInit {
     this.initFields();
     this.equipmentService.equipmentsSubject.subscribe((equipments: Equipment[]) => {
       this.all_equipments = equipments;
-      this.initEquipmentsSelect();
     });
     this.equipmentService.emitEquipments();
     this.initForm();
@@ -79,13 +72,8 @@ export class EquipmentTypeDetailsComponent implements OnInit {
     });
     this.equipmentTypeService.getEquipmentType(this.id).subscribe((equipment_type: EquipmentType) => {
       this.name = equipment_type.name;
-      this.equipments = Array();
-      equipment_type.equipment_set.forEach((id) => {
-        this.equipmentService.getEquipment(id).subscribe((equipment: Equipment) => {
-          this.equipments.push(equipment);
-          this.initSelectedEquipments();
-        });
-      });
+      this.equipments = equipment_type.equipments;
+      this.fields = equipment_type.field;
     });
   }
 
@@ -123,35 +111,6 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   }
 
   /**
-   * Function that initialize the dropdown select for equipments
-   */
-  initEquipmentsSelect() {
-    this.equipmentsList = [];
-    this.all_equipments.forEach(equipment => {
-      this.equipmentsList.push({id: equipment.id.toString(), value: equipment.name.toString()});
-    });
-    this.dropdownEquipmentsSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 4,
-      allowSearchFilter: true
-    };
-  }
-
-  /**
-   * Function that initialize the selected equipments in the select
-   */
-  initSelectedEquipments() {
-    this.selectedEquipments = [];
-    this.equipments.forEach(equipment => {
-      this.selectedEquipments.push({id: equipment.id.toString(), value: equipment.name.toString()});
-    });
-  }
-
-  /**
    * Function that initialize the fields in the form to create a new EquipmentType
    */
   initForm() {
@@ -166,17 +125,10 @@ export class EquipmentTypeDetailsComponent implements OnInit {
    */
   modifyEquipmentType() {
     const formValue = this.equipmentTypeForm.value;
-
     const nameStr = 'name';
-    const equipmentsStr = 'equipments';
-
     const id = this.id;
     const name = formValue[nameStr];
-    const equipments = [];
-    formValue[equipmentsStr].forEach(item => {
-      equipments.push(item.id);
-    });
-    this.equipmentTypeService.updateEquipmentType(new EquipmentType(id, name, equipments)).subscribe(
+    this.equipmentTypeService.updateEquipmentType(new EquipmentType(id, name, [])).subscribe(
         equipment_type => {
           const old_equipment_type = this.equipmentTypeService.equipment_types.find((value) => {
             return value.id === equipment_type.id;

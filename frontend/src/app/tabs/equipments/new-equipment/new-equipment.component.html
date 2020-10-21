@@ -9,10 +9,38 @@
         </div>
         <div class="form-group">
             <label for="teamType">Equipment Type </label>
-            <select id="teamType" class="form-control" formControlName="equipmentType">
+            <select id="teamType" class="form-control" formControlName="equipmentType" (change)="initEquipmentTypeFields($event.target.value)">
                     <option *ngFor="let equipmentType of equipmentTypes" [value]="equipmentType.id">{{ equipmentType.name }}</option>
             </select>
         </div>
+      <div class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyEquipmentTypeFieldValue($event.target, i)">
+        <div class="input-group-append form-group" style="margin-bottom: 10px">
+              <p style="width: 270px"><span class="col-3" style="margin-right: 10px;">{{ field.name }}</span></p>
+              <input id="field-value-text" type="text" placeholder="value" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length === 0" >
+              <select id="field-value-select" class="form-control" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length !== 0">
+                <option disabled selected value> -- select an option -- </option>
+                <option *ngFor="let fieldValue of field.value" [value]="fieldValue">{{ fieldValue }}</option>
+              </select>
+          <input id="field-description" type="text" placeholder="description" style="width: 900px;">
+        </div>
+      </div>
+      <br/>
+      <div class="form-group">
+        <button type="button" class="btn btn-outline-secondary" (click)="addField()">
+          <span style="margin-right: 10px">Create a new field</span>
+          <fa-icon [icon]="faPlusSquare"></fa-icon>
+        </button>
+      </div>
+      <div class="form-group" *ngFor="let field of fields; let i = index">
+        <div class="form-row">
+          <button class="btn btn-danger" type="button" style="margin-right: 10px;" (click)="deleteField(i)">
+            <fa-icon [icon]="faMinusCircle"></fa-icon>
+          </button>
+            <input type="text" placeholder="name" style="margin-right: 10px; width: 185px" [ngModelOptions]="{standalone: true}" [(ngModel)]=field.name>
+            <input type="text" placeholder="value" style="margin-right: 10px; width: 350px;" [ngModelOptions]="{standalone: true}" [(ngModel)]=field.value>
+            <input type="text" placeholder="description" style="width: 860px;" [ngModelOptions]="{standalone: true}" [(ngModel)]=field.description>
+        </div>
+      </div>
         <div class="form-group">
             <label for="file">Upload File</label>
             <input formControlName="file" id="file" type="file" multiple class="form-control" (change)="onFileUpload($event)">
@@ -31,8 +59,8 @@
             </ul>
         </div>
         <div class="d-flex justify-content-between align-items-center">
-          <button class="btn btn-danger nav-link" routerLink="/equipments">Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create Equipment</button>
+          <button class="btn btn-danger nav-link" routerLink="/equipments">Annuler</button>
+          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || missingEquipmentTypeFieldsValue()">Create Equipment</button>
         </div>
     </form>
 </div>

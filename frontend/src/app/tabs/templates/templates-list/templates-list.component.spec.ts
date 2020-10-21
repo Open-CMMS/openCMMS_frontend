@@ -1,29 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TasksListComponent } from './tasks-list.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { FilterPipe } from './utils/search-filter.pipe';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { environment } from 'src/environments/environment';
 
-describe('TasksListComponent', () => {
-  let component: TasksListComponent;
-  let fixture: ComponentFixture<TasksListComponent>;
+import { TemplatesListComponent } from './templates-list.component';
+
+describe('TemplatesListComponent', () => {
+  let component: TemplatesListComponent;
+  let fixture: ComponentFixture<TemplatesListComponent>;
   let httpTestingController: HttpTestingController;
-  let router: Router;
+  const BASE_URL_API = environment.baseUrl;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TasksListComponent, FilterPipe ],
+      declarations: [ TemplatesListComponent ],
       imports: [ RouterTestingModule, HttpClientTestingModule ]
     })
     .compileComponents();
 
     httpTestingController = TestBed.inject(HttpTestingController);
-    router = TestBed.inject(Router);
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TasksListComponent);
+    fixture = TestBed.createComponent(TemplatesListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -12,14 +12,12 @@ export class TaskService {
   private tasks: Task[];
   taskSubject = new Subject<Task[]>();
 
-  private fieldObject: any[];
   fieldObjectSubject = new Subject<any[]>();
 
   private BASE_URL_API = environment.baseUrl;
 
   constructor(private httpClient: HttpClient) {
     this.getTasks();
-    this.getFieldObjects();
   }
 
   /**
@@ -27,13 +25,6 @@ export class TaskService {
    */
   emitTasks() {
     this.taskSubject.next(this.tasks);
-  }
-
-  /**
-   * Function that updates the subject fieldObjectSubject
-   */
-  emitFieldObjects() {
-    this.fieldObjectSubject.next(this.fieldObject);
   }
 
   /**
@@ -51,32 +42,19 @@ export class TaskService {
                             element.name,
                             element.description,
                             element.end_date,
-                            element.time,
+                            element.duration,
                             element.is_template,
                             element.equipment,
                             element.teams,
-                            element.task_type,
                             element.files,
-                            element.over);
+                            element.over,
+                            element.trigger_conditions,
+                            element.end_conditions);
                           this.tasks.push(task);
                         });
                         this.emitTasks();
                       }
                     );
-  }
-
-  /**
-   * Function that gets the field objects in the database
-   */
-  getFieldObjects() {
-    this.fieldObject = [];
-    this.httpClient.get<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/')
-                  .subscribe(
-                    (response) => {
-                      this.fieldObject = response;
-                      this.emitFieldObjects();
-                    }
-                  );
   }
 
   /**
@@ -249,44 +227,10 @@ export class TaskService {
   }
 
   /**
-   * Function that return the set of field values for one field
-   * @param id_field the id of the field
+   * Function that triggers a request to get the data required to create a new Task
    */
-  getFieldValues(id_field: number): Observable<any> {
-    return this.httpClient.get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/fieldvalues_for_field/'
-                                                        + id_field + '/');
-  }
-
-  /**
-   * Function that return the set fields
-   */
-  getFields(): Observable<any> {
-    return this.httpClient.get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/fields/');
-  }
-
-  /**
-   * Function that creates a field object in the database
-   * @param field_object the field object to create
-   */
-  createFieldObject(field_object: any): Observable<any> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-type': 'application/json'
-      })
-    };
-
-    const reqBody = JSON.stringify(field_object);
-    return this.httpClient.post<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/', reqBody, httpOptions);
-  }
-
-  updateFieldObject(fieldObject: any) {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-type': 'application/json'
-      })
-    };
-    return this.httpClient.put<any>(this.BASE_URL_API + '/api/maintenancemanagement/fieldobjects/' + fieldObject.id + '/'
-                                    , fieldObject, httpOptions);
+  getTaskCreationRequirements(): Observable<any> {
+    return this.httpClient.get(this.BASE_URL_API + '/api/maintenancemanagement/tasks/requirements');
   }
 
 }
