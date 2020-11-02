@@ -230,6 +230,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * @param event The EquipmentType selected
    */
   initEquipmentTypeFields(event) {
+    this.initialFields = [];
     this.equipmentTypeService.getEquipmentType(Number(event))
       .subscribe(
         (response) => {
