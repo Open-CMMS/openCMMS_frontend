@@ -87,6 +87,7 @@ export class EquipmentTypeService {
           console.log('Erreur ! :' + error);
         }
       );
+    return this.equipment_types;
   }
 
   /**

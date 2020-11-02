@@ -93,10 +93,13 @@ export class EquipmentDetailsComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = +params.id;
     });
-    this.equipmentTypesSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
-      (equipmentTypes: EquipmentType[]) => {
-        this.equipmentTypes = equipmentTypes;
-      });
+    this.equipmentTypes = this.equipmentTypeService.getEquipmentTypes();
+    if (this.equipmentTypes.length === 0) {
+      this.equipmentTypesSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
+        (equipmentTypes: EquipmentType[]) => {
+          this.equipmentTypes = equipmentTypes;
+        });
+    }
     this.equipmentService.getEquipment(this.id)
       .subscribe(eq => {
           this.currentEquipment = new Equipment(eq.id, eq.name, eq.equipment_type, eq.files, eq.field);
