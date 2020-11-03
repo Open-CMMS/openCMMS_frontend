@@ -56,6 +56,11 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
 import { TemplatesListComponent } from './tabs/templates/templates-list/templates-list.component';
 import { NewTemplateComponent } from './tabs/templates/new-template/new-template.component';
 import { FilterPipe } from './tabs/tasks/tasks-list/utils/search-filter.pipe';
+import {DataProviderService} from './services/data-provider/data-provider.service';
+import { DataProviderDetailsComponent } from './tabs/data-providers/data-provider-details/data-provider-details.component';
+import { DataProviderManagementComponent } from './tabs/data-providers/data-provider-management/data-provider-management.component';
+import { DataProviderListComponent } from './tabs/data-providers/data-provider-list/data-provider-list.component';
+import { NewDataProviderComponent } from './tabs/data-providers/new-data-provider/new-data-provider.component';
 
 @NgModule({
   declarations: [
@@ -93,7 +98,11 @@ import { FilterPipe } from './tabs/tasks/tasks-list/utils/search-filter.pipe';
     ResetPasswordComponent,
     TemplatesListComponent,
     NewTemplateComponent,
-    FilterPipe
+    FilterPipe,
+    DataProviderDetailsComponent,
+    DataProviderManagementComponent,
+    DataProviderListComponent,
+    NewDataProviderComponent
   ],
   imports: [
     BrowserModule,
@@ -120,7 +129,8 @@ import { FilterPipe } from './tabs/tasks/tasks-list/utils/search-filter.pipe';
     UtilsService,
     TaskTypeService,
     FileService,
-    EquipmentTypeService
+    EquipmentTypeService,
+    DataProviderService,
   ],
   bootstrap: [AppComponent]
 })
