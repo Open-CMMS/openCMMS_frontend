@@ -37,14 +37,26 @@ export class DataProviderService {
     //                   },
     //                 );
   }
-
-  getDataProvider(id: number): Observable<any> {
-    console.log('pass getDataProvider');
+  getDataProvider(id: number) : Observable<DataProvider>{
+    console.log('get provider');
+    console.log(id);
+    return null;
+  }
+  switchStateDataProviders(dataProviderId : number){
+    console.log('switch state')
+  }
+  // getDataProvider(id: number): Observable<any> {
+  //   console.log('pass getDataProvider');
     // return this.httpClient
     //   .get<any>(this.BASE_URL_API + '/api/maintenancemanagement/dataproviders/'+id+'/');
+  // }
+
+  updateDataProvider(dataProvider: DataProvider): Observable<DataProvider>{
+    console.log('update');
+    return null;
   }
 
-  deleteDataProvider(dataProviderId: number): Observable<any> {
+  deleteDataProvider(dataProviderId: number){
     console.log('pass deleteDataProvider');
     // return this.httpClient.delete(this.BASE_URL_API + '/api/maintenancemanagement/dataproviders/' + dataProviderId + '/');
   }
