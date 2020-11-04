@@ -137,9 +137,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
           equipment.files,
           equipment.fields,
         );
+        this.equipmentService.getEquipments();
       });
     this.router.navigate(['/equipments']);
-    this.equipmentService.getEquipments();
   }
 
   /**
