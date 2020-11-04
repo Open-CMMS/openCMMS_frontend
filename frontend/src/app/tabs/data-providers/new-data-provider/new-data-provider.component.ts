@@ -48,7 +48,12 @@ export class NewDataProviderComponent implements OnInit {
       equipment_ip: [''],
       field: [''],
       recurrence: ['', Validators.pattern(regex_time)],
+      activated: [true],
     });
+  }
+
+  onTest() {
+    console.log('pass onTest');
   }
 
   test4Dev() {
@@ -59,6 +64,7 @@ export class NewDataProviderComponent implements OnInit {
     console.log(formValues.equipment);
     console.log(formValues.equipment_ip);
     console.log(formValues.field);
+    console.log(formValues.activated);
   }
 
   onCreateDataProvider() {

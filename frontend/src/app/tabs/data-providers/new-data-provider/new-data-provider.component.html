@@ -61,15 +61,25 @@
             </div>
         </div>
         <div class="d-flex justify-content-end">
-            <button class="btn btn-success">Test</button>
+            <button class="btn btn-success"
+                    (click)="onTest()"
+                    type="button"
+            >
+              Test
+            </button>
         </div>
         <div class="d-flex justify-content-between align-items-center mt-3">
             <button class="btn btn-danger nav-link" routerLink="/data-providers">Cancel</button>
             <div class="d-flex align-items-center">
-                <div class="activated"> Activated </div>
-                <div class="deactivated"> Deactivated </div>
-                <label class="switch mx-2">
-                    <input type="checkbox">
+                <div class="activated" *ngIf="createForm.value.activated"> Enable </div>
+                <div class="deactivated" *ngIf="!createForm.value.activated"> Disable </div>
+                <label for="activated" class="switch mx-2">
+                    <input type="checkbox"
+                           id="activated"
+                           name="activated"
+                           class="form-control"
+                           formControlName="activated"
+                    >
                     <span class="slider round"></span>
                 </label>
                 <button type="submit" class="btn btn-primary" >Create Data Provider</button>
