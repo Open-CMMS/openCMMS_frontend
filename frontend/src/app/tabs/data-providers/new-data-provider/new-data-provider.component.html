@@ -1,31 +1,64 @@
 <div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom: 100px">
     <div class="d-flex my-5">
         <h2 class="font-weight-bold">Create a new data provider</h2>
+        <button (click)="test4Dev()">Test 4 developer</button>
     </div>
-        <form>
+        <form [formGroup]="createForm" (ngSubmit)="onCreateDataProvider()">
         <div class="form-group">
             <label for="name">Data Provider Name</label>
-            <input type="text" class="form-control" id="name">
+            <input type="text" class="form-control" id="name" formControlName="name">
         </div>
         <div class="form-group">
             <label for="fileName">Data Provider file name</label>
-            <select id="fileName" class="form-control"></select>
+            <select id="fileName" class="form-control" formControlName="fileName">
+              <option [value]="" defaultSelected="selected">---</option>
+              <option *ngFor="let fileName of this.fileNameList" [value]="fileName">{{fileName}}</option>
+<!--       REVENIR METTRE name et ID       -->
+<!--              REVENIR METTRE background color-->
+            </select>
         </div>
         <div class="form-group">
             <label for="equipment">Equipment</label>
-            <select id="equipment" class="form-control"></select>
+            <select id="equipment" class="form-control" formControlName="equipment">
+              <option [value]="" defaultSelected="selected">---</option>
+              <option *ngFor="let equipment of this.equipmentList" [value]="equipment">{{ equipment }}</option>
+            </select>
+<!--          REVENIR METTRE name et ID-->
+<!--          REVENIR METTRE background color-->
         </div>
         <div class="form-group">
             <label for="equipment_ip">Equipment IP</label>
-            <input type="text" class="form-control" id="equipment_ip">
+            <input type="text" class="form-control" id="equipment_ip" formControlName="equipment_ip">
         </div>
         <div class="form-group">
             <label for="field">Field</label>
-            <select id="field" class="form-control"></select>
+            <select id="field" class="form-control" formControlName="field">
+              <option [value]="" defaultSelected="selected">---</option>
+              <option *ngFor="let field of this.fieldList" [value]="field">{{ field }}</option>
+            </select>
+          <!--          REVENIR METTRE name et ID-->
+          <!--          REVENIR METTRE background color-->
         </div>
         <div class="form-group">
-            <label for="Recurrence">Recurrence</label>
-            <input type="text" placeholder="regex à mettre" class="form-control" id="equipment_ip">
+            <label for="recurrence">Recurrence</label>
+            <div class="input-group">
+              <input type="text" name="recurrence" id="recurrence" class="form-control" formControlName="recurrence">
+              <div class="input-group-append">
+                <button class="btn btn-info"
+                        type="button"
+                        ngbPopover="Examples : 7d, 3h, 1m"
+                        placement="right"
+                        triggers="mouseenter:mouseleave"
+                        popoverTitle="Info"
+                        [closeDelay]="2000">
+                  <fa-icon [icon]="faInfoCircle"></fa-icon>
+                </button>
+              </div>
+            </div>
+<!--          REVENIR METTRE background color-->
+            <div *ngIf="createForm.controls.field.status == 'INVALID'" class="alert alert-danger">
+              Enter a duration with the correct pattern
+            </div>
         </div>
         <div class="d-flex justify-content-end">
             <button class="btn btn-success">Test</button>
