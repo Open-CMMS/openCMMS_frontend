@@ -10,72 +10,75 @@
         <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
     </div>
 </ng-template>
-
 <div class="container-fluid col-10 mt-3 justify-content-center">
-    <div class="container-fluis d-flex justify-content-between">
-        <div class="d-flex">
-            <h2 class="font-weight-bold">Nom du DataProvider</h2>
+    <form [formGroup]="updateForm">
+        <div class="container-fluis d-flex justify-content-between">
+            <div class="d-flex">
+                <h2 class="font-weight-bold">Nom du DataProvider</h2>
+            </div>
+            <div class="d-flex btn-group align-items-center">
+                <div class="activated"> Enable </div>
+                <div class="deactivated"> Disable </div>
+                <label class="switch mx-2">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+                <button class="btn btn-danger" (click)="openDelete(contentDelete)"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
+            </div>
         </div>
-        <div class="d-flex btn-group align-items-center">
-            <label class="switch mx-2">
-                <input type="checkbox">
-                <span class="slider round"></span>
-            </label>
-            <button class="btn btn-danger" (click)="openDelete(contentDelete)"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
-        </div>
-    </div>
-    <div class="card mt-3">
-        <div class="card-header">
-            <h3 class="font-weight-bold"> Data Provider info : </h3>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="px-2 py-1">
-                    <p><span class="font-weight-bold">Name :</span></p>
-                    <div class="input-group row col-6">
-                        <input type="text" class="form-control">
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary"><fa-icon [icon]="faSave"></fa-icon></button>
+        <div class="card mt-3">
+            <div class="card-header">
+                <h3 class="font-weight-bold"> Data Provider info : </h3>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="px-2 py-1">
+                        <p><span class="font-weight-bold">Name :</span></p>
+                        <div class="input-group row col-6">
+                            <input type="text" class="form-control">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary"><fa-icon [icon]="faSave"></fa-icon></button>
+                            </div>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary"><fa-icon [icon]="faPen"></fa-icon></button>
+                            </div>
                         </div>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary"><fa-icon [icon]="faPen"></fa-icon></button>
+                        <p><span class="font-weight-bold">File :</span></p>
+                        <div class="input-group row col-6">
+
                         </div>
-                    </div>
-                    <p><span class="font-weight-bold">File :</span></p>
-                    <div class="input-group row col-6">
+                        <p><span class="font-weight-bold">Recurrence :</span></p>
+                        <div class="input-group row col-6">
 
-                    </div>
-                    <p><span class="font-weight-bold">Recurrence :</span></p>
-                    <div class="input-group row col-6">
-
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="card mt-3">
-        <div class="card-header">
-            <h3 class="font-weight-bold"> Equipment : </h3>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="px-2 py-1">
-                    <p><span class="font-weight-bold">Equipment :</span></p>
-                    <div class="input-group row col-6">
+        <div class="card mt-3">
+            <div class="card-header">
+                <h3 class="font-weight-bold"> Equipment : </h3>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="px-2 py-1">
+                        <p><span class="font-weight-bold">Equipment :</span></p>
+                        <div class="input-group row col-6">
 
-                    </div>
-                    <p><span class="font-weight-bold">Equipment IP :</span></p>
-                    <div class="input-group row col-6">
+                        </div>
+                        <p><span class="font-weight-bold">Equipment IP :</span></p>
+                        <div class="input-group row col-6">
 
-                    </div>
-                    <p><span class="font-weight-bold">Field :</span></p>
-                    <div class="input-group row col-6">
+                        </div>
+                        <p><span class="font-weight-bold">Field :</span></p>
+                        <div class="input-group row col-6">
 
+                        </div>
+                        <button class="btn btn-success">Test</button>
                     </div>
-                    <button class="btn btn-success">Test</button>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
     
