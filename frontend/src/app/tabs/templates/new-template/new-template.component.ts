@@ -26,6 +26,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   // Local variables
   equipments: Equipment[];
   equipmentTypes: EquipmentType[];
+  equipmentTypesWithEquipments = [];
   teams: Team[];
 
   teamSubscription: Subscription;
@@ -104,6 +105,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
       (equipmentTypes: EquipmentType[]) => {
         this.equipmentTypes = equipmentTypes;
         this.initEquipmentTypesSelect();
+        this.initEquipmentSelect();
       }
     );
     this.filesSubscription = this.filesSubject.subscribe(
@@ -194,17 +196,49 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     };
   }
 
+  initEquipmentSelect() {
+    console.log('equipmentType', this.equipmentTypes);
+    this.equipmentTypes.forEach(element => {
+      this.equipmentTypeService.getEquipmentType(element.id)
+        .subscribe(
+          (response) => {
+            const equipmentsName = [];
+            response.equipments.forEach(equipment => {
+              equipmentsName.push({id: equipment.id, value: equipment.name});
+            });
+            this.equipmentTypesWithEquipments.push(equipmentsName);
+          }
+        );
+    });
+    console.log('equipmentType Equipment', this.equipmentTypesWithEquipments);
+  }
+
   /**
    * Function that initialize the select for the equipment
    */
   updateEquipmentsSelect(equipmentTypeId: number) {
     this.equipmentList = [];
-    for (const equipment of this.equipments) {
-      if (equipment.equipment_type.toString() === equipmentTypeId.toString()) {
-        this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
-      }
-    }
+    console.log('equipmentTypeId', equipmentTypeId);
+    console.log('this.equipments', this.equipments);
+    // for (const equipment of this.equipments) {
+    //   console.log('equipment', equipment);
+    //   if (equipment.equipment_type.toString() === equipmentTypeId.toString()) {
+    //     this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
+    //   }
+    // }
 
+    let indexOf;
+    this.equipments.forEach(element => {
+      console.log('element id', element.id);
+      console.log('equipments', this.equipments);
+      if (element.equipment_type === equipmentTypeId) {
+        indexOf = this.equipments.indexOf(element);
+        console.log('indexOf', indexOf);
+      }
+    });
+    console.log(indexOf);
+    this.equipmentList.push(this.equipmentTypesWithEquipments[indexOf]);
+    console.log('equipmentList', this.equipmentList);
   }
 
   /**
