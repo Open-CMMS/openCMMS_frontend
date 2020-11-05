@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {DataProviderService} from "../../../services/data-provider/data-provider.service";
+import {Equipment} from "../../../models/equipment";
 
 @Component({
   selector: 'app-new-data-provider',
@@ -18,7 +20,7 @@ export class NewDataProviderComponent implements OnInit {
   fileNameList: string[];
 
   // Equipment Select
-  equipmentList: string[];
+  equipmentList: Equipment[];
 
   // Field Select
   fieldList: string[];
@@ -26,14 +28,28 @@ export class NewDataProviderComponent implements OnInit {
   // Recurrence
   recurrenceRegex: string;
 
-  constructor( private formBuilder: FormBuilder) { }
+  constructor( private formBuilder: FormBuilder,
+               private dataProviderService: DataProviderService,
+               ) { }
 
   ngOnInit(): void {
     // Fake back
     this.fileNameList = ['test.py', 'emb.py'];
-    this.equipmentList = ['Test', 'Embouteilleuse'];
+    // this.equipmentList = ['Test', 'Embouteilleuse'];
     this.fieldList = ['Test', 'Nb bouteilles'];
+    // get Data providers
+    this.dataProviderService.dataProvidersSubject.subscribe(() => {
+    });
+    this.dataProviderService.emitDataProviders();
 
+    // get Equipements
+    this.dataProviderService.equipmentsSubject.subscribe(
+      (equipments: Equipment[]) => {
+        this.equipmentList = equipments;
+      }
+    );
+    this.dataProviderService.emitEquipments();
+    // get file names
     this.initForm();
   }
 

@@ -20,7 +20,7 @@
             <label for="equipment">Equipment</label>
             <select id="equipment" class="form-control" formControlName="equipment">
               <option [value]="" defaultSelected="selected">---</option>
-              <option *ngFor="let equipment of this.equipmentList" [value]="equipment">{{ equipment }}</option>
+              <option *ngFor="let equipment of this.equipmentList" [value]="equipment.id">{{ equipment.name}}</option>
             </select>
 <!--          REVENIR METTRE name et ID-->
         </div>

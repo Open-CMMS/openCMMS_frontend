@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { DataProvider } from '../../models/data-provider';
 import { environment } from '../../../environments/environment';
 import { Observable, Subject } from 'rxjs';
+import {Equipment} from "../../models/equipment";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,12 @@ export class DataProviderService {
 
   private dataProviders: DataProvider[] = [];
   dataProvidersSubject = new Subject<DataProvider[]>();
+
+  private fileNames: string[] = [];
+  fileNamesSubject = new Subject<string[]>();
+
+  private equipments: Equipment[] = [];
+  equipmentsSubject = new Subject<Equipment[]>();
 
   private BASE_URL_API = environment.baseUrl;
 
@@ -23,9 +30,14 @@ export class DataProviderService {
     this.dataProvidersSubject.next(this.dataProviders);
   }
 
+  emitEquipments() {
+    this.equipmentsSubject.next(this.equipments);
+  }
+
   getDataProviders() {
     this.dataProviders = [];
-    const DATAPROVIDER = 'data_providers'
+    this.fileNames = [];
+    const DATAPROVIDER = 'data_providers';
     this.httpClient.get<DataProvider[]>(this.BASE_URL_API + '/api/dataproviders/')
       .subscribe(
         (response) => {
@@ -40,6 +52,22 @@ export class DataProviderService {
               element.equipement_IP,
               element.concerned_field);
             this.dataProviders.push(dataProvider);
+          });
+          console.log(response);
+          console.log(response["python_files"]);
+          // response['python_files'].forEach(element => {
+          //   console.log(element);
+          // });
+          console.log(response["equipments"]);
+          response['equipments'].forEach(element => {
+            const equipment = new Equipment(
+              element.id,
+              element.name,
+              element.equipment_type,
+              element.files,
+              element.field
+              );
+            this.equipments.push(equipment);
           });
           this.emitDataProviders();
         },
