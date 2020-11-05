@@ -132,7 +132,7 @@
               <span *ngIf="(field.field_value && !(modifyFields))">{{ field.field_value.value}}</span>
               <select id='fieldValueSelect' class="form-control" *ngIf="(field.field_value && modifyFields)" (click)="getFieldsEquipmentTypes(field.field)">
                 <option disabled selected value> {{ field.field_value.value}} </option>
-                <option *ngFor="let fieldValue of currentSelectFields" [value]="fieldValue">{{ fieldValue }}</option>
+                <option *ngFor="let fieldValue of currentEquipmentTypeFields[i].value" [value]="fieldValue">{{ fieldValue }}</option>
               </select>
             </p>
             <p style="width: 270px" *ngIf="field.description"><span *ngIf="field.description">{{ field.description}}</span></p>
