@@ -14,7 +14,6 @@
               <option [value]="" defaultSelected="selected">---</option>
               <option *ngFor="let fileName of this.fileNameList" [value]="fileName">{{fileName}}</option>
 <!--       REVENIR METTRE name et ID       -->
-<!--              REVENIR METTRE background color-->
             </select>
         </div>
         <div class="form-group">
@@ -24,7 +23,6 @@
               <option *ngFor="let equipment of this.equipmentList" [value]="equipment">{{ equipment }}</option>
             </select>
 <!--          REVENIR METTRE name et ID-->
-<!--          REVENIR METTRE background color-->
         </div>
         <div class="form-group">
             <label for="equipment_ip">Equipment IP</label>
@@ -37,7 +35,6 @@
               <option *ngFor="let field of this.fieldList" [value]="field">{{ field }}</option>
             </select>
           <!--          REVENIR METTRE name et ID-->
-          <!--          REVENIR METTRE background color-->
         </div>
         <div class="form-group">
             <label for="recurrence">Recurrence</label>
@@ -55,7 +52,6 @@
                 </button>
               </div>
             </div>
-<!--          REVENIR METTRE background color-->
             <div *ngIf="createForm.controls.field.status == 'INVALID'" class="alert alert-danger">
               Enter a duration with the correct pattern
             </div>
