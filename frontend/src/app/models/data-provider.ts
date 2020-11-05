@@ -4,12 +4,12 @@ import {Equipment} from './equipment';
 export class DataProvider {
   id: number;
   name: string;
-  fileName: string;
+  file_name: string;
   recurrence: any;
-  activated: boolean;
+  is_activated: boolean;
   equipment: Equipment;
-  equipment_IP: string;
-  concerned_field: Field;
+  ip_address: string;
+  field_object: Field;
 
   /**
    * Constructor of the DataProvider object
@@ -25,19 +25,19 @@ export class DataProvider {
   constructor(
     id: number,
     name: string,
-    fileName: string,
+    file_name: string,
     recurrence: any,
-    activated: boolean,
+    is_activated: boolean,
     equipment: Equipment,
-    equipment_IP: string,
-    concerned_field: Field) {
+    ip_address: string,
+    field_object: Field) {
       this.id = id;
       this.name = name;
-      this.fileName = fileName;
+      this.file_name = file_name;
       this.recurrence = recurrence;
-      this.activated = activated;
+      this.is_activated = is_activated;
       this.equipment = equipment;
-      this.equipment_IP = equipment_IP;
-      this.concerned_field = concerned_field;
+      this.ip_address = ip_address;
+      this.field_object = field_object;
     }
 }

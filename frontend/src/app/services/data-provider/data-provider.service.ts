@@ -26,7 +26,6 @@ export class DataProviderService {
   }
 
   emitDataProviders() {
-    console.log('pass emitDataProviders');
     this.dataProvidersSubject.next(this.dataProviders);
   }
 
@@ -41,7 +40,6 @@ export class DataProviderService {
     this.httpClient.get<DataProvider[]>(this.BASE_URL_API + '/api/dataproviders/')
       .subscribe(
         (response) => {
-          console.log(response[DATAPROVIDER]);
           response[DATAPROVIDER].forEach(element => {
             const dataProvider = new DataProvider(element.id,
               element.name,
@@ -53,12 +51,11 @@ export class DataProviderService {
               element.concerned_field);
             this.dataProviders.push(dataProvider);
           });
-          console.log(response);
-          console.log(response["python_files"]);
+          // console.log(response);
+          // console.log(response["python_files"]);
           // response['python_files'].forEach(element => {
           //   console.log(element);
           // });
-          console.log(response["equipments"]);
           response['equipments'].forEach(element => {
             const equipment = new Equipment(
               element.id,
@@ -80,6 +77,7 @@ export class DataProviderService {
 
   createDataProvider(newDataProvider: DataProvider): Observable<DataProvider> {
     const dpJson = JSON.stringify(newDataProvider);
+    console.log(dpJson);
 
     const httpOptions = {
       headers: new HttpHeaders({

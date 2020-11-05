@@ -3,6 +3,9 @@ import { faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {DataProviderService} from "../../../services/data-provider/data-provider.service";
 import {Equipment} from "../../../models/equipment";
+import {Field} from "../../../models/field";
+import {DataProvider} from "../../../models/data-provider";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-new-data-provider',
@@ -17,26 +20,25 @@ export class NewDataProviderComponent implements OnInit {
   createForm: FormGroup;
 
   // fileName Select
-  fileNameList: string[];
+  fileNames: string[];
 
   // Equipment Select
-  equipmentList: Equipment[];
+  equipments: Equipment[];
 
   // Field Select
-  fieldList: string[];
+  fields: Field[];
 
   // Recurrence
   recurrenceRegex: string;
 
   constructor( private formBuilder: FormBuilder,
                private dataProviderService: DataProviderService,
+               private router: Router,
                ) { }
 
   ngOnInit(): void {
     // Fake back
-    this.fileNameList = ['test.py', 'emb.py'];
-    // this.equipmentList = ['Test', 'Embouteilleuse'];
-    this.fieldList = ['Test', 'Nb bouteilles'];
+    this.fileNames = ['fichier1.py', 'fichier2.py'];
     // get Data providers
     this.dataProviderService.dataProvidersSubject.subscribe(() => {
     });
@@ -45,7 +47,7 @@ export class NewDataProviderComponent implements OnInit {
     // get Equipements
     this.dataProviderService.equipmentsSubject.subscribe(
       (equipments: Equipment[]) => {
-        this.equipmentList = equipments;
+        this.equipments = equipments;
       }
     );
     this.dataProviderService.emitEquipments();
@@ -59,13 +61,23 @@ export class NewDataProviderComponent implements OnInit {
 
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
-      fileName: [''],
-      equipment: [''],
-      equipment_ip: [''],
-      field: [''],
+      fileName: ['', Validators.required],
+      equipment: ['', Validators.required],
+      equipment_ip: ['', Validators.required],
+      field: ['', Validators.required],
       recurrence: ['', Validators.pattern(regex_time)],
-      activated: [true],
+      activated: [true, Validators.required],
     });
+  }
+
+  onSelectEquipment() {
+    this.equipments.forEach(
+      (aEquipment) => {
+        if (aEquipment.id.toString() === this.createForm.value.equipment) {
+          this.fields = aEquipment.fields;
+        }
+      }
+    );
   }
 
   onTest() {
@@ -80,12 +92,30 @@ export class NewDataProviderComponent implements OnInit {
     console.log(formValues.equipment);
     console.log(formValues.equipment_ip);
     console.log(formValues.field);
+    console.log(formValues.recurrence);
     console.log(formValues.activated);
+    console.log('----');
+    console.log(this.equipments);
   }
 
   onCreateDataProvider() {
     const formValues = this.createForm.value;
-    console.log('pass onCreateDataProvider');
+    const newDataProvider = new DataProvider(1,
+      formValues.name,
+      formValues.fileName,
+      formValues.recurrence,
+      formValues.activated,
+      formValues.equipment,
+      formValues.equipment_ip,
+      formValues.field
+      );
+    console.log(newDataProvider);
+    this.dataProviderService.createDataProvider(newDataProvider).subscribe(
+      (dataProvider) => {
+        this.router.navigate(['/data-providers']);
+        this.dataProviderService.getDataProviders();
+      }
+    );
   }
 
 }
