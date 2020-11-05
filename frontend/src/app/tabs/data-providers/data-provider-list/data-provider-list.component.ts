@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { DataProvider } from 'src/app/models/data-provider'
+import { DataProvider } from 'src/app/models/data-provider';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
@@ -16,14 +16,16 @@ import { Field } from 'src/app/models/field';
   templateUrl: './data-provider-list.component.html',
   styleUrls: ['./data-provider-list.component.scss']
 })
-export class DataProviderListComponent implements OnInit {
+export class DataProviderListComponent implements OnInit, OnDestroy {
 
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
-  test : any[] = ["unField"];
-  test2 : any = "salut";
-  unField : Field = null;
-  dataProviders: DataProvider[] = [new DataProvider(1,"test","test.py","tous les jours",true,new Equipment(1,"test","equipmentTypeTest",this.test,this.test2),"192.168.101.1",this.unField)];
+  test: any[] = ['unField'];
+  test2: any = 'salut';
+  unField: Field = null;
+  dataProviders: DataProvider[] = [
+    new DataProvider(1, 'test', 'test.py', 'tous les jours', true,
+      new Equipment(1, 'test', 'equipmentTypeTest', this.test, this.test2), '192.168.101.1', this.unField)];
   dataProviderSubscription: Subscription;
 
   /**
@@ -33,7 +35,7 @@ export class DataProviderListComponent implements OnInit {
    * @param authenticationService the authentication service
    */
   constructor(
-    private dataProviderService : DataProviderService,
+    private dataProviderService: DataProviderService,
     private router: Router,
     private modalService: NgbModal,
     private utilsService: UtilsService,
