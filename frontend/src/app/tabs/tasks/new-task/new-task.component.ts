@@ -91,8 +91,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   // Current User
   currentUser: UserProfile;
   currentUserSubscription: Subscription;
-  
-
 
   /**
    * Constructor for the NewTeamComponent

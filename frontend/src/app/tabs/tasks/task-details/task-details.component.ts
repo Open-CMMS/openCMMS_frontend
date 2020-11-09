@@ -128,7 +128,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.task = task;
         // Set up files format with right URIs
         this.initFiles();
-        //Init duration status
+        // Init duration status
         this.durationError = !this.durationRegex.test(task.duration);
         // Initialize the Date
         this.initDateInput();

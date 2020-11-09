@@ -98,7 +98,6 @@ export class AuthenticationService {
                           resolve();
                         },
                         error => {
-                          console.log(error.error.is_blocked);
                           if (error.error.is_blocked === 'True') {
                             this.router.navigate(['account-blocked']);
                           }
