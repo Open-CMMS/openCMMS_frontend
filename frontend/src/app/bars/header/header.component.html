@@ -4,10 +4,10 @@
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
-    
+
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav mr-auto">
-          <li routerLinkActive="active">
+          <li routerLinkActive="active" *ngIf="currentUser">
             <a class="nav-link" routerLink="tasks">My Tasks</a>
           </li>
           <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onChangeTasksPermission()">
@@ -61,7 +61,7 @@
                 <a class="dropdown-item" (click)="onLogout()">Sign out</a>
               </div>
             </li>
-        </ul> 
+        </ul>
       </div>
   </nav>
 </div>
