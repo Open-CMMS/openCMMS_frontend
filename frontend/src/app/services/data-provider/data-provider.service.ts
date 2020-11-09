@@ -41,6 +41,8 @@ export class DataProviderService {
     this.dataProviders = [];
     this.fileNames = [];
     const DATAPROVIDER = 'data_providers';
+    const PYTHONFILES = 'python_files';
+    const EQUIPMENTS = 'equipment';
     this.httpClient.get<DataProvider[]>(this.BASE_URL_API + '/api/dataproviders/')
       .subscribe(
         (response) => {
@@ -55,10 +57,10 @@ export class DataProviderService {
               element.concerned_field);
             this.dataProviders.push(dataProvider);
           });
-          response['python_files'].forEach(element => {
+          response[PYTHONFILES].forEach(element => {
             this.fileNames.push(element);
           });
-          response['equipments'].forEach(element => {
+          response[EQUIPMENTS].forEach(element => {
             const equipment = new Equipment(
               element.id,
               element.name,
