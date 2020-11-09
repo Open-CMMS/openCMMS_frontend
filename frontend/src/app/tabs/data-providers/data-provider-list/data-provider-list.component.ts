@@ -64,14 +64,14 @@ export class DataProviderListComponent implements OnInit, OnDestroy {
 
 
 
-  /**
-   * Function that switches a Data Provider state (activated/diabled)
-   * @param i the index of the teamType in the list
-   */
-  onSwitchStateDataProvider(i: number) {
-    const dataProviderId = this.dataProviders[i].id;
-    this.dataProviderService.switchStateDataProviders(dataProviderId);
-  }
+  // /**
+  //  * Function that switches a Data Provider state (activated/diabled)
+  //  * @param i the index of the teamType in the list
+  //  */
+  // onSwitchStateDataProvider(i: number) {
+  //   const dataProviderId = this.dataProviders[i].id;
+  //   this.dataProviderService.switchStateDataProviders(dataProviderId);
+  // }
 
   /**
    * Function called when the component is destroyed

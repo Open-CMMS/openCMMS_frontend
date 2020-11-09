@@ -16,6 +16,9 @@ export class NewDataProviderComponent implements OnInit {
 
   faInfoCircle = faInfoCircle;
 
+  tested = false;
+  success = false;
+
   // Form
   createForm: FormGroup;
 
@@ -70,7 +73,7 @@ export class NewDataProviderComponent implements OnInit {
       equipment: ['', Validators.required],
       equipment_ip: ['', Validators.required],
       field: ['', Validators.required],
-      recurrence: ['', Validators.pattern(regex_time)],
+      recurrence: ['', [Validators.pattern(regex_time), Validators.required]],
       activated: [true, Validators.required],
     });
   }
@@ -86,21 +89,23 @@ export class NewDataProviderComponent implements OnInit {
   }
 
   onTest() {
-    console.log('pass onTest');
-  }
-
-  test4Dev() {
-    console.log('TEST');
     const formValues = this.createForm.value;
-    console.log(formValues.name);
-    console.log(formValues.fileName);
-    console.log(formValues.equipment);
-    console.log(formValues.equipment_ip);
-    console.log(formValues.field);
-    console.log(formValues.recurrence);
-    console.log(formValues.activated);
-    console.log('----');
-    console.log(this.equipments);
+    const newDataProvider = new DataProvider(1,
+      formValues.name,
+      formValues.fileName,
+      formValues.recurrence,
+      formValues.activated,
+      formValues.equipment,
+      formValues.equipment_ip,
+      formValues.field
+    );
+    let response = this.dataProviderService.testDataProvider(newDataProvider);
+    this.tested = true;
+    this.success = true;
+    this.success = false;
+    console.log('pass onTest');
+    console.log(response);
+
   }
 
   onCreateDataProvider() {
@@ -114,7 +119,6 @@ export class NewDataProviderComponent implements OnInit {
       formValues.equipment_ip,
       formValues.field
       );
-    console.log(newDataProvider);
     this.dataProviderService.createDataProvider(newDataProvider).subscribe(
       (dataProvider) => {
         this.router.navigate(['/data-providers']);

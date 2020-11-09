@@ -108,6 +108,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function that display DataProviders button in navbar when current User has the correct permission
+   */
+  onChangeDataProvidersPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'change_dataprovider'
+    );
+  }
+
+
+  /**
    * Function that calls the logout function in authenticationService to log out the current user
    */
   onLogout() {

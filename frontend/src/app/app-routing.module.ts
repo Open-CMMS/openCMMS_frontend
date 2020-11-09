@@ -228,11 +228,23 @@ const appRoutes: Routes = [
   },
   {
     path: 'data-providers', component: DataProviderManagementComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['change_dataprovider']
+    }
   },
   {
     path: 'data-providers/:id', component: DataProviderDetailsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['view_dataprovider']
+    }
   },
   { path: 'new-data-provider', component: NewDataProviderComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['add_dataprovider']
+    }
   },
   {
     path: '**', component: FourOhFourComponent,
