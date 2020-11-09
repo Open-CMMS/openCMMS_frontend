@@ -10,11 +10,10 @@
         <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
     </div>
 </ng-template>
-<div class="container-fluid col-10 mt-3 justify-content-center">
-    <form [formGroup]="updateForm">
+<div class="container-fluid col-10 mt-3 justify-content-center" *ngIf="loaded">
         <div class="container-fluis d-flex justify-content-between">
             <div class="d-flex">
-                <h2 class="font-weight-bold">Nom du DataProvider</h2>
+                <h2 class="font-weight-bold">{{localDataProvider?.name}}</h2>
             </div>
             <div class="d-flex btn-group align-items-center">
                 <div class="activated"> Enable </div>
@@ -35,13 +34,16 @@
                     <div class="px-2 py-1">
                         <p><span class="font-weight-bold">Name :</span></p>
                         <div class="input-group row col-6">
-                            <input type="text" class="form-control">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary"><fa-icon [icon]="faSave"></fa-icon></button>
-                            </div>
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-secondary"><fa-icon [icon]="faPen"></fa-icon></button>
-                            </div>
+                            <input type="text" class="form-control" 
+                                [attr.disabled]="!inputEnabled.name ? '' : null"
+                                [(ngModel)]="localDataProvider.name"
+                                >
+                                <div class="input-group-append" *ngIf="onChangeTaskPermission()">
+                                    <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.name" (click)="enableInput('name')"><fa-icon [icon]="faPen"></fa-icon></button>
+                                </div>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" *ngIf="inputEnabled.name" (click)="saveInput('name')"><fa-icon [icon]="faSave"></fa-icon></button>
+                                </div>
                         </div>
                         <p><span class="font-weight-bold">File :</span></p>
                         <div class="input-group row col-6">
@@ -79,6 +81,5 @@
                 </div>
             </div>
         </div>
-    </form>
 </div>
     
