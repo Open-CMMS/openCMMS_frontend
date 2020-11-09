@@ -37,8 +37,14 @@ export class NewDataProviderComponent implements OnInit {
                ) { }
 
   ngOnInit(): void {
-    // Fake back
-    this.fileNames = ['fichier1.py', 'fichier2.py'];
+    // get pythonFiles
+    this.dataProviderService.fileNamesSubject.subscribe(
+      ( fileNames: string[]) => {
+        this.fileNames = fileNames;
+      }
+    );
+    this.dataProviderService.emitFileNames();
+
     // get Data providers
     this.dataProviderService.dataProvidersSubject.subscribe(() => {
     });
@@ -51,7 +57,6 @@ export class NewDataProviderComponent implements OnInit {
       }
     );
     this.dataProviderService.emitEquipments();
-    // get file names
     this.initForm();
   }
 

@@ -42,10 +42,11 @@ export class DataProviderService {
     this.fileNames = [];
     const DATAPROVIDER = 'data_providers';
     const PYTHONFILES = 'python_files';
-    const EQUIPMENTS = 'equipment';
+    const EQUIPMENTS = 'equipments';
     this.httpClient.get<DataProvider[]>(this.BASE_URL_API + '/api/dataproviders/')
       .subscribe(
         (response) => {
+          console.log(response);
           response[DATAPROVIDER].forEach(element => {
             const dataProvider = new DataProvider(element.id,
               element.name,
