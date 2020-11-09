@@ -23,14 +23,14 @@
         </div>
         <div class="form-group">
             <label for="equipmentType">Equipment type</label>
-            <select class="form-control" formControlName="equipmentType" name="equipmentType" (change)="updateEquipmentsSelect(createForm.value.equipmentType)">
+            <select id="equipmentType" class="form-control" formControlName="equipmentType" name="equipmentType" (change)="updateEquipmentsSelect(createForm.value.equipmentType)">
                 <option default value=''></option>
                 <option *ngFor="let equipmentType of equipmentTypesList" [value]="equipmentType.id">{{ equipmentType.value }}</option>
             </select>
         </div>
-        <div class="form-group" *ngIf="createForm.value.equipmentType !== ''">
+        <div class="form-group" *ngIf="createForm.value.equipmentType !== '' && equipmentList.length !== 0">
             <label for="equipment">Equipment</label>
-            <select class="form-control" formControlName="equipment" name="equipment">
+            <select id="equipment" class="form-control" formControlName="equipment" name="equipment">
                 <option default value=''></option>
                 <option *ngFor="let equipment of equipmentList" [value]="equipment.id">{{ equipment.value }}</option>
             </select>

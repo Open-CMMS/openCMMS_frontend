@@ -69,9 +69,11 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   /**
    * Constructor for the NewTeamComponent
    * @param router the service used to handle redirections
+   * @param templateService the service to communicate with backend on Template objects
    * @param teamService the service to communicate with backend on Team objects
    * @param taskService the service to communicate with backend on Task objects
    * @param equipmentService the service to communicate with backend on Equipment
+   * @param equipmentTypeService the service to communicate with backend on EquipmentTYpe objects
    * @param fileService the service to communicate with backend on File
    * @param formBuilder the service to handle forms
    */
@@ -197,7 +199,6 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   }
 
   initEquipmentSelect() {
-    console.log('equipmentType', this.equipmentTypes);
     this.equipmentTypes.forEach(element => {
       this.equipmentTypeService.getEquipmentType(element.id)
         .subscribe(
@@ -206,11 +207,10 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
             response.equipments.forEach(equipment => {
               equipmentsName.push({id: equipment.id, value: equipment.name});
             });
-            this.equipmentTypesWithEquipments.push(equipmentsName);
+            this.equipmentTypesWithEquipments.push({id: element.id, value: equipmentsName});
           }
         );
     });
-    console.log('equipmentType Equipment', this.equipmentTypesWithEquipments);
   }
 
   /**
@@ -218,27 +218,15 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    */
   updateEquipmentsSelect(equipmentTypeId: number) {
     this.equipmentList = [];
-    console.log('equipmentTypeId', equipmentTypeId);
-    console.log('this.equipments', this.equipments);
-    // for (const equipment of this.equipments) {
-    //   console.log('equipment', equipment);
-    //   if (equipment.equipment_type.toString() === equipmentTypeId.toString()) {
-    //     this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
-    //   }
-    // }
-
-    let indexOf;
-    this.equipments.forEach(element => {
-      console.log('element id', element.id);
-      console.log('equipments', this.equipments);
-      if (element.equipment_type === equipmentTypeId) {
-        indexOf = this.equipments.indexOf(element);
-        console.log('indexOf', indexOf);
+    let equipmentTypeFound = false;
+    this.equipmentTypesWithEquipments.forEach(element => {
+      if (element.id === Number(equipmentTypeId) && !equipmentTypeFound) {
+        element.value.forEach(equipment => {
+          this.equipmentList.push(equipment);
+        });
+        equipmentTypeFound = true;
       }
     });
-    console.log(indexOf);
-    this.equipmentList.push(this.equipmentTypesWithEquipments[indexOf]);
-    console.log('equipmentList', this.equipmentList);
   }
 
   /**
@@ -334,9 +322,6 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
 
     const equipment_type = formValues.equipmentType !== '' ? formValues.equipmentType : null;
     const files = this.files;
-
-    const task_type = 1;
-    const over = false;
 
     const newTemplate = new Template(1,
                             formValues.name,
