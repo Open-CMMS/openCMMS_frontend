@@ -237,7 +237,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.inputEnabled.date = false;
         break;
       case 'duration':
-        // this.task.duration = this.durationDays + ' days, ' + this.durationTime.hour + ':' + this.durationTime.minute + ':00';
         updatedField = {duration: this.task.duration};
         this.inputEnabled.duration = false;
         break;
@@ -254,7 +253,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.taskService.getTask(this.task.id).subscribe(
           (task: Task) => {
             this.task = task;
-            // this.formatDurationStringAndInitDurationInput();
             this.initDateInput();
           }
         );
