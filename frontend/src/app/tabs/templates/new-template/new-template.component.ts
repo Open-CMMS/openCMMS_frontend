@@ -203,11 +203,11 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
       this.equipmentTypeService.getEquipmentType(element.id)
         .subscribe(
           (response) => {
-            const equipmentsName = [];
+            const equipments = [];
             response.equipments.forEach(equipment => {
-              equipmentsName.push({id: equipment.id, value: equipment.name});
+              equipments.push({id: equipment.id, value: equipment.name});
             });
-            this.equipmentTypesWithEquipments.push({id: element.id, value: equipmentsName});
+            this.equipmentTypesWithEquipments.push({id: element.id, value: equipments});
           }
         );
     });
