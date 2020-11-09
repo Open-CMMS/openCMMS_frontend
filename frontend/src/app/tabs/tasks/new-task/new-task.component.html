@@ -61,7 +61,7 @@
                 <fa-icon [icon]="faInfoCircle"></fa-icon></button>
                 </div>
             </div>
-            <div *ngIf="createForm.controls.duration.status == 'INVALID'" class="alert alert-danger">
+            <div *ngIf="createForm.controls.duration.status == 'INVALID'" class="alert alert-danger ">
                 Enter a duration with the correct pattern
             </div>
         </div>
@@ -104,7 +104,7 @@
                 <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Duration'">
                     <input type="text"
                     placeholder="value"
-                    ngbPopover="Examples : 1y5m, 3m 15d, 2y6m 15d"
+                    ngbPopover="Examples : 1d5m, 3m 15d, 2y6m 15d"
                     placement="top"
                     triggers="mouseenter:mouseleave"
                     popoverTitle="Info"
@@ -112,7 +112,8 @@
                     #triggerConditionDuration
                     [(ngModel)]=triggerCondition.value
                     [ngModelOptions]="{standalone: true}"
-                    [ngClass]="{'alert-danger': triggerConditionDuration.validity.patternMismatch}">
+                    [ngClass]="{'alert-danger': triggerConditionDuration.validity.patternMismatch}"
+                    (ngModelChange)="onUpdateTriggerConditionDurationValidity(triggerConditionDuration)">
                 </div>
             </div>
         </div>
@@ -186,7 +187,7 @@
         </div>
         <div class="d-flex justify-content-between align-items-center mt-3">
           <button class="btn btn-danger nav-link" routerLink="/tasks">Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create task</button>
+          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || triggerConditionDurationError">Create task</button>
         </div>
     </form>
     <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">

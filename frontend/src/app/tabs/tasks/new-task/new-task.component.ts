@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Subscription, Subject, Observable } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -66,6 +66,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   triggerConditions = [];
   triggerConditionSelectTemplate = null;
   triggerConditionDurationRegex: string;
+  triggerConditionDurationError = false;
 
   // End Conditions
   endConditions = [];
@@ -89,6 +90,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   // Current User
   currentUser: UserProfile;
   currentUserSubscription: Subscription;
+  
 
 
   /**
@@ -399,6 +401,14 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       teams: [''],
       file: ['']
     });
+  }
+
+  /**
+   * Function that is triggered when a modification is done on a trigger condition duration field.
+   * @param triggerConditionDurationField the input field that needs to be verified
+   */
+  onUpdateTriggerConditionDurationValidity(triggerConditionDurationField) {
+    this.triggerConditionDurationError = triggerConditionDurationField.validity.patternMismatch;
   }
 
   /**
