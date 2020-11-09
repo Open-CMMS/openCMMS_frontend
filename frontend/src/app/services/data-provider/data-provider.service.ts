@@ -33,6 +33,10 @@ export class DataProviderService {
     this.equipmentsSubject.next(this.equipments);
   }
 
+  emitFileNames() {
+    this.fileNamesSubject.next(this.fileNames);
+  }
+
   getDataProviders() {
     this.dataProviders = [];
     this.fileNames = [];
@@ -51,11 +55,9 @@ export class DataProviderService {
               element.concerned_field);
             this.dataProviders.push(dataProvider);
           });
-          // console.log(response);
-          // console.log(response["python_files"]);
-          // response['python_files'].forEach(element => {
-          //   console.log(element);
-          // });
+          response['python_files'].forEach(element => {
+            this.fileNames.push(element);
+          });
           response['equipments'].forEach(element => {
             const equipment = new Equipment(
               element.id,
@@ -67,6 +69,8 @@ export class DataProviderService {
             this.equipments.push(equipment);
           });
           this.emitDataProviders();
+          this.emitEquipments();
+          this.emitFileNames();
         },
       );
   }
