@@ -44,7 +44,7 @@
             </div>
           </li>
           <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link" routerLink="data-providers" href="#" id="dataProviders" role="button" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link" routerLink="data-providers" *ngIf="onChangeDataProvidersPermission()" href="#" id="dataProviders" role="button" aria-haspopup="true" aria-expanded="false">
               Data Providers
             </a>
           </li>

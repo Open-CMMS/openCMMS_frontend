@@ -2,7 +2,9 @@
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="font-weight-bold">DataProviders Management</h3>
       <div class="my-3">
-          <button class="btn btn-primary"><fa-icon [icon]="faPlus"></fa-icon> Create new Data Provider</button>
+          <button class="btn btn-primary"
+                  (click)="onCreateDataProvider()"
+          ><fa-icon [icon]="faPlus"></fa-icon> Create new Data Provider</button>
         <!-- <button class="btn btn-primary" (click)="onCreateEquipmentType()" *ngIf="onAddEquipmentTypePermission()"><fa-icon [icon]="faPlus"></fa-icon> Create new equipment type</button> -->
       </div>
     </div>

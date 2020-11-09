@@ -42,7 +42,7 @@ export class DataProviderService {
     this.fileNames = [];
     const DATAPROVIDER = 'data_providers';
     const PYTHONFILES = 'python_files';
-    const EQUIPMENTS = 'equipment';
+    const EQUIPMENTS = 'equipments';
     this.httpClient.get<DataProvider[]>(this.BASE_URL_API + '/api/dataproviders/')
       .subscribe(
         (response) => {
@@ -83,8 +83,6 @@ export class DataProviderService {
 
   createDataProvider(newDataProvider: DataProvider): Observable<DataProvider> {
     const dpJson = JSON.stringify(newDataProvider);
-    console.log(dpJson);
-
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-type': 'application/json'
@@ -94,15 +92,23 @@ export class DataProviderService {
     return this.httpClient.post<DataProvider>(this.BASE_URL_API + '/api/dataproviders/', dpJson, httpOptions);
   }
 
-
-  switchStateDataProviders(dataProviderId: number) {
-    console.log('switch state');
-  }
   // getDataProvider(id: number): Observable<any> {
   //   console.log('pass getDataProvider');
   // return this.httpClient
   //   .get<any>(this.BASE_URL_API + '/api/maintenancemanagement/dataproviders/'+id+'/');
   // }
+
+  testDataProvider(dataProvider: DataProvider): Observable<DataProvider> {
+    const dpJson = JSON.stringify(dataProvider);
+    console.log(dpJson);
+    const httpOptions = {
+      headers: new HttpHeaders( {
+        'Content-type': 'application/json'
+      })
+    };
+    return this.httpClient.post<DataProvider>(this.BASE_URL_API + '/api/dataproviders/test/', dpJson, httpOptions);
+  }
+
 
   updateDataProvider(dataProvider: DataProvider): Observable<DataProvider> {
     console.log('update');
