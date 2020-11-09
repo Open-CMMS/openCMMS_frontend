@@ -24,6 +24,7 @@ import { Template } from 'src/app/models/template';
 import { TemplateService } from 'src/app/services/templates/template.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { UserProfile } from 'src/app/models/user-profile';
+import { durationRegex } from 'src/app/shares/consts';
 
 @Component({
   selector: 'app-new-task',
@@ -388,15 +389,14 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function that initialize the fields in the form to create a new Team
    */
   initForm() {
-    // this.triggerConditionDurationRegex = '^((([0-9]+)y)?\\s*(([0-9]+)m)?\\s*(([0-9]+)d)?)$';
-    this.triggerConditionDurationRegex = '^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$';
-    const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
+    this.triggerConditionDurationRegex = durationRegex;
+    const localDurationRegex = new RegExp(durationRegex);
 
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       end_date: [null],
-      duration: ['', Validators.pattern(regex_time)],
+      duration: ['', Validators.pattern(localDurationRegex)],
       equipment: [''],
       teams: [''],
       file: ['']

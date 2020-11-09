@@ -16,8 +16,7 @@ import { EquipmentService } from 'src/app/services/equipments/equipment.service'
 import { Subscription, Subject } from 'rxjs';
 import { FileService } from 'src/app/services/files/file.service';
 import { environment } from 'src/environments/environment';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
-
+import { durationRegex } from 'src/app/shares/consts';
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
@@ -56,6 +55,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   date: NgbDateStruct;
   durationDays = 0;
   durationTime = null;
+  durationRegex = new RegExp(durationRegex);
   allFieldObjects: any[] = [];
   taskFieldObjects: any[] = [];
   endConditions: any[] = [];
@@ -90,6 +90,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   addTeamForm: FormGroup;
   dropdownTeamsSettings: IDropdownSettings;
   dropdownEquipmentsSettings: IDropdownSettings;
+  durationError = false;
 
   /**
    * Constructor of TaskDetailsComponent
@@ -127,8 +128,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.task = task;
         // Set up files format with right URIs
         this.initFiles();
-        // Set duration to the right format
-        this.formatDurationStringAndInitDurationInput();
+        //Init duration status
+        this.durationError = !this.durationRegex.test(task.duration);
         // Initialize the Date
         this.initDateInput();
         // Initialize the select content of Team
@@ -236,7 +237,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.inputEnabled.date = false;
         break;
       case 'duration':
-        this.task.duration = this.durationDays + ' days, ' + this.durationTime.hour + ':' + this.durationTime.minute + ':00';
+        // this.task.duration = this.durationDays + ' days, ' + this.durationTime.hour + ':' + this.durationTime.minute + ':00';
+        updatedField = {duration: this.task.duration};
         this.inputEnabled.duration = false;
         break;
       case 'equipment':
@@ -252,7 +254,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.taskService.getTask(this.task.id).subscribe(
           (task: Task) => {
             this.task = task;
-            this.formatDurationStringAndInitDurationInput();
+            // this.formatDurationStringAndInitDurationInput();
             this.initDateInput();
           }
         );
@@ -260,6 +262,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       (error) => {
         this.router.navigate(['four-oh-four']);
     });
+  }
+
+  /**
+   * Function that update the duration status after each modification of the field value
+   * @param durationField the field containing the duration to check
+   */
+  onUpdateDurationValidity(durationField) {
+    this.durationError = durationField.validity.patternMismatch;
   }
 
   /**

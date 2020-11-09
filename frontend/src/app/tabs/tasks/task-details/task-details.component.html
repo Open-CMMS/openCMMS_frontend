@@ -102,20 +102,27 @@
                     <br>
                     <p><span class="font-weight-bold">Duration :</span></p>
                     <div class="input-group row col-3" *ngIf="!inputEnabled.duration">
-                        <input class="form-control" [(ngModel)]="taskDuration" disabled>
+                        <input class="form-control" [(ngModel)]="task.duration" disabled>
                         <div class="input-group-append" *ngIf="onChangeTaskPermission()">
                             <button class="btn btn-outline-secondary" *ngIf="!task.over" (click)="enableInput('duration')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
                     <div class="input-group row col-3" *ngIf="inputEnabled.duration">
-                        <input class="form-control col-2 text-center" [(ngModel)]="durationDays">
+                        <input class="form-control"
+                            type="text"
+                            placeholder="value"
+                            ngbPopover="Examples : 1d5m, 3m 15d, 2y6m 15d"
+                            placement="top"
+                            triggers="mouseenter:mouseleave"
+                            popoverTitle="Info"
+                            [pattern]="durationRegex.source"
+                            #duration
+                            [(ngModel)]=task.duration
+                            [ngModelOptions]="{standalone: true}"
+                            [ngClass]="{'alert-danger': duration.validity.patternMismatch}"
+                            (ngModelChange)="onUpdateDurationValidity(duration)">
                         <div class="input-group-append">
-                            <span class="input-group-text">days</span>
-                        </div>
-
-                        <ngb-timepicker class="form-control" [(ngModel)]="durationTime" [minuteStep]="5"></ngb-timepicker>
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" (click)="saveInput('duration')"><fa-icon [icon]="faSave"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" (click)="saveInput('duration')" [disabled]="durationError"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                     </div>
                     <br>
