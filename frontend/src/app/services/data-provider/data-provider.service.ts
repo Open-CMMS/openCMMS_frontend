@@ -110,9 +110,31 @@ export class DataProviderService {
   }
 
 
-  updateDataProvider(dataProvider: DataProvider): Observable<DataProvider> {
-    console.log('update');
-    return null;
+  updateDataProvider(id, dataProvider: DataProvider): Observable<DataProvider> {
+    const equipment_id: any = dataProvider.equipment.id;
+    const field_id: any = dataProvider.field_object.id;
+
+    const modifiedDataProvider = new DataProvider(
+      id,
+      dataProvider.name,
+      dataProvider.file_name,
+      dataProvider.recurrence,
+      dataProvider.is_activated,
+      equipment_id,
+      dataProvider.ip_address,
+      field_id,
+      )
+
+    const dpJson = JSON.stringify(modifiedDataProvider);
+    console.log(dpJson);
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json'
+      })
+    };
+
+    return this.httpClient.put<DataProvider>(this.BASE_URL_API + '/api/dataproviders/' + id + '/', dpJson, httpOptions);
   }
 
   deleteDataProvider(dataProviderId: number) {

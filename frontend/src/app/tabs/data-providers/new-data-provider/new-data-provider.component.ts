@@ -78,7 +78,7 @@ export class NewDataProviderComponent implements OnInit {
     });
   }
 
-  onSelectEquipment() {
+  onSelectField() {
     this.equipments.forEach(
       (aEquipment) => {
         if (aEquipment.id.toString() === this.createForm.value.equipment) {

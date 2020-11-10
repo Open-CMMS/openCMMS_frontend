@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faTrash, faPen, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPen, faSave, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Field } from 'src/app/models/field';
@@ -9,6 +9,7 @@ import { EquipmentService } from 'src/app/services/equipments/equipment.service'
 import { DataProvider } from 'src/app/models/data-provider';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import {Equipment} from '../../../models/equipment';
 
 @Component({
   selector: 'app-data-provider-details',
@@ -18,6 +19,7 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
 export class DataProviderDetailsComponent implements OnInit {
 
   // Icons
+  faInfoCircle = faInfoCircle;
   faTrash = faTrash;
   faPen = faPen;
   faSave = faSave;
@@ -27,7 +29,9 @@ export class DataProviderDetailsComponent implements OnInit {
 
   // Fake back (à enlever)
   fileNames = ['test.py', 'test2.py'];
-  equipments = ['eq1', 'eq2'];
+
+  fileNames2: string[];
+  equipments: Equipment[];
 
   //
   loaded = false;
@@ -39,8 +43,10 @@ export class DataProviderDetailsComponent implements OnInit {
     file_name: false,
     recurrence: false,
     ip_address: false,
-    equipment: false
+    equipment: false,
+    field: false
   };
+  fields: Field[];
   /**
    * Constructor of dataProviderDetailsComponent
    * @param dataProviderService the service used to handle dataProviders
@@ -66,6 +72,7 @@ export class DataProviderDetailsComponent implements OnInit {
     });
     this.dataProviderService.getDataProvider(id)
       .subscribe((response) => {
+        console.log('--RESPONSE--');
         console.log(response);
         this.localDataProvider = new DataProvider(response.id,
           response.name,
@@ -77,6 +84,22 @@ export class DataProviderDetailsComponent implements OnInit {
           response.field_object);
         this.loaded = true;
       });
+
+    this.dataProviderService.fileNamesSubject.subscribe(
+      (fileNames: string[]) => {
+        this.fileNames2 = fileNames;
+      }
+    );
+    this.dataProviderService.emitFileNames();
+    console.log('--- FILENAMES ---');
+    console.log(this.fileNames2);
+
+    this.dataProviderService.equipmentsSubject.subscribe(
+      (equipments: Equipment[]) => {
+        this.equipments = equipments;
+      }
+    );
+    this.dataProviderService.emitEquipments();
   }
 
   /**
@@ -107,6 +130,10 @@ export class DataProviderDetailsComponent implements OnInit {
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = true;
+        break;
+      case 'field':
+        this.inputEnabled.field = true;
+        console.log(this.fields);
         break;
       default:
         break;
@@ -142,9 +169,22 @@ export class DataProviderDetailsComponent implements OnInit {
         updatedField = {recurrence: this.localDataProvider.recurrence};
         this.inputEnabled.recurrence = false;
         break;
+      case 'equipment':
+        updatedField = {equipment: this.localDataProvider.equipment};
+        this.inputEnabled.equipment = false;
+        break;
       case 'ip_address':
         updatedField = {ip_address: this.localDataProvider.ip_address};
         this.inputEnabled.ip_address = false;
+        break;
+      case 'field':
+        updatedField = {field: this.localDataProvider.field_object};
+        this.inputEnabled.field = false;
+        break;
+      case 'is_activated':
+        setTimeout(() => {
+          updatedField = {is_activated: this.localDataProvider.is_activated};
+        }, 1000);
         break;
       // case 'end_date':
       //   const date_str = this.taskService.normaliseEndDateValue(this.date);
@@ -164,67 +204,39 @@ export class DataProviderDetailsComponent implements OnInit {
          break;
     }
     console.log(updatedField);
-    // this.dataProviderService.updateDataProvider(this.localDataProvider).subscribe(
-    //   (response) => {
-    //     this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
-    //       (dataProvider: DataProvider) => {
-    //         console.log("update");
-    //         this.localDataProvider = dataProvider;
-    //         // this.formatDurationStringAndInitDurationInput();
-    //         // this.initDateInput();
-    //       }
-    //     );
-    //   },
-    //   (error) => {
-    //     this.router.navigate(['four-oh-four']);
-    // });
+    console.log(this.localDataProvider);
+    this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider).subscribe(
+      () => {
+        this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
+          (dataProvider: DataProvider) => {
+            this.localDataProvider = dataProvider;
+          }
+        );
+      },
+      () => {
+        this.router.navigate(['four-oh-four']);
+    });
   }
   /**
-   * Function that realizes the shaping of the duration for communication with the API
+   * Function that test if a string is an input duration
+   * @param stringToTest the string to test
    */
-  formatDurationStringAndInitDurationInput() {
-    // const days_time_separator = ' ';
-    // const hours_minutes_separator = ':';
-    // const init_str = this.task.duration;
-
-    // let days: string;
-    // let time: string;
-    // let right_part: string;
-    // let left_part: string;
-    // let days_str: string;
-
-    // if (this.task.duration) {
-    //   [left_part, right_part] = init_str.split(days_time_separator);
-    //   if (right_part) {
-    //     days = left_part;
-    //     time = right_part;
-    //   } else {
-    //     if (left_part.indexOf(hours_minutes_separator) === -1) {
-    //       days = left_part;
-    //     } else {
-    //       time = left_part;
-    //     }
-    //   }
-
-    //   if (days) {
-    //     const plurel = parseInt(days, 10) > 1 ? 's' : '';
-    //     days_str = parseInt(days, 10) > 0 ? days + 'day' + plurel + ', ' : '';
-    //     this.durationDays = parseInt(days, 10);
-    //   } else {
-    //     days_str = '';
-    //   }
-
-    //   if (time) {
-    //     let hours: string;
-    //     let minutes: string;
-    //     let seconds: string;
-    //     [hours, minutes, seconds] = time.split(hours_minutes_separator);
-    //     this.durationTime = {hour: parseInt(hours, 10), minute: parseInt(minutes, 10)};
-    //   }
-
-    //   this.taskDuration = days_str + time;
-    // }
+  isInputDate(stringToTest: string): boolean {
+    const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
+    return regex_time.test(stringToTest);
   }
+
+  onSelectField() {
+    this.equipments.forEach(
+      (aEquipment) => {
+        if (aEquipment.id === this.localDataProvider.equipment.id) {
+          this.fields = aEquipment.fields;
+        }
+      }
+    );
+    console.log('pass button');
+  }
+
   /**
    * Function that is triggered to load the modal template for deletion
    * @param content the modal to open

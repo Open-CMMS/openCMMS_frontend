@@ -29,9 +29,9 @@
         </div>
         <div class="form-group">
             <label for="field">Field</label>
-            <select id="field" class="form-control" formControlName="field" (click)="onSelectEquipment()">
+            <select id="field" class="form-control" formControlName="field" (click)="onSelectField()">
               <option [value]="" defaultSelected="selected">---</option>
-              <option *ngFor="let field of this.fields" [value]="field.id">{{ field.field_name }}</option>
+              <option *ngFor="let field of this.fields" [value]="field.id">{{ field.name }}</option>
             </select>
         </div>
         <div class="form-group">
@@ -67,8 +67,7 @@
         <div class="d-flex justify-content-between align-items-center mt-3">
             <button class="btn btn-danger nav-link" routerLink="/data-providers">Cancel</button>
             <div class="d-flex align-items-center">
-                <div class="activated" *ngIf="createForm.value.activated"> Enable </div>
-                <div class="deactivated" *ngIf="!createForm.value.activated"> Disable </div>
+                <div> Enable </div>
                 <label for="activated" class="switch mx-2">
                     <input type="checkbox"
                            id="activated"

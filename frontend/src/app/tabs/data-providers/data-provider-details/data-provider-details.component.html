@@ -16,10 +16,15 @@
                 <h2 class="font-weight-bold">{{localDataProvider?.name}}</h2>
             </div>
             <div class="d-flex btn-group align-items-center">
-                <div class="activated"> Enable </div>
-                <div class="deactivated"> Disable </div>
+                <div> Enable </div>
                 <label class="switch mx-2">
-                    <input type="checkbox">
+                    <input type="checkbox"
+                           id="activated"
+                           name="activated"
+                           class="form-control"
+                           [(ngModel)]=this.localDataProvider.is_activated
+                           (click)="saveInput('is_activated')"
+                    >
                     <span class="slider round"></span>
                 </label>
                 <button class="btn btn-danger" (click)="openDelete(contentDelete)"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
@@ -61,16 +66,30 @@
                           </div>
                         </div>
                         <p><span class="font-weight-bold">Recurrence :</span></p>
-                        <div class="input-group row col-6">
-                          <input class="form-control" [(ngModel)]="localDataProvider.recurrence" [attr.disabled]="!inputEnabled.recurrence ? '' : null">
-                          <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
-                            <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.recurrence" (click)="enableInput('recurrence')"><fa-icon [icon]="faPen"></fa-icon></button>
+                        <div class="d-flex flex-column col-6"> 
+                          <div class="input-group row">
+                            <input class="form-control" [(ngModel)]="localDataProvider.recurrence" [attr.disabled]="!inputEnabled.recurrence ? '' : null">
+                            <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
+                              <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.recurrence" (click)="enableInput('recurrence')"><fa-icon [icon]="faPen"></fa-icon></button>
+                              
+                            </div>
+                            <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
+                              <button class="btn btn-outline-secondary" *ngIf="inputEnabled.recurrence" (click)="saveInput('recurrence')"><fa-icon [icon]="faSave"></fa-icon></button>
+                            </div>
+                            <div class="input-group-append">
+                              <button class="btn btn-info" type="button"
+                                                          ngbPopover="Examples : 10d 3h 45m, 5h15m, 4d45h 48m"
+                                                          placement="right"
+                                                          triggers="mouseenter:mouseleave"
+                                                          popoverTitle="Info"
+                                                          [closeDelay]="2000">
+                            <fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                            </div>
                           </div>
-                          <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
-                            <button class="btn btn-outline-secondary" *ngIf="inputEnabled.recurrence" (click)="saveInput('recurrence')"><fa-icon [icon]="faSave"></fa-icon></button>
+                          <div *ngIf="!isInputDate(localDataProvider.recurrence)" class="alert alert-danger row input-group">
+                            Enter a recurrence with the correct pattern
                           </div>
                         </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -83,17 +102,17 @@
                     <div class="px-2 py-1">
                         <p><span class="font-weight-bold">Equipment :</span></p>
                         <div class="input-group row col-6" *ngIf="!inputEnabled.equipment">
-                          <input class="form-control" [(ngModel)]="localDataProvider.equipment" disabled>
+                          <input class="form-control" [(ngModel)]="localDataProvider.equipment.name" disabled>
                           <div class="input-group-append" >
                             <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
                           </div>
                         </div>
                         <div class="input-group row col-6" *ngIf="inputEnabled.equipment">
-                          <select class="form-control" [(ngModel)]="localDataProvider.equipment">
-                            <option *ngFor="let equipment of this.equipments" [value]="equipment" [defaultSelected]="this.localDataProvider.equipment === equipment ? 'selected' : ''">{{ equipment }}</option>
+                          <select class="form-control" [(ngModel)]="localDataProvider.equipment.id">
+                            <option *ngFor="let equipment of this.equipments" [value]="equipment.id" [defaultSelected]="this.localDataProvider.equipment.id === equipment.id ? 'selected' : ''">{{ equipment.name }}</option>
                           </select>
                           <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" (click)="saveInput('file_name')"><fa-icon [icon]="faSave"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" (click)="saveInput('equipment')"><fa-icon [icon]="faSave"></fa-icon></button>
                           </div>
                         </div>
                         <p><span class="font-weight-bold">Equipment IP :</span></p>
@@ -110,8 +129,19 @@
                           </div>
                         </div>
                         <p><span class="font-weight-bold">Field :</span></p>
-                        <div class="input-group row col-6">
-
+                        <div class="input-group row col-6" *ngIf="!inputEnabled.field">
+                          <input class="form-control" [(ngModel)]="localDataProvider.field_object.name" disabled>
+                          <div class="input-group-append" >
+                            <button class="btn btn-outline-secondary" (click)="enableInput('field');onSelectField()" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
+                          </div>
+                        </div>
+                        <div class="input-group row col-6" *ngIf="inputEnabled.field">
+                          <select class="form-control" [(ngModel)]="localDataProvider.field_object.id">
+                            <option *ngFor="let field of this.fields" [value]="field.id">{{ field.name }}</option>
+                          </select>
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="saveInput('field')"><fa-icon [icon]="faSave"></fa-icon></button>
+                          </div>
                         </div>
                         <button class="btn btn-success">Test</button>
                     </div>
