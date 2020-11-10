@@ -23,10 +23,11 @@ export class DataProviderDetailsComponent implements OnInit {
   faSave = faSave;
   durationDays = 0;
   durationTime: { hour: number; minute: number; };
-  taskDuration: string;
-  concernedField: Field;
   localDataProvider: DataProvider = null;
-  
+
+  // Fake back (à enlever)
+  fileNames = ['test.py', 'test2.py'];
+  equipments = ['eq1', 'eq2'];
 
   //
   loaded = false;
@@ -35,8 +36,9 @@ export class DataProviderDetailsComponent implements OnInit {
   recurrenceRegex: string;
   inputEnabled = {
     name: false,
+    file_name: false,
     recurrence: false,
-    equipment_ip: false,
+    ip_address: false,
     equipment: false
   };
   /**
@@ -62,7 +64,6 @@ export class DataProviderDetailsComponent implements OnInit {
     this.route.params.subscribe(params => {
       id = +params.id;
     });
-    console.log("cc");
     this.dataProviderService.getDataProvider(id)
       .subscribe((response) => {
         console.log(response);
@@ -76,7 +77,6 @@ export class DataProviderDetailsComponent implements OnInit {
           response.field_object);
         this.loaded = true;
       });
-
   }
 
   /**
@@ -96,14 +96,17 @@ export class DataProviderDetailsComponent implements OnInit {
       case 'name':
         this.inputEnabled.name = true;
         break;
+      case 'file_name':
+        this.inputEnabled.file_name = true;
+        break;
       case 'recurrence':
         this.inputEnabled.recurrence = true;
         break;
       case 'equipment':
         this.inputEnabled.equipment = true;
         break;
-      case 'equipment_ip':
-        this.inputEnabled.equipment_ip = true;
+      case 'ip_address':
+        this.inputEnabled.ip_address = true;
         break;
       default:
         break;
@@ -111,12 +114,12 @@ export class DataProviderDetailsComponent implements OnInit {
   }
 
   /**
-   * Function that display the modify button on Task considering user permissions
+   * Function that display the modify button on DataProvider considering user permissions
    */
-  onChangeTaskPermission() {
+  onChangeDataProviderPermission() {
     return this.utilsService.isAUserPermission(
       this.authenticationService.getCurrentUserPermissions(),
-      'change_task'
+      'change_dataprovider'
     );
   }
 
@@ -130,6 +133,18 @@ export class DataProviderDetailsComponent implements OnInit {
       case 'name':
         updatedField = {name: this.localDataProvider.name};
         this.inputEnabled.name = false;
+        break;
+      case 'file_name':
+        updatedField = {file_name: this.localDataProvider.file_name};
+        this.inputEnabled.file_name = false;
+        break;
+      case 'recurrence':
+        updatedField = {recurrence: this.localDataProvider.recurrence};
+        this.inputEnabled.recurrence = false;
+        break;
+      case 'ip_address':
+        updatedField = {ip_address: this.localDataProvider.ip_address};
+        this.inputEnabled.ip_address = false;
         break;
       // case 'end_date':
       //   const date_str = this.taskService.normaliseEndDateValue(this.date);

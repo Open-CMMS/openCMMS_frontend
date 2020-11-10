@@ -98,15 +98,15 @@ export class DataProviderService {
   //   .get<any>(this.BASE_URL_API + '/api/maintenancemanagement/dataproviders/'+id+'/');
   // }
 
-  testDataProvider(dataProvider: DataProvider): Observable<DataProvider> {
+  testDataProvider(dataProvider: DataProvider): Observable<any> {
     const dpJson = JSON.stringify(dataProvider);
     console.log(dpJson);
     const httpOptions = {
       headers: new HttpHeaders( {
         'Content-type': 'application/json'
-      })
+      }),
     };
-    return this.httpClient.post<DataProvider>(this.BASE_URL_API + '/api/dataproviders/test/', dpJson, httpOptions);
+    return this.httpClient.post<any>(this.BASE_URL_API + '/api/dataproviders/test/', dpJson, httpOptions);
   }
 
 

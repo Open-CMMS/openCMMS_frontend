@@ -34,11 +34,11 @@
                     <div class="px-2 py-1">
                         <p><span class="font-weight-bold">Name :</span></p>
                         <div class="input-group row col-6">
-                            <input type="text" class="form-control" 
+                            <input type="text" class="form-control"
                                 [attr.disabled]="!inputEnabled.name ? '' : null"
                                 [(ngModel)]="localDataProvider.name"
                                 >
-                                <div class="input-group-append" *ngIf="onChangeTaskPermission()">
+                                <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
                                     <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.name" (click)="enableInput('name')"><fa-icon [icon]="faPen"></fa-icon></button>
                                 </div>
                                 <div class="input-group-append">
@@ -46,12 +46,29 @@
                                 </div>
                         </div>
                         <p><span class="font-weight-bold">File :</span></p>
-                        <div class="input-group row col-6">
-
+                        <div class="input-group row col-6" *ngIf="!inputEnabled.file_name">
+                          <input class="form-control" [(ngModel)]="localDataProvider.file_name" disabled>
+                          <div class="input-group-append" >
+                            <button class="btn btn-outline-secondary" (click)="enableInput('file_name')" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
+                          </div>
+                        </div>
+                        <div class="input-group row col-6" *ngIf="inputEnabled.file_name">
+                          <select class="form-control" [(ngModel)]="localDataProvider.file_name">
+                            <option *ngFor="let fileName of this.fileNames" [value]="fileName" [defaultSelected]="this.localDataProvider.file_name === fileName ? 'selected' : ''">{{ fileName }}</option>
+                          </select>
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="saveInput('file_name')"><fa-icon [icon]="faSave"></fa-icon></button>
+                          </div>
                         </div>
                         <p><span class="font-weight-bold">Recurrence :</span></p>
                         <div class="input-group row col-6">
-
+                          <input class="form-control" [(ngModel)]="localDataProvider.recurrence" [attr.disabled]="!inputEnabled.recurrence ? '' : null">
+                          <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
+                            <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.recurrence" (click)="enableInput('recurrence')"><fa-icon [icon]="faPen"></fa-icon></button>
+                          </div>
+                          <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
+                            <button class="btn btn-outline-secondary" *ngIf="inputEnabled.recurrence" (click)="saveInput('recurrence')"><fa-icon [icon]="faSave"></fa-icon></button>
+                          </div>
                         </div>
                     </div>
                 </div>
@@ -65,12 +82,32 @@
                 <div class="col-12">
                     <div class="px-2 py-1">
                         <p><span class="font-weight-bold">Equipment :</span></p>
-                        <div class="input-group row col-6">
-
+                        <div class="input-group row col-6" *ngIf="!inputEnabled.equipment">
+                          <input class="form-control" [(ngModel)]="localDataProvider.equipment" disabled>
+                          <div class="input-group-append" >
+                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
+                          </div>
+                        </div>
+                        <div class="input-group row col-6" *ngIf="inputEnabled.equipment">
+                          <select class="form-control" [(ngModel)]="localDataProvider.equipment">
+                            <option *ngFor="let equipment of this.equipments" [value]="equipment" [defaultSelected]="this.localDataProvider.equipment === equipment ? 'selected' : ''">{{ equipment }}</option>
+                          </select>
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" (click)="saveInput('file_name')"><fa-icon [icon]="faSave"></fa-icon></button>
+                          </div>
                         </div>
                         <p><span class="font-weight-bold">Equipment IP :</span></p>
                         <div class="input-group row col-6">
-
+                          <input type="text" class="form-control"
+                                 [attr.disabled]="!inputEnabled.ip_address ? '' : null"
+                                 [(ngModel)]="localDataProvider.ip_address"
+                          >
+                          <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
+                            <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.ip_address" (click)="enableInput('ip_address')"><fa-icon [icon]="faPen"></fa-icon></button>
+                          </div>
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" *ngIf="inputEnabled.ip_address" (click)="saveInput('ip_address')"><fa-icon [icon]="faSave"></fa-icon></button>
+                          </div>
                         </div>
                         <p><span class="font-weight-bold">Field :</span></p>
                         <div class="input-group row col-6">
@@ -82,4 +119,3 @@
             </div>
         </div>
 </div>
-    

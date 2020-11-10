@@ -93,19 +93,23 @@ export class NewDataProviderComponent implements OnInit {
     const newDataProvider = new DataProvider(1,
       formValues.name,
       formValues.fileName,
-      formValues.recurrence,
+      formValues.recurrence ? formValues.recurrence : '1h',
       formValues.activated,
       formValues.equipment,
       formValues.equipment_ip,
       formValues.field
     );
-    let response = this.dataProviderService.testDataProvider(newDataProvider);
-    this.tested = true;
-    this.success = true;
-    this.success = false;
-    console.log('pass onTest');
-    console.log(response);
-
+    this.dataProviderService.testDataProvider(newDataProvider).subscribe(
+      (response) => {
+        this.tested = true;
+        this.success = true;
+        // this.success = (typeof response === 'number');
+      },
+    (error) => {
+        this.tested = true;
+        this.success = false;
+    }
+    );
   }
 
   onCreateDataProvider() {
