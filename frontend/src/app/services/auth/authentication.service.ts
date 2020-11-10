@@ -13,21 +13,17 @@ export class AuthenticationService {
   private currentUser: UserProfile;
   currentUserSubject = new Subject<UserProfile>();
   private BASE_URL_API = environment.baseUrl;
-  private userPermissions: any[] = [];
+  public userPermissions: any[] = [];
 
   /**
    * Constructor of AuthenticationService
    * @param httpClient The http instance
    * @param router the service used to handle routing
    */
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private httpClient: HttpClient,
+              private router: Router) {
     if (JSON.parse(localStorage.getItem('currentUser')) !== null) {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      this.getUserPermissions(this.currentUser.id).subscribe(
-        (perms) => {
-          this.userPermissions = perms;
-        }
-      );
     } else {
       this.currentUser = null;
       this.userPermissions = [];
