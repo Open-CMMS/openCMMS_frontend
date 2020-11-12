@@ -27,10 +27,7 @@ export class DataProviderDetailsComponent implements OnInit {
   durationTime: { hour: number; minute: number; };
   localDataProvider: DataProvider = null;
 
-  // Fake back (à enlever)
-  fileNames = ['test.py', 'test2.py'];
-
-  fileNames2: string[];
+  fileNames: string[];
   equipments: Equipment[];
 
   //
@@ -87,12 +84,12 @@ export class DataProviderDetailsComponent implements OnInit {
 
     this.dataProviderService.fileNamesSubject.subscribe(
       (fileNames: string[]) => {
-        this.fileNames2 = fileNames;
+        this.fileNames = fileNames;
       }
     );
     this.dataProviderService.emitFileNames();
     console.log('--- FILENAMES ---');
-    console.log(this.fileNames2);
+    console.log(this.fileNames);
 
     this.dataProviderService.equipmentsSubject.subscribe(
       (equipments: Equipment[]) => {

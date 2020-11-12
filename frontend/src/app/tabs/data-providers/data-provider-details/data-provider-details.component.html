@@ -137,7 +137,7 @@
                         </div>
                         <div class="input-group row col-6" *ngIf="inputEnabled.field">
                           <select class="form-control" [(ngModel)]="localDataProvider.field_object.id">
-                            <option *ngFor="let field of this.fields" [value]="field.id">{{ field.name }}</option>
+                            <option *ngFor="let field of this.fields" [value]="field.id" [defaultSelected]="this.localDataProvider.field_object.id === field.id ? 'selected' : ''">{{ field.name }}</option>
                           </select>
                           <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="saveInput('field')"><fa-icon [icon]="faSave"></fa-icon></button>
