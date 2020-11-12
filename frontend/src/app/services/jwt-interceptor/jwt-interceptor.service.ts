@@ -29,8 +29,8 @@ export class JwtInterceptorService implements HttpInterceptor {
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-    if (this.authenticationService.getCurrentUserPermissions() !== []) {
+    console.log(this.currentUser);
+    if (this.currentUser && this.authenticationService.getCurrentUserPermissions() === []) {
       this.authenticationService.getUserPermissions(this.currentUser.id).subscribe(
         (perms) => {
           this.authenticationService.userPermissions = perms;
