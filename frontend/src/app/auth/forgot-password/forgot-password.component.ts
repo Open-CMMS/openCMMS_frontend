@@ -56,7 +56,6 @@ export class ForgotPasswordComponent implements OnInit {
     if (this.forgotPasswordForm.value.email !== '' && this.forgotPasswordForm.value.username !== '' ) {
       this.authenticationService.forgotPassword(this.forgotPasswordForm.value.email, this.forgotPasswordForm.value.username).subscribe(
         (res) => {
-          console.log(res);
           this.router.navigate(['sign-in']);
         }
       );
@@ -64,7 +63,6 @@ export class ForgotPasswordComponent implements OnInit {
       if (this.forgotPasswordForm.value.email !== '') {
         this.authenticationService.forgotPassword_email(this.forgotPasswordForm.value.email).subscribe(
           (res) => {
-            console.log(res);
             this.router.navigate(['sign-in']);
           }
         );
@@ -72,7 +70,6 @@ export class ForgotPasswordComponent implements OnInit {
         if (this.forgotPasswordForm.value.username !== '') {
           this.authenticationService.forgotPassword_username(this.forgotPasswordForm.value.username).subscribe(
             (res) => {
-              console.log(res);
               this.router.navigate(['sign-in']);
             }
           );
@@ -85,7 +82,6 @@ export class ForgotPasswordComponent implements OnInit {
    * Function that verify that the form can be validate (either the email or the username should be entered)
    */
   canValidateForm() {
-    console.log(this.forgotPasswordForm.value);
     return this.forgotPasswordForm.value.email === '' && this.forgotPasswordForm.value.username === '';
   }
 }
