@@ -10,6 +10,7 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
 import { DataProviderService } from 'src/app/services/data-provider/data-provider.service';
 import { Equipment } from 'src/app/models/equipment';
 import { Field } from 'src/app/models/field';
+import set = Reflect.set;
 
 @Component({
   selector: 'app-data-provider-list',
@@ -20,12 +21,7 @@ export class DataProviderListComponent implements OnInit, OnDestroy {
 
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
-  test: any[] = ['unField'];
-  test2: any = 'salut';
-  unField: Field = null;
-  dataProviders: DataProvider[] = [
-    new DataProvider(1, 'test', 'test.py', 'tous les jours', true,
-      new Equipment(1, 'test', 'equipmentTypeTest', this.test, this.test2), '192.168.101.1', this.unField)];
+  dataProviders: DataProvider[] = [];
   dataProviderSubscription: Subscription;
 
   /**
@@ -62,16 +58,13 @@ export class DataProviderListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/data-providers', dataProviderId]);
   }
 
-
-
-  // /**
-  //  * Function that switches a Data Provider state (activated/diabled)
-  //  * @param i the index of the teamType in the list
-  //  */
-  // onSwitchStateDataProvider(i: number) {
-  //   const dataProviderId = this.dataProviders[i].id;
-  //   this.dataProviderService.switchStateDataProviders(dataProviderId);
-  // }
+  onActivate(i: number, dataProvider: DataProvider) {
+    setTimeout( () => {
+      this.dataProviderService.updateDataProvider(i, dataProvider, true).subscribe(
+        () => {}
+        );
+    }, 500);
+  }
 
   /**
    * Function called when the component is destroyed

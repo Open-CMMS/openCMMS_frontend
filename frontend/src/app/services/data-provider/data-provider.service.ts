@@ -51,10 +51,10 @@ export class DataProviderService {
               element.name,
               element.file_name,
               element.recurrence,
-              element.activated,
-              element.equipmeent,
-              element.equipement_IP,
-              element.concerned_field);
+              element.is_activated,
+              element.equipment,
+              element.ip_address,
+              element.field_object);
             this.dataProviders.push(dataProvider);
           });
           response[PYTHONFILES].forEach(element => {
@@ -132,7 +132,6 @@ export class DataProviderService {
       dataProvider = this.formatDataProvider(dataProvider);
     }
     const dpJson = JSON.stringify(dataProvider);
-
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-type': 'application/json'

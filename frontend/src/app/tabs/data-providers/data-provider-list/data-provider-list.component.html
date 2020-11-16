@@ -13,6 +13,8 @@
                                  id="activated"
                                  name="activated"
                                  class="form-control"
+                                 [(ngModel)]="dataProvider.is_activated"
+                                 (click)="onActivate(dataProvider.id, dataProvider)"
                           >
                           <span class="slider round"></span>
                         </label>
