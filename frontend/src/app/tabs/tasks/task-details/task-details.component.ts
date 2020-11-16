@@ -36,7 +36,7 @@ import { durationRegex } from 'src/app/shares/consts';
  */
 export class TaskDetailsComponent implements OnInit, OnDestroy {
 
-  // Icons
+  // Icon variables
   faTrash = faTrash;
   faPlusSquare = faPlusSquare;
   faPlusCircle = faPlusCircle;
@@ -50,35 +50,43 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   faBook = faBook;
   faCheckCircle = faCheckCircle;
 
-  // Local variables
+  /*
+    ##### Local variables #####
+  */
+
+  // Useful variables
+  loaded = false;
+  BASE_URL_API = environment.baseUrl;
+
+  // Task
   task: Task = null;
   taskDuration = '';
   teamsTask: Team[] = [];
 
-  loaded = false;
-
+  // Equipments
   equipments: Equipment[] = [];
   equipmentsList = [];
   selectedEquipment = [];
 
+  // Teams
   teams: Team[] = [];
   teamsDiff = [];
-  date: NgbDateStruct;
-  durationDays = 0;
-  durationTime = null;
-  durationRegex = new RegExp(durationRegex);
-  allFieldObjects: any[] = [];
-  taskFieldObjects: any[] = [];
-  endConditions: any[] = [];
-  triggerConditions: any[] = [];
-  fields: any[] = [];
-  files: any[] = [];
-  BASE_URL_API = environment.baseUrl;
-  endConditionValues: any[] = [];
-  fileToUpload: any[] = [];
-  validationError = false;
-  newFile: any = null;
 
+  // Date and duration
+  date: NgbDateStruct;
+  durationRegex = new RegExp(durationRegex);
+  durationError = false;
+
+  // Files
+  files: any[] = [];
+  newFile: any = null;
+  fileToUpload: any[] = [];
+
+  // End conditions
+  endConditionValues: any[] = [];
+  validationError = false;
+
+  // Input activation
   inputEnabled = {
     description: false,
     date: false,
@@ -86,9 +94,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     equipment: false
   };
 
-  // Subscriptionsz
+  // Subscriptions
   teamSubscription: Subscription;
-  tasksSubscription: Subscription;
   equipmentSubscription: Subscription;
 
 
@@ -101,11 +108,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   triggerConditionSubscription: Subscription;
 
   // Forms
-  updateForm: FormGroup;
   addTeamForm: FormGroup;
   dropdownTeamsSettings: IDropdownSettings;
-  dropdownEquipmentsSettings: IDropdownSettings;
-  durationError = false;
 
   /**
    * Constructor of TaskDetailsComponent
@@ -295,19 +299,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.updateTask(updatedField);
-
-    // this.taskService.updateTask(this.task.id, updatedField).subscribe(
-    //   (response) => {
-    //     this.taskService.getTask(this.task.id).subscribe(
-    //       (task: Task) => {
-    //         this.task = task;
-    //         this.initDateInput();
-    //       }
-    //     );
-    //   },
-    //   (error) => {
-    //     this.router.navigate(['four-oh-four']);
-    // });
   }
 
   /**
@@ -323,7 +314,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   */
 
   /**
-   * Function that is triggered to load the modal template for deletion
+   * Function that is triggered to load the modal template for task deletion
    * @param content the modal to open
    */
   openDelete(content) {
@@ -336,8 +327,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that is triggered to load the modal template for deletion
+   * Function that is triggered to load the modal template for file deletion
    * @param content the modal to open
+   * @param file the file to delete
    */
   openDeleteFile(content, file) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete-file'}).result.then((result) => {
@@ -356,13 +348,15 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.modalService.open(content, {ariaLabelledBy: 'modal-add-file'}).result.then((result) => {
       if (result === 'OK') {
         this.getTask(this.task.id);
+      } else if (result === 'KO') {
+        this.newFile = null;
       }
     },
     (error) => {});
   }
 
   /**
-   * Function that is triggered to load the modal template for user addition
+   * Function that is triggered to load the modal template for team addition
    * @param content the modal to open
    */
   openAddTeam(content) {
@@ -379,6 +373,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     ##### REQUESTS RELATED FUNCTIONS #####
   */
 
+  /**
+   * Function that retrieves the Task corresponding to the requested one in the URL
+   * @param id the task id
+   */
   getTask(id: number) {
     // Get the concerned task and its associated objects (equipment, teams, ...)
     this.taskService.getTask(id).subscribe(
@@ -409,13 +407,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       (response) => {
         this.taskService.getTasks();
         this.getTask(this.task.id);
-        // this.taskService.getTask(this.task.id).subscribe(
-        //   (task: Task) => {
-        //     this.task = task;
-        //     this.formatDurationStringAndInitDurationInput();
-        //     this.initDateInput();
-        //     this.initFiles();
-        // });
     });
   }
 
@@ -482,6 +473,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   /**
    * Function that removes a team from a task
+   * @param team the team to remove
    */
   onRemoveTeamFromTask(team: Team) {
     this.taskService.removeTeamFromTask(this.task.id, team.id).subscribe(
@@ -533,6 +525,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   /**
    * Function that registers the image to load
+   * @param condition the condition associated to the photo to upload
    * @param event the event linked to the image field modification
    */
   onSetPhotoToUpload(condition, event) {
@@ -562,6 +555,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Function that update the task when a new file is attached to it
+   */
   onUpdateTaskWithNewFile() {
     if (this.newFile !== null) {
       this.fileService.uploadFile(this.newFile.data).subscribe(
@@ -581,53 +577,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   /*
     ##### TOOL FUNCTIONS #####
   */
-
-  /**
-   * Function that realizes the shaping of the duration for communication with the API
-   */
-  formatDurationStringAndInitDurationInput() {
-    const days_time_separator = ' ';
-    const hours_minutes_separator = ':';
-    const init_str = this.task.duration;
-
-    let days: string;
-    let time: string;
-    let right_part: string;
-    let left_part: string;
-    let days_str: string;
-
-    if (this.task.duration) {
-      [left_part, right_part] = init_str.split(days_time_separator);
-      if (right_part) {
-        days = left_part;
-        time = right_part;
-      } else {
-        if (left_part.indexOf(hours_minutes_separator) === -1) {
-          days = left_part;
-        } else {
-          time = left_part;
-        }
-      }
-
-      if (days) {
-        const plurel = parseInt(days, 10) > 1 ? 's' : '';
-        days_str = parseInt(days, 10) > 0 ? days + 'day' + plurel + ', ' : '';
-        this.durationDays = parseInt(days, 10);
-      } else {
-        days_str = '';
-      }
-
-      if (time) {
-        let hours: string;
-        let minutes: string;
-        let seconds: string;
-        [hours, minutes, seconds] = time.split(hours_minutes_separator);
-        this.durationTime = {hour: parseInt(hours, 10), minute: parseInt(minutes, 10)};
-      }
-
-      this.taskDuration = days_str + time;
-    }
-  }
 
   /**
    * Function that check if the value of a endCondition is valid in order to display the validation button.
@@ -671,22 +620,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     if (found) {
       this.fileToUpload.splice(i, 1);
     }
-  }
-
-  /**
-   * Function that checks if the validation criterion are filled
-   */
-  checkFormContent() {
-    for (const element of this.endConditionValues) {
-      if (typeof element === typeof false) {
-        if (!element) { return false; }
-      } else if (typeof element === typeof 12) {
-        if (element === null) { return false; }
-      } else if (typeof element === typeof 'string') {
-        if (element === null || element === '') { return false; }
-      }
-    }
-    return true;
   }
 
   /*

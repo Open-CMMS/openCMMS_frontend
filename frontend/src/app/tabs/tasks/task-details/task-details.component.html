@@ -173,14 +173,20 @@
 
                     <p>
                         <span class="font-weight-bold">Files associated :</span>
-                        <a class="btn btn-link" ngbTooltip="Add a new file" placement="right" (click)="openAddFile(contentAddFile)"><fa-icon [icon]="faPlusCircle" style="color: gray;"></fa-icon></a>
+                        <span *ngIf="onChangeTaskPermission() && !this.task.over">
+                            <a class="ml-3" style="cursor: pointer;" ngbTooltip="Add a new file" placement="right" (click)="openAddFile(contentAddFile)"><fa-icon [icon]="faPlusCircle" style="color: gray;"></fa-icon></a>
+                        </span>
                     </p>
                     <ul class="col-12 list-group">
                         <li
                             class="container-fluid list-group-item justify-content-between"
                             *ngFor="let file of files; let i = index"
                             >
-                            <a style="cursor: pointer;" (click)="openDeleteFile(contentDeleteFile, file)"><fa-icon class="mr-3" [icon]="faMinusCircle" style="color: red;"></fa-icon></a>
+                            <span *ngIf="onChangeTaskPermission() && !this.task.over">
+                                <a style="cursor: pointer;" ngbTooltip="Delete" placement="left" (click)="openDeleteFile(contentDeleteFile, file)">
+                                    <fa-icon class="mr-3" [icon]="faMinusCircle" style="color: red;"></fa-icon>
+                                </a>
+                            </span>
                             <a class="mr-2" href="{{ BASE_URL_API }}{{ file.fileLink }}" target="_blank">{{ file.fileName }}</a><fa-icon [icon]="faCheck" *ngIf="!file.is_manual" style="color: green;"></fa-icon><fa-icon [icon]="faBook" *ngIf="file.is_manual"></fa-icon>
                             
                         </li>
