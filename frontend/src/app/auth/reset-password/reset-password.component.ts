@@ -55,8 +55,8 @@ export class ResetPasswordComponent implements OnInit {
           }
         }
       );
-    // } else {
-    //   this.router.navigate(['']);
+    } else {
+      this.router.navigate(['']);
     }
 
     this.initForm();

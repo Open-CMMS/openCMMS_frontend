@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AuthenticationService} from '../../services/auth/authentication.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
@@ -14,8 +16,19 @@ export class ForgotPasswordComponent implements OnInit {
   // Form
   forgotPasswordForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) { }
+  /**
+   * Constructor of ForgotPassword
+   * @param formBuilder the service to handle forms
+   * @param authenticationService the service to handle authentication
+   * @param router the service used to handle routing
+   */
+  constructor(private formBuilder: FormBuilder,
+              private authenticationService: AuthenticationService,
+              private router: Router) { }
 
+  /**
+   * Function that initializes the component
+   */
   ngOnInit(): void {
     this.initForm();
   }
@@ -30,17 +43,49 @@ export class ForgotPasswordComponent implements OnInit {
     });
   }
 
+  /**
+   * Function that call the forgot_password function in the API on click on the Send email button
+   */
   onSubmit() {
     this.submitted = true;
 
     if (this.forgotPasswordForm.invalid) {
       return;
     }
+
+    if (this.forgotPasswordForm.value.email !== '' && this.forgotPasswordForm.value.username !== '' ) {
+      this.authenticationService.forgotPassword(this.forgotPasswordForm.value.email, this.forgotPasswordForm.value.username).subscribe(
+        (res) => {
+          console.log(res);
+          this.router.navigate(['sign-in']);
+        }
+      );
+    } else {
+      if (this.forgotPasswordForm.value.email !== '') {
+        this.authenticationService.forgotPassword_email(this.forgotPasswordForm.value.email).subscribe(
+          (res) => {
+            console.log(res);
+            this.router.navigate(['sign-in']);
+          }
+        );
+      } else {
+        if (this.forgotPasswordForm.value.username !== '') {
+          this.authenticationService.forgotPassword_username(this.forgotPasswordForm.value.username).subscribe(
+            (res) => {
+              console.log(res);
+              this.router.navigate(['sign-in']);
+            }
+          );
+        }
+      }
+    }
   }
 
+  /**
+   * Function that verify that the form can be validate (either the email or the username should be entered)
+   */
   canValidateForm() {
-    console.log('can validate form');
-    console.log(this.forgotPasswordForm.controls.email);
-    return this.forgotPasswordForm.controls.email.value === '' && this.forgotPasswordForm.controls.username.value === '';
+    console.log(this.forgotPasswordForm.value);
+    return this.forgotPasswordForm.value.email === '' && this.forgotPasswordForm.value.username === '';
   }
 }
