@@ -3,7 +3,6 @@ import { faTrash, faPen, faSave, faInfoCircle } from '@fortawesome/free-solid-sv
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Field } from 'src/app/models/field';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { DataProviderService } from '../../../services/data-provider/data-provider.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { DataProvider } from 'src/app/models/data-provider';
@@ -23,18 +22,19 @@ export class DataProviderDetailsComponent implements OnInit {
   faTrash = faTrash;
   faPen = faPen;
   faSave = faSave;
-  durationDays = 0;
-  durationTime: { hour: number; minute: number; };
   localDataProvider: DataProvider = null;
 
   fileNames: string[];
   equipments: Equipment[];
 
+  // onTest variables
+  tested = false;
+  success = false;
+
   //
   loaded = false;
 
   // Recurrence
-  recurrenceRegex: string;
   inputEnabled = {
     name: false,
     file_name: false,
@@ -69,8 +69,6 @@ export class DataProviderDetailsComponent implements OnInit {
     });
     this.dataProviderService.getDataProvider(id)
       .subscribe((response) => {
-        console.log('--RESPONSE--');
-        console.log(response);
         this.localDataProvider = new DataProvider(response.id,
           response.name,
           response.file_name,
@@ -88,23 +86,12 @@ export class DataProviderDetailsComponent implements OnInit {
       }
     );
     this.dataProviderService.emitFileNames();
-    console.log('--- FILENAMES ---');
-    console.log(this.fileNames);
-
     this.dataProviderService.equipmentsSubject.subscribe(
       (equipments: Equipment[]) => {
         this.equipments = equipments;
       }
     );
     this.dataProviderService.emitEquipments();
-  }
-
-  /**
-   * Function that navigate the equipment detail page linked to this Data Provider.
-   * @param idEquipment The Equipment Id.
-   */
-  onViewEquipment(idEquipment: number) {
-    this.router.navigate(['/equipments', idEquipment]);
   }
 
   /**
@@ -124,13 +111,14 @@ export class DataProviderDetailsComponent implements OnInit {
         break;
       case 'equipment':
         this.inputEnabled.equipment = true;
+        this.inputEnabled.field = false;
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = true;
         break;
       case 'field':
+        this.inputEnabled.equipment = false;
         this.inputEnabled.field = true;
-        console.log(this.fields);
         break;
       default:
         break;
@@ -152,67 +140,51 @@ export class DataProviderDetailsComponent implements OnInit {
    * @param attribute the attribute describing the type of input
    */
   saveInput(attribute: string) {
-    let updatedField: any;
+    // let updatedField: any;
     switch (attribute) {
       case 'name':
-        updatedField = {name: this.localDataProvider.name};
+        // updatedField = {name: this.localDataProvider.name};
         this.inputEnabled.name = false;
         break;
       case 'file_name':
-        updatedField = {file_name: this.localDataProvider.file_name};
+        // updatedField = {file_name: this.localDataProvider.file_name};
         this.inputEnabled.file_name = false;
         break;
       case 'recurrence':
-        updatedField = {recurrence: this.localDataProvider.recurrence};
+        // updatedField = {recurrence: this.localDataProvider.recurrence};
         this.inputEnabled.recurrence = false;
         break;
       case 'equipment':
-        updatedField = {equipment: this.localDataProvider.equipment};
+        // updatedField = {equipment: this.localDataProvider.equipment};
         this.inputEnabled.equipment = false;
         break;
       case 'ip_address':
-        updatedField = {ip_address: this.localDataProvider.ip_address};
+        // updatedField = {ip_address: this.localDataProvider.ip_address};
         this.inputEnabled.ip_address = false;
         break;
       case 'field':
-        updatedField = {field: this.localDataProvider.field_object};
+        // updatedField = {field: this.localDataProvider.field_object};
         this.inputEnabled.field = false;
         break;
       case 'is_activated':
-        setTimeout(() => {
-          updatedField = {is_activated: this.localDataProvider.is_activated};
-        }, 1000);
         break;
-      // case 'end_date':
-      //   const date_str = this.taskService.normaliseEndDateValue(this.date);
-      //   this.task.end_date = date_str;
-      //   updatedField = {end_date: this.task.end_date};
-      //   this.inputEnabled.date = false;
-      //   break;
-      // case 'duration':
-      //   this.task.duration = this.durationDays + ' days, ' + this.durationTime.hour + ':' + this.durationTime.minute + ':00';
-      //   this.inputEnabled.duration = false;
-      //   break;
-      // case 'equipment':
-      //   updatedField = {equipment: this.task.equipment.id};
-      //   this.inputEnabled.equipment = false;
-      //   break;
       default:
          break;
     }
-    console.log(updatedField);
-    console.log(this.localDataProvider);
-    this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider).subscribe(
-      () => {
-        this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
-          (dataProvider: DataProvider) => {
-            this.localDataProvider = dataProvider;
-          }
-        );
-      },
-      () => {
-        this.router.navigate(['four-oh-four']);
-    });
+    // Ici le setTimeout sert dans le cas où l'on change le is_activated, en effet il y a un délai avant que le changement soit effectué.
+    setTimeout(() => {
+      this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider, true).subscribe(
+        () => {
+          this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
+            (dataProvider: DataProvider) => {
+              this.localDataProvider = dataProvider;
+            }
+          );
+        },
+        () => {
+          this.router.navigate(['four-oh-four']);
+        });
+    }, 500);
   }
   /**
    * Function that test if a string is an input duration
@@ -231,7 +203,20 @@ export class DataProviderDetailsComponent implements OnInit {
         }
       }
     );
-    console.log('pass button');
+  }
+
+  onTest() {
+    this.dataProviderService.testDataProvider(this.localDataProvider, true).subscribe(
+      (response) => {
+        this.tested = true;
+        this.success = true;
+        // this.success = (typeof response === 'number');
+      },
+      (error) => {
+        this.tested = true;
+        this.success = false;
+      }
+    );
   }
 
   /**
@@ -241,8 +226,12 @@ export class DataProviderDetailsComponent implements OnInit {
   openDelete(content) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
-        // this.onDeleteTask();
-        console.log('delete dataprovider');
+        return this.dataProviderService.deleteDataProvider(this.localDataProvider.id).subscribe(
+          () => {
+            this.dataProviderService.getDataProviders();
+            this.router.navigate(['/data-providers']);
+          }
+        );
       }
     },
     (error) => {});

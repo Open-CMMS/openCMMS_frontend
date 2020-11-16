@@ -99,7 +99,7 @@ export class NewDataProviderComponent implements OnInit {
       formValues.equipment_ip,
       formValues.field
     );
-    this.dataProviderService.testDataProvider(newDataProvider).subscribe(
+    this.dataProviderService.testDataProvider(newDataProvider, false).subscribe(
       (response) => {
         this.tested = true;
         this.success = true;

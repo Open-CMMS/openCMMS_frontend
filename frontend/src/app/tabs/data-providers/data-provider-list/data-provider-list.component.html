@@ -8,6 +8,14 @@
                 <div class="container-fluid row justify-content-between">
                     <h5>{{ dataProvider.name }}</h5>
                     <div class="d-flex">
+                        <label class="switch mx-2">
+                          <input type="checkbox"
+                                 id="activated"
+                                 name="activated"
+                                 class="form-control"
+                          >
+                          <span class="slider round"></span>
+                        </label>
                         <button class="btn btn-info mx-2" (click)="onViewDataProvider(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                     </div>
                 </div>

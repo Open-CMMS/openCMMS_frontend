@@ -98,9 +98,26 @@ export class DataProviderService {
   //   .get<any>(this.BASE_URL_API + '/api/maintenancemanagement/dataproviders/'+id+'/');
   // }
 
-  testDataProvider(dataProvider: DataProvider): Observable<any> {
+  formatDataProvider(dataProvider: DataProvider) {
+    const equipment_id: any = dataProvider.equipment.id;
+    const field_id: any = dataProvider.field_object.id;
+    return new DataProvider(
+      dataProvider.id,
+      dataProvider.name,
+      dataProvider.file_name,
+      dataProvider.recurrence,
+      dataProvider.is_activated,
+      equipment_id,
+      dataProvider.ip_address,
+      field_id,
+    );
+  }
+
+  testDataProvider(dataProvider: DataProvider, needFormat: boolean): Observable<any> {
+    if (needFormat) {
+      dataProvider = this.formatDataProvider(dataProvider);
+    }
     const dpJson = JSON.stringify(dataProvider);
-    console.log(dpJson);
     const httpOptions = {
       headers: new HttpHeaders( {
         'Content-type': 'application/json'
@@ -110,23 +127,11 @@ export class DataProviderService {
   }
 
 
-  updateDataProvider(id, dataProvider: DataProvider): Observable<DataProvider> {
-    const equipment_id: any = dataProvider.equipment.id;
-    const field_id: any = dataProvider.field_object.id;
-
-    const modifiedDataProvider = new DataProvider(
-      id,
-      dataProvider.name,
-      dataProvider.file_name,
-      dataProvider.recurrence,
-      dataProvider.is_activated,
-      equipment_id,
-      dataProvider.ip_address,
-      field_id,
-      )
-
-    const dpJson = JSON.stringify(modifiedDataProvider);
-    console.log(dpJson);
+  updateDataProvider(id, dataProvider: DataProvider, needFormat: boolean): Observable<DataProvider> {
+    if (needFormat) {
+      dataProvider = this.formatDataProvider(dataProvider);
+    }
+    const dpJson = JSON.stringify(dataProvider);
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -138,7 +143,7 @@ export class DataProviderService {
   }
 
   deleteDataProvider(dataProviderId: number) {
-    console.log('pass deleteDataProvider');
-    return this.httpClient.delete(this.BASE_URL_API + '/api/dataproviders/' + dataProviderId + '/');
+    console.log(this.BASE_URL_API + '/api/dataproviders/' + dataProviderId + '/');
+    return this.httpClient.delete<DataProvider>(this.BASE_URL_API + '/api/dataproviders/' + dataProviderId + '/');
   }
 }

@@ -66,12 +66,12 @@
                           </div>
                         </div>
                         <p><span class="font-weight-bold">Recurrence :</span></p>
-                        <div class="d-flex flex-column col-6"> 
+                        <div class="d-flex flex-column col-6">
                           <div class="input-group row">
                             <input class="form-control" [(ngModel)]="localDataProvider.recurrence" [attr.disabled]="!inputEnabled.recurrence ? '' : null">
                             <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
                               <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.recurrence" (click)="enableInput('recurrence')"><fa-icon [icon]="faPen"></fa-icon></button>
-                              
+
                             </div>
                             <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
                               <button class="btn btn-outline-secondary" *ngIf="inputEnabled.recurrence" (click)="saveInput('recurrence')"><fa-icon [icon]="faSave"></fa-icon></button>
@@ -143,7 +143,16 @@
                             <button class="btn btn-outline-secondary" (click)="saveInput('field')"><fa-icon [icon]="faSave"></fa-icon></button>
                           </div>
                         </div>
-                        <button class="btn btn-success">Test</button>
+                      <div class="d-flex justify-content-end align-items-center">
+                        <div class="success" *ngIf="success && tested "> Success ! </div>
+                        <div class="failed" *ngIf="!success && tested "> Failed ! </div>
+                        <button class="btn btn-success "
+                                (click)="onTest()"
+                                type="button"
+                        >
+                          Test
+                        </button>
+                      </div>
                     </div>
                 </div>
             </div>
