@@ -56,6 +56,7 @@ import { ResetPasswordComponent } from './auth/reset-password/reset-password.com
 import { TemplatesListComponent } from './tabs/templates/templates-list/templates-list.component';
 import { NewTemplateComponent } from './tabs/templates/new-template/new-template.component';
 import { FilterPipe } from './tabs/tasks/tasks-list/utils/search-filter.pipe';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -93,7 +94,8 @@ import { FilterPipe } from './tabs/tasks/tasks-list/utils/search-filter.pipe';
     ResetPasswordComponent,
     TemplatesListComponent,
     NewTemplateComponent,
-    FilterPipe
+    FilterPipe,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

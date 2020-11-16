@@ -177,4 +177,30 @@ export class AuthenticationService {
 
     return this.httpClient.post<any>(this.BASE_URL_API + '/api/usersmanagement/set_password', json, httpOptions);
   }
+
+  /**
+   * Function that send an email to the user to reset his password (user identified thanks to his email and username)
+   * @param email the email the email of the user
+   * @param username the username of the user
+   */
+  forgotPassword(email: string, username: string) {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/forget_password?email=' +  email + '&&username=' + username);
+  }
+
+  /**
+   * Function that send an email to the user to reset his password (user identified thanks to his email)
+   * @param email the email the email of the user
+   */
+  forgotPassword_email(email: string) {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/forget_password?email=' +  email);
+  }
+
+  /**
+   * Function that send an email to the user to reset his password (user identified thanks to his username)
+   * @param username the username of the user
+   */
+  forgotPassword_username(username: string) {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/forget_password?username=' + username);
+  }
+
 }
