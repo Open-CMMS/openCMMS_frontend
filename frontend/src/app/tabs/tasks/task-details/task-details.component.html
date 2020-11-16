@@ -173,7 +173,7 @@
 
                     <p>
                         <span class="font-weight-bold">Files associated :</span>
-                        <span *ngIf="onChangeTaskPermission() && !this.task.over">
+                        <span *ngIf="onChangeTaskPermission() && !task.over">
                             <a class="ml-3" style="cursor: pointer;" ngbTooltip="Add a new file" placement="right" (click)="openAddFile(contentAddFile)"><fa-icon [icon]="faPlusCircle" style="color: gray;"></fa-icon></a>
                         </span>
                     </p>
@@ -182,7 +182,7 @@
                             class="container-fluid list-group-item justify-content-between"
                             *ngFor="let file of files; let i = index"
                             >
-                            <span *ngIf="onChangeTaskPermission() && !this.task.over">
+                            <span *ngIf="onChangeTaskPermission() && !task.over && file.is_manual">
                                 <a style="cursor: pointer;" ngbTooltip="Delete" placement="left" (click)="openDeleteFile(contentDeleteFile, file)">
                                     <fa-icon class="mr-3" [icon]="faMinusCircle" style="color: red;"></fa-icon>
                                 </a>
