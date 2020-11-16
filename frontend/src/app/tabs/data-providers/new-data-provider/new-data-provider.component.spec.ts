@@ -1,4 +1,7 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { NewDataProviderComponent } from './new-data-provider.component';
 
@@ -8,7 +11,9 @@ describe('NewDataProviderComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewDataProviderComponent ]
+      declarations: [ NewDataProviderComponent ],
+      imports: [ ReactiveFormsModule, RouterTestingModule, HttpClientTestingModule ]
+
     })
     .compileComponents();
   }));

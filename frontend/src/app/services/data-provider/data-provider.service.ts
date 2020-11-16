@@ -189,7 +189,6 @@ export class DataProviderService {
    * @param dataProviderId dataProvider Id
    */
   deleteDataProvider(dataProviderId: number) {
-    console.log(this.BASE_URL_API + '/api/dataproviders/' + dataProviderId + '/');
     return this.httpClient.delete<DataProvider>(this.BASE_URL_API + '/api/dataproviders/' + dataProviderId + '/');
   }
 }

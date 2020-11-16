@@ -8,10 +8,6 @@ import { Subscription } from 'rxjs';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { DataProviderService } from 'src/app/services/data-provider/data-provider.service';
-import { Equipment } from 'src/app/models/equipment';
-import { Field } from 'src/app/models/field';
-import set = Reflect.set;
-
 @Component({
   selector: 'app-data-provider-list',
   templateUrl: './data-provider-list.component.html',
@@ -19,8 +15,11 @@ import set = Reflect.set;
 })
 export class DataProviderListComponent implements OnInit, OnDestroy {
 
+  // Icons
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
+
+  // Local variables
   dataProviders: DataProvider[] = [];
   dataProviderSubscription: Subscription;
 
@@ -51,16 +50,20 @@ export class DataProviderListComponent implements OnInit, OnDestroy {
 
   /**
    * Function that navigates to the DataProviderDetailComponent
-   * @param i the index of the equipmentType in the list
+   * @param i the index of the dataProvider in the list
    */
   onViewDataProvider(i: number) {
     const dataProviderId = this.dataProviders[i].id;
     this.router.navigate(['/data-providers', dataProviderId]);
   }
 
-  onActivate(i: number, dataProvider: DataProvider) {
+  /**
+   * Function that activates/deactivates a data provider.
+   * @param dataProvider the dataprovider to activate or deactivate.
+   */
+  onActivate(dataProvider: DataProvider) {
     setTimeout( () => {
-      this.dataProviderService.updateDataProvider(i, dataProvider, true).subscribe(
+      this.dataProviderService.updateDataProvider(dataProvider.id, dataProvider, true).subscribe(
         () => {}
         );
     }, 500);

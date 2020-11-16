@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { faInfoCircle} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {DataProviderService} from "../../../services/data-provider/data-provider.service";
-import {Equipment} from "../../../models/equipment";
-import {Field} from "../../../models/field";
-import {DataProvider} from "../../../models/data-provider";
-import {Router} from "@angular/router";
+import {DataProviderService} from '../../../services/data-provider/data-provider.service';
+import {Equipment} from '../../../models/equipment';
+import {Field} from '../../../models/field';
+import {DataProvider} from '../../../models/data-provider';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-new-data-provider',
@@ -14,8 +14,10 @@ import {Router} from "@angular/router";
 })
 export class NewDataProviderComponent implements OnInit {
 
+  // Icon
   faInfoCircle = faInfoCircle;
 
+  // Test variables
   tested = false;
   success = false;
 
@@ -63,6 +65,9 @@ export class NewDataProviderComponent implements OnInit {
     this.initForm();
   }
 
+  /**
+   * Function to init the form.
+   */
   initForm() {
     this.recurrenceRegex = '^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$';
     const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
@@ -78,6 +83,9 @@ export class NewDataProviderComponent implements OnInit {
     });
   }
 
+  /**
+   * Function to set the select field according to the selected equipment.
+   */
   onSelectField() {
     this.equipments.forEach(
       (aEquipment) => {
@@ -88,6 +96,9 @@ export class NewDataProviderComponent implements OnInit {
     );
   }
 
+  /**
+   * Function call to test the dataProvider params.
+   */
   onTest() {
     const formValues = this.createForm.value;
     const newDataProvider = new DataProvider(1,
@@ -103,7 +114,6 @@ export class NewDataProviderComponent implements OnInit {
       (response) => {
         this.tested = true;
         this.success = true;
-        // this.success = (typeof response === 'number');
       },
     (error) => {
         this.tested = true;
@@ -112,6 +122,9 @@ export class NewDataProviderComponent implements OnInit {
     );
   }
 
+  /**
+   * Function call to create the DataProvider.
+   */
   onCreateDataProvider() {
     const formValues = this.createForm.value;
     const newDataProvider = new DataProvider(1,

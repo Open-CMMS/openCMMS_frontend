@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import {Router} from "@angular/router";
-import {UtilsService} from "../../../services/utils/utils.service";
-import {AuthenticationService} from "../../../services/auth/authentication.service";
+import {Router} from '@angular/router';
+import {UtilsService} from '../../../services/utils/utils.service';
+import {AuthenticationService} from '../../../services/auth/authentication.service';
 
 @Component({
   selector: 'app-data-provider-management',
@@ -11,6 +11,7 @@ import {AuthenticationService} from "../../../services/auth/authentication.servi
 })
 export class DataProviderManagementComponent implements OnInit {
 
+  // Icon
   faPlus = faPlus;
 
   constructor(private router: Router,
@@ -20,12 +21,15 @@ export class DataProviderManagementComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * Function to navigate to the new Data Provider page.
+   */
   onCreateDataProvider() {
     this.router.navigate(['/new-data-provider']);
   }
 
   /**
-   * Function that display Create button when having permission
+   * Function that display Create button when having permission.
    */
   onAddEquipmentTypePermission() {
     return this.utilsService.isAUserPermission(

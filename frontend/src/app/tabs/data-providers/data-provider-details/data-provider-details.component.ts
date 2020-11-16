@@ -4,7 +4,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Field } from 'src/app/models/field';
 import { DataProviderService } from '../../../services/data-provider/data-provider.service';
-import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { DataProvider } from 'src/app/models/data-provider';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
@@ -22,19 +21,19 @@ export class DataProviderDetailsComponent implements OnInit {
   faTrash = faTrash;
   faPen = faPen;
   faSave = faSave;
-  localDataProvider: DataProvider = null;
-
-  fileNames: string[];
-  equipments: Equipment[];
 
   // onTest variables
   tested = false;
   success = false;
 
-  //
+  // local variables
   loaded = false;
+  localDataProvider: DataProvider = null;
+  fileNames: string[];
+  equipments: Equipment[];
+  fields: Field[];
 
-  // Recurrence
+  // Input enabled variables
   inputEnabled = {
     name: false,
     file_name: false,
@@ -43,17 +42,16 @@ export class DataProviderDetailsComponent implements OnInit {
     equipment: false,
     field: false
   };
-  fields: Field[];
+
+
   /**
    * Constructor of dataProviderDetailsComponent
    * @param dataProviderService the service used to handle dataProviders
    * @param route the service used to handle route parameters
-   * @param equipmentService the service used to handle equipments
    * @param router the service used to handle routing
    * @param formBuilder the service used to handle forms
    */
   constructor(
-    private equipmentService: EquipmentService,
     private dataProviderService: DataProviderService,
     private route: ActivatedRoute,
     private router: Router,
@@ -140,30 +138,23 @@ export class DataProviderDetailsComponent implements OnInit {
    * @param attribute the attribute describing the type of input
    */
   saveInput(attribute: string) {
-    // let updatedField: any;
     switch (attribute) {
       case 'name':
-        // updatedField = {name: this.localDataProvider.name};
         this.inputEnabled.name = false;
         break;
       case 'file_name':
-        // updatedField = {file_name: this.localDataProvider.file_name};
         this.inputEnabled.file_name = false;
         break;
       case 'recurrence':
-        // updatedField = {recurrence: this.localDataProvider.recurrence};
         this.inputEnabled.recurrence = false;
         break;
       case 'equipment':
-        // updatedField = {equipment: this.localDataProvider.equipment};
         this.inputEnabled.equipment = false;
         break;
       case 'ip_address':
-        // updatedField = {ip_address: this.localDataProvider.ip_address};
         this.inputEnabled.ip_address = false;
         break;
       case 'field':
-        // updatedField = {field: this.localDataProvider.field_object};
         this.inputEnabled.field = false;
         break;
       case 'is_activated':
@@ -195,6 +186,9 @@ export class DataProviderDetailsComponent implements OnInit {
     return regex_time.test(stringToTest);
   }
 
+  /**
+   * Function that set the select field according to the selected equipment.
+   */
   onSelectField() {
     this.equipments.forEach(
       (aEquipment) => {
@@ -205,12 +199,14 @@ export class DataProviderDetailsComponent implements OnInit {
     );
   }
 
+  /**
+   * Function that test the data provider with the python file associated.
+   */
   onTest() {
     this.dataProviderService.testDataProvider(this.localDataProvider, true).subscribe(
       (response) => {
         this.tested = true;
         this.success = true;
-        // this.success = (typeof response === 'number');
       },
       (error) => {
         this.tested = true;
