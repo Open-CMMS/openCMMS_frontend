@@ -26,6 +26,7 @@ import { Subscription, Subject } from 'rxjs';
 import { FileService } from 'src/app/services/files/file.service';
 import { environment } from 'src/environments/environment';
 import { durationRegex } from 'src/app/shares/consts';
+
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
