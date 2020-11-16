@@ -168,28 +168,26 @@ export class EquipmentTypeDetailsComponent implements OnInit {
       );
   }
 
+  /**
+   * Fonction that allows to modify the fields
+   */
   openModifyField() {
-  this.modifyFields = true;
-  this.newFieldsValues = [];
+    this.modifyFields = true;
+    this.newFieldsValues = [];
   }
 
+  /**
+   * Function to save the modification of the values
+   */
   saveFields() {
     this.modifyFields = false;
-    console.log('newFieldsValue', this.newFieldsValues);
-    console.log('field', this.fields);
     this.newFieldsValues.forEach((element, index) => {
-      console.log('element', element);
-      console.log(index);
       if (element !== '') {
-        console.log('here');
         element.split(',').map(s => {
-          s.trim();
-          console.log('s', s);
-          this.fields[index].value.push(s);
+          this.fields[index].value.push(String(s).replace(/\s/g, ''));
         });
       }
     });
-    console.log('field after', this.fields);
     this.modifyEquipmentType();
   }
 }
