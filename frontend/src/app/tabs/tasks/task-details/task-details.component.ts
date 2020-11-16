@@ -7,7 +7,16 @@ import { TeamService } from 'src/app/services/teams/team.service';
 import { NgbModal, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
-import { faTrash, faPen, faCalendar, faSave, faInfoCircle, faCheck, faBook } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTrash,
+  faPen,
+  faCalendar,
+  faSave,
+  faInfoCircle,
+  faCheck,
+  faBook,
+  faPlusCircle,
+  faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { faPlusSquare, faMinusSquare, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
@@ -30,6 +39,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Icons
   faTrash = faTrash;
   faPlusSquare = faPlusSquare;
+  faPlusCircle = faPlusCircle;
+  faMinusCircle = faMinusCircle;
   faMinusSquare = faMinusSquare;
   faPen = faPen;
   faCalendar = faCalendar;
@@ -66,7 +77,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   endConditionValues: any[] = [];
   fileToUpload: any[] = [];
   validationError = false;
-  endConditionsOriginal: any[] = [];
+  newFile: any = null;
 
   inputEnabled = {
     description: false,
@@ -75,13 +86,17 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     equipment: false
   };
 
+  // Subscriptionsz
   teamSubscription: Subscription;
   tasksSubscription: Subscription;
   equipmentSubscription: Subscription;
 
+
+  // End conditions
   endConditionsSubject = new Subject<any[]>();
   endConditionSubscription: Subscription;
 
+  // Trigger Conditions
   triggerConditionsSubject = new Subject<any[]>();
   triggerConditionSubscription: Subscription;
 
@@ -122,24 +137,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       id = +params.id;
     });
 
-    // Get the concerned task and its associated objects (equipment, teams, ...)
-    this.taskService.getTask(id).subscribe(
-      (task: Task) => {
-        this.task = task;
-        // Set up files format with right URIs
-        this.initFiles();
-        // Init duration status
-        this.durationError = !this.durationRegex.test(task.duration);
-        // Initialize the Date
-        this.initDateInput();
-        // Initialize the select content of Team
-        this.initTeamsDiff();
-        // Initialize values of endConditions for display purposes
-        this.initEndConditionValues();
-        // initialize Forms
-        this.initForm();
-        this.loaded = true;
-    });
+    this.getTask(id);
 
     // Subscribing to the teams list
     this.teamSubscription = this.teamService.teamSubject.subscribe(
@@ -157,6 +155,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.equipmentService.emitEquipments();
     this.teamService.emitTeams();
   }
+
+  /*
+    ##### INITIALISATION FUNCTIONS #####
+  */
 
   /**
    * Function that builds up the files array with required fields for display purposes
@@ -195,6 +197,50 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  /**
+   * Function that initializes the date input
+   */
+  initDateInput() {
+    if (this.task.end_date) {
+      const tab_date = this.task.end_date.split('-');
+      this.date = {year: parseInt(tab_date[0], 10),
+                  month: parseInt(tab_date[1], 10),
+                  day: parseInt(tab_date[2], 10)};
+    } else {
+      this.date = null;
+    }
+  }
+
+  /**
+   * Function that initialize the multiselect for Teams
+   */
+  initTeamsSelect() {
+    this.initTeamsDiff();
+    this.dropdownTeamsSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'value',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      noDataAvailablePlaceholderText: 'No other teams available',
+      itemsShowLimit: 4,
+      allowSearchFilter: true
+    };
+  }
+
+  /**
+   * Function that initializes the different forms used in the component
+   */
+  initForm() {
+    this.addTeamForm = this.formBuilder.group({
+      teams: ''
+    });
+  }
+
+  /*
+    ##### DYNAMIC FIELDS MODIFICATION FUNCTIONS #####
+  */
 
   /**
    * Function that enables the input according to the attribute
@@ -248,18 +294,20 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         break;
     }
 
-    this.taskService.updateTask(this.task.id, updatedField).subscribe(
-      (response) => {
-        this.taskService.getTask(this.task.id).subscribe(
-          (task: Task) => {
-            this.task = task;
-            this.initDateInput();
-          }
-        );
-      },
-      (error) => {
-        this.router.navigate(['four-oh-four']);
-    });
+    this.updateTask(updatedField);
+
+    // this.taskService.updateTask(this.task.id, updatedField).subscribe(
+    //   (response) => {
+    //     this.taskService.getTask(this.task.id).subscribe(
+    //       (task: Task) => {
+    //         this.task = task;
+    //         this.initDateInput();
+    //       }
+    //     );
+    //   },
+    //   (error) => {
+    //     this.router.navigate(['four-oh-four']);
+    // });
   }
 
   /**
@@ -270,19 +318,269 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.durationError = durationField.validity.patternMismatch;
   }
 
+  /*
+    ##### MODAL RELATED FUNCTIONS #####
+  */
+
   /**
-   * Function that initializes the date input
+   * Function that is triggered to load the modal template for deletion
+   * @param content the modal to open
    */
-  initDateInput() {
-    if (this.task.end_date) {
-      const tab_date = this.task.end_date.split('-');
-      this.date = {year: parseInt(tab_date[0], 10),
-                  month: parseInt(tab_date[1], 10),
-                  day: parseInt(tab_date[2], 10)};
+  openDelete(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onDeleteTask();
+      }
+    },
+    (error) => {});
+  }
+
+  /**
+   * Function that is triggered to load the modal template for deletion
+   * @param content the modal to open
+   */
+  openDeleteFile(content, file) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-delete-file'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onDeleteFile(file);
+      }
+    },
+    (error) => {});
+  }
+
+  /**
+   * Function that is triggered to load the modal template for file addition
+   * @param content the modal to open
+   */
+  openAddFile(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-add-file'}).result.then((result) => {
+      if (result === 'OK') {
+        this.getTask(this.task.id);
+      }
+    },
+    (error) => {});
+  }
+
+  /**
+   * Function that is triggered to load the modal template for user addition
+   * @param content the modal to open
+   */
+  openAddTeam(content) {
+    this.initTeamsSelect();
+    this.modalService.open(content, {ariaLabelledBy: 'modal-addTeam'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onAddTeam();
+      }
+    },
+    (error) => {});
+  }
+
+  /*
+    ##### REQUESTS RELATED FUNCTIONS #####
+  */
+
+  getTask(id: number) {
+    // Get the concerned task and its associated objects (equipment, teams, ...)
+    this.taskService.getTask(id).subscribe(
+      (task: Task) => {
+        this.task = task;
+        // Set up files format with right URIs
+        this.initFiles();
+        // Init duration status
+        this.durationError = !this.durationRegex.test(task.duration);
+        // Initialize the Date
+        this.initDateInput();
+        // Initialize the select content of Team
+        this.initTeamsDiff();
+        // Initialize values of endConditions for display purposes
+        this.initEndConditionValues();
+        // initialize Forms
+        this.initForm();
+        this.loaded = true;
+    });
+  }
+
+  /**
+   * Function that do the update on the Task by calling the function of the TaskService.
+   * @param finalData the data to send for update.
+   */
+  updateTask(finalData) {
+    this.taskService.updateTask(this.task.id, finalData).subscribe(
+      (response) => {
+        this.taskService.getTasks();
+        this.getTask(this.task.id);
+        // this.taskService.getTask(this.task.id).subscribe(
+        //   (task: Task) => {
+        //     this.task = task;
+        //     this.formatDurationStringAndInitDurationInput();
+        //     this.initDateInput();
+        //     this.initFiles();
+        // });
+    });
+  }
+
+  /*
+    ##### EVENT TRIGGERED FUNCTIONS #####
+  */
+
+  /**
+   * Function that navigate the equipment detail page linked to this task
+   * @param idEquipment the id of the equipment to consult
+   */
+  onViewEquipment(idEquipment: number) {
+    this.router.navigate(['/equipments', idEquipment]);
+  }
+
+  /**
+   * Function that redirects on the team details page
+   * @param team the team we want to access
+   */
+  onViewTeam(team: Team) {
+    this.router.navigate(['/teams', team.id]);
+  }
+
+  onDeleteFile(file) {
+    const fileToDelete = this.task.files.find(taskFile => taskFile.file.split('/')[1] === file.fileName);
+    this.fileService.deleteFile(fileToDelete.id).subscribe(
+      (_) => {
+        this.getTask(this.task.id);
+      },
+      (error) => {
+        console.log('Error :', error);
+      }
+    );
+  }
+
+  /**
+   * Function that is triggered when validating the modal of deletion
+   */
+  onDeleteTask() {
+    this.taskService.deleteTask(this.task.id).subscribe(
+      (resp) => {
+        this.teamService.getTeams();
+        this.router.navigate(['/tasks']);
+    });
+  }
+
+  /**
+   * Function that add a user in a team
+   */
+  onAddTeam() {
+    const formValues = this.addTeamForm.value;
+    const teamsToAdd = [];
+    formValues.teams.forEach(team => {
+      teamsToAdd.push(team.id);
+    });
+    teamsToAdd.forEach((teamId) => {
+      this.taskService.addTeamToTask(this.task.id, teamId).subscribe(
+        (res) => {
+          this.taskService.getTasks();
+          this.ngOnInit();
+      });
+    });
+  }
+
+  /**
+   * Function that removes a team from a task
+   */
+  onRemoveTeamFromTask(team: Team) {
+    this.taskService.removeTeamFromTask(this.task.id, team.id).subscribe(
+      (res) => {
+        this.taskService.getTasks();
+        this.ngOnInit();
+    });
+  }
+
+  /**
+   * Function that apply the validation of an update on an end condition in database.
+   * @param condition the condition concerned.
+   */
+  onValidateEndCondition(condition) {
+    const updatedCondition: any[] = [];
+    const finalData: any = {end_conditions: updatedCondition};
+    if (this.isAValidValue(condition)) {
+      this.validationError = false;
+      switch (condition.field_name) {
+        case 'Photo':
+          this.fileService.uploadFile(this.fileToUpload[0].value).subscribe(
+            (file) => {
+              updatedCondition.push({id: condition.id, file: file.id});
+              this.updateTask(finalData);
+          });
+          // Update fileToUpload
+          this.removeOldFile(condition.id);
+          break;
+        case 'Checkbox':
+          updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
+          this.updateTask(finalData);
+          break;
+        case 'Integer':
+          updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
+          this.updateTask(finalData);
+          break;
+        case 'Description':
+          updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
+          this.updateTask(finalData);
+          break;
+        default:
+          break;
+      }
+
     } else {
-      this.date = null;
+      this.validationError = true;
     }
   }
+
+  /**
+   * Function that registers the image to load
+   * @param event the event linked to the image field modification
+   */
+  onSetPhotoToUpload(condition, event) {
+    if (this.fileToUpload.length > 0) {
+      this.removeOldFile(condition.id);
+    }
+    let formData: FormData;
+    if (event.target.files[0] && !this.files.includes(event.target.files[0])) {
+      formData = new FormData();
+      formData.append('file', event.target.files[0], event.target.files[0].name);
+      formData.append('is_manual', 'false');
+      this.fileToUpload.push({id: condition.id, value: formData});
+    }
+  }
+
+  /**
+   * Function that registers the file to load
+   * @param event the event linked to the image field modification
+   */
+  onSetFileToUpload(event) {
+    let formData: FormData;
+    if (event.target.files[0] && !this.files.includes(event.target.files[0])) {
+      formData = new FormData();
+      formData.append('file', event.target.files[0], event.target.files[0].name);
+      formData.append('is_manual', 'true');
+      this.newFile = { data: formData };
+    }
+  }
+
+  onUpdateTaskWithNewFile() {
+    if (this.newFile !== null) {
+      this.fileService.uploadFile(this.newFile.data).subscribe(
+        (file) => {
+          this.newFile = null;
+          console.log(file);
+          const finalData = {files: []};
+          for (const taskFile of this.task.files) {
+            finalData.files.push(taskFile.id);
+          }
+          finalData.files.push(file.id);
+          this.updateTask(finalData);
+      });
+    }
+  }
+
+  /*
+    ##### TOOL FUNCTIONS #####
+  */
 
   /**
    * Function that realizes the shaping of the duration for communication with the API
@@ -332,145 +630,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that navigate the equipment detail page linked to this task
-   * @param idEquipment the id of the equipment to consult
-   */
-  onViewEquipment(idEquipment: number) {
-    this.router.navigate(['/equipments', idEquipment]);
-  }
-
-  /**
-   * Function that redirects on the team details page
-   * @param team the team we want to access
-   */
-  onViewTeam(team: Team) {
-    this.router.navigate(['/teams', team.id]);
-  }
-
-  /**
-   * Function that is triggered to load the modal template for deletion
-   * @param content the modal to open
-   */
-  openDelete(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
-      if (result === 'OK') {
-        this.onDeleteTask();
-      }
-    },
-    (error) => {});
-  }
-
-  /**
-   * Function that is triggered when validating the modal of deletion
-   */
-  onDeleteTask() {
-    this.taskService.deleteTask(this.task.id).subscribe(
-      (resp) => {
-        this.teamService.getTeams();
-        this.router.navigate(['/tasks']);
-    });
-  }
-
-  /**
-   * Function that display the delete button on Task considering user permissions
-   */
-  onDeleteTaskPermission() {
-    return this.utilsService.isAUserPermission(
-      this.authenticationService.getCurrentUserPermissions(),
-      'delete_task'
-      );
-  }
-
-  /**
-   * Function that display the modify button on Task considering user permissions
-   */
-  onChangeTaskPermission() {
-    return this.utilsService.isAUserPermission(
-      this.authenticationService.getCurrentUserPermissions(),
-      'change_task'
-    );
-  }
-
-  /**
-   * Function that is triggered to load the modal template for user addition
-   * @param content the modal to open
-   */
-  openAddTeam(content) {
-    this.initTeamsSelect();
-    this.modalService.open(content, {ariaLabelledBy: 'modal-addTeam'}).result.then((result) => {
-      if (result === 'OK') {
-        this.onAddTeam();
-      }
-    },
-    (error) => {});
-  }
-
-  /**
-   * Function that initialize the multiselect for Teams
-   */
-  initTeamsSelect() {
-    this.initTeamsDiff();
-    this.dropdownTeamsSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      noDataAvailablePlaceholderText: 'No other teams available',
-      itemsShowLimit: 4,
-      allowSearchFilter: true
-    };
-  }
-
-  /**
-   * Function that add a user in a team
-   */
-  onAddTeam() {
-    const formValues = this.addTeamForm.value;
-    const teamsToAdd = [];
-    formValues.teams.forEach(team => {
-      teamsToAdd.push(team.id);
-    });
-    teamsToAdd.forEach((teamId) => {
-      this.taskService.addTeamToTask(this.task.id, teamId).subscribe(
-        (res) => {
-          this.taskService.getTasks();
-          this.ngOnInit();
-      });
-    });
-  }
-
-  /**
-   * Function that initializes the different forms used in the component
-   */
-  initForm() {
-    this.addTeamForm = this.formBuilder.group({
-      teams: ''
-    });
-  }
-
-  /**
-   * Function that returns the permissions from the team's users
-   */
-  onViewTeamsPermission() {
-    return this.utilsService.isAUserPermission(
-      this.authenticationService.getCurrentUserPermissions(),
-      'view_team'
-      );
-  }
-
-  /**
-   * Function that removes a team from a task
-   */
-  onRemoveTeamFromTask(team: Team) {
-    this.taskService.removeTeamFromTask(this.task.id, team.id).subscribe(
-      (res) => {
-        this.taskService.getTasks();
-        this.ngOnInit();
-    });
-  }
-
-  /**
    * Function that check if the value of a endCondition is valid in order to display the validation button.
    * @param condition the condition concerned.
    */
@@ -488,86 +647,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that apply the validation of an update on an end condition in database.
-   * @param condition the condition concerned.
-   */
-  onValidateEndCondition(condition) {
-    const updatedCondition: any[] = [];
-    const finalData: any = {end_conditions: updatedCondition};
-    if (this.isAValidValue(condition)) {
-      this.validationError = false;
-      switch (condition.field_name) {
-        case 'Photo':
-          this.fileService.uploadFile(this.fileToUpload[0].value).subscribe(
-            (file) => {
-              updatedCondition.push({id: condition.id, file: file.id});
-              this.updateTask(finalData);
-          });
-          // Update fileToUpload
-          this.removeOldFile(condition.id);
-          break;
-        case 'Checkbox':
-          updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
-          this.updateTask(finalData);
-          break;
-        case 'Integer':
-          updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
-          this.updateTask(finalData);
-          break;
-        case 'Description':
-          updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
-          this.updateTask(finalData);
-          break;
-        default:
-          break;
-      }
-
-    } else {
-      this.validationError = true;
-    }
-  }
-
-  /**
-   * Function that do the update on the Task by calling the function of the TaskService.
-   * @param finalData the data to send for update.
-   */
-  updateTask(finalData) {
-    this.taskService.updateTask(this.task.id, finalData).subscribe(
-      (response) => {
-        this.taskService.getTasks();
-        this.taskService.getTask(this.task.id).subscribe(
-          (task: Task) => {
-            this.task = task;
-            this.formatDurationStringAndInitDurationInput();
-            this.initDateInput();
-            this.initFiles();
-        });
-    });
-  }
-
-  /**
    * Function that tests if an end condition file is beeing selected.
    * @param condition the condition concerned.
    */
   isSelectedFile(condition) {
     return this.fileToUpload.find(file => file.id === condition.id);
-  }
-
-  /**
-   * Function that registers the image to load
-   * @param event the event linked to the image field modification
-   */
-  onSetPhotoToUpload(condition, event) {
-    if (this.fileToUpload.length > 0) {
-      this.removeOldFile(condition.id);
-    }
-    let formData: FormData;
-    if (event.target.files[0] && !this.files.includes(event.target.files[0])) {
-      formData = new FormData();
-      formData.append('file', event.target.files[0], event.target.files[0].name);
-      formData.append('is_manual', 'false');
-      this.fileToUpload.push({id: condition.id, value: formData});
-    }
   }
 
   /**
@@ -604,6 +688,41 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
     return true;
   }
+
+  /*
+    ##### PERMISSION CHECK FUNCTIONS #####
+  */
+
+  /**
+   * Function that display the delete button on Task considering user permissions
+   */
+  onDeleteTaskPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'delete_task'
+      );
+  }
+
+  /**
+   * Function that display the modify button on Task considering user permissions
+   */
+  onChangeTaskPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'change_task'
+    );
+  }
+
+  /**
+   * Function that returns the permissions from the team's users
+   */
+  onViewTeamsPermission() {
+    return this.utilsService.isAUserPermission(
+      this.authenticationService.getCurrentUserPermissions(),
+      'view_team'
+      );
+  }
+
 
   /**
    * Function that unsubscribe all the subscriptions

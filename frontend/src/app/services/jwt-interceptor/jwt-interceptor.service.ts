@@ -29,13 +29,16 @@ export class JwtInterceptorService implements HttpInterceptor {
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    console.log(this.currentUser);
-    if (this.currentUser && this.authenticationService.getCurrentUserPermissions() === []) {
-      this.authenticationService.getUserPermissions(this.currentUser.id).subscribe(
-        (perms) => {
-          this.authenticationService.userPermissions = perms;
-        }
-      );
+
+    if (!request.url.includes('get_user_permissions')) {
+      const currentUserPermissions = this.authenticationService.getCurrentUserPermissions();
+      if (this.currentUser && currentUserPermissions.length === 0) {
+        this.authenticationService.getUserPermissions(this.currentUser.id).subscribe(
+          (perms) => {
+            this.authenticationService.userPermissions = perms;
+          }
+        );
+      }
     }
 
     if (this.currentUser && this.currentUser.token) {
@@ -48,6 +51,7 @@ export class JwtInterceptorService implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((err) => {
+        console.log(err);
         if (err.status === 401) {
           this.authenticationService.logout();
         }
