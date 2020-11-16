@@ -8,7 +8,10 @@ import { Subscription } from 'rxjs';
 import { CrossMatch } from 'src/app/shares/cross-match.validator';
 import { UserService } from 'src/app/services/users/user.service';
 
-@Component({ templateUrl: 'signin.component.html' })
+@Component({
+  selector: 'app-signin',
+  templateUrl: 'signin.component.html' ,
+})
 export class SigninComponent implements OnInit {
     loginForm: FormGroup;
     loading = false;

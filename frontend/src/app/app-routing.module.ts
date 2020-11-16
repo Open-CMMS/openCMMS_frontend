@@ -26,6 +26,7 @@ import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-
 import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { NewTemplateComponent } from './tabs/templates/new-template/new-template.component';
+import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
 
 /**
  * List of the routes for the application and their associated permissions.
@@ -51,6 +52,12 @@ const appRoutes: Routes = [
   },
   {
     path: 'reset-password', component: ResetPasswordComponent,
+    data: {
+      requiredPerms: []
+    }
+  },
+  {
+    path: 'forgot-password', component: ForgotPasswordComponent,
     data: {
       requiredPerms: []
     }
