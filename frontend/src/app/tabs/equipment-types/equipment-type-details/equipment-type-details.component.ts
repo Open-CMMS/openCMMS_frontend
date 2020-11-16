@@ -30,7 +30,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   fields = [];
   equipment_type: EquipmentType;
   modifyFields = false;
-  newFieldsValues: string;
+  newFieldsValues = [];
 
   // the Forms
   equipmentTypeForm: FormGroup;
@@ -170,15 +170,26 @@ export class EquipmentTypeDetailsComponent implements OnInit {
 
   openModifyField() {
   this.modifyFields = true;
-  }
-
-  missingEquipmentTypeFieldsValue() {
-    console.log('missing field value');
+  this.newFieldsValues = [];
   }
 
   saveFields() {
     this.modifyFields = false;
+    console.log('newFieldsValue', this.newFieldsValues);
     console.log('field', this.fields);
+    this.newFieldsValues.forEach((element, index) => {
+      console.log('element', element);
+      console.log(index);
+      if (element !== '') {
+        console.log('here');
+        element.split(',').map(s => {
+          s.trim();
+          console.log('s', s);
+          this.fields[index].value.push(s);
+        });
+      }
+    });
+    console.log('field after', this.fields);
     this.modifyEquipmentType();
   }
 }
