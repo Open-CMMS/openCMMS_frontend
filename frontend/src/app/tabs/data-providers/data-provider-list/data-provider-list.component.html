@@ -6,7 +6,7 @@
                 *ngFor="let dataProvider of dataProviders; let i = index"
                 >
                 <div class="container-fluid row justify-content-between">
-                    <h5>{{ dataProvider.name }}</h5>
+                    <h5 (click)="onViewDataProvider(i)">{{ dataProvider.name }}</h5>
                     <div class="d-flex">
                         <label class="switch mx-2">
                           <input type="checkbox"
