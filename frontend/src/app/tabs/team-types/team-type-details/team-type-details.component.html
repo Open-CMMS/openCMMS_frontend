@@ -12,45 +12,44 @@
 </ng-template>
 
 <ng-template #contentModify let-modal>
-    <form [formGroup]="teamTypeForm" (ngSubmit)="modifyTeamType()" >
-        <div class="modal-header">
-            <h4 class="modal-title" id="modal-modify">Modifiy TeamType</h4>
-        </div>
-        <div class="modal-body">
-            <div class="col-sm-8 col-sm-offset-2">
-              <div class="form-group">
-                <label for="name">Nom</label>
-                <input type="text" class='form-control' formControlName="name" [(ngModel)]="name">
-              </div>
-              <div class="form-group">
-                <label for="permissions">Permissions</label>
-                <ng-multiselect-dropdown
-                  [settings]="dropdownPermsSettings"
-                  [data]="permsList"
-                  [(ngModel)]="selectedPerms"
-                  formControlName="permissions"
-                  name="permissions"
-                >
-                </ng-multiselect-dropdown>
-              </div>
-              <div class="form-group">
-                <label for="teams">Équipes</label>
-                <ng-multiselect-dropdown
-                  [settings]="dropdownTeamsSettings"
-                  [data]="teamsList"
-                  [(ngModel)]="selectedTeams"
-                  formControlName="teams"
-                  name="teams"
-                >
-                </ng-multiselect-dropdown>
-              </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-            <button type="button" class="btn btn-success" [disabled]="teamTypeForm.invalid" type="submit">Modify</button>
-        </div>
-    </form>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-modify">Modifiy TeamType</h4>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="teamTypeUpdateForm">                    
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class='form-control' formControlName="name">
+            </div>
+                <!-- <div class="form-group">
+                    <label for="permissions">Permissions</label>
+                    <ng-multiselect-dropdown
+                    [settings]="dropdownPermsSettings"
+                    [data]="permsList"
+                    [(ngModel)]="selectedPerms"
+                    formControlName="permissions"
+                    na me="permissions"
+                    >
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="form-group">
+                    <label for="teams">Équipes</label>
+                    <ng-multiselect-dropdown
+                    [settings]="dropdownTeamsSettings"
+                    [data]="teamsList"
+                    [(ngModel)]="selectedTeams"
+                    formControlName="teams"
+                    name="teams"
+                    >
+                    </ng-multiselect-dropdown>
+                </div> -->
+        </form>
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Modify</button>
+    </div>
 </ng-template>
 
 <div class="container-fluid col-10 mt-3 justify-content-center">
@@ -63,14 +62,17 @@
             <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteTeamTypesPermission()"><fa-icon [icon]=""></fa-icon> Delete</button>
         </div>
     </div>
+
     <div class="card mt-5">
-        <div class="card-header">
-            <h3 class="font-weight-bold"> Team info : </h3>
+        <div class="card-header d-flex justify-content-between">
+            <div class="d-flex">
+                <h3 class="font-weight-bold"> Team info : </h3>
+            </div>
         </div>
         <div class="row">
             <div class="col-12">
                 <div class="px-2 py-1">
-                    <p><span class="font-weight-bold">Team Type Name  :</span> {{ name }} <p>
+                    <p *ngIf="loaded"><span class="font-weight-bold">Team Type Name  :</span> {{ name }} <p>
                 </div>
             </div>
         </div>

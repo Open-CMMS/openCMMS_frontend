@@ -27,6 +27,7 @@ export class TeamTypeDetailsComponent implements OnInit {
   name: string;
   perms: any[];
   teams: any[];
+  loaded = false;
 
   all_permissions: Permission[] = [];
   all_teams: Team[] = [];
@@ -43,7 +44,7 @@ export class TeamTypeDetailsComponent implements OnInit {
 
 
   // the Forms
-  teamTypeForm: FormGroup;
+  teamTypeUpdateForm: FormGroup;
 
   /**
    * Constructor for the NewTeamComponent
@@ -81,6 +82,7 @@ export class TeamTypeDetailsComponent implements OnInit {
       this.initTeamsSelect();
     });
     this.teamService.emitTeams();
+    this.loaded = true;
     this.initForm();
   }
 
@@ -205,7 +207,7 @@ export class TeamTypeDetailsComponent implements OnInit {
    * Function that initialize the fields in the form to create a new TeamType
    */
   initForm() {
-    this.teamTypeForm = this.formBuilder.group({
+    this.teamTypeUpdateForm = this.formBuilder.group({
       name: ['', Validators.required],
       permissions: [''],
       teams: ['']
@@ -216,7 +218,7 @@ export class TeamTypeDetailsComponent implements OnInit {
    * Function that submits the form to modify the teamType
    */
   modifyTeamType() {
-    const formValue = this.teamTypeForm.value;
+    const formValue = this.teamTypeUpdateForm.value;
 
     const nameStr = 'name';
     const permissionsStr = 'permissions';
