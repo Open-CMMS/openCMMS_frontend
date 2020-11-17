@@ -169,7 +169,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   }
 
   /**
-   * Fonction that allows to modify the fields
+   * Function that allows to modify the fields
    */
   openModifyField() {
     this.modifyFields = true;
