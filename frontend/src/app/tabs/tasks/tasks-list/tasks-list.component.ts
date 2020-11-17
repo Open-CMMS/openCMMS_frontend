@@ -165,9 +165,9 @@ export class TasksListComponent implements OnInit, OnDestroy {
     this.tasks.sort(this.compareDate);
     this.tasks.forEach(task => {
       if (task.end_date == null) {
-        let index = this.tasks.indexOf(task);
-        this.tasks.splice(index,1)
-        this.tasks.push(task)
+        const index = this.tasks.indexOf(task);
+        this.tasks.splice(index, 1);
+        this.tasks.push(task);
       }
     });
   }
