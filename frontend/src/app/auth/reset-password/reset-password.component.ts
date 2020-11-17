@@ -50,7 +50,6 @@ export class ResetPasswordComponent implements OnInit {
     if (this.username && this.token) {
       this.authenticationService.verifyToken(this.username, this.token).subscribe(
         res => {
-          // console.log(res);
           if (!res) {
             this.router.navigate(['']);
           }

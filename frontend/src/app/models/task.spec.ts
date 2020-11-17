@@ -10,7 +10,6 @@ describe('Task', () => {
                     true,
                     0,
                     [0, 1],
-                    0,
                     [1, 6],
                     true)).toBeTruthy();
   });

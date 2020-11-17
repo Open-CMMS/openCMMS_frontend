@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Subscription, Subject, Observable } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -9,9 +9,22 @@ import { EquipmentService } from 'src/app/services/equipments/equipment.service'
 import { Equipment } from 'src/app/models/equipment';
 import { Task } from 'src/app/models/task';
 import { TaskService } from 'src/app/services/tasks/task.service';
-import { faCalendar, faInfoCircle, faPlusSquare, faMinusCircle, faMinusSquare } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCalendar,
+  faInfoCircle,
+  faPlusSquare,
+  faMinusCircle,
+  faMinusSquare,
+  faFileDownload,
+  faPlus
+} from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FileService } from 'src/app/services/files/file.service';
+import { Template } from 'src/app/models/template';
+import { TemplateService } from 'src/app/services/templates/template.service';
+import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import { UserProfile } from 'src/app/models/user-profile';
+import { durationRegex } from 'src/app/shares/consts';
 
 @Component({
   selector: 'app-new-task',
@@ -28,11 +41,14 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   equipmentSubscription: Subscription;
   creationError = false;
 
+  // Icons
   faInfoCircle = faInfoCircle;
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
   faMinusSquare = faMinusSquare;
   faCalendar = faCalendar;
+  faFileDownload = faFileDownload;
+  faPlus = faPlus;
   model: NgbDateStruct;
 
   // Multiple Select
@@ -51,6 +67,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   triggerConditions = [];
   triggerConditionSelectTemplate = null;
   triggerConditionDurationRegex: string;
+  triggerConditionDurationError = false;
 
   // End Conditions
   endConditions = [];
@@ -59,12 +76,21 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   // Files
   filesSubject = new Subject<File[]>();
   filesSubscription: Subscription;
-  myFiles: File[] = [];
-  files: number[] = [];
+  newFiles: any[] = []; // {name, data}
+  templateFiles: any[] = []; // {id, name}
 
   // Forms
   createForm: FormGroup;
 
+  // Templates
+  templates: Template[] = [];
+  templatesSubscription: Subscription;
+  selectedTemplate: Template = null;
+  requirements: any = null;
+
+  // Current User
+  currentUser: UserProfile;
+  currentUserSubscription: Subscription;
 
   /**
    * Constructor for the NewTeamComponent
@@ -80,12 +106,21 @@ export class NewTaskComponent implements OnInit, OnDestroy {
               private teamService: TeamService,
               private equipmentService: EquipmentService,
               private fileService: FileService,
-              private formBuilder: FormBuilder
+              private formBuilder: FormBuilder,
+              private authService: AuthenticationService
               ) { }
+
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.taskService.getTaskCreationRequirements().subscribe(
+      (requirements: any) => {
+        this.requirements = requirements;
+        this.initTriggerConditionsSelect();
+        this.initEndConditionsSelect();
+      }
+    );
     this.teamSubscription = this.teamService.teamSubject.subscribe(
       (teams: Team[]) => {
         this.teams = teams;
@@ -99,84 +134,80 @@ export class NewTaskComponent implements OnInit, OnDestroy {
         this.initEquipmentsSelect();
       }
     );
-    this.filesSubscription = this.filesSubject.subscribe(
-      (files: File[]) => {
-        this.myFiles = files;
+    this.currentUserSubscription = this.authService.currentUserSubject.subscribe(
+      (currentUser) => {
+        this.currentUser = currentUser;
       }
     );
-    this.initTriggerConditionsSelect();
-    this.initEndConditionsSelect();
+
+    this.authService.emitCurrentUser();
     this.equipmentService.emitEquipments();
     this.initForm();
   }
 
-  /**
-   * Function to add an end condition in the form
-   */
-  addEndCondition() {
-    const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
-    const objectCopy = JSON.parse(jsonCopy);
-    this.endConditions.push(objectCopy);
-  }
+  /*
+    HANDLING TEMPLATES CREATION
+  */
 
   /**
-   * Function to delete an end condition in the form
-   * @param i the index of the end condition
+   * Function that handle template selection by updating all the fields accordingly
    */
-  deleteEndCondition(i: number) {
-    this.endConditions.splice(i, 1);
-  }
-
-  /**
-   * Function to initialize the template for end condition objects. It is used to initialize
-   * the dropdown selects as well
-   * @param end_conditions_types the array with the different types of end conditions
-   */
-  initEndConditionSelectTemplate(end_conditions_types: any[]) {
-    this.endConditionSelectTemplate = {
-        selectedEndCondition: [],
-        endConditionsList: end_conditions_types,
-        dropdownEndConditionsSettings: {
-          singleSelection: true,
-          idField: 'id',
-          textField: 'value',
-          allowSearchFilter: true
-        },
-        description: null
-      };
-  }
-
-  /**
-   * Function to get the different types of end conditions
-   */
-  getEndConditionsTypes() {
-    let id_field: number;
-    const end_conditions_types = [];
-    this.taskService.getFields().subscribe(
-      (fields) => {
-        fields.forEach(field => {
-          if (field.name === 'End Conditions') {
-            id_field = field.id;
-          }
-        });
-        this.taskService.getFieldValues(id_field).subscribe(
-          (field_values) => {
-            field_values.forEach(field_value => {
-              end_conditions_types.push({id: field_value.id, value: field_value.value});
-            });
-            this.initEndConditionSelectTemplate(end_conditions_types);
-          }
-        );
+  onChangeTaskTemplate() {
+    if (this.selectedTemplate === null) {
+      this.emptyFields();
+      this.initTeamsSelect();
+      this.templateFiles = [];
+      this.endConditions = [];
+    } else {
+      // Loading teams from template
+      const tempTeams: any[] = [];
+      for (const team of this.selectedTemplate.teams) {
+        tempTeams.push({id: team.id.toString(), value: team.name});
       }
-    );
+      // Loading basic informations from template
+      this.createForm.setValue({
+        name: '',
+        description: this.selectedTemplate.description,
+        end_date: this.selectedTemplate.end_date,
+        duration: this.selectedTemplate.duration,
+        equipment: this.selectedTemplate.equipment.id.toString(),
+        teams: tempTeams,
+        file: ''
+      });
+      // Loading files from template
+      this.templateFiles = [];
+      for (const file of this.selectedTemplate.files) {
+        this.templateFiles.push({id: file.id, name: file.file.split('/')[1]});
+      }
+      // Loading end conditions from template
+      this.endConditions = [];
+      for (const endCondition of this.selectedTemplate.end_conditions) {
+        const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
+        const objectCopy = JSON.parse(jsonCopy);
+        objectCopy.selectedEndCondition = [{id: endCondition.id, value: endCondition.name}];
+        this.endConditions.push(objectCopy);
+      }
+    }
   }
 
   /**
-   * Function to initialize the end conditions part of the form
+   * Function that reset all the fields when the template is unselected
    */
-  initEndConditionsSelect() {
-    this.getEndConditionsTypes();
+  emptyFields() {
+    this.createForm.setValue({
+      name: '',
+      description: '',
+      end_date: null,
+      duration: '',
+      equipment: '',
+      teams: '',
+      file: ''
+    });
   }
+
+  /*
+    PROCESSING TRIGGER CONDITIONS
+  */
 
   /**
    * Function to add a trigger condition in the form
@@ -216,87 +247,70 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to get the different trigger condition types
-   */
-  getTriggerConditionsTypes() {
-    let id_field: number;
-    const trigger_conditions_types = [];
-    this.taskService.getFields().subscribe(
-      (fields) => {
-        fields.forEach(field => {
-          if (field.name === 'Trigger Conditions') {
-            id_field = field.id;
-          }
-        });
-        this.taskService.getFieldValues(id_field).subscribe(
-          (field_values) => {
-            field_values.forEach(field_value => {
-              trigger_conditions_types.push({id: field_value.id, value: field_value.value});
-            });
-            this.initTriggerConditionSelectTemplate(trigger_conditions_types);
-          }
-        );
-      }
-    );
-  }
-
-  /**
    * Function to initialize the trigger conditions part of the form
    */
   initTriggerConditionsSelect() {
-    this.getTriggerConditionsTypes();
+    const trigger_conditions_types = [];
+    for (const triggerCondition of this.requirements.trigger_conditions) {
+      trigger_conditions_types.push({id: triggerCondition.id, value: triggerCondition.name});
+    }
+    this.initTriggerConditionSelectTemplate(trigger_conditions_types);
+  }
+
+  /*
+    PROCESSING END CONDITIONS
+  */
+
+  /**
+   * Function to add an end condition in the form
+   */
+  addEndCondition() {
+    const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
+    const objectCopy = JSON.parse(jsonCopy);
+    this.endConditions.push(objectCopy);
   }
 
   /**
-   * Function to create the field_objects in the database for the end and trigger conditions
+   * Function to delete an end condition in the form
+   * @param i the index of the end condition
    */
-  createFieldObjects(id_task: number) {
-    let id_field_trigger_condition: number;
-    let id_field_end_condition: number;
-    this.taskService.getFields().subscribe(
-      (fields) => {
-        fields.forEach(field => {
-          if (field.name === 'Trigger Conditions') {
-            id_field_trigger_condition = field.id;
-          } else if (field.name === 'End Conditions') {
-            id_field_end_condition = field.id;
-          }
-        });
-        this.triggerConditions.forEach(triggerCondition => {
-          let object_value: string;
-          switch (triggerCondition.selectedTriggerCondition[0].value) {
-            case 'Date':
-              object_value = this.taskService.normaliseEndDateValue(triggerCondition.value);
-              break;
-            case 'Duree':
-              object_value = this.taskService.normaliseDurationValue(triggerCondition.value, ['y', 'm', 'd']);
-              break;
-            default:
-              object_value = triggerCondition.value;
-              break;
-          }
-          const field_object = {
-            described_object: 'Task: ' + id_task,
-            field: id_field_trigger_condition,
-            field_value: triggerCondition.selectedTriggerCondition[0].id,
-            value: object_value,
-            description: triggerCondition.description
-          };
-          this.taskService.createFieldObject(field_object).subscribe();
-        });
-        this.endConditions.forEach(endCondition => {
-          const field_object = {
-            described_object: 'Task: ' + id_task,
-            field: id_field_end_condition,
-            field_value: endCondition.selectedEndCondition[0].id,
-            value: 'pending',
-            description: endCondition.description
-          };
-          this.taskService.createFieldObject(field_object).subscribe();
-        });
-        this.taskService.getFieldObjects();
-      });
+  deleteEndCondition(i: number) {
+    this.endConditions.splice(i, 1);
   }
+
+  /**
+   * Function to initialize the template for end condition objects. It is used to initialize
+   * the dropdown selects as well
+   * @param end_conditions_types the array with the different types of end conditions
+   */
+  initEndConditionSelectTemplate(end_conditions_types: any[]) {
+    this.endConditionSelectTemplate = {
+        selectedEndCondition: [],
+        endConditionsList: end_conditions_types,
+        dropdownEndConditionsSettings: {
+          singleSelection: true,
+          idField: 'id',
+          textField: 'value',
+          allowSearchFilter: true
+        },
+        description: null
+      };
+  }
+
+  /**
+   * Function to initialize the end conditions part of the form
+   */
+  initEndConditionsSelect() {
+    const endConditionsTypes = [];
+    for (const endCondition of this.requirements.end_conditions) {
+      endConditionsTypes.push({id: endCondition.id, value: endCondition.name});
+    }
+    this.initEndConditionSelectTemplate(endConditionsTypes);
+  }
+
+  /*
+    INITIALIZE SELECT INPUTS OF TEAMS AND EQUIPMENTS
+  */
 
   /**
    * Function that initialize the multiselect for Teams
@@ -335,74 +349,70 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     };
   }
 
+  /*
+    HANDLING FILE ADDITION AND DELETION
+  */
+
   /**
-   * Function that is triggered when a or multiple files are chosen(when button "Browse" is pressed and files are chosen)
-   * Upload files if not already uploaded.
-   * @param event file selection event from input of type file
+   * Function that adds a file in the right array depending on the origin of the file (template or additionnal)
+   * @param event the event triggered by the file input on upload
    */
-  onFileUpload(event) {
+  onAddFile(event) {
+    const filepath = event.target.files[0].name.split('/');
+    const fileName = filepath[filepath.length - 1];
     let formData: FormData;
-    let i = 0;
-    for (i; i < event.target.files.length; i++) {
-      if (!this.myFiles.includes(event.target.files[i])) {
-        this.myFiles.push(event.target.files[i]);
-        formData = new FormData();
-        formData.append('file', event.target.files[i], event.target.files[i].name);
-        formData.append('is_manual', 'true' );
-        this.fileService.uploadFile(formData).subscribe(file => {
-          this.files.push(Number(file.id));
-        });
-      }
-    }
-    this.filesSubject.next(this.myFiles);
+    formData = new FormData();
+    formData.append('file', event.target.files[0], event.target.files[0].name);
+    formData.append('is_manual', 'true' );
+    this.newFiles.push({name: fileName, data: formData});
   }
 
   /**
    * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
    * @param file file that need to be removed
-   * Here we only need the index of the file from the local variable myFiles which is the same then in the variable files
-   * from file we then can get the id of the file in the database to remove it.
    */
-  onRemoveFile(file: File) {
-    const index = this.myFiles.indexOf(file);
-    this.myFiles.splice(index, 1);
-    const id = this.files.splice(index, 1);
-    this.fileService.deleteFile(id[0]).subscribe();
+  onRemoveFile(files: any[], fileId: any) {
+    let index: number;
+    if (files === this.templateFiles) {
+      index = files.find(existingFile => existingFile.id === fileId);
+    } else {
+      index = files.find(existingFile => existingFile.data === fileId);
+    }
+    if (index) {
+      files.splice(index, 1);
+    }
   }
 
   /**
    * Function that initialize the fields in the form to create a new Team
    */
   initForm() {
-    this.triggerConditionDurationRegex = '^((([0-9]+)y)?\\s*(([0-9]+)m)?\\s*(([0-9]+)d)?)$';
-    const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
+    this.triggerConditionDurationRegex = durationRegex;
+    const localDurationRegex = new RegExp(durationRegex);
+
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       end_date: [null],
-      time: ['', Validators.pattern(regex_time)],
-      is_template: [false],
+      duration: ['', Validators.pattern(localDurationRegex)],
       equipment: [''],
       teams: [''],
       file: ['']
     });
   }
 
-
-
   /**
-   * Function to for the dev to test the form without sending the request
+   * Function that is triggered when a modification is done on a trigger condition duration field.
+   * @param triggerConditionDurationField the input field that needs to be verified
    */
-  testForm() {
-    console.log(this.triggerConditions);
-    console.log(this.endConditions);
-    this.onCreateTask(true);
+  onUpdateTriggerConditionDurationValidity(triggerConditionDurationField) {
+    this.triggerConditionDurationError = triggerConditionDurationField.validity.patternMismatch;
   }
 
   /**
    * Function that is triggered when a new Task is being created (when button "Create new task" is pressed)
    */
-  onCreateTask(test = false) {
+  onCreateTask() {
     const formValues = this.createForm.value;
 
     const teams = [];
@@ -412,44 +422,82 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       });
     }
 
-    const equipment = formValues.equipment ? formValues.equipment[0].id : null;
-
+    const equipment = formValues.equipment ? formValues.equipment : null;
     const end_date = formValues.end_date ? this.taskService.normaliseEndDateValue(formValues.end_date) : null;
-
-    const time = formValues.time ? this.taskService.normaliseDurationValue(formValues.time, ['d', 'h', 'm']) : '';
-
-    const files = this.files;
-
-    const task_type = 1;
+    const duration = formValues.duration ? this.taskService.normaliseDurationValue(formValues.duration, ['d', 'h', 'm']) : '';
     const over = false;
 
-    const newTask = new Task(1,
-                            formValues.name,
-                            formValues.description,
-                            end_date,
-                            time,
-                            formValues.is_template,
-                            equipment,
-                            teams,
-                            task_type,
-                            files,
-                            over);
+    const trigger_conditions: any[] = [];
+    if (this.triggerConditions.length > 0) {
+      for (const triggerCondition of this.triggerConditions) {
+        trigger_conditions.push({
+          field: triggerCondition.selectedTriggerCondition[0].id,
+          name: triggerCondition.selectedTriggerCondition[0].value,
+          description: triggerCondition.description,
+          value: triggerCondition.value
+        });
+      }
+    }
 
+    const end_conditions = [];
+    if (this.endConditions.length > 0) {
+      for (const endCondition of this.endConditions) {
+        end_conditions.push({
+          field: endCondition.selectedEndCondition[0].id,
+          name: endCondition.selectedEndCondition[0].value,
+          description: endCondition.description,
+          value: null
+        });
+      }
+    }
 
+    const files: number[] = [];
+    // Loading files that are already existing in DB
+    for (const templatesFile of this.templateFiles) {
+      files.push(templatesFile.id);
+    }
 
-    if (test === true) {
-      console.log(newTask);
-    } else {
-      this.taskService.createTask(newTask).subscribe(
-        (task: Task) => {
-          this.createFieldObjects(task.id);
-          this.router.navigate(['/tasks']);
-          this.taskService.getTasks();
-        },
-        (error) => {
-          this.creationError = true;
-        }
-      );
+    // Saving new files in DB
+    // Here we use an async function to wait for all the file to be uploaded before creating the task
+    this.uploadFiles(files).then(
+      (_) => {
+        const newTask = new Task(1,
+                                formValues.name,
+                                formValues.description,
+                                end_date,
+                                duration,
+                                false,
+                                equipment,
+                                teams,
+                                files,
+                                over,
+                                trigger_conditions,
+                                end_conditions);
+
+        this.taskService.createTask(newTask).subscribe(
+          (task: Task) => {
+            this.router.navigate(['/tasks']);
+            this.taskService.getTasks();
+            this.taskService.getUserTasks(this.currentUser?.id);
+          },
+          (error) => {
+            this.creationError = true;
+          }
+        );
+      }
+    );
+
+  }
+
+  /**
+   * Async function to upload all the file before creating a new Task
+   * @param files the file array linked to the Task
+   */
+  async uploadFiles(files) {
+    for (const newFile of this.newFiles) {
+      await this.fileService.uploadFile(newFile.data).toPromise().then(file => {
+        files.push(Number(file.id));
+      });
     }
   }
 
@@ -457,7 +505,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function that clears subscriptions
    */
   ngOnDestroy(): void {
-    this.filesSubscription.unsubscribe();
     this.teamSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
   }

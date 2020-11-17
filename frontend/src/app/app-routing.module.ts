@@ -20,10 +20,13 @@ import { NewTaskComponent } from './tabs/tasks/new-task/new-task.component';
 import { NewUserComponent } from './tabs/users/new-user/new-user.component';
 import { NewEquipmentComponent } from './tabs/equipments/new-equipment/new-equipment.component';
 import { TasksListComponent } from './tabs/tasks/tasks-list/tasks-list.component';
+import { TemplatesListComponent } from './tabs/templates/templates-list/templates-list.component';
 import { EquipmentTypeManagementComponent } from './tabs/equipment-types/equipment-type-management/equipment-type-management.component';
 import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-type-details/equipment-type-details.component';
 import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
+import { NewTemplateComponent } from './tabs/templates/new-template/new-template.component';
+import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
 
 /**
  * List of the routes for the application and their associated permissions.
@@ -54,6 +57,12 @@ const appRoutes: Routes = [
     }
   },
   {
+    path: 'forgot-password', component: ForgotPasswordComponent,
+    data: {
+      requiredPerms: []
+    }
+  },
+  {
     path: '', component: HomeComponent,
     canActivate: [AuthGuardService],
     data: {
@@ -79,6 +88,20 @@ const appRoutes: Routes = [
     canActivate: [AuthGuardService],
     data: {
       requiredPerms: []
+    }
+  },
+  {
+    path: 'template-management', component: TemplatesListComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['add_task']
+    }
+  },
+  {
+    path: 'new-template', component: NewTemplateComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['add_task']
     }
   },
   {

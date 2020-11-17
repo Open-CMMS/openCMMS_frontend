@@ -13,21 +13,17 @@ export class AuthenticationService {
   private currentUser: UserProfile;
   currentUserSubject = new Subject<UserProfile>();
   private BASE_URL_API = environment.baseUrl;
-  private userPermissions: any[] = [];
+  public userPermissions: any[] = [];
 
   /**
    * Constructor of AuthenticationService
    * @param httpClient The http instance
    * @param router the service used to handle routing
    */
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private httpClient: HttpClient,
+              private router: Router) {
     if (JSON.parse(localStorage.getItem('currentUser')) !== null) {
       this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      this.getUserPermissions(this.currentUser.id).subscribe(
-        (perms) => {
-          this.userPermissions = perms;
-        }
-      );
     } else {
       this.currentUser = null;
       this.userPermissions = [];
@@ -98,7 +94,6 @@ export class AuthenticationService {
                           resolve();
                         },
                         error => {
-                          console.log(error.error.is_blocked);
                           if (error.error.is_blocked === 'True') {
                             this.router.navigate(['account-blocked']);
                           }
@@ -182,4 +177,30 @@ export class AuthenticationService {
 
     return this.httpClient.post<any>(this.BASE_URL_API + '/api/usersmanagement/set_password', json, httpOptions);
   }
+
+  /**
+   * Function that send an email to the user to reset his password (user identified thanks to his email and username)
+   * @param email the email the email of the user
+   * @param username the username of the user
+   */
+  forgotPassword(email: string, username: string) {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/forget_password?email=' +  email + '&&username=' + username);
+  }
+
+  /**
+   * Function that send an email to the user to reset his password (user identified thanks to his email)
+   * @param email the email the email of the user
+   */
+  forgotPassword_email(email: string) {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/forget_password?email=' +  email);
+  }
+
+  /**
+   * Function that send an email to the user to reset his password (user identified thanks to his username)
+   * @param username the username of the user
+   */
+  forgotPassword_username(username: string) {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/forget_password?username=' + username);
+  }
+
 }

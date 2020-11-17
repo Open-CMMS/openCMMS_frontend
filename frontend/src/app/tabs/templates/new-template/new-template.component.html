@@ -1,0 +1,113 @@
+<div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom:100px">
+    <div class="d-flex">
+        <h2 class="font-weight-bold">Create a new template</h2>
+    </div>
+    <form [formGroup]="createForm" (ngSubmit)="onCreateTemplate()">
+        <div class="form-group">
+            <label for="name">Template Name* </label>
+            <input type="text" id="name" class="form-control" formControlName="name">
+        </div>
+        <div class="form-group">
+            <label for="description">Template Description* </label>
+            <textarea id="description" class="form-control" formControlName="description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="teams">Teams</label>
+            <ng-multiselect-dropdown
+              [settings]="dropdownTeamsSettings"
+              [data]="teamsList"
+              formControlName="teams"
+              name="teams"
+            >
+            </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group">
+            <label for="equipmentType">Equipment type</label>
+            <select id="equipmentType" class="form-control" formControlName="equipmentType" name="equipmentType" (change)="updateEquipmentsSelect(createForm.value.equipmentType)">
+                <option default value=''></option>
+                <option *ngFor="let equipmentType of equipmentTypesList" [value]="equipmentType.id">{{ equipmentType.value }}</option>
+            </select>
+        </div>
+        <div class="form-group" *ngIf="createForm.value.equipmentType !== '' && equipmentList.length !== 0">
+            <label for="equipment">Equipment</label>
+            <select id="equipment" class="form-control" formControlName="equipment" name="equipment">
+                <option default value=''></option>
+                <option *ngFor="let equipment of equipmentList" [value]="equipment.id">{{ equipment.value }}</option>
+            </select>
+        </div>
+        <div class="form-group row col-4">
+            <label for="time">Task duration </label>
+            <div class="input-group">
+                <input type="text" name="time" id="time" class="form-control" formControlName="time">
+                <div class="input-group-append">
+                    <button class="btn btn-info" type="button"
+                                                ngbPopover="Examples : 10d 3h 45m, 5h15m, 4d45h 48m"
+                                                placement="right"
+                                                triggers="mouseenter:mouseleave"
+                                                popoverTitle="Info"
+                                                [closeDelay]="2000">
+                <fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                </div>
+            </div>
+            <div *ngIf="createForm.controls.time.status == 'INVALID'" class="alert alert-danger">
+                Enter a duration with the correct pattern
+            </div>
+        </div>
+        <div class="form-group">
+            <label>End Conditions </label><br>
+            <button type="button" class="btn btn-outline-secondary" (click)="addEndCondition()">
+                <span style="margin-right: 10px;">Add End Condition</span>
+                <fa-icon [icon]="faPlusSquare"></fa-icon>
+            </button>
+        </div>
+        <div class="form-group" *ngFor="let endCondition of endConditions; let i = index">
+            <div class="input-group">
+                <button class="btn btn-danger" type="button" (click)="deleteEndCondition(i)">
+                    <fa-icon [icon]="faMinusCircle"></fa-icon>
+                </button>
+                <ng-multiselect-dropdown
+                    [settings]="endCondition.dropdownEndConditionsSettings"
+                    [data]="endCondition.endConditionsList"
+                    [(ngModel)]="endCondition.selectedEndCondition"
+                    [ngModelOptions]="{standalone: true}"
+                    name="endCondition"
+                    class="col-4"
+                    style="margin-right: 10px;"
+                >
+                </ng-multiselect-dropdown>
+
+                <input type="text"
+                    *ngIf="endCondition.selectedEndCondition[0]"
+                    placeholder="description"
+                    [(ngModel)]=endCondition.description
+                    [ngModelOptions]="{standalone: true}"
+                >
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="file">Upload File</label>
+            <input formControlName="file" id="file" type="file" multiple class="form-control" (change)="onFileUpload($event)">
+        </div>
+        <div class="list-group">
+            <ul class="list-group">
+                <li
+                    class="container-fluid list-group-item font-weight-bold "
+                    *ngFor="let file of myFiles;"
+                    >
+                    <div class="container-fluid row justify-content-between">
+                        <h5 style="margin-bottom: 0px; vertical-align: middle;">{{ file.name }}</h5>
+                        <button class="btn btn-danger" (click)="onRemoveFile(file)"><fa-icon [icon]="faMinusSquare" size="2x"></fa-icon></button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <button class="btn btn-danger nav-link" routerLink="/template-management">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create template</button>
+        </div>
+    </form>
+    <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">
+        <p class="font-weight-bold">Error when creating the template :</p>
+        <p>This task name is probably invalid !</p>
+    </div>
+</div>

@@ -1,13 +1,13 @@
 <div class="container-fluid" style="margin-top: 100px;">
   <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark" *ngIf="loaded">
-      <a class="navbar-brand" routerLink="tasks">OPENCMMS</a>
+      <a class="navbar-brand" routerLink="tasks"><img src="../../../assets/OpenCMMS_logo/Logo_flat.png" height="40px"/></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
       </button>
-    
+
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav mr-auto">
-          <li routerLinkActive="active">
+          <li routerLinkActive="active" *ngIf="currentUser">
             <a class="nav-link" routerLink="tasks">My Tasks</a>
           </li>
           <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onChangeTasksPermission()">
@@ -17,6 +17,9 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <div *ngIf="onChangeTasksPermission()">
               <a class="dropdown-item" routerLink="tasks-management">Task management</a>
+            </div>
+            <div *ngIf="onChangeTasksPermission()">
+              <a class="dropdown-item" routerLink="template-management">Template management</a>
             </div>
             </div>
           </li>
@@ -58,7 +61,7 @@
                 <a class="dropdown-item" (click)="onLogout()">Sign out</a>
               </div>
             </li>
-        </ul> 
+        </ul>
       </div>
   </nav>
 </div>

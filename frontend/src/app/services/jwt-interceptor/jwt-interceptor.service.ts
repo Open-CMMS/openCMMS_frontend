@@ -3,6 +3,8 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/c
 import { AuthenticationService } from '../auth/authentication.service';
 import { Observable } from 'rxjs';
 import { UserProfile } from 'src/app/models/user-profile';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs/internal/observable/of';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,7 @@ export class JwtInterceptorService implements HttpInterceptor {
    * @param authenticationService the auth service
    */
   constructor(
-    // private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService
     ) { }
 
   /**
@@ -26,13 +28,18 @@ export class JwtInterceptorService implements HttpInterceptor {
    * @param next the HttpHandler
    */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // this.authenticationService.currentUserSubject.subscribe(
-    //   (currentUser) => {
-    //     this.currentUser = currentUser;
-    //   }
-    // );
-    // this.authenticationService.emitCurrentUser();
     this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (!request.url.includes('get_user_permissions')) {
+      const currentUserPermissions = this.authenticationService.getCurrentUserPermissions();
+      if (this.currentUser && currentUserPermissions.length === 0) {
+        this.authenticationService.getUserPermissions(this.currentUser.id).subscribe(
+          (perms) => {
+            this.authenticationService.userPermissions = perms;
+          }
+        );
+      }
+    }
 
     if (this.currentUser && this.currentUser.token) {
       request = request.clone({
@@ -41,6 +48,14 @@ export class JwtInterceptorService implements HttpInterceptor {
           }
       });
     }
-    return next.handle(request);
+
+    return next.handle(request).pipe(
+      catchError((err) => {
+        if (err.status === 401) {
+          this.authenticationService.logout();
+        }
+        return of(err);
+      })
+    );
   }
 }

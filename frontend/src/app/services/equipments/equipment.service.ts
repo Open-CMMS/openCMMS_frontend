@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Equipment } from '../../models/equipment';
 import { Subject, Observable } from 'rxjs';
+import {Field} from '../../models/field';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class EquipmentService {
                   .subscribe(
                     (response) => {
                       response.forEach(element => {
-                        const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files);
+                        const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files, element.fields);
                         this.equipments.push(equipment);
                       });
                       this.emitEquipments();
@@ -47,9 +48,9 @@ export class EquipmentService {
    * @param id the id attribut of a equipment
    * @return the specific Equipment
    */
-  getEquipment(id: number ): Observable<Equipment> {
+  getEquipment(id: number ): Observable<any> {
     return this.httpClient
-      .get<Equipment>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + id + '/');
+      .get<any>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + id + '/');
   }
 
   /**
@@ -57,12 +58,12 @@ export class EquipmentService {
    * @param equipmentModified Equipment concerned with the modification and with modifications applied
    */
   updateEquipment(equipmentModified: Equipment) {
-
     const name = equipmentModified.name;
     const equipment_type = equipmentModified.equipment_type;
     const files = equipmentModified.files;
+    const field = equipmentModified.fields;
 
-    const userJson = JSON.stringify({name, equipment_type, files});
+    const userJson = JSON.stringify({name, equipment_type, files, field});
 
     const httpOptions = {
       headers : new HttpHeaders({
@@ -77,13 +78,58 @@ export class EquipmentService {
   }
 
   /**
+   * Fonction to update the name of an existing equipment in the database
+   * @param equipmentNameModified the new name of the equipment
+   * @param equipmentId the id of the equipment to modified
+   */
+  updateEquipmentName(equipmentNameModified: string, equipmentId: number) {
+    const name = equipmentNameModified;
+
+    const userJson = JSON.stringify({name});
+
+    const httpOptions = {
+      headers : new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.httpClient
+      .put<Equipment>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + equipmentId + '/',
+        userJson,
+        httpOptions);
+  }
+
+  /**
+   * Fonction to update the name of an existing equipment in the database
+   * @param equipmentFileModified Array of id of files
+   * @param equipmentId the id of the equipment to modified
+   */
+  updateEquipmentFile(equipmentFileModified: number[], equipmentId: number) {
+    const files = equipmentFileModified;
+
+    const userJson = JSON.stringify({files});
+
+    const httpOptions = {
+      headers : new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.httpClient
+      .put<Equipment>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + equipmentId + '/',
+        userJson,
+        httpOptions);
+  }
+
+  /**
    * Fonction to save a new equipment in the database
    * @param name the formal name of the equipment
    * @param equipment_type number defining which type of equipment it is
    * @param files list of the id of the files concerning the equipment
+   * @param field list of the fields of the equipment
    */
-  createEquipment(name: string, equipment_type: number, files: number[]): Observable<any> {
-    const equipmentJson = JSON.stringify({name, equipment_type, files});
+  createEquipment(name: string, equipment_type: number, files: number[], field: Field[]): Observable<any> {
+    const equipmentJson = JSON.stringify({name, equipment_type, files, field});
 
     const httpOptions = {
       headers : new HttpHeaders({
