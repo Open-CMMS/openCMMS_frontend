@@ -59,8 +59,8 @@
                 <h3 class="font-weight-bold"> Equipments : </h3>
             </div>
         </div>
-        <div class="card-body d-flex row">
-            <ul class="col-12 list-group">
+        <div class="d-flex">
+            <ul class="w-100 list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
                     *ngFor="let equipment of equipments; let i = index">
@@ -80,8 +80,8 @@
               <button class="d-flex btn btn-link" (click)="openModifyField()" *ngIf="onChangeEquipmentTypePermission() && (!modifyFields)"><fa-icon [icon]="faPencilAlt"></fa-icon></button>
               <button class="d-flex btn btn-link" (click)="saveFields()" *ngIf="onChangeEquipmentTypePermission() && (modifyFields)"><fa-icon [icon]="faSave"></fa-icon></button>
             </div>
-        <div class="card-body d-flex row">
-            <ul class="col-12 list-group">
+        <div class="d-flex">
+            <ul class="w-100 list-group">
                 <li
                 class="container-fluid list-group-item"
                 *ngFor="let field of fields; let i=index">
