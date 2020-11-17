@@ -8,30 +8,30 @@
         <label for="name">Name</label>
         <input type="text" class='form-control' formControlName="name" id="name">
       </div>
-      <div class="form-group">
-        <label>Fields</label>
-        <br>
-        <button class="btn btn-outline-secondary" type="button" (click)="onOpenField()">
-          <span class="mr-3">New Field</span>
-          <fa-icon [icon]="faPlusSquare"></fa-icon>
-        </button>
-      </div>
       <form [formGroup]="fieldForm" (ngSubmit)="onSubmitField()">
+        <div class="form-group">
+          <label>Fields</label>
+          <br>
+          <button class="btn btn-outline-secondary" type="button" (click)="onOpenField()">
+            <span class="mr-3">Create a new field</span>
+            <fa-icon [icon]="faPlusSquare"></fa-icon>
+          </button>
+        </div>
         <div class="form-group" *ngIf='openField'>
           <div class="form-row d-flex justify-content-between">
-            <button class="btn btn-danger ml-1" (click)="onCloseField()" [disabled]='!isEmpty(fieldList)'>
+            <button class="btn btn-danger ml-1 mr-2" (click)="onCloseField()">
               <fa-icon [icon]="faMinusCircle"></fa-icon>
             </button>
             <input
               type="text"
               placeholder="Field name"
-              class='form-control col-5'
+              class='form-control col-5 mr-2'
               formControlName="fieldName"
               >
               <input
               type="text"
               placeholder="Field value"
-              class='form-control col-5'
+              class='form-control col-5 mr-2'
               formControlName="fieldValue"
               data-toggle="tooltip"
               title="You can enter multiple values separated by a comma.">
@@ -50,24 +50,22 @@
         </div>
         <div class="form-group" *ngFor="let field of fieldList">
           <div class="form-row d-flex justify-content-between">
-            <button class="btn btn-danger ml-1"
+            <button class="btn btn-danger ml-1 mr-2"
               (click)="deleteField(field)"
             >
               <fa-icon [icon]="faMinusCircle"></fa-icon>
             </button>
             <input
               type="text"
-              class="form-control col-5"
+              class="form-control col-5 mr-2"
               [(ngModel)]="field[FIELDNAME_NAME]"
-              class="col-5"
               [attr.disabled]="!isEditingField(field) ? '' : null"
               [ngModelOptions]="{standalone: true}"
             >
             <input
             type="text"
-            class='form-control'
+            class='form-control col-5 mr-2'
             [(ngModel)]="field[FIELDVALUE_NAME]"
-            class="col-5"
             [attr.disabled]="!isEditingField(field)? '' : null"
             [ngModelOptions]="{standalone: true}"
             >
@@ -90,6 +88,7 @@
                 color:grey;
                 margin-left:4px;
                 margin-right:12px"
+              [disabled]="isEditingFieldValid(field)"
               >
               <fa-icon [icon]="faSave"></fa-icon>
             </button>
@@ -98,7 +97,14 @@
       </form>
       <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-danger nav-link" routerLink="/equipment-types">Cancel</button>
-        <button class="btn btn-primary" type="submit" [disabled]="equipmentTypeForm.invalid">Create Equipment Type</button>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          title="Name required and fields should not be in edition mode"
+          [disabled]="equipmentTypeForm.invalid || !addField || !(canValidateForm())"
+        >
+          Create Equipment Type
+        </button>
       </div>
     </form>
   </div>

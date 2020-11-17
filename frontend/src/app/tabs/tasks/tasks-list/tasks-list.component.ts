@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faTrash, faInfoCircle, faPlus, faCheck, faSearch, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faInfoCircle, faPlus, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
@@ -147,7 +147,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Compare function call by sort when neeeded to sort by date.
+   * Compare function call by sort when needed to sort by date.
    * @param a a date
    * @param b b date
    */

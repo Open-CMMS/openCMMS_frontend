@@ -26,6 +26,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   // Local variables
   equipments: Equipment[];
   equipmentTypes: EquipmentType[];
+  equipmentTypesWithEquipments = [];
   teams: Team[];
 
   teamSubscription: Subscription;
@@ -68,9 +69,11 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   /**
    * Constructor for the NewTeamComponent
    * @param router the service used to handle redirections
+   * @param templateService the service to communicate with backend on Template objects
    * @param teamService the service to communicate with backend on Team objects
    * @param taskService the service to communicate with backend on Task objects
    * @param equipmentService the service to communicate with backend on Equipment
+   * @param equipmentTypeService the service to communicate with backend on EquipmentTYpe objects
    * @param fileService the service to communicate with backend on File
    * @param formBuilder the service to handle forms
    */
@@ -104,6 +107,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
       (equipmentTypes: EquipmentType[]) => {
         this.equipmentTypes = equipmentTypes;
         this.initEquipmentTypesSelect();
+        this.initEquipmentSelect();
       }
     );
     this.filesSubscription = this.filesSubject.subscribe(
@@ -194,17 +198,35 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     };
   }
 
+  initEquipmentSelect() {
+    this.equipmentTypes.forEach(element => {
+      this.equipmentTypeService.getEquipmentType(element.id)
+        .subscribe(
+          (response) => {
+            const equipments = [];
+            response.equipments.forEach(equipment => {
+              equipments.push({id: equipment.id, value: equipment.name});
+            });
+            this.equipmentTypesWithEquipments.push({id: element.id, value: equipments});
+          }
+        );
+    });
+  }
+
   /**
    * Function that initialize the select for the equipment
    */
   updateEquipmentsSelect(equipmentTypeId: number) {
     this.equipmentList = [];
-    for (const equipment of this.equipments) {
-      if (equipment.equipment_type.toString() === equipmentTypeId.toString()) {
-        this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
+    let equipmentTypeFound = false;
+    this.equipmentTypesWithEquipments.forEach(element => {
+      if (element.id === Number(equipmentTypeId) && !equipmentTypeFound) {
+        element.value.forEach(equipment => {
+          this.equipmentList.push(equipment);
+        });
+        equipmentTypeFound = true;
       }
-    }
-
+    });
   }
 
   /**
@@ -300,9 +322,6 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
 
     const equipment_type = formValues.equipmentType !== '' ? formValues.equipmentType : null;
     const files = this.files;
-
-    const task_type = 1;
-    const over = false;
 
     const newTemplate = new Template(1,
                             formValues.name,

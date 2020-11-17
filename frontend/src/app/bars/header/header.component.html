@@ -7,7 +7,7 @@
 
       <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav mr-auto">
-          <li routerLinkActive="active">
+          <li routerLinkActive="active" *ngIf="currentUser">
             <a class="nav-link" routerLink="tasks">My Tasks</a>
           </li>
           <li class="nav-item dropdown" routerLinkActive="active" *ngIf="onChangeTasksPermission()">

@@ -29,6 +29,7 @@ import { NewTemplateComponent } from './tabs/templates/new-template/new-template
 import { DataProviderManagementComponent } from './tabs/data-providers/data-provider-management/data-provider-management.component';
 import { DataProviderDetailsComponent } from './tabs/data-providers/data-provider-details/data-provider-details.component';
 import { NewDataProviderComponent } from './tabs/data-providers/new-data-provider/new-data-provider.component';
+import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
 
 /**
  * List of the routes for the application and their associated permissions.
@@ -54,6 +55,12 @@ const appRoutes: Routes = [
   },
   {
     path: 'reset-password', component: ResetPasswordComponent,
+    data: {
+      requiredPerms: []
+    }
+  },
+  {
+    path: 'forgot-password', component: ForgotPasswordComponent,
     data: {
       requiredPerms: []
     }

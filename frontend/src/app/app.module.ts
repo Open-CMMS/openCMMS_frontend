@@ -61,6 +61,7 @@ import { DataProviderDetailsComponent } from './tabs/data-providers/data-provide
 import { DataProviderManagementComponent } from './tabs/data-providers/data-provider-management/data-provider-management.component';
 import { DataProviderListComponent } from './tabs/data-providers/data-provider-list/data-provider-list.component';
 import { NewDataProviderComponent } from './tabs/data-providers/new-data-provider/new-data-provider.component';
+import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -103,6 +104,8 @@ import { NewDataProviderComponent } from './tabs/data-providers/new-data-provide
     DataProviderManagementComponent,
     DataProviderListComponent,
     NewDataProviderComponent
+    FilterPipe,
+    ForgotPasswordComponent
   ],
   imports: [
     BrowserModule,

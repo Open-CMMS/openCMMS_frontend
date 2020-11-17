@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faPencilAlt, faSave, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { Equipment } from 'src/app/models/equipment';
 import { EquipmentType } from 'src/app/models/equipment-type';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
@@ -19,6 +18,9 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
 export class EquipmentTypeDetailsComponent implements OnInit {
 
   faInfoCircle = faInfoCircle;
+  faPencilAlt = faPencilAlt;
+  faSave = faSave;
+  faPlusSquare = faPlusSquare;
 
   // Local variables
   id: number;
@@ -27,6 +29,8 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   all_equipments: Equipment[] = [];
   fields = [];
   equipment_type: EquipmentType;
+  modifyFields = false;
+  newFieldsValues = [];
 
   // the Forms
   equipmentTypeForm: FormGroup;
@@ -127,8 +131,9 @@ export class EquipmentTypeDetailsComponent implements OnInit {
     const formValue = this.equipmentTypeForm.value;
     const nameStr = 'name';
     const id = this.id;
-    const name = formValue[nameStr];
-    this.equipmentTypeService.updateEquipmentType(new EquipmentType(id, name, [])).subscribe(
+    const name = formValue[nameStr] !== '' ? formValue[nameStr] : this.name;
+    const field = this.fields;
+    this.equipmentTypeService.updateEquipmentType(new EquipmentType(id, name, field)).subscribe(
         equipment_type => {
           const old_equipment_type = this.equipmentTypeService.equipment_types.find((value) => {
             return value.id === equipment_type.id;
@@ -163,5 +168,26 @@ export class EquipmentTypeDetailsComponent implements OnInit {
       );
   }
 
+  /**
+   * Function that allows to modify the fields
+   */
+  openModifyField() {
+    this.modifyFields = true;
+    this.newFieldsValues = [];
+  }
 
+  /**
+   * Function to save the modification of the values
+   */
+  saveFields() {
+    this.modifyFields = false;
+    this.newFieldsValues.forEach((element, index) => {
+      if (element !== '') {
+        element.split(',').map(s => {
+          this.fields[index].value.push(String(s).replace(/\s/g, ''));
+        });
+      }
+    });
+    this.modifyEquipmentType();
+  }
 }
