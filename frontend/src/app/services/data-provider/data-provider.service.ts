@@ -69,8 +69,8 @@ export class DataProviderService {
     const EQUIPMENTS = 'equipments';
     this.httpClient.get<DataProvider[]>(this.BASE_URL_API + '/api/dataproviders/')
       .subscribe(
-        (response) => {
-          response[DATAPROVIDER].forEach(element => {
+        async (response) => {
+          await response[DATAPROVIDER].forEach(element => {
             const dataProvider = new DataProvider(element.id,
               element.name,
               element.file_name,
@@ -81,10 +81,10 @@ export class DataProviderService {
               element.field_object);
             this.dataProviders.push(dataProvider);
           });
-          response[PYTHONFILES].forEach(element => {
+          await response[PYTHONFILES].forEach(element => {
             this.fileNames.push(element);
           });
-          response[EQUIPMENTS].forEach(element => {
+          await response[EQUIPMENTS].forEach(element => {
             const equipment = new Equipment(
               element.id,
               element.name,
