@@ -1,0 +1,84 @@
+<div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom: 100px">
+    <div class="d-flex my-5">
+        <h2 class="font-weight-bold">Create a new data provider</h2>
+    </div>
+        <form [formGroup]="createForm" (ngSubmit)="onCreateDataProvider()">
+        <div class="form-group">
+            <label for="name">Data Provider Name</label>
+            <input type="text" class="form-control" id="name" formControlName="name">
+        </div>
+        <div class="form-group">
+            <label for="fileName">Data Provider file name</label>
+            <select id="fileName" class="form-control" formControlName="fileName">
+              <option [value]="" defaultSelected="selected">---</option>
+              <option *ngFor="let fileName of this.fileNames" [value]="fileName">{{fileName}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="equipment">Equipment</label>
+            <select id="equipment" class="form-control" formControlName="equipment">
+              <option [value]="" defaultSelected="selected">---</option>
+              <option *ngFor="let equipment of this.equipments"
+                      [value]="equipment.id"
+              >{{ equipment.name }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="equipment_ip">Equipment IP</label>
+            <input type="text" class="form-control" id="equipment_ip" formControlName="equipment_ip">
+        </div>
+        <div class="form-group">
+            <label for="field">Field</label>
+            <select id="field" class="form-control" formControlName="field" (click)="onSelectField()">
+              <option [value]="" defaultSelected="selected">---</option>
+              <option *ngFor="let field of this.fields" [value]="field.id">{{ field.name }}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="recurrence">Recurrence</label>
+            <div class="input-group">
+              <input type="text" name="recurrence" id="recurrence" class="form-control" formControlName="recurrence">
+              <div class="input-group-append">
+                <button class="btn btn-info"
+                        type="button"
+                        ngbPopover="Examples : 7d, 3h, 1m"
+                        placement="right"
+                        triggers="mouseenter:mouseleave"
+                        popoverTitle="Info"
+                        [closeDelay]="2000">
+                  <fa-icon [icon]="faInfoCircle"></fa-icon>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="createForm.controls.recurrence.status == 'INVALID' && createForm.value.recurrence.length > 0" class="alert alert-danger">
+              Enter a duration with the correct pattern
+            </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-center">
+          <div class="success" *ngIf="success && tested "> Success ! </div>
+          <div class="failed" *ngIf="!success && tested "> Failed ! </div>
+            <button class="btn btn-success "
+                    (click)="onTest()"
+                    type="button"
+            >
+              Test
+            </button>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <button class="btn btn-danger nav-link" type="button" routerLink="/data-providers">Cancel</button>
+            <div class="d-flex align-items-center">
+                <div> Enable </div>
+                <label for="activated" class="switch mx-2">
+                    <input type="checkbox"
+                           id="activated"
+                           name="activated"
+                           class="form-control"
+                           formControlName="activated"
+                    >
+                    <span class="slider round"></span>
+                </label>
+                <button type="submit" [disabled]="createForm.invalid" class="btn btn-primary" >Create Data Provider</button>
+            </div>
+        </div>
+    </form>
+</div>
