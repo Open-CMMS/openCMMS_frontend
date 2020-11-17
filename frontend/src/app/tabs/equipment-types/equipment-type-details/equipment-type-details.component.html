@@ -20,7 +20,7 @@
             <div class="col-sm-8 col-sm-offset-2">
               <div class="form-group">
                 <label for="name">Nom</label>
-                <input type="text" class='form-control' formControlName="name" [(ngModel)]="name">
+                <input id="name" type="text" class='form-control' formControlName="name" [(ngModel)]="name">
               </div>
           </div>
         </div>
@@ -75,18 +75,32 @@
         </div>
     </div>
     <div class="card mt-5">
-        <div class="card-header">
-            <div class="d-flex">
+            <div class="card-header d-flex justify-content-between">
                 <h3 class="font-weight-bold"> Fields : </h3>
+              <button class="d-flex btn btn-link" (click)="openModifyField()" *ngIf="onChangeEquipmentTypePermission() && (!modifyFields)"><fa-icon [icon]="faPencilAlt"></fa-icon></button>
+              <button class="d-flex btn btn-link" (click)="saveFields()" *ngIf="onChangeEquipmentTypePermission() && (modifyFields)"><fa-icon [icon]="faSave"></fa-icon></button>
             </div>
-        </div>
         <div class="card-body d-flex row">
             <ul class="col-12 list-group">
-                <li 
-                class="container-fluid list-group-item font-weight-bold"
+                <li
+                class="container-fluid list-group-item"
                 *ngFor="let field of fields; let i=index">
-                {{field.name}}
-                <span *ngIf="field.value!=''">: {{field.value}}</span>
+                <div class="container-fluid row justify-content-between">
+                  <div class="d-flex">
+                    <span class="font-weight-bold" >{{field.name}}</span>
+                    <span *ngIf="field.value!=''">: {{field.value}}</span>
+                    <input
+                      type="text"
+                      placeholder="value"
+                      class='form-control col-5 ml-5 d-flex'
+                      *ngIf="modifyFields"
+                      style="margin-right: 10px; width: 500px"
+                      [ngModelOptions]="{standalone: true}"
+                      [(ngModel)]= newFieldsValues[i]
+                      title="You can enter multiple values separated by a comma."
+                    >
+                  </div>
+                </div>
                 </li>
             </ul>
         </div>
