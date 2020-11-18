@@ -1,5 +1,5 @@
-<div class="container-fluid col-8 mt-3 justify-content-center">
-    <div class="d-flex">
+<div class="container-fluid col-md-5 mt-3 justify-content-center">
+    <div class="d-flex flex-wrap">
       <h2 class="font-weight-bold">Create a new equipment type</h2>
     </div>
 
@@ -19,19 +19,19 @@
         </div>
         <div class="form-group" *ngIf='openField'>
           <div class="form-row d-flex justify-content-between">
-            <button class="btn btn-danger ml-1 mr-2" (click)="onCloseField()">
+            <button class="btn btn-danger ml-md-1 mr-md-2" (click)="onCloseField()">
               <fa-icon [icon]="faMinusCircle"></fa-icon>
             </button>
             <input
               type="text"
               placeholder="Field name"
-              class='form-control col-5 mr-2'
+              class='form-control col-md-4 mr-md-2 my-1'
               formControlName="fieldName"
               >
               <input
               type="text"
               placeholder="Field value"
-              class='form-control col-5 mr-2'
+              class='form-control col-md-5 mr-md-2 my-1'
               formControlName="fieldValue"
               data-toggle="tooltip"
               title="You can enter multiple values separated by a comma.">
@@ -39,7 +39,7 @@
               data-toggle="tooltip"
               title="Field name required">
               <button
-              class="btn btn-primary mr-1"
+              class="btn btn-primary mr-md-1 my-1"
               (click)="onAddField()"
               [disabled]="fieldForm.invalid"
               >
@@ -49,29 +49,29 @@
           </div>
         </div>
         <div class="form-group" *ngFor="let field of fieldList">
-          <div class="form-row d-flex justify-content-between">
-            <button class="btn btn-danger ml-1 mr-2"
+          <div class="form-row d-flex flex-wrap justify-content-between">
+            <button class="btn btn-danger ml-md-1 mr-md-2"
               (click)="deleteField(field)"
             >
               <fa-icon [icon]="faMinusCircle"></fa-icon>
             </button>
             <input
               type="text"
-              class="form-control col-5 mr-2"
+              class="form-control col-md-4 mr-md-2 my-1"
               [(ngModel)]="field[FIELDNAME_NAME]"
               [attr.disabled]="!isEditingField(field) ? '' : null"
               [ngModelOptions]="{standalone: true}"
             >
             <input
             type="text"
-            class='form-control col-5 mr-2'
+            class='form-control col-md-5 mr-md-2 my-1'
             [(ngModel)]="field[FIELDVALUE_NAME]"
             [attr.disabled]="!isEditingField(field)? '' : null"
             [ngModelOptions]="{standalone: true}"
             >
             <button
               *ngIf="!isEditingField(field)"
-              class="btn btn-link"
+              class="btn btn-link my-1"
               (click)="onEditField(field)"
               style="
                 color:grey;
@@ -82,7 +82,7 @@
             </button>
             <button
               *ngIf="isEditingField(field)"
-              class="btn btn-link"
+              class="btn btn-link my-1"
               (click)="onEditField(field)"
               style="
                 color:grey;
