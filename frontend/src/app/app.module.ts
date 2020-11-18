@@ -104,7 +104,6 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     DataProviderManagementComponent,
     DataProviderListComponent,
     NewDataProviderComponent,
-    FilterPipe,
     ForgotPasswordComponent
   ],
   imports: [
