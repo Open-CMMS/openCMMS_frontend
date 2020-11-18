@@ -5,8 +5,6 @@ import { Observable } from 'rxjs';
 import { UserProfile } from 'src/app/models/user-profile';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
-import {Router} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 
 @Injectable({
   providedIn: 'root'
@@ -19,13 +17,9 @@ export class JwtInterceptorService implements HttpInterceptor {
   /**
    * Constructor of JwtInterceptorService
    * @param authenticationService the auth service
-   * @param router the service used to handle routing
-   * @param modalService the service used to handle modal
    */
   constructor(
-    private authenticationService: AuthenticationService,
-    private router: Router,
-    private modalService: NgbModal,
+    private authenticationService: AuthenticationService
     ) { }
 
   /**
@@ -60,21 +54,6 @@ export class JwtInterceptorService implements HttpInterceptor {
         console.log('err', err);
         if (err.status === 401) {
           this.authenticationService.logout();
-        } else {
-          if (err.status === 500 ) {
-            console.log('500');
-          } else {
-            if (err.status === 400 && err.error.is_blocked === 'True') {
-              console.log('400');
-              this.router.navigate(['account-blocked']);
-            } else {
-              if (err.status === 400 && err.error.error === 'Mot de passe incorrect') {
-                console.log('Mot de passe incorrect');
-                this.modalService.open(err.error.error);
-                this.router.navigate(['sign-in']);
-              }
-            }
-          }
         }
         return of(err);
       })
