@@ -103,8 +103,7 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     DataProviderDetailsComponent,
     DataProviderManagementComponent,
     DataProviderListComponent,
-    NewDataProviderComponent
-    FilterPipe,
+    NewDataProviderComponent,
     ForgotPasswordComponent
   ],
   imports: [

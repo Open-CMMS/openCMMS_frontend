@@ -169,32 +169,26 @@ export class TasksListComponent implements OnInit, OnDestroy {
     times_A.forEach( time => {
       switch (time.charAt(time.length - 1 )) {
         case 'd':
-          // tslint:disable-next-line:radix
-          duration_in_minutes_A += parseInt(time.split('d')[0]) * 24 * 60;
+          duration_in_minutes_A += parseInt(time.split('d')[0], 10) * 24 * 60;
           break;
         case 'h':
-          // tslint:disable-next-line:radix
-          duration_in_minutes_A += parseInt(time.split('h')[0]) * 60;
+          duration_in_minutes_A += parseInt(time.split('h')[0], 10) * 60;
           break;
         case 'm':
-          // tslint:disable-next-line:radix
-          duration_in_minutes_A += parseInt(time.split('m')[0]);
+          duration_in_minutes_A += parseInt(time.split('m')[0], 10);
           break;
       }
     });
     times_B.forEach( time => {
       switch (time.charAt(time.length - 1 )) {
         case 'd':
-          // tslint:disable-next-line:radix
-          duration_in_minutes_B += parseInt(time.split('d')[0]) * 24 * 60;
+          duration_in_minutes_B += parseInt(time.split('d')[0], 10) * 24 * 60;
           break;
         case 'h':
-          // tslint:disable-next-line:radix
-          duration_in_minutes_B += parseInt(time.split('h')[0]) * 60;
+          duration_in_minutes_B += parseInt(time.split('h')[0], 10) * 60;
           break;
         case 'm':
-          // tslint:disable-next-line:radix
-          duration_in_minutes_B += parseInt(time.split('m')[0]);
+          duration_in_minutes_B += parseInt(time.split('m')[0], 10);
           break;
       }
     });
