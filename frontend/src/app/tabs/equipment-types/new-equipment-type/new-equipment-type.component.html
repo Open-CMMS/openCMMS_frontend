@@ -19,8 +19,8 @@
         </div>
         <div class="form-group" *ngIf='openField'>
           <div class="form-row d-flex justify-content-between">
-            <button class="btn btn-danger ml-md-1 mr-md-2" (click)="onCloseField()">
-              <fa-icon [icon]="faMinusCircle"></fa-icon>
+            <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="onCloseField()">
+              <fa-icon [icon]="faMinusCircle" style="color:red;font-size: 22px;"></fa-icon>
             </button>
             <input
               type="text"
@@ -36,24 +36,22 @@
               data-toggle="tooltip"
               title="You can enter multiple values separated by a comma.">
             <span
-              data-toggle="tooltip"
-              title="Field name required">
+              [ngbTooltip]="!fieldForm.invalid ? 'Add' : 'Field name required'"
+              placement="bottom">
               <button
-              class="btn btn-primary mr-md-1 my-1"
+              class="btn btn-link my-1"
               (click)="onAddField()"
               [disabled]="fieldForm.invalid"
               >
-                Add
+                <fa-icon [icon]="faPlusCircle" style="color: #0069d9;font-size: 22px;"></fa-icon>
               </button>
             </span>
           </div>
         </div>
         <div class="form-group" *ngFor="let field of fieldList">
           <div class="form-row d-flex flex-wrap justify-content-between">
-            <button class="btn btn-danger ml-md-1 mr-md-2"
-              (click)="deleteField(field)"
-            >
-              <fa-icon [icon]="faMinusCircle"></fa-icon>
+            <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteField(field)">
+              <fa-icon [icon]="faMinusCircle" style="color:red;font-size: 22px;"></fa-icon>
             </button>
             <input
               type="text"
