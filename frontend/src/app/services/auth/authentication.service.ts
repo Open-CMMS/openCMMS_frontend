@@ -61,48 +61,46 @@ export class AuthenticationService {
 
     const params = new HttpParams().set('username', username).set('password', password);
 
-    const promise = new Promise((resolve, reject) => {
+    const promise = new Promise<any>((resolve, reject) => {
       this.httpClient.post<any>(this.BASE_URL_API + '/api/usersmanagement/login', params, httpOptions)
-                     .toPromise()
-                     .then(
-                        res => {
-                          if (res.user) {
-                            this.currentUser = new UserProfile(
-                              res.user.id,
-                              res.user.username,
-                              res.user.first_name,
-                              res.user.last_name,
-                              res.user.email,
-                              res.user.password,
-                              res.user.nb_tries,
-                              res.user.is_active,
-                              );
-                          }
-                          if (res.token && this.currentUser) {
-                            this.currentUser.token = res.token;
-                          }
-                          localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
-                          if (this.currentUser) {
-                            this.getUserPermissions(this.currentUser.id)
-                                            .subscribe(
-                                              (perms) => {
-                                                this.userPermissions = perms;
-                                              }
-                                            );
-                          }
-                          this.emitCurrentUser();
-                          resolve();
-                        },
-                        error => {
-                          if (error.error.is_blocked === 'True') {
-                            this.router.navigate(['account-blocked']);
-                          }
-                          reject(error);
-                        }
-                      );
-
+        .subscribe(
+          (res) => {
+            if (res.data) {
+              if (res.data.user) {
+                this.currentUser = new UserProfile(
+                  res.data.user.id,
+                  res.data.user.username,
+                  res.data.user.first_name,
+                  res.data.user.last_name,
+                  res.data.user.email,
+                  res.data.user.password,
+                  res.data.user.nb_tries,
+                  res.data.user.is_active,
+                );
+              }
+              if (res.data.token && this.currentUser) {
+                this.currentUser.token = res.data.token;
+              }
+              localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
+              if (this.currentUser) {
+                this.getUserPermissions(this.currentUser.id)
+                  .subscribe(
+                    (perms) => {
+                      this.userPermissions = perms;
+                    }
+                  );
+              }
+              this.emitCurrentUser();
+              resolve(res);
+            } else if (res.error) {
+              if (res.error.is_blocked === 'True') {
+                this.router.navigate(['account-blocked']);
+              }
+              reject(res.error);
+            }
+          }
+        );
     });
-
     return promise;
   }
 
