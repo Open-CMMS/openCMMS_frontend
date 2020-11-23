@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router } from '@angular/router';
-import { faPlusSquare, faMinusCircle, faPencilAlt, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faPlusSquare, faMinusCircle, faPencilAlt, faSave, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-equipment-type',
@@ -28,6 +28,7 @@ export class NewEquipmentTypeComponent implements OnInit {
   // Icons
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
+  faPlusCircle = faPlusCircle;
   faPencilAlt = faPencilAlt;
   faSave = faSave;
 

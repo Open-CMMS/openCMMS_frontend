@@ -1,4 +1,4 @@
-  <div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom:100px">
+  <div class="container-fluid col-md-5 mt-3 justify-content-center" style="margin-bottom:100px">
     <div class="d-flex">
         <h2 class="font-weight-bold">Create a new task</h2>
     </div>
@@ -47,7 +47,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row col-4">
+        <div class="form-group row col-md-4">
             <label for="time">Task duration </label>
             <div class="input-group">
                 <input type="text" name="time" id="duration" class="form-control" formControlName="duration" [ngStyle]="{'background-color': (selectedTemplate?.duration) ? 'rgb(255, 255, 202)' : '#ffffff'}">
@@ -73,9 +73,9 @@
             </button>
         </div>
         <div class="form-group" *ngFor="let triggerCondition of triggerConditions; let i = index">
-            <div class="input-group">
-                <button class="btn btn-danger" type="button" (click)="deleteTriggerCondition(i)">
-                    <fa-icon [icon]="faMinusCircle"></fa-icon>
+            <div class="input-group align-items-center">
+                <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteTriggerCondition(i)">
+                    <fa-icon [icon]="faMinusCircle"  style="color: red;font-size: 22px;"></fa-icon>
                 </button>
                 <ng-multiselect-dropdown
                     [settings]="triggerCondition.dropdownTriggerConditionsSettings"
@@ -83,13 +83,14 @@
                     [(ngModel)]="triggerCondition.selectedTriggerCondition"
                     [ngModelOptions]="{standalone: true}"
                     name="triggerCondition"
-                    class="col-5"
-                    style="margin-right: 10px;"
+                    class="col-md-5 mx-md-2 my-1"
+                    style="margin-left: -15px;"
                 >
                 </ng-multiselect-dropdown>
 
-                <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Date'">
-                    <input placeholder="yyyy-mm-dd"
+                <!-- <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Date'">
+                    <input class="form-control my-1"
+                        placeholder="yyyy-mm-dd"
                         name="dateTriggerCondition"
                         ngbDatepicker
                         #datePicker="ngbDatepicker"
@@ -97,12 +98,12 @@
                         [ngModelOptions]="{standalone: true}"
                     />
                     <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>
-
-
-                </div>
+                </div> -->
 
                 <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Duration'">
-                    <input type="text"
+                    <input 
+                    class="form-control my-1"
+                    type="text"
                     placeholder="value"
                     ngbPopover="Examples : 1d5m, 3m 15d, 2y6m 15d"
                     placement="top"
@@ -125,22 +126,23 @@
             </button>
         </div>
         <div class="form-group" *ngFor="let endCondition of endConditions; let i = index">
-            <div class="input-group">
-                <button class="btn btn-danger" type="button" (click)="deleteEndCondition(i)">
-                    <fa-icon [icon]="faMinusCircle"></fa-icon>
-                </button>
+            <div class="input-group align-items-center">
+                <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(i)">
+                    <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
+                  </button>
                 <ng-multiselect-dropdown
                     [settings]="endCondition.dropdownEndConditionsSettings"
                     [data]="endCondition.endConditionsList"
                     [(ngModel)]="endCondition.selectedEndCondition"
                     [ngModelOptions]="{standalone: true}"
                     name="endCondition"
-                    class="col-5"
-                    style="margin-right: 10px;"
+                    class="col-md-5 mx-md-2 my-1"
+                    style="margin-left: -15px;"
                 >
                 </ng-multiselect-dropdown>
 
                 <input type="text"
+                    class="form-control my-1"
                     *ngIf="endCondition.selectedEndCondition[0]"
                     placeholder="description"
                     [(ngModel)]=endCondition.description

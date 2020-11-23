@@ -81,7 +81,7 @@
 
 <!-- ########## PAGE ########## -->
 
-<div class="container-fluid col-10 mt-3 justify-content-center" *ngIf="loaded">
+<div class="container-fluid col-md-8 mt-3 justify-content-center" *ngIf="loaded">
     <div class="container-fluid d-flex justify-content-between">
         <div class="d-flex">
             <h2 class="font-weight-bold">{{ task?.name }}</h2>
@@ -101,8 +101,8 @@
             <div class="col-12">
                 <div class="px-2 py-1">
                     <p><span class="font-weight-bold">Description :</span></p>
-                    <div class="input-group row col-6">
-                        <textarea class="form-control" [attr.disabled]="!inputEnabled.description ? '' : null" [(ngModel)]="task.description"></textarea>
+                    <div class="input-group row col-md-6 col-sm-12">
+                        <textarea class="form-control"[attr.disabled]="!inputEnabled.description ? '' : null" [(ngModel)]="task.description"></textarea>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" *ngIf="inputEnabled.description" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
@@ -112,7 +112,7 @@
                     </div>
                     <br>
                     <p><span class="font-weight-bold">End date :</span></p>
-                    <div class="input-group row col-3">
+                    <div class="input-group row col-md-3">
                         <input class="form-control"
                                [placeholder]="task.end_date? task.end_date : ''"
                                ngbDatepicker
@@ -128,13 +128,13 @@
                     </div>
                     <br>
                     <p><span class="font-weight-bold">Duration :</span></p>
-                    <div class="input-group row col-3" *ngIf="!inputEnabled.duration">
+                    <div class="input-group row col-md-3" *ngIf="!inputEnabled.duration">
                         <input class="form-control" [(ngModel)]="task.duration" disabled>
                         <div class="input-group-append" *ngIf="onChangeTaskPermission()">
                             <button class="btn btn-outline-secondary" *ngIf="!task.over" (click)="enableInput('duration')"><fa-icon [icon]="faPen"></fa-icon></button>
                         </div>
                     </div>
-                    <div class="input-group row col-3" *ngIf="inputEnabled.duration">
+                    <div class="input-group row col-md-3" *ngIf="inputEnabled.duration">
                         <input class="form-control"
                             type="text"
                             placeholder="value"
@@ -154,14 +154,14 @@
                     </div>
                     <br>
                     <p><span class="font-weight-bold">Equipment :</span></p>
-                    <div class="input-group row col-4" *ngIf="!inputEnabled.equipment && task.equipment">
+                    <div class="input-group row col-md-4" *ngIf="!inputEnabled.equipment && task.equipment">
                         <input class="form-control" [(ngModel)]="task.equipment.name" disabled>
                         <div class="input-group-append" >
                             <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faPen"></fa-icon></button>
                             <button class="btn btn-info" (click)="onViewEquipment(task.equipment.id)" [disabled]="task.equipment==null"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                         </div>
                     </div>
-                    <div class="input-group row col-4" *ngIf="inputEnabled.equipment">
+                    <div class="input-group row col-md-4" *ngIf="inputEnabled.equipment">
                         <select class="form-control" [(ngModel)]="task.equipment.id">
                             <option *ngFor="let equipment of this.equipments" [value]="equipment.id" [defaultSelected]="task.equipment.id === equipment.id ? 'selected' : ''">{{ equipment.name }}</option>
                         </select> 
@@ -177,18 +177,22 @@
                             <a class="ml-3" style="cursor: pointer;" ngbTooltip="Add a new file" placement="right" (click)="openAddFile(contentAddFile)"><fa-icon [icon]="faPlusCircle" style="color: gray;"></fa-icon></a>
                         </span>
                     </p>
-                    <div class="d-flex">
+                    <div class="d-flex flex-wrap">
                         <ul class="list-group w-100">
                             <li
-                                class="container-fluid list-group-item"
+                                class="d-flex flex-wrap list-group-item"
                                 *ngFor="let file of files; let i = index">
-                                <div class="container-fluid row">
-                                <span *ngIf="onChangeTaskPermission() && !task.over && file.is_manual">
-                                    <a style="cursor: pointer;" ngbTooltip="Delete" placement="left" (click)="openDeleteFile(contentDeleteFile, file)">
-                                        <fa-icon class="mr-3" [icon]="faMinusCircle" style="color: red;"></fa-icon>
-                                    </a>
-                                </span>
-                                <a class="mr-2" href="{{ BASE_URL_API }}{{ file.fileLink }}" target="_blank">{{ file.fileName }}</a><fa-icon [icon]="faCheck" *ngIf="!file.is_manual" style="color: green;"></fa-icon><fa-icon [icon]="faBook" *ngIf="file.is_manual"></fa-icon>
+                                <div class="container-fluid row justify-content-left">
+                                    <div class="mr-2" *ngIf="onChangeTaskPermission() && !task.over && file.is_manual">
+                                        <a style="cursor: pointer;" ngbTooltip="Delete" placement="left" (click)="openDeleteFile(contentDeleteFile, file)">
+                                            <fa-icon class="mr-3" [icon]="faMinusCircle" style="color: red;"></fa-icon>
+                                        </a>
+                                    </div>
+                                    <div class="mr-2">
+                                        <fa-icon [icon]="faCheck" *ngIf="!file.is_manual" style="color: green;"></fa-icon>
+                                        <fa-icon [icon]="faBook" *ngIf="file.is_manual"></fa-icon>
+                                    </div>
+                                    <a class="text-truncate" style="padding-left: 0px;" href="{{ BASE_URL_API }}{{ file.fileLink }}" target="_blank">{{ file.fileName }}</a>
                                 </div>
                             </li>
                         </ul>
@@ -221,15 +225,15 @@
                 <button class="d-flex btn btn-secondary" (click)="openAddTeam(contentAddTeam)" *ngIf="onChangeTaskPermission() && onViewTeamsPermission() && !task.over"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
             </div>
         </div>
-        <div class="d-flex">
+        <div class="d-flex flex-wrap">
             <ul class="list-group w-100">
                 <li
                     class="list-group-item font-weight-bold "
                     *ngFor="let team of task.teams"
                     >
-                    <div class="container-fluid row justify-content-between">
-                        <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
-                        <div>
+                    <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
+                        <h5 class="col-md-8" style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
+                        <div class="col-md-2 my-1">
                             <button class="btn btn-info" (click)="onViewTeam(team)"><fa-icon [icon]="faInfoCircle" ></fa-icon></button>
                             <button class="btn btn-danger" (click)="onRemoveTeamFromTask(team)" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faMinusSquare"></fa-icon></button>
                         </div>
@@ -252,37 +256,37 @@
                     class="container-fluid list-group-item d-flex justify-content-between align-items-center"
                     *ngFor="let endCondition of task.end_conditions;"
                     >
-                    <div class="col-10">
+                    <div class="col-md-10">
                         <span><span class="font-weight-bold">{{ endCondition.field_name }}:</span> {{ endCondition.description }}</span><br>
                         <!-- Checkbox -->
                         <div *ngIf="endCondition.field_name === 'Checkbox' && endCondition.value === null">
                             <label ngbButtonLabel>
-                                <input type="checkbox" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" ngbButton> Check-me
+                                <input class="form-control" type="checkbox" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" ngbButton> Check-me
                             </label>
                         </div>
                         <!-- Value -->
                         <div class="form-group" *ngIf="endCondition.field_name === 'Integer' && endCondition.value === null ">
-                            <input type="number" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" placeholder="Related value">
+                            <input class="form-control" type="number" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" placeholder="Related value">
                         </div>
                         <div class="form-group" *ngIf="endCondition.field_name === 'Integer' && endCondition.value !== null ">
                             {{ endCondition.value }}
                         </div>
                         <!-- Description -->
                         <div class="form-group" *ngIf="endCondition.field_name === 'Description' && endCondition.value === null">
-                            <textarea [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" cols="50" placeholder="Your description ..."></textarea>
+                            <textarea class="form-control" [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" placeholder="Your description ..."></textarea>
                         </div>
                         <div class="form-group" *ngIf="endCondition.field_name === 'Description' && endCondition.value !== null ">
                             {{ endCondition.value }}
                         </div>
                         <!-- Photo -->
                         <div class="form-group" *ngIf="endCondition.field_name === 'Photo' && endCondition.value === null">
-                            <input [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" type="file" class="form-control-file" [disabled]="!isSelectedFile(endCondition) && fileToUpload.length > 0" (change)="onSetPhotoToUpload(endCondition, $event)">
+                            <input [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" type="file" class="form-control form-control-file" [disabled]="!isSelectedFile(endCondition) && fileToUpload.length > 0" (change)="onSetPhotoToUpload(endCondition, $event)">
                         </div>
                         <div class="form-group" *ngIf="endCondition.field_name === 'Photo' && endCondition.value !== null ">
                             <a class="mr-2" href="{{ BASE_URL_API }}{{ '/' +endCondition.value.split('/')[2] + '/' + endCondition.value.split('/')[3] }}" target="_blank">See the photo</a>
                         </div>
                     </div>
-                    <div class="col-1">
+                    <div class="col-md-1">
                         <button class="btn btn-outline-dark" (click)="onValidateEndCondition(endCondition)" *ngIf="endCondition.value === null && isAValidValue(endCondition)"><fa-icon [icon]="faCheck"></fa-icon></button>
                         <fa-icon [icon]="faCheckCircle" size="2x" style="color: green;" *ngIf="endCondition.value !== null"></fa-icon>
                     </div>

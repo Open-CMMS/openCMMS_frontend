@@ -87,8 +87,8 @@
 </ng-template>
 
 
-<div class="container-fluid col-10 mt-3 justify-content-center">
-    <div class="container-fluid d-flex justify-content-between">
+<div class="container-fluid col-md-8 mt-3 justify-content-center">
+    <div class="container-fluid d-flex flex-wrap justify-content-between">
         <div class="d-flex">
             <h2 class="font-weight-bold" *ngIf="loaded">User : {{ user.first_name }} {{ user.last_name }}</h2>
         </div>
@@ -102,7 +102,7 @@
             <h3 class="font-weight-bold"> User info : </h3>
         </div>
         <div class="row">
-            <div class="col-12">
+            <div class="col-md-12">
                 <div class="px-2 py-1">
                     <p *ngIf="loaded"><span class="font-weight-bold" >First Name  :</span> {{ user.first_name }} <p>
                     <p *ngIf="loaded"><span class="font-weight-bold">Last Name  :</span> {{ user.last_name }} </p>
@@ -113,11 +113,11 @@
         </div>
     </div>
     <div class="row mt-5" *ngIf="onInfoPage">
-        <div class="col-12">
+        <div class="col-md-12">
             <button class="btn btn-primary" (click)="onActivateChangePassword()">Change Password</button>
         </div>
     </div>
-    <div class="col-12 mt-5">
+    <div class="col-md-12 mt-5">
         <form class="form" [formGroup]="setPasswordForm" (ngSubmit)="onSetPassword()" *ngIf="changePwdActivated">
             <div class="row">
                 <div class="form-group">

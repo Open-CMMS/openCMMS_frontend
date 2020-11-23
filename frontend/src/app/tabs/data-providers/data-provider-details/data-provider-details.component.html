@@ -10,8 +10,8 @@
         <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
     </div>
 </ng-template>
-<div class="container-fluid col-10 mt-3 justify-content-center" *ngIf="loaded">
-        <div class="container-fluis d-flex justify-content-between">
+<div class="container-fluid col-lg-8 col-md-8 mt-3 justify-content-center" *ngIf="loaded">
+        <div class="container-fluid d-flex flex-wrap justify-content-between">
             <div class="d-flex">
                 <h2 class="font-weight-bold">{{localDataProvider?.name}}</h2>
             </div>
@@ -39,7 +39,7 @@
                     <div class="px-2 py-1">
                       <div class="form-group">
                         <p><span class="font-weight-bold">Name :</span></p>
-                        <div class="input-group row col-6">
+                        <div class="input-group row col-md-6">
                             <input type="text" class="form-control"
                                 [attr.disabled]="!inputEnabled.name ? '' : null"
                                 [(ngModel)]="localDataProvider.name"
@@ -54,13 +54,13 @@
                       </div>
                       <div class="form-group">
                         <p><span class="font-weight-bold">File :</span></p>
-                        <div class="input-group row col-6" *ngIf="!inputEnabled.file_name">
+                        <div class="input-group row col-md-6" *ngIf="!inputEnabled.file_name">
                           <input class="form-control" [(ngModel)]="localDataProvider.file_name" disabled>
                           <div class="input-group-append" >
                             <button class="btn btn-outline-secondary" (click)="enableInput('file_name')" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
                           </div>
                         </div>
-                        <div class="input-group row col-6" *ngIf="inputEnabled.file_name">
+                        <div class="input-group row col-md-6" *ngIf="inputEnabled.file_name">
                           <select class="form-control" [(ngModel)]="localDataProvider.file_name">
                             <option *ngFor="let fileName of this.fileNames" [value]="fileName" [defaultSelected]="this.localDataProvider.file_name === fileName ? 'selected' : ''">{{ fileName }}</option>
                           </select>
@@ -71,7 +71,7 @@
                       </div>
                       <div class="form-group">
                         <p><span class="font-weight-bold">Recurrence :</span></p>
-                        <div class="d-flex flex-column col-6">
+                        <div class="d-flex flex-column col-md-6">
                           <div class="input-group row">
                             <input class="form-control" [(ngModel)]="localDataProvider.recurrence" [attr.disabled]="!inputEnabled.recurrence ? '' : null">
                             <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
@@ -108,13 +108,13 @@
                     <div class="px-2 py-1">
                       <div class="form-group">
                         <p><span class="font-weight-bold">Equipment :</span></p>
-                        <div class="input-group row col-6" *ngIf="!inputEnabled.equipment">
+                        <div class="input-group row col-md-6" *ngIf="!inputEnabled.equipment">
                           <input class="form-control" [(ngModel)]="localDataProvider.equipment.name" disabled>
                           <div class="input-group-append" >
                             <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
                           </div>
                         </div>
-                        <div class="input-group row col-6" *ngIf="inputEnabled.equipment">
+                        <div class="input-group row col-md-6" *ngIf="inputEnabled.equipment">
                           <select class="form-control" [(ngModel)]="localDataProvider.equipment.id">
                             <option *ngFor="let equipment of this.equipments" [value]="equipment.id" [defaultSelected]="this.localDataProvider.equipment.id === equipment.id ? 'selected' : ''">{{ equipment.name }}</option>
                           </select>
@@ -125,7 +125,7 @@
                       </div>
                       <div class="form-group">
                         <p><span class="font-weight-bold">Equipment IP :</span></p>
-                        <div class="input-group row col-6">
+                        <div class="input-group row col-md-6">
                           <input type="text" class="form-control"
                                  [attr.disabled]="!inputEnabled.ip_address ? '' : null"
                                  [(ngModel)]="localDataProvider.ip_address"
@@ -140,13 +140,13 @@
                       </div>
                       <div class="form-group">
                         <p><span class="font-weight-bold">Field :</span></p>
-                        <div class="input-group row col-6" *ngIf="!inputEnabled.field">
+                        <div class="input-group row col-md-6" *ngIf="!inputEnabled.field">
                           <input class="form-control" [(ngModel)]="localDataProvider.field_object.name" disabled>
                           <div class="input-group-append" >
                             <button class="btn btn-outline-secondary" (click)="enableInput('field');onSelectField()" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
                           </div>
                         </div>
-                        <div class="input-group row col-6" *ngIf="inputEnabled.field">
+                        <div class="input-group row col-md-6" *ngIf="inputEnabled.field">
                           <select class="form-control" [(ngModel)]="localDataProvider.field_object.id">
                             <option *ngFor="let field of this.fields" [value]="field.id" [defaultSelected]="this.localDataProvider.field_object.id === field.id ? 'selected' : ''">{{ field.name }}</option>
                           </select>
