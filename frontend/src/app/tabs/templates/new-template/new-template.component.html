@@ -1,4 +1,4 @@
-<div class="container-fluid col-5 mt-3 justify-content-center" style="margin-bottom:100px">
+<div class="container-fluid col-md-5 mt-3 justify-content-center" style="margin-bottom:100px">
     <div class="d-flex">
         <h2 class="font-weight-bold">Create a new template</h2>
     </div>
@@ -23,19 +23,19 @@
         </div>
         <div class="form-group">
             <label for="equipmentType">Equipment type</label>
-            <select class="form-control" formControlName="equipmentType" name="equipmentType" (change)="updateEquipmentsSelect(createForm.value.equipmentType)">
+            <select id="equipmentType" class="form-control" formControlName="equipmentType" name="equipmentType" (change)="updateEquipmentsSelect(createForm.value.equipmentType)">
                 <option default value=''></option>
                 <option *ngFor="let equipmentType of equipmentTypesList" [value]="equipmentType.id">{{ equipmentType.value }}</option>
             </select>
         </div>
-        <div class="form-group" *ngIf="createForm.value.equipmentType !== ''">
+        <div class="form-group" *ngIf="createForm.value.equipmentType !== '' && equipmentList.length !== 0">
             <label for="equipment">Equipment</label>
-            <select class="form-control" formControlName="equipment" name="equipment">
+            <select id="equipment" class="form-control" formControlName="equipment" name="equipment">
                 <option default value=''></option>
                 <option *ngFor="let equipment of equipmentList" [value]="equipment.id">{{ equipment.value }}</option>
             </select>
         </div>
-        <div class="form-group row col-4">
+        <div class="form-group row col-md-4">
             <label for="time">Task duration </label>
             <div class="input-group">
                 <input type="text" name="time" id="time" class="form-control" formControlName="time">
@@ -55,28 +55,30 @@
         </div>
         <div class="form-group">
             <label>End Conditions </label><br>
-            <button type="button" class="btn btn-outline-secondary" (click)="addEndCondition()">
+            <button type="button" class="btn btn-outline-secondary my-1" (click)="addEndCondition()">
                 <span style="margin-right: 10px;">Add End Condition</span>
                 <fa-icon [icon]="faPlusSquare"></fa-icon>
             </button>
         </div>
         <div class="form-group" *ngFor="let endCondition of endConditions; let i = index">
-            <div class="input-group">
-                <button class="btn btn-danger" type="button" (click)="deleteEndCondition(i)">
-                    <fa-icon [icon]="faMinusCircle"></fa-icon>
-                </button>
+            <div class="input-group align-items-center">
+                <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(i)">
+                    <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
+                  </button>
                 <ng-multiselect-dropdown
                     [settings]="endCondition.dropdownEndConditionsSettings"
                     [data]="endCondition.endConditionsList"
                     [(ngModel)]="endCondition.selectedEndCondition"
                     [ngModelOptions]="{standalone: true}"
                     name="endCondition"
-                    class="col-4"
-                    style="margin-right: 10px;"
+                    class="col-md-4 mx-md-2 my-1"
+                    style="margin-left: -15px;"
                 >
                 </ng-multiselect-dropdown>
 
-                <input type="text"
+                <input 
+                    class="form-control my-1"
+                    type="text"
                     *ngIf="endCondition.selectedEndCondition[0]"
                     placeholder="description"
                     [(ngModel)]=endCondition.description

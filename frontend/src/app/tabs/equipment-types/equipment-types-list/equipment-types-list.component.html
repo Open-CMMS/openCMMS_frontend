@@ -18,8 +18,8 @@
                 class="container-fluid list-group-item font-weight-bold"
                 *ngFor="let equipmentType of equipmentTypes; let i = index"
                 >
-                <div class="container-fluid row justify-content-between">
-                    <h5>{{ equipmentType.name }}</h5>
+                <div class="d-flex container-fluid row flex-wrap justify-content-between">
+                    <h5 class="col-sm-8">{{ equipmentType.name }}</h5>
 
                     <div class="d-flex">
                         <button class="btn btn-info mx-2" (click)="onViewEquipmentType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>

@@ -7,7 +7,7 @@ import {EquipmentService} from 'src/app/services/equipments/equipment.service';
 import {Subscription, Subject} from 'rxjs';
 import {EquipmentType} from 'src/app/models/equipment-type';
 import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
-import {faMinusSquare, faPlusSquare, faMinusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faMinusSquare, faPlusSquare, faMinusCircle, faPencilAlt, faSave, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClient} from '@angular/common/http';
 import {Field} from 'src/app/models/field';
@@ -23,6 +23,10 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   faMinusSquare = faMinusSquare;
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
+  faPlusCircle = faPlusCircle;
+  faPencilAlt = faPencilAlt;
+  faSave = faSave;
+
   // Local variables
   submitted = false;
   equipment: Equipment;
@@ -36,14 +40,25 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   filesSubscription: Subscription;
   myFiles: File[] = [];
   files: number[] = [];
+  openField = false;
+  addField = true;
+  editingFieldValid = true;
+
   // Fields
   field = null;
   fields = [];
   initialFields = [];
+  editingField = [];
   fieldTemplate = null;
+
   // Forms
   createForm: FormGroup;
   addFieldForm: FormGroup;
+
+  // Constants
+  INIT_FIELD_NAME  = '';
+  INIT_FIELD_VALUE = '';
+  INIT_FIELD_DESCRIPTION = '';
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -94,9 +109,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
       file: ['']
     });
     this.addFieldForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      value: ['', [Validators.required]],
-      description: ['']
+      name: [this.INIT_FIELD_NAME, [Validators.required, Validators.minLength(3)]],
+      value: [this.INIT_FIELD_VALUE, [Validators.required]],
+      description: [this.INIT_FIELD_DESCRIPTION]
     });
   }
 
@@ -109,9 +124,11 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
       return;
     }
     this.submitted = true;
-    this.fields.forEach(element => {
-      this.initialFields.push(element);
-    });
+    if (this.fields.length !== 0) {
+      this.fields.forEach(element => {
+        this.initialFields.push(element);
+      });
+    }
     const formValues = this.createForm.value;
     this.equipmentService.createEquipment(formValues.name, formValues.equipmentType, this.files, this.initialFields)
       .subscribe((equipment: Equipment) => {
@@ -121,9 +138,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
           equipment.files,
           equipment.fields,
         );
+        this.equipmentService.getEquipments();
       });
     this.router.navigate(['/equipments']);
-    this.equipmentService.getEquipments();
   }
 
   /**
@@ -162,12 +179,40 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to add a field in the form
+   * Function that set openField to true and addField to false
    */
-  addField() {
-    const jsonCopy = JSON.stringify(this.fieldTemplate);
+  onOpenField() {
+    this.openField = true;
+    this.addField = false;
+  }
+
+  /**
+   * Function that set openField to false and addField to true
+   */
+  onCloseField() {
+    this.openField = false;
+    this.addField = true;
+  }
+
+  /**
+   * Function to add a field with a name, a value and optionally a description
+   */
+  onAddField() {
+    const formValues = this.addFieldForm.value;
+    const field = {
+      name: formValues.name,
+      value: formValues.value,
+      description: formValues.description
+    };
+    const jsonCopy = JSON.stringify(field);
     const objectCopy = JSON.parse(jsonCopy);
     this.fields.push(objectCopy);
+    this.editingField.push(false);
+    this.addFieldForm.controls.name.setValue(this.INIT_FIELD_NAME);
+    this.addFieldForm.controls.value.setValue(this.INIT_FIELD_VALUE);
+    this.addFieldForm.controls.description.setValue(this.INIT_FIELD_DESCRIPTION);
+    this.openField = false;
+    this.addField = true;
   }
 
   /**
@@ -186,6 +231,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * @param event The EquipmentType selected
    */
   initEquipmentTypeFields(event) {
+    this.initialFields = [];
     this.equipmentTypeService.getEquipmentType(Number(event))
       .subscribe(
         (response) => {
@@ -255,5 +301,61 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.equipmentTypesSubscription.unsubscribe();
   }
 
+  /**
+   * Function to know if we are editing a specific field.
+   * @param field the field
+   */
+  isEditingField(field) {
+    const indexOf = this.fields.indexOf(field);
+    return this.editingField[indexOf];
+  }
+
+  /**
+   * Function to verify if the name and the value of the edited field are not empty.
+   * @param field the field
+   */
+  isEditingFieldValid(field) {
+    this.editingFieldValid = (field.name.length === 0 || field.value.length === 0);
+    return this.editingFieldValid;
+  }
+
+  /**
+   * Function to edit a specific field in the list of field
+   * @param field the field
+   */
+  onEditField(field) {
+    const indexOf = this.fields.indexOf(field);
+    this.editingField[indexOf] = !this.editingField[indexOf];
+  }
+
+  /**
+   * Function to verify if the form can be validate, in particular if one field is being editing
+   */
+  canValidateForm() {
+    let canValidateForm = true;
+    this.editingField.forEach(element => {
+      if (element) {
+        canValidateForm = false;
+      }
+    });
+    return canValidateForm;
+  }
+
+  /**
+   * Function call on submit addFieldForm form.
+   */
+  onSubmitField() {
+    if (this.addFieldForm.invalid) {
+      return;
+    }
+  }
+
+  /**
+   * Function to know if a object is empty
+   * @param obj the object
+   */
+  isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+  }
 
 }

@@ -64,8 +64,8 @@
     </div>
 </ng-template>
 
-<div class="container-fluid col-10 mt-3 justify-content-center">
-    <div class="container-fluid d-flex justify-content-between">
+<div class="container-fluid col-md-8 mt-3 justify-content-center">
+    <div class="d-flex flex-wrap justify-content-between">
         <div class="d-flex">
             <h2 class="font-weight-bold" *ngIf="loaded">Equipment : {{currentEquipment.name}}</h2>
         </div>
@@ -99,80 +99,99 @@
       <button class="d-flex btn btn-secondary"  [disabled]="missingEquipmentTypeFieldsValue()" (click)="saveFields()" *ngIf="onChangeEquipmentPermission() && (modifyFields || equipmentTypeModified)"><fa-icon [icon]="faSave"></fa-icon></button>
     </div>
     <div class="row">
-      <div class="col-12">
+      <div class="col-10">
         <div class="px-2 py-1">
           <p *ngIf="loaded && !(modifyFields)"><span class="font-weight-bold" >Equipment type :</span> {{ equipmentTypeName }} </p>
             <label for="type"  class="font-weight-bold" *ngIf="modifyFields">Equipment type </label>
-            <select id="type" class="form-control" *ngIf="modifyFields" (change)="initEquipmentTypeFields($event.target.value)" style="margin-bottom: 10px; width: 350px;">
+            <select id="type" class="form-control col-12" *ngIf="modifyFields" (change)="initEquipmentTypeFields($event.target.value)" style="margin-bottom: 10px; width: 350px;">
               <option disabled selected value> {{ equipmentTypeName}} </option>
               <option *ngFor="let equipmentType of equipmentTypes" [value]="equipmentType.id">{{ equipmentType.name }}</option>
             </select>
         </div>
       </div>
     </div>
-    <div class="card-body d-flex row" *ngIf="!(equipmentTypeModified)">
-      <ul class="col-12 list-group">
-        <div class="container-fluid row offset-sm-0">
-          <p style="width: 270px"><span class="font-weight-bold">Name</span></p>
-          <p style="width: 270px"><span class="font-weight-bold">Value</span></p>
-          <p style="width: 270px"><span class="font-weight-bold">Description</span></p>
-        </div>
+    <div class="d-flex flex-wrap" *ngIf="!(equipmentTypeModified)">
+      <ul class="w-100 list-group">
+        <li class="d-none d-md-flex list-group-item font-weight">
+          <div class="container-fluid row">
+              <span class="font-weight-bold col-md-3">Name</span>
+              <span class="font-weight-bold col-md-3">Value</span>
+              <span class="font-weight-bold col-md-6">Description</span>
+          </div>
+        </li>
         <li
           class="list-group-item font-weight"
           *ngFor="let field of fields; let i = index;"
           (change)="modifyEquipmentTypeFieldValue($event.target, i)"
           >
-          <div class="row container-fluid">
-            <p style="width: 270px"><span class="font-weight-bold">{{ field.field_name }}</span></p>
-            <p style="width: 270px" *ngIf="field.value.length > 0">
+          <div class="container-fluid row">
+
+            <span class="font-weight-bold col-md-3 my-1">{{ field.field_name }}</span>
+
+            <p class="col-md-3 my-1" *ngIf="field.value.length > 0">
               <span *ngIf="(!(field.field_value) && !(modifyFields))">{{ field.value }}</span>
-              <input id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [ngModel]=field.value>
+              <input class="form-control" id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [ngModel]=field.value>
             </p>
-            <p style="width: 270px" *ngIf="field.field_value">
+
+            <p class="col-md-3 my-1" *ngIf="field.field_value">
               <span *ngIf="(field.field_value && !(modifyFields))">{{ field.field_value.value}}</span>
               <select id='fieldValueSelect' class="form-control" *ngIf="(field.field_value && modifyFields)" (click)="getFieldsEquipmentTypes(field.field)">
                 <option disabled selected value> {{ field.field_value.value}} </option>
-                <option *ngFor="let fieldValue of currentSelectFields" [value]="fieldValue">{{ fieldValue }}</option>
+                <option *ngFor="let fieldValue of currentEquipmentTypeFields[i].value" [value]="fieldValue">{{ fieldValue }}</option>
               </select>
             </p>
-            <p style="width: 270px" *ngIf="field.description"><span *ngIf="field.description">{{ field.description}}</span></p>
+
+            <p class="col-md-6 my-1" *ngIf="field.description">
+              <span *ngIf="field.description">{{ field.description}}</span>
+            </p>
+
           </div>
         </li>
       </ul>
     </div>
-    <div *ngIf="equipmentTypeModified">
-      <div class="container-fluid row offset-sm-0">
-        <p style="width: 270px"><span class="font-weight-bold">Name</span></p>
-        <p style="width: 270px"><span class="font-weight-bold">Value</span></p>
-        <p style="width: 270px"><span class="font-weight-bold">Description</span></p>
-      </div>
-      <div class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
-        <div class="input-group-append form-group container-fluid" style="margin-bottom: 10px">
-          <p style="width: 270px"><span class="col-3" style="margin-right: 10px;">{{ field.name }}</span></p>
-          <input id="field-value-text" type="text" placeholder="value" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length === 0" >
-          <select id="field-value-select" class="form-control" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length !== 0">
-            <option disabled selected value> -- select an option -- </option>
-            <option *ngFor="let fieldValue of field.value" [value]="fieldValue" >{{ fieldValue }}</option>
-          </select>
-          <input id="field-description" type="text" placeholder="description" style="width: 900px;">
+    <div class="list-group" *ngIf="equipmentTypeModified">
+      <li class="d-none d-md-flex list-group-item font-weight">
+        <div class="container-fluid row">
+          <span class="col-md-3 font-weight-bold">Name</span>
+          <span class="col-md-4 font-weight-bold">Value</span>
+          <span class="col-md-5 font-weight-bold">Description</span>
         </div>
-      </div>
-      <div class="form-group list-group-item">
+      </li>
+      <li class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
+        <div class="container-fluid row" style="margin-bottom: 10px">
+
+          <span class="col-md-3">{{ field.name }}</span>
+
+          <div class="col-md-4">
+            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0" >
+            <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0">
+              <option disabled selected value> -- select an option -- </option>
+              <option *ngFor="let fieldValue of field.value" [value]="fieldValue" >{{ fieldValue }}</option>
+            </select>
+          </div>
+
+          <div class="col-md-5">
+            <input class="form-control" id="field-description" type="text" placeholder="description">
+          </div>
+
+        </div>
+      </li>
+      <li class="form-group list-group-item">
         <button type="button" class="btn btn-outline-secondary" (click)="addField()">
           <span style="margin-right: 10px">Create a new field</span>
           <fa-icon [icon]="faPlusSquare"></fa-icon>
         </button>
-      </div>
-      <div class="form-group list-group-item" *ngFor="let new_field of new_fields; let i = index">
+      </li>
+      <li class="form-group list-group-item" *ngFor="let new_field of new_fields; let i = index">
         <div class="form-row">
-          <button class="btn btn-danger" type="button" style="margin-right: 10px;" (click)="deleteField(i)">
-            <fa-icon [icon]="faMinusCircle"></fa-icon>
+          <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteField(i)">
+            <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
           </button>
-          <input type="text" placeholder="name" style="margin-right: 10px; width: 185px" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.name>
-          <input type="text" placeholder="value" style="margin-right: 10px; width: 350px;" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.value>
-          <input type="text" placeholder="description" style="width: 850px;" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.description>
+          <input class="form-control col-md-3 mx-1 my-1" type="text" placeholder="name" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.name>
+          <input class="form-control col-md-3 mx-1 my-1" type="text" placeholder="value" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.value>
+          <input class="form-control col-md-4 mx-1 my-1" type="text" placeholder="description" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.description>
         </div>
-      </div>
+      </li>
     </div>
   </div>
     <div class="card mt-5">
@@ -185,8 +204,8 @@
                 <button class="d-flex btn btn-secondary" (click)="openUploadFile(contentAddFile)" *ngIf="onChangeEquipmentPermission()"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
             </div>
         </div>
-        <div class="card-body d-flex row">
-            <ul class="col-12 list-group">
+        <div class="d-flex">
+            <ul class="w-100 list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
                     *ngFor="let filePath of myFilesPath"

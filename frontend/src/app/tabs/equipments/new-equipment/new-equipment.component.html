@@ -1,5 +1,5 @@
-<div class="container-fluid col-10 mt-3 justify-content-center">
-    <div class="d-flex">
+<div class="container-fluid col-md-5 mt-3 justify-content-center">
+    <div class="d-flex flex-wrap">
         <h2 class="font-weight-bold">Create a new Equipment</h2>
     </div>
     <form [formGroup]="createForm" (ngSubmit)="onCreateEquipment()">
@@ -13,32 +13,138 @@
                     <option *ngFor="let equipmentType of equipmentTypes" [value]="equipmentType.id">{{ equipmentType.name }}</option>
             </select>
         </div>
+    <div class="form-group ">
+      <label>Fields</label>
+    </div>
       <div class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyEquipmentTypeFieldValue($event.target, i)">
-        <div class="input-group-append form-group" style="margin-bottom: 10px">
-              <p style="width: 270px"><span class="col-3" style="margin-right: 10px;">{{ field.name }}</span></p>
-              <input id="field-value-text" type="text" placeholder="value" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length === 0" >
-              <select id="field-value-select" class="form-control" style="margin-right: 10px;width: 350px;" *ngIf="field.value.length !== 0">
-                <option disabled selected value> -- select an option -- </option>
-                <option *ngFor="let fieldValue of field.value" [value]="fieldValue">{{ fieldValue }}</option>
-              </select>
-          <input id="field-description" type="text" placeholder="description" style="width: 900px;">
+        <div class="d-flex flex-wrap input-group-append form-group" style="margin-bottom: 10px">
+          <span
+            class="col-md-3 my-1"
+            style="margin-right: -10px;"
+          >
+            {{ field.name }}
+          </span>
+          <input
+            id="field-value-text"
+            type="text" placeholder="value"
+            class="form-control col-md-4 mr-md-2 my-1"
+            *ngIf="field.value.length === 0"
+          >
+          <select
+            id="field-value-select"
+            class="form-control col-md-4 mr-md-2 my-1"
+            *ngIf="field.value.length !== 0"
+          >
+            <option disabled selected value> -- select an option -- </option>
+            <option *ngFor="let fieldValue of field.value" [value]="fieldValue">{{ fieldValue }}</option>
+          </select>
+          <input
+            id="field-description"
+            type="text"
+            placeholder="description"
+            class="form-control col-md-5 my-1"
+          >
         </div>
       </div>
       <br/>
-      <div class="form-group">
-        <button type="button" class="btn btn-outline-secondary" (click)="addField()">
-          <span style="margin-right: 10px">Create a new field</span>
-          <fa-icon [icon]="faPlusSquare"></fa-icon>
-        </button>
-      </div>
-      <div class="form-group" *ngFor="let field of fields; let i = index">
-        <div class="form-row">
-          <button class="btn btn-danger" type="button" style="margin-right: 10px;" (click)="deleteField(i)">
-            <fa-icon [icon]="faMinusCircle"></fa-icon>
+
+      <form [formGroup]="addFieldForm" (ngSubmit)="onSubmitField()">
+        <div class="form-group">
+          <button type="button" class="btn btn-outline-secondary" (click)="onOpenField()">
+            <span class="mr-3">Create a new field</span>
+            <fa-icon [icon]="faPlusSquare"></fa-icon>
           </button>
-            <input type="text" placeholder="name" style="margin-right: 10px; width: 185px" [ngModelOptions]="{standalone: true}" [(ngModel)]=field.name>
-            <input type="text" placeholder="value" style="margin-right: 10px; width: 350px;" [ngModelOptions]="{standalone: true}" [(ngModel)]=field.value>
-            <input type="text" placeholder="description" style="width: 860px;" [ngModelOptions]="{standalone: true}" [(ngModel)]=field.description>
+        </div>
+        <div class="class form-group" *ngIf="openField">
+          <div class="form-row align-items-center">
+            <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="onCloseField()">
+              <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
+            </button>
+            <input
+            type="text"
+            placeholder="Field name"
+            class="form-control col-md-3 mr-md-2 my-1"
+            formControlName="name"
+            >
+            <input
+            type="text"
+            placeholder="Field value"
+            class="form-control col-md-3 mr-md-2 my-1"
+            formControlName="value"
+            >
+            <input
+            type="text"
+            placeholder="Field description"
+            class="form-control col-md-4 my-1"
+            formControlName="description"
+            >
+            <span [ngbTooltip]="!addFieldForm.invalid ? 'Add': 'Field name and value required'" 
+            placement="bottom">
+              <button
+              class="btn btn-link"
+              (click)="onAddField()"
+              [disabled]="addFieldForm.invalid"
+              >
+              <fa-icon [icon]="faPlusCircle" style="color: #0069d9;font-size: 22px;"></fa-icon>
+              </button>
+            </span>
+          </div>
+        </div>
+
+      </form>
+      <div class="form-group" *ngFor="let field of fields; let i = index">
+        <div class="d-flex flex-wrap form-row">
+          <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteField(i)">
+            <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
+          </button>
+            <input
+              type="text"
+              placeholder="Field name"
+              class="form-control col-md-3 mr-md-2 my-1"
+              [ngModelOptions]="{standalone: true}"
+              [attr.disabled]="!isEditingField(field) ? '' : null"
+              [(ngModel)]=field.name
+            >
+            <input
+              type="text"
+              placeholder="Field value"
+              class="form-control col-md-3 mr-md-2 my-1"
+              [ngModelOptions]="{standalone: true}"
+              [attr.disabled]="!isEditingField(field) ? '' : null"
+              [(ngModel)]=field.value
+            >
+
+            <input
+              type="text"
+              placeholder="Field description"
+              class="form-control col-md-3 mr-md-4 my-1"
+              [ngModelOptions]="{standalone: true}"
+              [attr.disabled]="!isEditingField(field) ? '' : null"
+              [(ngModel)]=field.description
+            >
+          <button
+            *ngIf="!isEditingField(field)"
+            class="btn btn-link"
+            (click)="onEditField(field)"
+            style="
+                color:grey;
+                margin-left:4px;
+                margin-right:12px"
+          >
+            <fa-icon [icon]="faPencilAlt"></fa-icon>
+          </button>
+          <button
+            *ngIf="isEditingField(field)"
+            class="btn btn-link"
+            (click)="onEditField(field)"
+            style="
+                color:grey;
+                margin-left:4px;
+                margin-right:12px"
+            [disabled]="isEditingFieldValid(field)"
+          >
+            <fa-icon [icon]="faSave"></fa-icon>
+          </button>
         </div>
       </div>
         <div class="form-group">
@@ -59,8 +165,15 @@
             </ul>
         </div>
         <div class="d-flex justify-content-between align-items-center">
-          <button class="btn btn-danger nav-link" routerLink="/equipments">Annuler</button>
-          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || missingEquipmentTypeFieldsValue()">Create Equipment</button>
+          <button class="btn btn-danger nav-link" routerLink="/equipments">Cancel</button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            title="Name, Equipment Type and Fields value required"
+            [disabled]="createForm.invalid || missingEquipmentTypeFieldsValue() || !addField || !(canValidateForm())"
+          >
+            Create Equipment
+          </button>
         </div>
     </form>
 </div>

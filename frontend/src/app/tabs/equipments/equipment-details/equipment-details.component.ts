@@ -235,6 +235,13 @@ export class EquipmentDetailsComponent implements OnInit {
    */
   openModifyField() {
     this.modifyFields = true;
+    this.equipmentTypes = this.equipmentTypeService.getEquipmentTypes();
+    if (this.equipmentTypes.length === 0) {
+      this.equipmentTypesSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
+        (equipmentTypes: EquipmentType[]) => {
+          this.equipmentTypes = equipmentTypes;
+        });
+    }
     this.equipmentTypeService.getEquipmentType(this.currentEquipment.equipment_type.id)
       .subscribe(
         (response) => {

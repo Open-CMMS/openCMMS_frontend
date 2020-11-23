@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router } from '@angular/router';
-import { faPlusSquare, faMinusCircle, faPencilAlt, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faPlusSquare, faMinusCircle, faPencilAlt, faSave, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-equipment-type',
@@ -16,6 +16,7 @@ export class NewEquipmentTypeComponent implements OnInit {
   // Local variables
   newEquipmentType: EquipmentType;
   openField = false;
+  addField = true;
   fieldName: string;
   editingField = [];
   fieldList = [];
@@ -27,6 +28,7 @@ export class NewEquipmentTypeComponent implements OnInit {
   // Icons
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
+  faPlusCircle = faPlusCircle;
   faPencilAlt = faPencilAlt;
   faSave = faSave;
 
@@ -80,17 +82,19 @@ export class NewEquipmentTypeComponent implements OnInit {
   }
 
   /**
-   * Function that set openField to true.
+   * Function that set openField to true and addField to false.
    */
   onOpenField() {
     this.openField = true;
+    this.addField = false;
   }
 
   /**
-   * Function that set openField to false.
+   * Function that set openField to false and addField to true.
    */
   onCloseField() {
     this.openField = false;
+    this.addField = true;
   }
 
   /**
@@ -110,6 +114,8 @@ export class NewEquipmentTypeComponent implements OnInit {
     this.editingField.push(false);
     this.fieldForm.controls.fieldName.setValue(this.INIT_FIELD_NAME);
     this.fieldForm.controls.fieldValue.setValue(this.INIT_FIELD_VALUE);
+    this.openField = false;
+    this.addField = true;
   }
 
   /**
@@ -148,6 +154,14 @@ export class NewEquipmentTypeComponent implements OnInit {
   }
 
   /**
+   * Function to verify if the name and the value of the edited field are not empty.
+   * @param field the field
+   */
+  isEditingFieldValid(field) {
+    return field[this.FIELDNAME_NAME].length === 0;
+  }
+
+  /**
    * Function to format the Field 'fields' in the payload.
    */
   formatFieldPayload() {
@@ -180,6 +194,19 @@ export class NewEquipmentTypeComponent implements OnInit {
       });
     this.router.navigate(['/equipment-types']);
 
+  }
+
+  /**
+   * Function to verify if the form can be validate, in particular if one field is being editing
+   */
+  canValidateForm() {
+    let canValidateForm = true;
+    this.editingField.forEach(element => {
+      if (element) {
+        canValidateForm = false;
+      }
+    });
+    return canValidateForm;
   }
 
   /**

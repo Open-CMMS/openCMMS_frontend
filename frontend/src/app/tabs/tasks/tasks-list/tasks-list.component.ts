@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faTrash, faInfoCircle, faPlus, faCheck, faSearch, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faInfoCircle, faPlus, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
@@ -52,6 +52,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+
     // Checking the route
     this.route.url.subscribe(
       (route) => {
@@ -147,7 +148,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Compare function call by sort when neeeded to sort by date.
+   * Compare function call by sort when needed to sort by date.
    * @param a a date
    * @param b b date
    */
@@ -158,6 +159,42 @@ export class TasksListComponent implements OnInit, OnDestroy {
     return dateA - dateB;
   }
 
+  compareDuration(a: Task, b: Task) {
+    const duration_A = a.duration;
+    const duration_B = b.duration;
+    const times_A = duration_A.split(' ');
+    const times_B = duration_B.split(' ');
+    let duration_in_minutes_A = 0;
+    let duration_in_minutes_B = 0;
+    times_A.forEach( time => {
+      switch (time.charAt(time.length - 1 )) {
+        case 'd':
+          duration_in_minutes_A += parseInt(time.split('d')[0], 10) * 24 * 60;
+          break;
+        case 'h':
+          duration_in_minutes_A += parseInt(time.split('h')[0], 10) * 60;
+          break;
+        case 'm':
+          duration_in_minutes_A += parseInt(time.split('m')[0], 10);
+          break;
+      }
+    });
+    times_B.forEach( time => {
+      switch (time.charAt(time.length - 1 )) {
+        case 'd':
+          duration_in_minutes_B += parseInt(time.split('d')[0], 10) * 24 * 60;
+          break;
+        case 'h':
+          duration_in_minutes_B += parseInt(time.split('h')[0], 10) * 60;
+          break;
+        case 'm':
+          duration_in_minutes_B += parseInt(time.split('m')[0], 10);
+          break;
+      }
+    });
+    return duration_in_minutes_A - duration_in_minutes_B;
+  }
+
   /**
    * Function called when the tasks need to be sorting by end_date
    */
@@ -165,9 +202,20 @@ export class TasksListComponent implements OnInit, OnDestroy {
     this.tasks.sort(this.compareDate);
     this.tasks.forEach(task => {
       if (task.end_date == null) {
-        let index = this.tasks.indexOf(task);
-        this.tasks.splice(index,1)
-        this.tasks.push(task)
+        const index = this.tasks.indexOf(task);
+        this.tasks.splice(index, 1);
+        this.tasks.push(task);
+      }
+    });
+  }
+
+  sortingByDuration() {
+    this.tasks.sort(this.compareDuration);
+    this.tasks.forEach(task => {
+      if (task.duration === '') {
+        const index = this.tasks.indexOf(task);
+        this.tasks.splice(index, 1);
+        this.tasks.push(task);
       }
     });
   }

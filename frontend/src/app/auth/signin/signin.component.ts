@@ -8,7 +8,10 @@ import { Subscription } from 'rxjs';
 import { CrossMatch } from 'src/app/shares/cross-match.validator';
 import { UserService } from 'src/app/services/users/user.service';
 
-@Component({ templateUrl: 'signin.component.html' })
+@Component({
+  selector: 'app-signin',
+  templateUrl: 'signin.component.html' ,
+})
 export class SigninComponent implements OnInit {
     loginForm: FormGroup;
     loading = false;
@@ -80,24 +83,28 @@ export class SigninComponent implements OnInit {
         });
     }
 
-    /**
-     * Function that submit the login fields to the backend for connection.
-     */
-    onSubmit() {
-        this.submitted = true;
-        if (this.loginForm.invalid) {
-            return;
-        }
-        this.loading = true;
-        this.authenticationService.login(this.f.username.value, this.f.password.value).then(() => {
-            this.router.navigate(['']);
-            this.loading = false;
-        })
-        .catch( () => {
-            this.error = 'Erreur dans la saisie des identifiants';
-            this.loading = false;
-        });
+  /**
+   * Function that submit the login fields to the backend for connection.
+   */
+  onSubmit() {
+    this.submitted = true;
+    if (this.loginForm.invalid) {
+      return;
     }
+    this.loading = true;
+
+    this.authenticationService.login(this.f.username.value, this.f.password.value).then(
+      res => {
+        this.router.navigate(['']);
+        this.loading = false;
+      })
+      .catch(
+        error => {
+          this.error = error.error;
+          this.loading = false;
+        }
+      );
+  }
 
     /**
      * Function that creates the first user that will be the admin account.
