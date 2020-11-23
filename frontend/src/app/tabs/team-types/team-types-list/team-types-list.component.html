@@ -18,8 +18,8 @@
                 class="container-fluid list-group-item font-weight-bold"
                 *ngFor="let teamType of teamTypes; let i = index"
                 >
-                <div class="container-fluid row justify-content-between">
-                    <h5 (click)="onViewTeamType(i)">{{ teamType.name }}</h5>
+                <div class="container-fluid row d-flex flex-wrap justify-content-between">
+                    <h5 class="col-sm-8" (click)="onViewTeamType(i)">{{ teamType.name }}</h5>
 
                     <div class="d-flex">
                         <button class="btn btn-info mx-2" (click)="onViewTeamType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>

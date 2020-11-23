@@ -7,7 +7,7 @@ import {EquipmentService} from 'src/app/services/equipments/equipment.service';
 import {Subscription, Subject} from 'rxjs';
 import {EquipmentType} from 'src/app/models/equipment-type';
 import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
-import {faMinusSquare, faPlusSquare, faMinusCircle, faPencilAlt, faSave} from '@fortawesome/free-solid-svg-icons';
+import {faMinusSquare, faPlusSquare, faMinusCircle, faPencilAlt, faSave, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClient} from '@angular/common/http';
 import {Field} from 'src/app/models/field';
@@ -23,6 +23,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   faMinusSquare = faMinusSquare;
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
+  faPlusCircle = faPlusCircle;
   faPencilAlt = faPencilAlt;
   faSave = faSave;
 

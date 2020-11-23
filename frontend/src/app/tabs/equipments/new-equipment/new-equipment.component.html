@@ -1,5 +1,5 @@
-<div class="container-fluid col-10 mt-3 justify-content-center">
-    <div class="d-flex">
+<div class="container-fluid col-md-5 mt-3 justify-content-center">
+    <div class="d-flex flex-wrap">
         <h2 class="font-weight-bold">Create a new Equipment</h2>
     </div>
     <form [formGroup]="createForm" (ngSubmit)="onCreateEquipment()">
@@ -17,33 +17,32 @@
       <label>Fields</label>
     </div>
       <div class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyEquipmentTypeFieldValue($event.target, i)">
-        <div class="input-group-append form-group" style="margin-bottom: 10px">
-              <p style="width: 270px">
-                <span
-                  class="col-4 mr-2"
-                >
-                  {{ field.name }}
-                </span>
-              </p>
-              <input
-                id="field-value-text"
-                type="text" placeholder="value"
-                class='form-control col-4 mr-2'
-                *ngIf="field.value.length === 0"
-              >
-              <select
-                id="field-value-select"
-                class="form-control col-4 mr-2"
-                *ngIf="field.value.length !== 0"
-              >
-                <option disabled selected value> -- select an option -- </option>
-                <option *ngFor="let fieldValue of field.value" [value]="fieldValue">{{ fieldValue }}</option>
-              </select>
+        <div class="d-flex flex-wrap input-group-append form-group" style="margin-bottom: 10px">
+          <span
+            class="col-md-3 my-1"
+            style="margin-right: -10px;"
+          >
+            {{ field.name }}
+          </span>
+          <input
+            id="field-value-text"
+            type="text" placeholder="value"
+            class="form-control col-md-4 mr-md-2 my-1"
+            *ngIf="field.value.length === 0"
+          >
+          <select
+            id="field-value-select"
+            class="form-control col-md-4 mr-md-2 my-1"
+            *ngIf="field.value.length !== 0"
+          >
+            <option disabled selected value> -- select an option -- </option>
+            <option *ngFor="let fieldValue of field.value" [value]="fieldValue">{{ fieldValue }}</option>
+          </select>
           <input
             id="field-description"
             type="text"
             placeholder="description"
-            class='form-control col-5'
+            class="form-control col-md-5 my-1"
           >
         </div>
       </div>
@@ -57,37 +56,36 @@
           </button>
         </div>
         <div class="class form-group" *ngIf="openField">
-          <div class="form-row">
-            <button class="btn btn-danger ml-1 mr-2" (click)="onCloseField()">
-              <fa-icon [icon]="faMinusCircle"></fa-icon>
+          <div class="form-row align-items-center">
+            <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="onCloseField()">
+              <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
             </button>
             <input
-              type="text"
-              placeholder="Field name"
-              class="form-control col-3 mr-2"
-              formControlName="name"
+            type="text"
+            placeholder="Field name"
+            class="form-control col-md-3 mr-md-2 my-1"
+            formControlName="name"
             >
             <input
-              type="text"
-              placeholder="Field value"
-              class="form-control col-3 mr-2"
-              formControlName="value"
+            type="text"
+            placeholder="Field value"
+            class="form-control col-md-3 mr-md-2 my-1"
+            formControlName="value"
             >
             <input
-              type="text"
-              placeholder="Field description"
-              class="form-control col-4 mr-2"
-              formControlName="description"
+            type="text"
+            placeholder="Field description"
+            class="form-control col-md-4 my-1"
+            formControlName="description"
             >
-            <span
-              data-toggle="tooltip"
-              title="Field name and value required">
+            <span [ngbTooltip]="!addFieldForm.invalid ? 'Add': 'Field name and value required'" 
+            placement="bottom">
               <button
-                class="btn btn-primary mr-1"
-                (click)="onAddField()"
-                [disabled]="addFieldForm.invalid"
+              class="btn btn-link"
+              (click)="onAddField()"
+              [disabled]="addFieldForm.invalid"
               >
-                Add
+              <fa-icon [icon]="faPlusCircle" style="color: #0069d9;font-size: 22px;"></fa-icon>
               </button>
             </span>
           </div>
@@ -95,14 +93,14 @@
 
       </form>
       <div class="form-group" *ngFor="let field of fields; let i = index">
-        <div class="form-row">
-          <button class="btn btn-danger ml-1 mr-2" type="button" (click)="deleteField(i)" >
-            <fa-icon [icon]="faMinusCircle"></fa-icon>
+        <div class="d-flex flex-wrap form-row">
+          <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteField(i)">
+            <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
           </button>
             <input
               type="text"
               placeholder="Field name"
-              class="form-control col-3 mr-2"
+              class="form-control col-md-3 mr-md-2 my-1"
               [ngModelOptions]="{standalone: true}"
               [attr.disabled]="!isEditingField(field) ? '' : null"
               [(ngModel)]=field.name
@@ -110,7 +108,7 @@
             <input
               type="text"
               placeholder="Field value"
-              class="form-control col-3 mr-2"
+              class="form-control col-md-3 mr-md-2 my-1"
               [ngModelOptions]="{standalone: true}"
               [attr.disabled]="!isEditingField(field) ? '' : null"
               [(ngModel)]=field.value
@@ -119,7 +117,7 @@
             <input
               type="text"
               placeholder="Field description"
-              class="form-control col-3 mr-4"
+              class="form-control col-md-3 mr-md-4 my-1"
               [ngModelOptions]="{standalone: true}"
               [attr.disabled]="!isEditingField(field) ? '' : null"
               [(ngModel)]=field.description
