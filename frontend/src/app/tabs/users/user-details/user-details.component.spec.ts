@@ -43,6 +43,7 @@ describe('UserDetailsComponent', () => {
     component.onDeleteUser();
 
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/undefined/');
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/6/');
     expect(req.request.method).toBe('DELETE');
     httpTestingController.verify();
@@ -54,6 +55,7 @@ describe('UserDetailsComponent', () => {
     component.onModifyUser();
 
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/undefined/');
+    httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/6/');
     expect(req.request.method).toBe('PUT');
     httpTestingController.verify();

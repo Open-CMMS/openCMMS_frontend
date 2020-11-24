@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { faPencilAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
@@ -9,6 +9,8 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { Subscription } from 'rxjs';
 import { CrossMatch } from 'src/app/shares/cross-match.validator';
+import {TeamService} from '../../../services/teams/team.service';
+import {Team} from '../../../models/team';
 
 @Component({
   selector: 'app-user-details',
@@ -23,6 +25,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   // Font awesome logos
   faPencilAlt = faPencilAlt;
   faTrash = faTrash;
+  faInfoCircle = faInfoCircle;
 
 // Local variables
   loaded = false;
@@ -37,6 +40,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   onInfoPage = false;
   submitted = false;
   changePwdActivated = false;
+  teamsSubscription: Subscription;
+  teams = [];
 
   // Forms
   userUpdateForm: FormGroup;
@@ -46,6 +51,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
    * Constructor for component TeamDetailsComponent
    * @param router the service used to handle redirections
    * @param userService the service to communicate with backend on User objects
+   * @param teamService the service used to handle Teams
    * @param route the service used to analyse the current URL
    * @param formBuilder the service to handle forms
    * @param modalService the service used to handle modal windows
@@ -54,6 +60,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
    */
   constructor(private router: Router,
               private userService: UserService,
+              private teamService: TeamService,
               private route: ActivatedRoute,
               private formBuilder: FormBuilder,
               private modalService: NgbModal,
@@ -96,6 +103,16 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
                                       userLoaded.nb_tries,
                                       userLoaded.is_active);
           this.loaded = true;
+          this.teamsSubscription = this.teamService.teamSubject.subscribe(
+            (teams: Team[]) => {
+              teams.forEach(team => {
+                if (team.user_set.includes(this.user.id)) {
+                  this.teams.push({id: team.id, name: team.name});
+                }
+              });
+            }
+          );
+          this.teamService.emitTeams();
           this.initForm();
         },
         (error) => {
@@ -236,6 +253,14 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.authenticationService.getCurrentUserPermissions(),
       'delete_userprofile'
       );
+  }
+
+  /**
+   * Function that redirects on the team details page
+   * @param id the id of the team
+   */
+  onViewTeam(id: number) {
+    this.router.navigate(['/teams', id]);
   }
 
   ngOnDestroy() {
