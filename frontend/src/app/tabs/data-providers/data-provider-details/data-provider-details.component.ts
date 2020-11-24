@@ -31,7 +31,6 @@ export class DataProviderDetailsComponent implements OnInit {
   localDataProvider: DataProvider = null;
   fileNames: string[];
   equipments: Equipment[];
-  myEquipments: Equipment[];
   fields: Field[];
   toModify = false;
   selectedEquipment: any;
@@ -52,7 +51,9 @@ export class DataProviderDetailsComponent implements OnInit {
    * @param dataProviderService the service used to handle dataProviders
    * @param route the service used to handle route parameters
    * @param router the service used to handle routing
-   * @param formBuilder the service used to handle forms
+   * @param modalService the modal service
+   * @param utilsService the utils service
+   * @param authenticationService the authentifcation service
    */
   constructor(
     private dataProviderService: DataProviderService,
@@ -80,8 +81,6 @@ export class DataProviderDetailsComponent implements OnInit {
           response.field_object);
         this.loaded = true;
         this.selectedEquipment = this.localDataProvider.equipment;
-        this.updateEquipmentAndField();
-        this.selectedEquipment = this.localDataProvider.equipment;
       });
 
     this.dataProviderService.fileNamesSubject.subscribe(
@@ -93,7 +92,6 @@ export class DataProviderDetailsComponent implements OnInit {
     this.dataProviderService.equipmentsSubject.subscribe(
       (equipments: Equipment[]) => {
         this.equipments = equipments;
-        this.myEquipments = [...this.equipments];
       }
     );
     this.dataProviderService.emitEquipments();
@@ -115,10 +113,10 @@ export class DataProviderDetailsComponent implements OnInit {
         this.inputEnabled.recurrence = true;
         break;
       case 'equipment':
-        console.log(this.equipments);
-        console.log('ici');
         this.inputEnabled.equipment = true;
         this.inputEnabled.field = false;
+        this.updateEquipmentAndField();
+        this.selectedEquipment = this.localDataProvider.equipment;
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = true;
@@ -142,10 +140,6 @@ export class DataProviderDetailsComponent implements OnInit {
     );
   }
 
-  showEquipments() {
-    console.log(this.selectedEquipment);
-  }
-
   /**
    * Function that saves the input according to its type
    * @param attribute the attribute describing the type of input
@@ -165,9 +159,7 @@ export class DataProviderDetailsComponent implements OnInit {
         this.inputEnabled.equipment = false;
         this.inputEnabled.field = true;
         this.toModify = true;
-        console.log(this.equipments);
         this.updateEquipmentAndField();
-        console.log(this.equipments);
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = false;
@@ -182,21 +174,21 @@ export class DataProviderDetailsComponent implements OnInit {
          break;
     }
     // Ici le setTimeout sert dans le cas où l'on change le is_activated, en effet il y a un délai avant que le changement soit effectué.
-    // if (!this.toModify) {
-    //   setTimeout(() => {
-    //     this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider, true).subscribe(
-    //       () => {
-    //         this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
-    //           (dataProvider: DataProvider) => {
-    //             this.localDataProvider = dataProvider;
-    //           }
-    //         );
-    //       },
-    //       () => {
-    //         this.router.navigate(['four-oh-four']);
-    //       });
-    //   }, 500);
-    // }
+    if (!this.toModify) {
+      setTimeout(() => {
+        this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider, true).subscribe(
+          () => {
+            this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
+              (dataProvider: DataProvider) => {
+                this.localDataProvider = dataProvider;
+              }
+            );
+          },
+          () => {
+            this.router.navigate(['four-oh-four']);
+          });
+      }, 500);
+    }
   }
   /**
    * Function that test if a string is an input duration
@@ -211,20 +203,15 @@ export class DataProviderDetailsComponent implements OnInit {
    * Function that set the selected equipment and the select field according to the selected equipment.
    */
   updateEquipmentAndField() {
-    // console.log(this.equipments);
-    // console.log(this.localDataProvider.equipment);
-    console.log(this.equipments);
-    this.myEquipments.forEach(
+    this.equipments.forEach(
       (aEquipement) => {
         if (aEquipement.id.toString(10) === this.selectedEquipment.id.toString(10)) {
           this.localDataProvider.equipment = aEquipement;
           this.localDataProvider.equipment.id = aEquipement.id;
           this.fields = aEquipement.fields;
-          // console.log(this.equipments);
         }
       }
     );
-    console.log(this.myEquipments);
   }
 
   /**
@@ -245,11 +232,11 @@ export class DataProviderDetailsComponent implements OnInit {
    */
   onTest() {
     this.dataProviderService.testDataProvider(this.localDataProvider, true).subscribe(
-      (response) => {
+      () => {
         this.tested = true;
         this.success = true;
       },
-      (error) => {
+      () => {
         this.tested = true;
         this.success = false;
       }
@@ -278,7 +265,7 @@ export class DataProviderDetailsComponent implements OnInit {
         );
       }
     },
-    (error) => {});
+    () => {});
   }
 
 }

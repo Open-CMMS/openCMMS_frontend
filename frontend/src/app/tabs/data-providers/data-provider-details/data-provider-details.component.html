@@ -116,14 +116,13 @@
                         </div>
                         <div class="input-group row col-md-6" *ngIf="inputEnabled.equipment">
                           <select class="form-control" [(ngModel)]="selectedEquipment">
-                            <option *ngFor="let equipment of this.myEquipments" [ngValue]="equipment" [defaultSelected]="salut">{{ equipment.name }}</option>
+                            <option *ngFor="let equipment of this.equipments" [ngValue]="equipment">{{ equipment.name }}</option>
                           </select>
                           <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="saveInput('equipment')"><fa-icon [icon]="faSave"></fa-icon></button>
                           </div>
                         </div>
-                      </div>e
-                      <button type="button" (click)="showEquipments()"> show me bastard</button>
+                      </div>
                       <div class="form-group">
                         <p><span class="font-weight-bold">Equipment IP :</span></p>
                         <div class="input-group row col-md-6">
