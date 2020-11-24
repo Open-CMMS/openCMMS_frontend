@@ -9,7 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
@@ -21,6 +21,7 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
 export class TeamTypeDetailsComponent implements OnInit {
 
   faInfoCircle = faInfoCircle;
+  faPencilAlt = faPencilAlt;
 
   // local variables
   id: number;

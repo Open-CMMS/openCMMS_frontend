@@ -26,6 +26,9 @@ import { EquipmentTypeDetailsComponent } from './tabs/equipment-types/equipment-
 import { NewEquipmentTypeComponent } from './tabs/equipment-types/new-equipment-type/new-equipment-type.component';
 import { ResetPasswordComponent } from './auth/reset-password/reset-password.component';
 import { NewTemplateComponent } from './tabs/templates/new-template/new-template.component';
+import { DataProviderManagementComponent } from './tabs/data-providers/data-provider-management/data-provider-management.component';
+import { DataProviderDetailsComponent } from './tabs/data-providers/data-provider-details/data-provider-details.component';
+import { NewDataProviderComponent } from './tabs/data-providers/new-data-provider/new-data-provider.component';
 import {ForgotPasswordComponent} from './auth/forgot-password/forgot-password.component';
 
 /**
@@ -228,6 +231,26 @@ const appRoutes: Routes = [
     canActivate: [AuthGuardService],
     data: {
       requiredPerms: ['add_equipmenttype']
+    }
+  },
+  {
+    path: 'data-providers', component: DataProviderManagementComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['change_dataprovider']
+    }
+  },
+  {
+    path: 'data-providers/:id', component: DataProviderDetailsComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['view_dataprovider']
+    }
+  },
+  { path: 'new-data-provider', component: NewDataProviderComponent,
+    canActivate: [AuthGuardService],
+    data: {
+      requiredPerms: ['add_dataprovider']
     }
   },
   {

@@ -47,7 +47,14 @@
       <div class="dropdown">
         <button class="btn btn-link btn-sort dropdown-toggle"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sort</button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" (click)="sortingByEndDate()">Date</a>
+          <a class="dropdown-item d-flex align-items-center" (click)="sortingByEndDate()">
+            <div class="badge badge-pill badge-info mr-1">&nbsp;&nbsp;&nbsp;</div>
+            <span>Date</span>
+          </a>
+          <a class="dropdown-item d-flex align-items-center" (click)="sortingByDuration()">
+            <div class="badge badge-pill badge-danger mr-1">&nbsp;&nbsp;&nbsp;</div>
+            <span>Duration</span>
+          </a>
         </div>
       </div>
     </div>
@@ -58,16 +65,31 @@
                     class="container-fluid list-group-item font-weight-bold "
                     *ngFor="let task of tasks | appFilter:searchText"
                     >
-                    <div class="container-fluid row justify-content-between">
-                        <div>
-                            <h5 style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTask(task)">{{ task.name }} <fa-icon class="ml-2" [icon]="faCheck" *ngIf="task.over" style="color: green;"></fa-icon></h5>
-
+                  <div class="container-fluid row justify-content-between">
+                    <div class="d-flex flex-column">
+                      <div class="d-flex align-items-center">
+                        <h5 class="my-0" (click)="onViewTask(task)">{{ task.name }}</h5>
+                        <fa-icon class="ml-2" [icon]="faCheck" *ngIf="task.over" style="color: green;"></fa-icon>
+                      </div>
+                      <div class="d-flex align-items-center my-2">
+                        <div class="badge badge-pill badge-info mr-1"
+                             *ngIf="task.end_date">
+                          {{ task.end_date}}
                         </div>
-                        <div>
-                            <button class="btn btn-info mx-2" (click)="onViewTask(task)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
-                            <button class="btn btn-danger" (click)="openDelete(contentDelete, task)" *ngIf="onDeleteTaskPermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
+                        <div class="badge badge-pill badge-danger mr-1"
+                             *ngIf="task.duration">
+                          {{ task.duration }}
                         </div>
+                        <div *ngFor="let team of task.teams" class="badge badge-pill badge-warning mr-1">
+                           {{ team.name }}
+                        </div>
+                      </div>
                     </div>
+                    <div class="d-flex justify-content-end">
+                      <button class="btn btn-info mx-2 my-2" (click)="onViewTask(task)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                      <button class="btn btn-danger my-2" (click)="openDelete(contentDelete, task)" *ngIf="onDeleteTaskPermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
+                    </div>
+                  </div>
                 </li>
             </ul>
         </div>
