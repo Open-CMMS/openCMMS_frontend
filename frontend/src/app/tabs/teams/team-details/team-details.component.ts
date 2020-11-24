@@ -101,6 +101,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
     this.teamTypeService.emitTeamTypes();
     this.usersSubscription = this.userService.usersSubject.subscribe(
         (users: any) => {
+          this.users = [];
           users.forEach(
             (user) => {
               this.users.push(new UserProfile(user.id,
