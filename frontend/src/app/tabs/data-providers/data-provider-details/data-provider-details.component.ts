@@ -168,21 +168,21 @@ export class DataProviderDetailsComponent implements OnInit {
          break;
     }
     // Ici le setTimeout sert dans le cas où l'on change le is_activated, en effet il y a un délai avant que le changement soit effectué.
-    if (!this.toModify) {
-      setTimeout(() => {
-        this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider, true).subscribe(
-          () => {
-            this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
-              (dataProvider: DataProvider) => {
-                this.localDataProvider = dataProvider;
-              }
-            );
-          },
-          () => {
-            this.router.navigate(['four-oh-four']);
-          });
-      }, 500);
-    }
+    // if (!this.toModify) {
+    //   setTimeout(() => {
+    //     this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider, true).subscribe(
+    //       () => {
+    //         this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
+    //           (dataProvider: DataProvider) => {
+    //             this.localDataProvider = dataProvider;
+    //           }
+    //         );
+    //       },
+    //       () => {
+    //         this.router.navigate(['four-oh-four']);
+    //       });
+    //   }, 500);
+    // }
   }
   /**
    * Function that test if a string is an input duration
@@ -197,12 +197,9 @@ export class DataProviderDetailsComponent implements OnInit {
    * Function that set the selected equipment and the select field according to the selected equipment.
    */
   updateEquipmentAndField() {
-    console.log(this.localDataProvider.equipment.name);
     this.equipments.forEach(
       (aEquipement) => {
-        console.log(aEquipement);
-        console.log(this.localDataProvider.equipment);
-        if (aEquipement.id.toString(10) === this.localDataProvider.equipment.id) {
+        if (aEquipement.id.toString(10) === this.localDataProvider.equipment.id.toString(10)) {
           this.localDataProvider.equipment = aEquipement;
           this.fields = aEquipement.fields;
         }
