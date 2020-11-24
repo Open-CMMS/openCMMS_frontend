@@ -143,12 +143,12 @@
                         <div class="input-group row col-md-6" *ngIf="!inputEnabled.field">
                           <input class="form-control" [(ngModel)]="localDataProvider.field_object.name" disabled>
                           <div class="input-group-append" >
-                            <button class="btn btn-outline-secondary" (click)="enableInput('field');onSelectField()" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" (click)="enableInput('field'); updateEquipmentAndField();" *ngIf="onChangeDataProviderPermission()"><fa-icon [icon]="faPen"></fa-icon></button>
                           </div>
                         </div>
                         <div class="input-group row col-md-6" *ngIf="inputEnabled.field">
-                          <select class="form-control" [(ngModel)]="localDataProvider.field_object.id">
-                            <option *ngFor="let field of this.fields" [value]="field.id" [defaultSelected]="this.localDataProvider.field_object.id === field.id ? 'selected' : ''">{{ field.name }}</option>
+                          <select class="form-control" [(ngModel)]="localDataProvider.field_object.id" [ngStyle]="{'background-color': toModify ? 'rgb(255, 255, 202)' : '#ffffff'}" (ngModelChange)="onChange()">
+                            <option *ngFor="let field of fields" [value]="field.id" [defaultSelected]="this.localDataProvider.field_object.id === field.id ? 'selected' : ''">{{ field.name }}</option>
                           </select>
                           <div class="input-group-append">
                             <button class="btn btn-outline-secondary" (click)="saveInput('field')"><fa-icon [icon]="faSave"></fa-icon></button>
