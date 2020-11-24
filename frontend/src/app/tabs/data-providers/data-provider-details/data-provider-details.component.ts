@@ -31,8 +31,10 @@ export class DataProviderDetailsComponent implements OnInit {
   localDataProvider: DataProvider = null;
   fileNames: string[];
   equipments: Equipment[];
+  myEquipments: Equipment[];
   fields: Field[];
   toModify = false;
+  selectedEquipment: any;
 
   // Input enabled variables
   inputEnabled = {
@@ -77,6 +79,9 @@ export class DataProviderDetailsComponent implements OnInit {
           response.ip_address,
           response.field_object);
         this.loaded = true;
+        this.selectedEquipment = this.localDataProvider.equipment;
+        this.updateEquipmentAndField();
+        this.selectedEquipment = this.localDataProvider.equipment;
       });
 
     this.dataProviderService.fileNamesSubject.subscribe(
@@ -88,6 +93,7 @@ export class DataProviderDetailsComponent implements OnInit {
     this.dataProviderService.equipmentsSubject.subscribe(
       (equipments: Equipment[]) => {
         this.equipments = equipments;
+        this.myEquipments = [...this.equipments];
       }
     );
     this.dataProviderService.emitEquipments();
@@ -109,6 +115,8 @@ export class DataProviderDetailsComponent implements OnInit {
         this.inputEnabled.recurrence = true;
         break;
       case 'equipment':
+        console.log(this.equipments);
+        console.log('ici');
         this.inputEnabled.equipment = true;
         this.inputEnabled.field = false;
         break;
@@ -134,6 +142,10 @@ export class DataProviderDetailsComponent implements OnInit {
     );
   }
 
+  showEquipments() {
+    console.log(this.selectedEquipment);
+  }
+
   /**
    * Function that saves the input according to its type
    * @param attribute the attribute describing the type of input
@@ -153,7 +165,9 @@ export class DataProviderDetailsComponent implements OnInit {
         this.inputEnabled.equipment = false;
         this.inputEnabled.field = true;
         this.toModify = true;
+        console.log(this.equipments);
         this.updateEquipmentAndField();
+        console.log(this.equipments);
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = false;
@@ -197,14 +211,20 @@ export class DataProviderDetailsComponent implements OnInit {
    * Function that set the selected equipment and the select field according to the selected equipment.
    */
   updateEquipmentAndField() {
-    this.equipments.forEach(
+    // console.log(this.equipments);
+    // console.log(this.localDataProvider.equipment);
+    console.log(this.equipments);
+    this.myEquipments.forEach(
       (aEquipement) => {
-        if (aEquipement.id.toString(10) === this.localDataProvider.equipment.id.toString(10)) {
+        if (aEquipement.id.toString(10) === this.selectedEquipment.id.toString(10)) {
           this.localDataProvider.equipment = aEquipement;
+          this.localDataProvider.equipment.id = aEquipement.id;
           this.fields = aEquipement.fields;
+          // console.log(this.equipments);
         }
       }
     );
+    console.log(this.myEquipments);
   }
 
   /**
