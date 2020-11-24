@@ -104,12 +104,12 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    */
   initForm() {
     this.createForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', [Validators.required]],
       equipmentType: ['', Validators.required],
       file: ['']
     });
     this.addFieldForm = this.formBuilder.group({
-      name: [this.INIT_FIELD_NAME, [Validators.required, Validators.minLength(3)]],
+      name: [this.INIT_FIELD_NAME, [Validators.required]],
       value: [this.INIT_FIELD_VALUE, [Validators.required]],
       description: [this.INIT_FIELD_DESCRIPTION]
     });
