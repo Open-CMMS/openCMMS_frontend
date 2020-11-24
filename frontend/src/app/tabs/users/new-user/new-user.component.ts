@@ -63,21 +63,13 @@ export class NewUserComponent implements OnInit {
     }
 
     const formValues = this.createForm.value;
-    let username: string = formValues.firstName[0].toLowerCase() + formValues.lastName.toLowerCase();
+    let username: string = formValues.firstName[0].toLowerCase() + (formValues.lastName.toLowerCase()).replace(/\s/g, '');
     this.userService.getUsernameSuffix(username)
         .subscribe((suffix) => {
           username = username + suffix;
           this.userService.createUser(username, formValues.firstName, formValues.lastName, formValues.email, 'uselessTemporaryPassword')
           .subscribe(
             (user: UserProfile) => {
-              // this.user = this.user = new UserProfile(user.id,
-              //                                         user.username,
-              //                                         user.first_name,
-              //                                         user.last_name,
-              //                                         user.email,
-              //                                         user.password,
-              //                                         user.nb_tries,
-              //                                         user.is_active);
               this.userService.getUsers();
         });
           this.router.navigate(['/users']);
