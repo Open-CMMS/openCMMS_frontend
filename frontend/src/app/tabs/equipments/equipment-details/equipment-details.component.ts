@@ -167,7 +167,7 @@ export class EquipmentDetailsComponent implements OnInit {
       } else {
         this.currentEquipment.files = this.filesId;
         this.newEquipmentTypeId = this.currentEquipment.equipment_type.id;
-        if (this.equipmentType) {
+        if (this.equipmentTypeModified) {
           this.currentEquipment.equipment_type = this.equipmentType.id;
           this.newEquipmentTypeId = this.currentEquipment.equipment_type;
           this.getEquipmentTypeName(this.currentEquipment.equipment_type);
@@ -384,14 +384,16 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param event The EquipmentType selected
    */
   initEquipmentTypeFields(event) {
-    this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== event);
-    this.equipmentTypeService.getEquipmentType(Number(event))
-      .subscribe(
-        (response) => {
-          this.equipmentType = response;
-          this.equipmentTypeFields = response.field;
-        }
-      );
+    this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== Number(event));
+    if (this.equipmentTypeModified) {
+      this.equipmentTypeService.getEquipmentType(Number(event))
+        .subscribe(
+          (response) => {
+            this.equipmentType = response;
+            this.equipmentTypeFields = response.field;
+          }
+        );
+    }
   }
 
   /**
