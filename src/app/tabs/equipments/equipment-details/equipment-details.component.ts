@@ -493,6 +493,13 @@ export class EquipmentDetailsComponent implements OnInit {
       } else {
         missing_value = true;
       }
+      if (this.new_fields.length !== 0) {
+        this.new_fields.forEach(element => {
+          if ((element.name === '') || (element.value.length === 0)) {
+            missing_value = true;
+          }
+        });
+      }
     } else {
       this.fields.forEach(element => {
         if ((element.value.length === 0) && !(element.field_value)) {

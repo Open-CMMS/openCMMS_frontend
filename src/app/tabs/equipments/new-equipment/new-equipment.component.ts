@@ -294,6 +294,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    */
   deleteField(i: number) {
     this.fields.splice(i, 1);
+    this.editingField.splice(i, 1);
   }
 
   ngOnDestroy() {
