@@ -113,17 +113,12 @@ export class NewDataProviderComponent implements OnInit {
     );
     this.dataProviderService.testDataProvider(newDataProvider, false).subscribe(
       (response) => {
-        console.log(response);
         if (response) {
           this.tested = true;
           this.success = true;
           this.response = true;
         }
       },
-    (error) => {
-        this.tested = true;
-        this.success = false;
-    }
     );
     if (!this.response) {
       this.tested = true;
