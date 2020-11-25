@@ -1,0 +1,71 @@
+# This is a basic workflow to help you get started with Actions
+
+name: master
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      
+      # Install Node
+      - name: Use Node.js  
+        uses: actions/setup-node@v1  
+        with:  
+          node-version: '10.x'
+
+      # Install all the dependencies
+      - name: Install dependencies  
+        run: |
+          npm install
+          npm install -g @angular/cli
+          mkdir -p reports
+        
+      # Chekk lint
+      - name: Lint  
+        run: ng lint --fix=true > reports/tslint-report.xml  #remove the --fix=true in order to stop the pipeline when there are linting problems
+      
+      # Upload lint results
+      - name: Upload lint results
+        uses: actions/upload-artifact@v2
+        with:
+          name: lint_result
+          path: reports/tslint-report.xml
+      
+      # Run tests
+      - name: Testing
+        run: |
+          ng test --codeCoverage=true
+          ls
+      
+      # Upload test result
+      - name: Upload test result
+        uses: actions/upload-artifact@v2
+        with:
+          name: test_result
+          path: reports/junit.xml
+      
+      # Build Application
+      - name: Build app  
+        run: ng build --prod --build-optimizer
+        
+      # Upload build
+      - name: Upload artifact  
+        uses: actions/upload-artifact@v2
+        with:
+          name: openCMMSfront-${{ github.run_id }}-${{ github.run_number }}
+          path: ./dist/pic-slalom
