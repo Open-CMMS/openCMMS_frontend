@@ -32,9 +32,9 @@
         </div>
         <div class="form-group">
             <label for="equipment">Equipment</label>
-            <select id="equipment" class="form-control" formControlName="equipment" [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}">
-                <option [value]="" defaultSelected="selected">---</option>
-                <option *ngFor="let equipment of this.equipments" [value]="equipment.id">{{ equipment.name }}</option>
+            <select id="equipment" class="form-control" [(ngModel)]="selectedEquipment" formControlName="equipment" [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}">
+                <option [ngValue]="null" defaultSelected="selected">---</option>
+                <option *ngFor="let equipment of this.equipments" [ngValue]="equipment.id">{{ equipment.name }}</option>
             </select>
         </div>
         <div class="form-group">

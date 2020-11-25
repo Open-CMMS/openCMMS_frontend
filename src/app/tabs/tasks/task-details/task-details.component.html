@@ -169,6 +169,7 @@
                             <button class="btn btn-outline-secondary" (click)="saveInput('equipment')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                     </div>
+                    <span class="mb-2" *ngIf="task.equipment === null">No related equipment !</span>
                     <br>
 
                     <p>

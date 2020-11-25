@@ -92,6 +92,9 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   currentUser: UserProfile;
   currentUserSubscription: Subscription;
 
+  // Equipments
+  selectedEquipment: Equipment = null;
+
   /**
    * Constructor for the NewTeamComponent
    * @param router the service used to handle redirections
