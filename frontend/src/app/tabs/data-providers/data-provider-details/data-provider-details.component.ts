@@ -32,6 +32,8 @@ export class DataProviderDetailsComponent implements OnInit {
   fileNames: string[];
   equipments: Equipment[];
   fields: Field[];
+  toModify = false;
+  selectedEquipment: any;
 
   // Input enabled variables
   inputEnabled = {
@@ -49,7 +51,9 @@ export class DataProviderDetailsComponent implements OnInit {
    * @param dataProviderService the service used to handle dataProviders
    * @param route the service used to handle route parameters
    * @param router the service used to handle routing
-   * @param formBuilder the service used to handle forms
+   * @param modalService the modal service
+   * @param utilsService the utils service
+   * @param authenticationService the authentifcation service
    */
   constructor(
     private dataProviderService: DataProviderService,
@@ -76,6 +80,7 @@ export class DataProviderDetailsComponent implements OnInit {
           response.ip_address,
           response.field_object);
         this.loaded = true;
+        this.selectedEquipment = this.localDataProvider.equipment;
       });
 
     this.dataProviderService.fileNamesSubject.subscribe(
@@ -110,6 +115,8 @@ export class DataProviderDetailsComponent implements OnInit {
       case 'equipment':
         this.inputEnabled.equipment = true;
         this.inputEnabled.field = false;
+        this.updateEquipmentAndField();
+        this.selectedEquipment = this.localDataProvider.equipment;
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = true;
@@ -150,12 +157,16 @@ export class DataProviderDetailsComponent implements OnInit {
         break;
       case 'equipment':
         this.inputEnabled.equipment = false;
+        this.inputEnabled.field = true;
+        this.toModify = true;
+        this.updateEquipmentAndField();
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = false;
         break;
       case 'field':
         this.inputEnabled.field = false;
+        this.updateField();
         break;
       case 'is_activated':
         break;
@@ -163,19 +174,21 @@ export class DataProviderDetailsComponent implements OnInit {
          break;
     }
     // Ici le setTimeout sert dans le cas où l'on change le is_activated, en effet il y a un délai avant que le changement soit effectué.
-    setTimeout(() => {
-      this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider, true).subscribe(
-        () => {
-          this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
-            (dataProvider: DataProvider) => {
-              this.localDataProvider = dataProvider;
-            }
-          );
-        },
-        () => {
-          this.router.navigate(['four-oh-four']);
-        });
-    }, 500);
+    if (!this.toModify) {
+      setTimeout(() => {
+        this.dataProviderService.updateDataProvider(this.localDataProvider.id, this.localDataProvider, true).subscribe(
+          () => {
+            this.dataProviderService.getDataProvider(this.localDataProvider.id).subscribe(
+              (dataProvider: DataProvider) => {
+                this.localDataProvider = dataProvider;
+              }
+            );
+          },
+          () => {
+            this.router.navigate(['four-oh-four']);
+          });
+      }, 500);
+    }
   }
   /**
    * Function that test if a string is an input duration
@@ -187,13 +200,28 @@ export class DataProviderDetailsComponent implements OnInit {
   }
 
   /**
-   * Function that set the select field according to the selected equipment.
+   * Function that set the selected equipment and the select field according to the selected equipment.
    */
-  onSelectField() {
+  updateEquipmentAndField() {
     this.equipments.forEach(
-      (aEquipment) => {
-        if (aEquipment.id === this.localDataProvider.equipment.id) {
-          this.fields = aEquipment.fields;
+      (aEquipement) => {
+        if (aEquipement.id.toString(10) === this.selectedEquipment.id.toString(10)) {
+          this.localDataProvider.equipment = aEquipement;
+          this.localDataProvider.equipment.id = aEquipement.id;
+          this.fields = aEquipement.fields;
+        }
+      }
+    );
+  }
+
+  /**
+   * Function that set the field according to the selected field.
+   */
+  updateField() {
+    this.fields.forEach(
+      (aField) => {
+        if (aField.id.toString(10) === this.localDataProvider.field_object.id.toString(10)) {
+          this.localDataProvider.field_object = aField;
         }
       }
     );
@@ -204,15 +232,22 @@ export class DataProviderDetailsComponent implements OnInit {
    */
   onTest() {
     this.dataProviderService.testDataProvider(this.localDataProvider, true).subscribe(
-      (response) => {
+      () => {
         this.tested = true;
         this.success = true;
       },
-      (error) => {
+      () => {
         this.tested = true;
         this.success = false;
       }
     );
+  }
+
+  /**
+   * Function call to notify that a equipment field need to be selected.
+   */
+  onChange() {
+    this.toModify = false;
   }
 
   /**
@@ -230,7 +265,7 @@ export class DataProviderDetailsComponent implements OnInit {
         );
       }
     },
-    (error) => {});
+    () => {});
   }
 
 }
