@@ -3,7 +3,6 @@ pipeline{
     stages{
         stage ('INSTALL MODULES'){
             steps{
-                dir("frontend"){
                 sh '''
                     rm -rf node_modules
                     rm package-lock.json
@@ -13,7 +12,6 @@ pipeline{
                     # npm i --save-dev karma-junit-reporter karma-coverage-istanbul-reporter karma-spec-reporter
                     npm i --save-dev typescript 
                     '''
-                }
             }
         }
 
@@ -26,17 +24,15 @@ pipeline{
             parallel{
                 stage("Tests/Couverture"){
                     steps{
-                        dir("frontend"){
                             sh "\$(npm bin)/ng test --watch=false --codeCoverage=true"
-                        }
                     }
                     post {
                         always {
-                            junit "frontend/reports/junit.xml"
+                            junit "reports/junit.xml"
                             /*cobertura (
                                 autoUpdateHealth: false,
                                 autoUpdateStability: false,
-                                coberturaReportFile: 'frontend/reports/coverage.xml',
+                                coberturaReportFile: 'reports/coverage.xml',
                                 lineCoverageTargets: '70, 0, 70',
                                 maxNumberOfBuilds: 0, methodCoverageTargets: '70, 0, 70',
                                 onlyStable: false,
@@ -46,7 +42,7 @@ pipeline{
                                 allowMissing: false,
                                 alwaysLinkToLastBuild: true,
                                 keepAll: true,
-                                reportDir: 'frontend/coverage',
+                                reportDir: 'coverage',
                                 //reportFiles: 'index.html',
                                 reportName: 'HTML Report',
                                 reportTitles: ''])*/
@@ -55,16 +51,14 @@ pipeline{
                 }
                 stage ('code quality'){
                     steps{
-                        dir("frontend"){
                             sh """
                                 mkdir -p reports
                                 \$(npm bin)/ng lint --fix=false --tslintConfig=tslint.json --force=true --format=checkstyle > reports/tslint-report.xml
                                 """
-                        }
                     }
                     post {
                         always {
-                            recordIssues tool: tsLint(pattern: 'frontend/reports/tslint-report.xml'),
+                            recordIssues tool: tsLint(pattern: 'reports/tslint-report.xml'),
                                         enabledForFailure: true
                         }
                     }
@@ -79,9 +73,7 @@ pipeline{
                 }
             }
             steps("Application de  l'outil"){
-                dir("./frontend"){
                     sh "\$(npm bin)/ng lint --fix=true"
-                }
             }
         }
 
@@ -94,17 +86,15 @@ pipeline{
             stages{
                 stage("Tests/Couverture"){
                     steps{
-                        dir("frontend"){
                             sh "\$(npm bin)/ng test --watch=false --codeCoverage=true"
-                        }
                     }
                     post {
                         always {
-                            junit "frontend/reports/junit.xml"
+                            junit "reports/junit.xml"
                             cobertura (
                                 autoUpdateHealth: false,
                                 autoUpdateStability: false,
-                                coberturaReportFile: 'frontend/coverage/cobertura-coverage.xml',
+                                coberturaReportFile: 'coverage/cobertura-coverage.xml',
                                 onlyStable: false,
                                 sourceEncoding: 'ASCII',
                                 zoomCoverageChart: false)
@@ -112,7 +102,7 @@ pipeline{
                                 allowMissing: false,
                                 alwaysLinkToLastBuild: true,
                                 keepAll: true,
-                                reportDir: 'frontend/coverage',
+                                reportDir: 'coverage',
                                 reportFiles: 'index.html',
                                 reportName: 'HTML Report',
                                 reportTitles: ''])
@@ -122,16 +112,14 @@ pipeline{
 
                 stage ('code quality'){
                     steps{
-                        dir("frontend"){
                             sh """
                                 mkdir -p reports
                                 \$(npm bin)/ng lint --fix=false --tslintConfig=tslint.json --force=true --format=checkstyle > reports/tslint-report.xml
                                 """
-                        }
                     }
                     post {
                         always {
-                            recordIssues tool: tsLint(pattern: 'frontend/reports/tslint-report.xml'),
+                            recordIssues tool: tsLint(pattern: 'reports/tslint-report.xml'),
                                         enabledForFailure: true
                         }
                     }
@@ -139,9 +127,7 @@ pipeline{
 
                 stage("Formatage du code"){
                     steps("Application de  l'outil"){
-                        dir("./frontend"){
                             sh "\$(npm bin)/ng lint --fix=true"
-                        }
                     }
                 }
 
@@ -170,23 +156,19 @@ pipeline{
             stages{
                 // stage ('Doc generation'){
                 //     steps {
-                //         dir("frontend"){
                 //             sh "npm run compodoc"
-                //         }
                 //     }
                 //     post{
                 //         always{
-                //             archiveArtifacts artifacts: 'frontend/documentation'
+                //             archiveArtifacts artifacts: 'documentation'
                 //         }
                 //     }
                 // }
                 stage('Build'){
                     steps{
-                        dir("frontend"){
                             sh '''
                                 \$(npm bin)/ng build --build-optimizer --configuration=dev
                                 '''
-                        }
                     }
                 }
 
@@ -194,7 +176,7 @@ pipeline{
                     steps{
                         sh '''
                             ssh root@192.168.101.14 'rm -rf /var/www/pic-slalom/*';
-                            scp -r -p $WORKSPACE/frontend/dist/pic-slalom/* root@192.168.101.14:/var/www/pic-slalom/;
+                            scp -r -p $WORKSPACE/dist/pic-slalom/* root@192.168.101.14:/var/www/pic-slalom/;
                         '''
                     }
                 }
@@ -211,23 +193,19 @@ pipeline{
             stages{
                 // stage ('Doc generation'){
                 //     steps {
-                //         dir("frontend"){
                 //             sh "npm run compodoc"
-                //         }
                 //     }
                 //     post{
                 //         always{
-                //             archiveArtifacts artifacts: 'frontend/documentation'
+                //             archiveArtifacts artifacts: 'documentation'
                 //         }
                 //     }
                 // }
                 stage('Build'){
                     steps{
-                        dir("frontend"){
                             sh '''
                                 \$(npm bin)/ng build --prod --build-optimizer
                                 '''
-                        }
                     }
                 }
 
@@ -235,7 +213,7 @@ pipeline{
                     steps{
                         sh '''
                             ssh root@192.168.101.9 'rm -rf /var/www/pic-slalom/*';
-                            scp -r -p $WORKSPACE/frontend/dist/pic-slalom/* root@192.168.101.9:/var/www/pic-slalom/;
+                            scp -r -p $WORKSPACE/dist/pic-slalom/* root@192.168.101.9:/var/www/pic-slalom/;
                         '''
                     }
                 }
@@ -244,11 +222,9 @@ pipeline{
 
         stage('CLEAN NPM') {
             steps {
-                dir("frontend"){
                 sh '''
-                    rm -rf $WORKSPACE/frontend/node_modules
+                    rm -rf $WORKSPACE/node_modules
                     '''
-                }
             }
         }
     }
