@@ -19,7 +19,7 @@
                 *ngFor="let equipmentType of equipmentTypes; let i = index"
                 >
                 <div class="d-flex container-fluid row flex-wrap justify-content-between">
-                    <h5 class="col-sm-8">{{ equipmentType.name }}</h5>
+                    <h5 class="col-sm-8" (click)="onViewEquipmentType(i)">{{ equipmentType.name }}</h5>
 
                     <div class="d-flex">
                         <button class="btn btn-info mx-2" (click)="onViewEquipmentType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
