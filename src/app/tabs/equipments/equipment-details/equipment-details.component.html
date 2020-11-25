@@ -128,7 +128,7 @@
 
             <span class="font-weight-bold col-md-3 my-1">{{ field.field_name }}</span>
 
-            <p class="col-md-3 my-1" *ngIf="field.value.length > 0">
+            <p class="col-md-3 my-1" *ngIf="!(field.field_value)">
               <span *ngIf="(!(field.field_value) && !(modifyFields))">{{ field.value }}</span>
               <input class="form-control" id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [ngModel]=field.value>
             </p>
