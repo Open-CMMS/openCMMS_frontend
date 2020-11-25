@@ -133,6 +133,7 @@ export class NewEquipmentTypeComponent implements OnInit {
   deleteField(key: string) {
     const indexOf = this.fieldList.indexOf(key);
     this.fieldList.splice(indexOf, 1);
+    this.editingField.splice(indexOf, 1);
   }
 
   /**
