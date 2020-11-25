@@ -20,6 +20,7 @@ export class NewDataProviderComponent implements OnInit {
   // Test variables
   tested = false;
   success = false;
+  response = false;
 
   // Form
   createForm: FormGroup;
@@ -112,14 +113,23 @@ export class NewDataProviderComponent implements OnInit {
     );
     this.dataProviderService.testDataProvider(newDataProvider, false).subscribe(
       (response) => {
-        this.tested = true;
-        this.success = true;
+        console.log(response);
+        if (response) {
+          this.tested = true;
+          this.success = true;
+          this.response = true;
+        }
       },
     (error) => {
         this.tested = true;
         this.success = false;
     }
     );
+    if (!this.response) {
+      this.tested = true;
+      this.success = false;
+    }
+    this.response = false;
   }
 
   /**
