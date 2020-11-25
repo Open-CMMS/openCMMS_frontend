@@ -76,7 +76,7 @@
     </div>
     <div class="card mt-5">
             <div class="card-header d-flex justify-content-between">
-                <h3 class="font-weight-bold"> Fields : </h3>
+              <h3 class="font-weight-bold"> Fields : </h3>
               <button class="d-flex btn btn-link" (click)="openModifyField()" *ngIf="onChangeEquipmentTypePermission() && (!modifyFields)"><fa-icon [icon]="faPencilAlt" style="color: gray; font-size:22px;"></fa-icon></button>
               <button class="d-flex btn btn-link" (click)="saveFields()" *ngIf="onChangeEquipmentTypePermission() && (modifyFields)"><fa-icon [icon]="faSave" style="color: gray;font-size:22px;"></fa-icon></button>
             </div>
@@ -89,7 +89,9 @@
                     <div class="d-flex row col-12">
                         <div class="col-md-2 my-1">
                             <span class="font-weight-bold" >{{field.name}}</span>
-                            <span *ngIf="field.value!=''">: {{field.value}}</span>
+                            <ul>
+                              <li *ngFor="let value of field.value"> {{ value }}</li>
+                            </ul>
                         </div>
                         <input
                         type="text"
