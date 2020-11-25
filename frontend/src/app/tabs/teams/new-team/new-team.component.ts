@@ -112,13 +112,17 @@ export class NewTeamComponent implements OnInit, OnDestroy {
     });
     const newTeam = new Team(1, formValues.teamName, formValues.teamType, usersToAdd);
     this.teamService.createTeam(newTeam).subscribe(
-      (team: Team) => {
-        this.router.navigate(['/teams']);
-        this.teamService.getTeams();
+      (res) => {
+        if (res.data) {
+          this.router.navigate(['/teams']);
+          this.teamService.getTeams();
+        } else {
+          if (res.error) {
+            this.creationError = true;
+          }
+        }
+
       },
-      (error) => {
-        this.creationError = true;
-      }
     );
 
   }
