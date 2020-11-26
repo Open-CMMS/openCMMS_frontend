@@ -1,0 +1,37 @@
+<ng-template #contentDelete let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-delete">Delete User</h4>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to delete this User ?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
+    </div>
+</ng-template>
+
+
+
+<div class="container-fluid col-md-12" style="padding: 0px;">
+    <div class="list-group">
+        <ul class="list-group">
+            <li
+                class="container-fluid list-group-item font-weight-bold "
+                *ngFor="let user of users;"
+                >
+                <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
+                    <h5 class="col-sm-8" style="padding-left:0px;" (click)="onViewUser(user)">{{ user.first_name }} {{ user.last_name }}</h5>
+                    <div class="my-1">
+                        <button class="btn btn-info mr-2" (click)="onViewUser(user)">
+                            <fa-icon [icon]="faInfoCircle"></fa-icon>
+                        </button>
+                        <button class="btn btn-danger" (click)="openDelete(contentDelete, user)" *ngIf="onDeleteUserPermission()">
+                            <fa-icon [icon]="faTrash"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
