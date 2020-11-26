@@ -1,0 +1,9 @@
+<div class="container-fluid justify-content-center col-md-8 mt-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <h3 class="font-weight-bold">TeamTypes Management</h3>
+        <div class="my-3">
+          <button class="btn btn-primary" (click)="onCreateTeamType()" *ngIf="onAddTeamTypesPermission()"><fa-icon [icon]="faPlus"></fa-icon> Create new team type</button>
+        </div>
+    </div>
+    <app-team-types-list></app-team-types-list>
+</div>

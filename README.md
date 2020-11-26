@@ -1,67 +1,41 @@
-# PicSlalomFront
+# OpenCMMS_frontend
 
-Partie front-end du projet de création d'un logiciel de GMAO dans le cadre du PIC Brasserie Du Slalom 2020.
+![example workflow name](https://github.com/Open-CMMS/openCMMS_frontend/workflows/master/badge.svg)   ![example workflow branch](https://github.com/Open-CMMS/openCMMS_frontend/workflows/dev/badge.svg)    ![GitHub license](https://img.shields.io/github/license/Open-CMMS/openCMMS_frontend)  ![GitHub contributors](https://img.shields.io/github/contributors/Open-CMMS/openCMMS_frontend)
 
-## Pré-requis pour travailler sur le projet
 
-### Installations préalables
+The aim of this project is to enable any company to manage the maintenance of its equipment in a simple way.
 
-Pour pouvoir commencer à travailler sur le projet, vous devez éxécuter les comandes suivantes :
+We thus propose an interface which works with the backend API located here : 
 
-* Installer NodeJS : `sudo apt install nodejs`
+Thanks to both projects you will be able to manage the users with different levels of rights but also to create new groups with specific rights.
 
-* Installer NPM : `sudo apt install npm`
+You also can create equipment types as well as equipments with attributes such as brand, capacity, etc ...
 
-* Avoir la version de npm la plus récente : `sudo npm install -g npm@latest`
+Finally, you can also add dataproviders which will allow you to automatically retrieve values from your equipment in order to update its attributes in the database.
 
-* Installer le CLI Angular en global : `sudo npm install -g @angular/cli`
+# Installing the project
 
-### Commandes utiles
+In this part we will explain how to install this project. The installation process has been tested with Debian 10 container, nodejs version 10.19 and npm version 6.14.4. Everything has been developped with Angular 9. Make sure you have enough RAM memory (2GB should do the trick)
 
-Puis durant le dév, ces commandes vous seront utiles :
+First you have to download the project and put in in a specific directory, in our example we put the project in `/root/frontend/`
 
-* `ng serve` : lance le serveur en local pour visualiser ses changements à la volée.
+Make sure you have all your packages up to date : `apt-get update` and that you are on the project folder, here `/root/frontend`
 
-* `ng test` : lance l'utilitaire Karma utile à la visualisation des résultats de tests à la volée.
+## Install dependencies
 
-* `ng generate component <nom-du-composant>` / `ng g c <nom-du-composant>` : créer un nouveau composant Angular 9.
+In order to build the project you have to install all the required packages.
+* Install NodeJS : `apt install nodejs`
+* Install NPM : `apt install npm`
+* Install Angular CLI globally : `npm install -g @angular/cli`
+* Install all the required packages (run this command from the project folder) : `npm i`
 
-## Démarche à suivre pour le développement d'une feature
+## Edit configuration
 
-### Pré-requis : Cloner le projet en local
+If you make the website accessible from the Internet, you must change the base_url of the project. To do so you have to edit the file `nano src/environments/environment.prod.ts` and edit the `baseUrl` param with your website's address.
+If you just want to see the project and run it locally you don't need to edit this configuration file.
 
-* `git clone <adresse-http | adresse-ssh>` : cloner le répertoire GIT en local.
+## Run the project
 
-__Vérification :__ Pour vérifier que vous avez bien toutes les branches, faites `git branch`. Pour avoir la branche `dev`, faites: `git checkout dev`.
+In order to run the project locally you should go to the project folder and run the commande `ng serve`. The project will then be accessible from 127.0.0.1:4200.
 
-### Créer une nouvelle feature
-
-* Premièrement, allez sur la branche `dev` : `git checkout dev`.
-
-* Créez votre nouvelle branche `feature/<id-tâche-clickup>` : `git checkout -b feature/<id-tâche-clickup> dev`.
-
-* Mettez en ligne la création de votre branche : `git push --set-upstream origin feature/<id-tâche-clickup>`.
-
-Votre branche est crée et votre environnement de développement est prêt.
-
-### Commandes utiles
-
-Voici les étapes à suivre à chaque développement :
-
-* Faites vos modifications en local.
-
-* Une fois vos modifications terminées, `git add .` à la racine du répertoire du projet.
-
-* Faites votre commit : `git commit -m "Mon beau commit"`.
-
-* Puis poussez vos modifications : `git push`.
-
-### Fusion d'une feature sur la branche dev
-
-Lors de la fin de votre feature, voici la procédure à suivre avant d'effectuer la pull request: 
-
-* Mettre à jour les branches `feature/<id-tâche-clickup>` et `dev` avec un `git pull`.
-
-* Revenir sur la branche `feature/<id-tâche-clickup>` et faire `git merge dev`.
-
-* Résolvez les conflits de la fusion puis faire `git merge --continue`. 
+To run the project on a website, you must build the project. To do so, go to the project folder and run `ng build --prod --build-optimizer --output-hashing=all`. This command will create a dist folder. You have to copy the content of the `dist/pic-slalom` folder to the folder accessible from the internet. If you follow the tutorial from the OpenCMMS_backend project it's the `/var/www/openCMMS/` folder that you must create.
