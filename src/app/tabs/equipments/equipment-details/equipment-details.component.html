@@ -150,7 +150,7 @@
           </div>
         </li>
           <div *ngIf="modifyFields">
-              <li class="form-group list-group-item" >
+              <li class="form-group list-group-item">
                   <button type="button" class="btn btn-outline-secondary" (click)="addField()">
                       <span style="margin-right: 10px">Create a new field</span>
                       <fa-icon [icon]="faPlusSquare"></fa-icon>
@@ -164,6 +164,8 @@
                       <input class="form-control col-md-3 mx-1 my-1" type="text" placeholder="name" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.name>
                       <input class="form-control col-md-3 mx-1 my-1" type="text" placeholder="value" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.value>
                       <input class="form-control col-md-4 mx-1 my-1" type="text" placeholder="description" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.description>
+                      <fa-icon class="d-flex align-items-center mx-2" [icon]="faCheck" style="color: green;" *ngIf="canValidateLine(new_field)"></fa-icon>
+                      <fa-icon class="d-flex align-items-center mx-2" [icon]="faTimes" style="color: red;" *ngIf="!canValidateLine(new_field)"></fa-icon>
                   </div>
               </li>
           </div>
