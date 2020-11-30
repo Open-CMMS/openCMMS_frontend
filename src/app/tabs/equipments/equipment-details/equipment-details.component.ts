@@ -64,6 +64,7 @@ export class EquipmentDetailsComponent implements OnInit {
   fieldTemplate = null;
   equipmentTypeModified = false;
   currentSelectFields: [];
+  isCurrentEquipmentTypeFields = [];
 
   // Constants
   INIT_FIELD_NAME  = '';
@@ -188,6 +189,11 @@ export class EquipmentDetailsComponent implements OnInit {
         if (this.modifyFields) {
           this.currentEquipment.fields = this.fields;
           this.modifyFields = false;
+          if (this.new_fields.length !== 0) {
+            this.new_fields.forEach(element => {
+              this.currentEquipment.fields.push(element);
+            });
+          }
           if (this.equipmentTypeModified) {
             this.currentEquipment.fields = this.initialFields;
             this.equipmentTypeModified = false;
@@ -244,6 +250,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * Fonction that allows to modify the fields
    */
   openModifyField() {
+    this.new_fields = [];
     this.modifyFields = true;
     this.equipmentTypes = this.equipmentTypeService.getEquipmentTypes();
     if (this.equipmentTypes.length === 0) {
@@ -256,6 +263,7 @@ export class EquipmentDetailsComponent implements OnInit {
       .subscribe(
         (response) => {
           this.currentEquipmentTypeFields = response.field;
+          this.isCurrentEquipmentTypeField();
         }
       );
   }
@@ -394,6 +402,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param event The EquipmentType selected
    */
   initEquipmentTypeFields(event) {
+    this.new_fields = [];
     this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== Number(event));
     if (this.equipmentTypeModified) {
       this.equipmentTypeService.getEquipmentType(Number(event))
@@ -503,16 +512,16 @@ export class EquipmentDetailsComponent implements OnInit {
       } else {
         missing_value = true;
       }
-      if (this.new_fields.length !== 0) {
-        this.new_fields.forEach(element => {
-          if ((element.name === '') || (element.value.length === 0)) {
-            missing_value = true;
-          }
-        });
-      }
     } else {
       this.fields.forEach(element => {
         if ((element.value.length === 0) && !(element.field_value)) {
+          missing_value = true;
+        }
+      });
+    }
+    if (this.new_fields.length !== 0) {
+      this.new_fields.forEach(element => {
+        if ((element.name === '') || (element.value.length === 0)) {
           missing_value = true;
         }
       });
@@ -521,11 +530,55 @@ export class EquipmentDetailsComponent implements OnInit {
   }
 
   /**
-   * Function to delete a field in the form
+   * Function to delete a new field in the form
    * @param i the index of the field
    */
   deleteField(i: number) {
     this.new_fields.splice(i, 1);
+  }
+
+  /**
+   * Function to delete a current field of the Equipment
+   * @param field the field
+   * @param i the index of the field
+   */
+  deleteCurrentField(field, i: number) {
+    this.fields.splice(i, 1);
+    this.equipmentService.deleteFieldEquipment(this.currentEquipment.id, field.id).subscribe(
+        (resp) => {
+          console.log('resp', resp);
+        }
+    );
+  }
+
+  /**
+   * Function to know if a current field is related to the equipment type
+   */
+  isCurrentEquipmentTypeField() {
+    let isCurrentEquipmentTypeField = false;
+    this.fields.forEach(field => {
+      this.currentEquipmentTypeFields.forEach(element => {
+        if (element.id === field.field) {
+          isCurrentEquipmentTypeField = true;
+        }
+      });
+      this.isCurrentEquipmentTypeFields.push({id: field.field, isEquipmentTypeField: isCurrentEquipmentTypeField});
+      isCurrentEquipmentTypeField = false;
+    });
+  }
+
+  /**
+   * Function to know if a field can be delete
+   * @param field the field
+   */
+  canDeleteField(field) {
+    let canDelete = false;
+    this.isCurrentEquipmentTypeFields.forEach(element => {
+      if (element.id === field.field) {
+        canDelete = !(element.isEquipmentTypeField);
+      }
+    });
+    return canDelete;
   }
 
   /**
