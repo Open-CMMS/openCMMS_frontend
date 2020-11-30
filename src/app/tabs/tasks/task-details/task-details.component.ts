@@ -450,6 +450,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.taskService.deleteTask(this.task.id).subscribe(
       (resp) => {
         this.teamService.getTeams();
+        this.taskService.getTasks();
         this.router.navigate(['/tasks']);
     });
   }
