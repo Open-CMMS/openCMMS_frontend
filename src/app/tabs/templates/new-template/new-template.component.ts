@@ -281,7 +281,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       time: ['', Validators.pattern(regex_time)],
       equipment: [''],
       equipmentType: [''],
