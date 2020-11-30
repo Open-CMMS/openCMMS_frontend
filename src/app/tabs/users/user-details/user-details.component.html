@@ -11,6 +11,22 @@
     </div>
 </ng-template>
 
+<ng-template #contentResendMail let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-resend">Resend onboarding mail to {{user.first_name}} {{user.last_name}} ?</h4>
+    </div>
+    <div class="modal-body">
+        <p>
+            Are you sure you want to resend this email to {{ user.first_name }}?<br/>
+            <small class="text-muted">This will reset {{ user.first_name }} current password if he is already onboarded !</small>
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Resend</button>
+    </div>
+</ng-template>
+
 
 <ng-template #contentModify let-modal>
     <div class="modal-header">
@@ -92,10 +108,21 @@
         <div class="d-flex">
             <h2 class="font-weight-bold" *ngIf="loaded">User : {{ user.first_name }} {{ user.last_name }}</h2>
         </div>
-        <div class="d-flex btn-group" role="group">
-            <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
-            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteUserPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
+        <div class="d-flex">
+            <button class="btn btn-link" (click)="openResend(contentResendMail)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faEnvelope"></fa-icon> Renvoyer le mail d'inscription</button>
+            <div class="d-flex btn-group" role="group">
+                <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
+                <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteUserPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
+            </div>
         </div>
+    </div>
+    <div class="container-fluid mt-3">
+        <ngb-alert class="col-12" *ngIf="resendSuccess === true" [type]="'success'" [dismissible]="false">
+            The mail has been resend successfully !
+        </ngb-alert>
+        <ngb-alert class="col-12" *ngIf="resendSuccess === false" [type]="'danger'" [dismissible]="false">
+            Error while resending the mail ...
+        </ngb-alert>
     </div>
     <div class="card mt-5">
         <div class="card-header">
