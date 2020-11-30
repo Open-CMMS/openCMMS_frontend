@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Subscription, Subject, Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription, Subject } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,7 +21,6 @@ import {
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FileService } from 'src/app/services/files/file.service';
 import { Template } from 'src/app/models/template';
-import { TemplateService } from 'src/app/services/templates/template.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { UserProfile } from 'src/app/models/user-profile';
 import { durationRegex } from 'src/app/shares/consts';
@@ -103,6 +102,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * @param equipmentService the service to communicate with backend on Equipment
    * @param fileService the service to communicate with backend on File
    * @param formBuilder the service to handle forms
+   * @param authService the service to handle authentication
    */
   constructor(private router: Router,
               private taskService: TaskService,
@@ -343,7 +343,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
     });
     this.dropdownEquipmentsSettings = {
-      singleSelection: true,
+      singleSelection: false,
       idField: 'id',
       textField: 'value',
       selectAllText: 'Select All',
@@ -372,7 +372,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   /**
    * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
-   * @param file file that need to be removed
+   * @param files array of files
+   * @param fileId array of files id
    */
   onRemoveFile(files: any[], fileId: any) {
     let index: number;
@@ -425,7 +426,13 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       });
     }
 
-    const equipment = formValues.equipment ? formValues.equipment : null;
+    const equipments = [];
+    if (formValues.equipment) {
+      formValues.equipment.forEach(item => {
+        equipments.push(item.id);
+      });
+    }
+    // const equipment = formValues.equipment ? formValues.equipment : null;
     const end_date = formValues.end_date ? this.taskService.normaliseEndDateValue(formValues.end_date) : null;
     const duration = formValues.duration ? this.taskService.normaliseDurationValue(formValues.duration, ['d', 'h', 'm']) : '';
     const over = false;
@@ -470,7 +477,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
                                 end_date,
                                 duration,
                                 false,
-                                equipment,
+                                equipments,
                                 teams,
                                 files,
                                 over,

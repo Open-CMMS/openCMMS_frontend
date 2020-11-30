@@ -22,20 +22,28 @@
         <div class="form-group">
             <label for="teams">Teams</label>
             <ng-multiselect-dropdown
-              [ngStyle]="{'border-color': (selectedTemplate?.teams) ? 'rgb(255, 255, 202)' : '#ffffff'}"
-              [settings]="dropdownTeamsSettings"
-              [data]="teamsList"
-              formControlName="teams"
-              name="teams"
+                    id = "teams"
+                    [ngStyle]="{'border-color': (selectedTemplate?.teams) ? 'rgb(255, 255, 202)' : '#ffffff'}"
+                    [settings]="dropdownTeamsSettings"
+                    [data]="teamsList"
+                    formControlName="teams"
             >
             </ng-multiselect-dropdown>
         </div>
         <div class="form-group">
             <label for="equipment">Equipment</label>
-            <select id="equipment" class="form-control" [(ngModel)]="selectedEquipment" formControlName="equipment" [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}">
-                <option [ngValue]="null" defaultSelected="selected">---</option>
-                <option *ngFor="let equipment of this.equipments" [ngValue]="equipment.id">{{ equipment.name }}</option>
-            </select>
+            <ng-multiselect-dropdown
+                    id = "equipment"
+                    [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}"
+                    [settings]="dropdownEquipmentsSettings"
+                    [data]="equipmentList"
+                    formControlName="equipment"
+            >
+            </ng-multiselect-dropdown>
+<!--            <select id="equipment" class="form-control" [(ngModel)]="selectedEquipment" formControlName="equipment" [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}">-->
+<!--                <option [ngValue]="null" defaultSelected="selected">-&#45;&#45;</option>-->
+<!--                <option *ngFor="let equipment of this.equipments" [ngValue]="equipment.id">{{ equipment.name }}</option>-->
+<!--            </select>-->
         </div>
         <div class="form-group">
             <label for="end_date">Task end date </label>

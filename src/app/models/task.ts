@@ -34,7 +34,7 @@ export class Task {
         end_date?: string,
         duration?: string,
         is_template?: boolean,
-        equipment?: number,
+        equipment?: number[],
         teams?: number[],
         files?: number[],
         over?: boolean,
