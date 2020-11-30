@@ -239,6 +239,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * Fonction that allows to modify the fields
    */
   openModifyField() {
+    this.new_fields = [];
     this.modifyFields = true;
     this.equipmentTypes = this.equipmentTypeService.getEquipmentTypes();
     if (this.equipmentTypes.length === 0) {
@@ -526,10 +527,16 @@ export class EquipmentDetailsComponent implements OnInit {
 
   /**
    * Function to delete a current field of the Equipment
+   * @param field the field
    * @param i the index of the field
    */
-  deleteCurrentField(i: number) {
+  deleteCurrentField(field, i: number) {
     this.fields.splice(i, 1);
+    this.equipmentService.deleteFieldEquipment(this.currentEquipment.id, field.id).subscribe(
+        (resp) => {
+          console.log('resp', resp);
+        }
+    );
   }
 
   /**
