@@ -273,7 +273,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   canValidateForm() {
     let canValidateForm = true;
     this.fields.forEach(field => {
-      if (this.fieldIsFill(field)) {
+      if (!this.fieldIsFill(field)) {
         canValidateForm = false;
       }
     });
