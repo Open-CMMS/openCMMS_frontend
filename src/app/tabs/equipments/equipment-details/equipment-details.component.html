@@ -145,7 +145,7 @@
               <span *ngIf="field.description">{{ field.description}}</span>
             </p>
 
-              <button class="col-md-1 align-content-md-end my-1 d-flex btn btn-link"  ngbTooltip="Delete" (click)="deleteCurrentField(field, i)" *ngIf="modifyFields && !(isCurrentEquipmentTypeField(field))"><fa-icon [icon]="faTrash" style="color: gray; font-size:22px;"></fa-icon></button>
+              <button class="col-md-1 align-content-md-end my-1 d-flex btn btn-link"  ngbTooltip="Delete" (click)="deleteCurrentField(field, i)" *ngIf="modifyFields && canDeleteField(field)"><fa-icon [icon]="faTrash" style="color: gray; font-size:22px;"></fa-icon></button>
 
           </div>
         </li>

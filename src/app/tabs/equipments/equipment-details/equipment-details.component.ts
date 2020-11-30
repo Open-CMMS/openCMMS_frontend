@@ -58,6 +58,7 @@ export class EquipmentDetailsComponent implements OnInit {
   fieldTemplate = null;
   equipmentTypeModified = false;
   currentSelectFields: [];
+  isCurrentEquipmentTypeFields = [];
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -252,6 +253,7 @@ export class EquipmentDetailsComponent implements OnInit {
       .subscribe(
         (response) => {
           this.currentEquipmentTypeFields = response.field;
+          this.isCurrentEquipmentTypeField();
         }
       );
   }
@@ -541,16 +543,32 @@ export class EquipmentDetailsComponent implements OnInit {
 
   /**
    * Function to know if a current field is related to the equipment type
+   */
+  isCurrentEquipmentTypeField() {
+    let isCurrentEquipmentTypeField = false;
+    this.fields.forEach(field => {
+      this.currentEquipmentTypeFields.forEach(element => {
+        if (element.id === field.field) {
+          isCurrentEquipmentTypeField = true;
+        }
+      });
+      this.isCurrentEquipmentTypeFields.push({id: field.field, isEquipmentTypeField: isCurrentEquipmentTypeField});
+      isCurrentEquipmentTypeField = false;
+    });
+  }
+
+  /**
+   * Function to know if a field can be delete
    * @param field the field
    */
-  isCurrentEquipmentTypeField(field) {
-    let isCurrentEquipmentTypeField = false;
-    this.currentEquipmentTypeFields.forEach(element => {
+  canDeleteField(field) {
+    let canDelete = false;
+    this.isCurrentEquipmentTypeFields.forEach(element => {
       if (element.id === field.field) {
-        isCurrentEquipmentTypeField = true;
+        canDelete = !(element.isEquipmentTypeField);
       }
     });
-    return isCurrentEquipmentTypeField;
+    return canDelete;
   }
 
   /**
