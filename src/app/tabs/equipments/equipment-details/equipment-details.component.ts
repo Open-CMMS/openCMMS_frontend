@@ -178,6 +178,11 @@ export class EquipmentDetailsComponent implements OnInit {
         if (this.modifyFields) {
           this.currentEquipment.fields = this.fields;
           this.modifyFields = false;
+          if (this.new_fields.length !== 0) {
+            this.new_fields.forEach(element => {
+              this.currentEquipment.fields.push(element);
+            });
+          }
           if (this.equipmentTypeModified) {
             this.currentEquipment.fields = this.initialFields;
             this.equipmentTypeModified = false;
@@ -384,6 +389,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param event The EquipmentType selected
    */
   initEquipmentTypeFields(event) {
+    this.new_fields = [];
     this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== Number(event));
     if (this.equipmentTypeModified) {
       this.equipmentTypeService.getEquipmentType(Number(event))
@@ -493,16 +499,16 @@ export class EquipmentDetailsComponent implements OnInit {
       } else {
         missing_value = true;
       }
-      if (this.new_fields.length !== 0) {
-        this.new_fields.forEach(element => {
-          if ((element.name === '') || (element.value.length === 0)) {
-            missing_value = true;
-          }
-        });
-      }
     } else {
       this.fields.forEach(element => {
         if ((element.value.length === 0) && !(element.field_value)) {
+          missing_value = true;
+        }
+      });
+    }
+    if (this.new_fields.length !== 0) {
+      this.new_fields.forEach(element => {
+        if ((element.name === '') || (element.value.length === 0)) {
           missing_value = true;
         }
       });
@@ -511,11 +517,33 @@ export class EquipmentDetailsComponent implements OnInit {
   }
 
   /**
-   * Function to delete a field in the form
+   * Function to delete a new field in the form
    * @param i the index of the field
    */
   deleteField(i: number) {
     this.new_fields.splice(i, 1);
+  }
+
+  /**
+   * Function to delete a current field of the Equipment
+   * @param i the index of the field
+   */
+  deleteCurrentField(i: number) {
+    this.fields.splice(i, 1);
+  }
+
+  /**
+   * Function to know if a current field is related to the equipment type
+   * @param field the field
+   */
+  isCurrentEquipmentTypeField(field) {
+    let isCurrentEquipmentTypeField = false;
+    this.currentEquipmentTypeFields.forEach(element => {
+      if (element.id === field.field) {
+        isCurrentEquipmentTypeField = true;
+      }
+    });
+    return isCurrentEquipmentTypeField;
   }
 
   /**
