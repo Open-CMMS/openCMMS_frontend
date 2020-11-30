@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router } from '@angular/router';
-import { faPlusSquare, faMinusCircle, faPencilAlt, faSave, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPlusSquare, faMinusCircle, faPencilAlt, faPlusCircle, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-new-equipment-type',
@@ -15,22 +15,21 @@ export class NewEquipmentTypeComponent implements OnInit {
 
   // Local variables
   newEquipmentType: EquipmentType;
-  openField = false;
-  addField = true;
-  fieldName: string;
-  editingField = [];
-  fieldList = [];
+
+  // Fields
+  fields = [];
+  fieldTemplate = null;
 
   // Forms :
   equipmentTypeForm: FormGroup;
-  fieldForm: FormGroup;
 
   // Icons
   faPlusSquare = faPlusSquare;
   faMinusCircle = faMinusCircle;
   faPlusCircle = faPlusCircle;
   faPencilAlt = faPencilAlt;
-  faSave = faSave;
+  faCheck = faCheck;
+  faTimes = faTimes;
 
   // Consts
   FIELDVALUE_NAME = 'value';
@@ -59,7 +58,7 @@ export class NewEquipmentTypeComponent implements OnInit {
     });
     this.equipmentService.emitEquipments();
     this.initGeneralForm();
-    this.initFieldForm();
+    this.initAddFieldTemplate();
   }
 
   /**
@@ -72,101 +71,29 @@ export class NewEquipmentTypeComponent implements OnInit {
   }
 
   /**
-   * Function that initialize the field in the field form to create a new Field
+   * Function to initialize the template for field objects.
    */
-  initFieldForm() {
-    this.fieldForm = this.formBuilder.group({
-      fieldName: [this.INIT_FIELD_NAME, Validators.required],
-      fieldValue: [this.INIT_FIELD_VALUE]
-    });
+  initAddFieldTemplate() {
+    this.fieldTemplate = {
+      name: this.INIT_FIELD_NAME,
+      value: this.INIT_FIELD_VALUE,
+    };
   }
 
   /**
-   * Function that set openField to true and addField to false.
-   */
-  onOpenField() {
-    this.openField = true;
-    this.addField = false;
-  }
-
-  /**
-   * Function that set openField to false and addField to true.
-   */
-  onCloseField() {
-    this.openField = false;
-    this.addField = true;
-  }
-
-  /**
-   * Function to add a field with fieldName and fieldValue
+   * Function to add a field to the field list: fields
    */
   onAddField() {
-    const formValue = this.fieldForm.value;
-    const fieldName = formValue.fieldName;
-    const fieldValue = formValue.fieldValue;
-    const fieldNameJsonCopy = JSON.stringify(fieldName);
-    const fieldValueJsonCopy = JSON.stringify(fieldValue);
-    const objectFieldName = JSON.parse(fieldNameJsonCopy);
-    const objectFieldValue = JSON.parse(fieldValueJsonCopy);
-    // Si le fieldValue === '', on ajoute uniquement le name=fieldName. Sinon on ajoute le name=fieldName et value=fieldValue
-    objectFieldValue === '' ?
-      this.fieldList.push({name: objectFieldName}) : this.fieldList.push({name: objectFieldName, value: objectFieldValue});
-    this.editingField.push(false);
-    this.fieldForm.controls.fieldName.setValue(this.INIT_FIELD_NAME);
-    this.fieldForm.controls.fieldValue.setValue(this.INIT_FIELD_VALUE);
-    this.openField = false;
-    this.addField = true;
-  }
-
-  /**
-   * Function to know if a object is empty
-   * @param obj the object
-   */
-  isEmpty(obj) {
-    return Object.keys(obj).length === 0;
-  }
-
-  /**
-   * Function to delete a specific field in the fieldList
-   * @param key the key
-   */
-  deleteField(key: string) {
-    const indexOf = this.fieldList.indexOf(key);
-    this.fieldList.splice(indexOf, 1);
-    this.editingField.splice(indexOf, 1);
-  }
-
-  /**
-   * Function to edit a specific field in the fieldList
-   * @param key the key
-   */
-  onEditField(key) {
-    const indexOf = this.fieldList.indexOf(key);
-    this.editingField[indexOf] = !this.editingField[indexOf];
-  }
-
-  /**
-   * Function to know if we are editing a specific field.
-   * @param key the key
-   */
-  isEditingField(key) {
-    const indexOf = this.fieldList.indexOf(key);
-    return this.editingField[indexOf];
-  }
-
-  /**
-   * Function to verify if the name and the value of the edited field are not empty.
-   * @param field the field
-   */
-  isEditingFieldValid(field) {
-    return field[this.FIELDNAME_NAME].length === 0;
+    const jsonCopy = JSON.stringify(this.fieldTemplate);
+    const objectCopy = JSON.parse(jsonCopy);
+    this.fields.push(objectCopy);
   }
 
   /**
    * Function to format the Field 'fields' in the payload.
    */
   formatFieldPayload() {
-    this.fieldList.forEach((field) => {
+    this.fields.forEach((field) => {
       if (field[this.FIELDVALUE_NAME]) {
         field[this.FIELDVALUE_NAME] = field[this.FIELDVALUE_NAME].split(',').map(
           s => s.trim()
@@ -186,24 +113,23 @@ export class NewEquipmentTypeComponent implements OnInit {
     const nameStr = 'name';
     const id = 0;
     const name = formValue[nameStr];
-    this.formatFieldPayload(); // format this.fieldList before send to service
-    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.fieldList)).subscribe(
+    this.formatFieldPayload(); // format this.fields before send to service
+    this.equipmentTypeService.createEquipmentType(new EquipmentType(id, name, this.fields)).subscribe(
       equipment_type => {
         this.equipmentTypeService.equipment_types.push(equipment_type);
         this.equipmentTypeService.emitEquipmentTypes();
         this.equipmentTypeForm.reset();
       });
     this.router.navigate(['/equipment-types']);
-
   }
 
   /**
-   * Function to verify if the form can be validate, in particular if one field is being editing
+   * Function to verify if every field lines are completed
    */
   canValidateForm() {
     let canValidateForm = true;
-    this.editingField.forEach(element => {
-      if (element) {
+    this.fields.forEach(field => {
+      if (!this.fieldIsFill(field)) {
         canValidateForm = false;
       }
     });
@@ -211,11 +137,30 @@ export class NewEquipmentTypeComponent implements OnInit {
   }
 
   /**
-   * Function call on submit fieldForm form.
+   * Function to verify if a field line in completed
+   * @param field the field to check
    */
-  onSubmitField() {
-    if (this.fieldForm.invalid) {
-      return;
+  canValidateLine(field) {
+    let filled = true;
+    if (!this.fieldIsFill(field)) {
+      filled = false;
     }
+    return filled;
+  }
+
+  /**
+   * Function to verify if a field is completed
+   * @param field the field to check
+   */
+  fieldIsFill(field) {
+    return (field.name !== this.INIT_FIELD_NAME);
+  }
+
+  /**
+   * Function to delete a field
+   * @param i the position of the field to delete
+   */
+  deleteField(i: number) {
+    this.fields.splice(i, 1);
   }
 }

@@ -9,7 +9,7 @@ import {AuthenticationService} from 'src/app/services/auth/authentication.servic
 import {UtilsService} from 'src/app/services/utils/utils.service';
 import {Subject} from 'rxjs/internal/Subject';
 import {FileService} from 'src/app/services/files/file.service';
-import {faMinusSquare, faMinusCircle, faSave} from '@fortawesome/free-solid-svg-icons';
+import {faMinusSquare, faMinusCircle, faSave, faCheck, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
 import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
 import {EquipmentType} from 'src/app/models/equipment-type';
@@ -22,13 +22,19 @@ import {Field} from '../../../models/field';
   styleUrls: ['./equipment-details.component.scss']
 })
 export class EquipmentDetailsComponent implements OnInit {
-// Local variables
+
+  // Icons
   faPlusSquare = faPlusSquare;
   faPencilAlt = faPencilAlt;
   faMinusCircle = faMinusCircle;
   faSave = faSave;
   faTrash = faTrash;
   faMinusSquare = faMinusSquare;
+  faCheck = faCheck;
+  faTimes = faTimes;
+
+  // Local variables
+
   loaded = false;
   updateError = false;
   filesSubject = new Subject<File[]>();
@@ -58,6 +64,10 @@ export class EquipmentDetailsComponent implements OnInit {
   fieldTemplate = null;
   equipmentTypeModified = false;
   currentSelectFields: [];
+
+  // Constants
+  INIT_FIELD_NAME  = '';
+  INIT_FIELD_VALUE = '';
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -528,5 +538,25 @@ export class EquipmentDetailsComponent implements OnInit {
       });
     }
     this.onModifyEquipment();
+  }
+
+  /**
+   * Function to check if a field line is completed.
+   * @param field the field to check
+   */
+  canValidateLine(field) {
+    let filled = true;
+    if (!this.fieldIsFill(field)) {
+      filled = false;
+    }
+    return filled;
+  }
+
+  /**
+   * Function to check if a field is completed
+   * @param field the field to check
+   */
+  fieldIsFill(field) {
+    return (field.name !== this.INIT_FIELD_NAME && field.value !== this.INIT_FIELD_VALUE);
   }
 }
