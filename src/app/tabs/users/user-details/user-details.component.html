@@ -109,7 +109,7 @@
             <h2 class="font-weight-bold" *ngIf="loaded">User : {{ user.first_name }} {{ user.last_name }}</h2>
         </div>
         <div class="d-flex">
-            <button class="btn btn-link" (click)="openResend(contentResendMail)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faEnvelope"></fa-icon> Renvoyer le mail d'inscription</button>
+            <button class="btn btn-link" (click)="openResend(contentResendMail)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faEnvelope"></fa-icon> Resend onboarding mail</button>
             <div class="d-flex btn-group" role="group">
                 <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
                 <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteUserPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
