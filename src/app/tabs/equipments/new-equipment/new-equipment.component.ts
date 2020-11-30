@@ -297,7 +297,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * @param field the field to check
    */
   fieldIsFill(field) {
-    return (field.name !== this.INIT_FIELD_NAME || field.value !== this.INIT_FIELD_VALUE);
+    return (field.name !== this.INIT_FIELD_NAME && field.value !== this.INIT_FIELD_VALUE);
   }
 
 }
