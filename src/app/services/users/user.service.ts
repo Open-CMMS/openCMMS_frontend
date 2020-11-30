@@ -148,4 +148,8 @@ export class UserService {
     return this.httpClient.get<string>(this.BASE_URL_API + '/api/usersmanagement/users/username_suffix?username='
     + username);
   }
+
+  resendOnboardingMail(userId: number) {
+    return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/resend_inscription_email?userid=' + userId);
+  }
 }
