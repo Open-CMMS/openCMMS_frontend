@@ -84,7 +84,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   fileToUpload: any[] = [];
 
   // End conditions
-  endConditionValues: any[] = [];
+  endConditionValues: any = {};
   validationError = false;
 
   // Input activation
@@ -506,14 +506,17 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         case 'Checkbox':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         case 'Integer':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         case 'Description':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         default:
           break;
