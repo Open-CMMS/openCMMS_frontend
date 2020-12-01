@@ -16,7 +16,7 @@
             <input type="text" id="name" class="form-control" formControlName="name">
         </div>
         <div class="form-group">
-            <label for="description">Task Description* </label>
+            <label for="description">Task Description</label>
             <textarea [ngStyle]="{'background-color': (selectedTemplate?.description) ? 'rgb(255, 255, 202)' : '#ffffff'}" id="description" class="form-control" formControlName="description" ></textarea>
         </div>
         <div class="form-group">
@@ -27,6 +27,7 @@
               [data]="teamsList"
               formControlName="teams"
               name="teams"
+              id="teams"
             >
             </ng-multiselect-dropdown>
         </div>
@@ -40,7 +41,7 @@
         <div class="form-group">
             <label for="end_date">Task end date </label>
             <div class="input-group">
-                <input class="form-control" placeholder="yyyy-mm-dd"
+                <input class="form-control" placeholder="yyyy-mm-dd" id="end_date"
                         name="end_date" ngbDatepicker #endDatePicker="ngbDatepicker" formControlName="end_date">
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" (click)="endDatePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>
@@ -48,7 +49,7 @@
             </div>
         </div>
         <div class="form-group row col-md-4">
-            <label for="time">Task duration </label>
+            <label for="duration">Task duration </label>
             <div class="input-group">
                 <input type="text" name="time" id="duration" class="form-control" formControlName="duration" [ngStyle]="{'background-color': (selectedTemplate?.duration) ? 'rgb(255, 255, 202)' : '#ffffff'}">
                 <div class="input-group-append">

@@ -311,5 +311,29 @@ describe('EquipmentService', () => {
     req.flush(mockEquipment);
   });
 
+  it('returned Observable should match the right data on delete field', () => {
+        const mockEquipment = {
+            id: 1,
+            name: 'clé',
+            equipment_type: 1,
+            files: [1, 2, 3],
+            fields: {id: 1, name: 'name', value: 'value', description: 'description'}
+        };
+
+        httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/');
+        service.deleteFieldEquipment(1, 1).subscribe(equipment => {
+            expect(equipment.name).toEqual('clé');
+            expect(equipment.equipment_type).toEqual(1);
+            expect(equipment.files[0]).toEqual(1);
+            expect(equipment.files[1]).toEqual(2);
+            expect(equipment.files[2]).toEqual(3);
+        });
+
+        const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/removefieldfromequipment/');
+
+        expect(req.request.method).toEqual('DELETE');
+
+        req.flush(mockEquipment);
+    });
 
 });

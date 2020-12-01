@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Subscription, Subject, Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription, Subject } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -372,7 +372,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   /**
    * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
-   * @param file file that need to be removed
+   * @param files the list
+   * @fileId: file that need to be removed
    */
   onRemoveFile(files: any[], fileId: any) {
     let index: number;
@@ -395,7 +396,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       end_date: [null],
       duration: ['', Validators.pattern(localDurationRegex)],
       equipment: [''],

@@ -65,7 +65,7 @@
             <form class="form" [formGroup]="setPasswordForm">
                 <div class="row justify-content-center">
                     <div class="form-group">
-                        <label for="password">Password :</label>
+                        <label for="password">New Password :</label>
                         <input type="password" id="password" class="form-control" formControlName="password"
                         [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.password.errors }" />
                         <div *ngIf="submitted && this.setPasswordForm.controls.password.errors" class="invalid-feedback">
@@ -80,7 +80,7 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="form-group">
-                        <label for="confPassword" >Confirm Password :</label>
+                        <label for="confPassword" >Confirm New Password :</label>
                         <input type="password" id="confPassword" class="form-control" formControlName="confPassword"
                         [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.confPassword.errors }" />
                         <div *ngIf="submitted && this.setPasswordForm.controls.confPassword.errors" class="invalid-feedback">
@@ -154,9 +154,17 @@
         >
           <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
             <h5 class="col-md-8" style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team.id)">{{ team.name }}</h5>
-            <div class="col-md-2 my-1">
-              <button class="btn btn-info" (click)="onViewTeam(team.id)"><fa-icon [icon]="faInfoCircle" ></fa-icon></button>
-            </div>
+              <a class="mr-2 my-2"
+                 (click)="onViewTeam(team.id)"
+                 style="cursor: pointer"
+                 ngbTooltip="Info"
+                 placement="bottom"
+              >
+                  <fa-icon class="fa-lg"
+                           [icon]="faInfoCircle"
+                           style="color:gray">
+                  </fa-icon>
+              </a>
           </div>
         </li>
       </ul>
@@ -173,6 +181,21 @@
     </div>
     <div class="col-md-12 mt-5">
         <form class="form" [formGroup]="setPasswordForm" (ngSubmit)="onSetPassword()" *ngIf="changePwdActivated">
+            <div class="row">
+                <div class="form-group">
+                    <label for="old-password">Old Password :</label>
+                    <input type="password" id="old-password" class="form-control" formControlName="oldPassword"
+                    [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.oldPassword.errors }" />
+                    <div *ngIf="submitted && this.setPasswordForm.controls.oldPassword.errors" class="invalid-feedback">
+                        <div *ngIf="this.setPasswordForm.controls.oldPassword.errors.required">
+                            Old password is required
+                        </div>
+                        <div *ngIf="this.setPasswordForm.controls.oldPassword.errors.wrong">
+                            Wrong password !
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="form-group">
                     <label for="password">Password :</label>
