@@ -8,12 +8,13 @@
             <input type="text" id="name" class="form-control" formControlName="name">
         </div>
         <div class="form-group">
-            <label for="description">Template Description* </label>
+            <label for="description">Template Description</label>
             <textarea id="description" class="form-control" formControlName="description"></textarea>
         </div>
         <div class="form-group">
             <label for="teams">Teams</label>
             <ng-multiselect-dropdown
+              id="teams"
               [settings]="dropdownTeamsSettings"
               [data]="teamsList"
               formControlName="teams"

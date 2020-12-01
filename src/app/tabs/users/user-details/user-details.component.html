@@ -11,6 +11,22 @@
     </div>
 </ng-template>
 
+<ng-template #contentResendMail let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-resend">Resend onboarding mail to {{user.first_name}} {{user.last_name}} ?</h4>
+    </div>
+    <div class="modal-body">
+        <p>
+            Are you sure you want to resend this email to {{ user.first_name }}?<br/>
+            <small class="text-muted">This will reset {{ user.first_name }} current password if he is already onboarded !</small>
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Resend</button>
+    </div>
+</ng-template>
+
 
 <ng-template #contentModify let-modal>
     <div class="modal-header">
@@ -49,7 +65,7 @@
             <form class="form" [formGroup]="setPasswordForm">
                 <div class="row justify-content-center">
                     <div class="form-group">
-                        <label for="password">Password :</label>
+                        <label for="password">New Password :</label>
                         <input type="password" id="password" class="form-control" formControlName="password"
                         [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.password.errors }" />
                         <div *ngIf="submitted && this.setPasswordForm.controls.password.errors" class="invalid-feedback">
@@ -64,7 +80,7 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="form-group">
-                        <label for="confPassword" >Confirm Password :</label>
+                        <label for="confPassword" >Confirm New Password :</label>
                         <input type="password" id="confPassword" class="form-control" formControlName="confPassword"
                         [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.confPassword.errors }" />
                         <div *ngIf="submitted && this.setPasswordForm.controls.confPassword.errors" class="invalid-feedback">
@@ -92,10 +108,21 @@
         <div class="d-flex">
             <h2 class="font-weight-bold" *ngIf="loaded">User : {{ user.first_name }} {{ user.last_name }}</h2>
         </div>
-        <div class="d-flex btn-group" role="group">
-            <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
-            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteUserPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
+        <div class="d-flex">
+            <button class="btn btn-link" (click)="openResend(contentResendMail)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faEnvelope"></fa-icon> Resend onboarding mail</button>
+            <div class="d-flex btn-group" role="group">
+                <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
+                <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteUserPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
+            </div>
         </div>
+    </div>
+    <div class="container-fluid mt-3">
+        <ngb-alert class="col-12" *ngIf="resendSuccess === true" [type]="'success'" [dismissible]="false">
+            The mail has been resend successfully !
+        </ngb-alert>
+        <ngb-alert class="col-12" *ngIf="resendSuccess === false" [type]="'danger'" [dismissible]="false">
+            Error while resending the mail ...
+        </ngb-alert>
     </div>
     <div class="card mt-5">
         <div class="card-header">
@@ -127,9 +154,17 @@
         >
           <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
             <h5 class="col-md-8" style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team.id)">{{ team.name }}</h5>
-            <div class="col-md-2 my-1">
-              <button class="btn btn-info" (click)="onViewTeam(team.id)"><fa-icon [icon]="faInfoCircle" ></fa-icon></button>
-            </div>
+              <a class="mr-2 my-2"
+                 (click)="onViewTeam(team.id)"
+                 style="cursor: pointer"
+                 ngbTooltip="Info"
+                 placement="bottom"
+              >
+                  <fa-icon class="fa-lg"
+                           [icon]="faInfoCircle"
+                           style="color:gray">
+                  </fa-icon>
+              </a>
           </div>
         </li>
       </ul>
@@ -146,6 +181,21 @@
     </div>
     <div class="col-md-12 mt-5">
         <form class="form" [formGroup]="setPasswordForm" (ngSubmit)="onSetPassword()" *ngIf="changePwdActivated">
+            <div class="row">
+                <div class="form-group">
+                    <label for="old-password">Old Password :</label>
+                    <input type="password" id="old-password" class="form-control" formControlName="oldPassword"
+                    [ngClass]="{ 'is-invalid': submitted && this.setPasswordForm.controls.oldPassword.errors }" />
+                    <div *ngIf="submitted && this.setPasswordForm.controls.oldPassword.errors" class="invalid-feedback">
+                        <div *ngIf="this.setPasswordForm.controls.oldPassword.errors.required">
+                            Old password is required
+                        </div>
+                        <div *ngIf="this.setPasswordForm.controls.oldPassword.errors.wrong">
+                            Wrong password !
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="form-group">
                     <label for="password">Password :</label>
