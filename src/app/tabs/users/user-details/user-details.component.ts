@@ -203,7 +203,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           });
         } else if (response === false) {
           this.setPasswordForm.controls.oldPassword.setErrors({wrong: true});
-          console.log(this.setPasswordForm.controls.oldPassword.errors);
         }
       }
     );
