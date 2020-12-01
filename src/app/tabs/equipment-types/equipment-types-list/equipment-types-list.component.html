@@ -20,19 +20,23 @@
                 >
                 <div class="d-flex container-fluid row flex-wrap justify-content-between">
                     <h5 class="col-sm-8" (click)="onViewEquipmentType(i)">{{ equipmentType.name }}</h5>
-                    <div class="d-flex">
-                        <a class="mr-2 my-2"
+                    <div class="d-flex justify-content-end">
+                        <a class="mr-3 my-2"
                            (click)="onViewEquipmentType(i)"
                            style="cursor: pointer"
+                           ngbTooltip="Info"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                      [icon]="faInfoCircle"
                                      style="color:gray"></fa-icon>
                         </a>
-                        <a class="mr-2 my-2"
+                        <a class="my-2"
                            (click)="openDelete(contentDelete, i)"
                            *ngIf="onDeleteEquipmentTypePermission()"
                            style="cursor: pointer;"
+                           ngbTooltip="Delete"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                     [icon]="faTrash"

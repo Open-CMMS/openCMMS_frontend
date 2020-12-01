@@ -227,6 +227,8 @@
                    (click)="openAddTeam(contentAddTeam)"
                    *ngIf="onChangeTaskPermission() && onViewTeamsPermission() && !task.over"
                    style="cursor: pointer"
+                   ngbTooltip="Add a team"
+                   placement="top"
                 >
                     <fa-icon class="fa-2x"
                              [icon]="faPlusSquare"
@@ -244,16 +246,20 @@
                     <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
                         <h5 class="d-flex justify-content-start" style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
                         <div class="d-flex justify-content-end align-items-center">
-                            <a class="mr-2 my-2"
+                            <a class="mr-3 my-2"
                                style="cursor:pointer;"
                                (click)="onViewTeam(team)"
+                               ngbTooltip="Info"
+                               placement="bottom"
                             ><fa-icon class="fa-lg"
                                       [icon]="faInfoCircle"
                                       style="color: gray"></fa-icon>
                             </a>
-                            <a class="mr-2 my-2"
+                            <a class="my-2"
                                style="cursor:pointer;"
                                (click)="onRemoveTeamFromTask(team)"
+                               ngbTooltip="Delete"
+                               placement="bottom"
                             ><fa-icon class="fa-lg"
                                       [icon]="faMinusCircle"
                                       style="color: #dc3545"></fa-icon>

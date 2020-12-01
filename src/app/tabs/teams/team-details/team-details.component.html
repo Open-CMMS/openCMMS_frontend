@@ -90,6 +90,8 @@
                    (click)="openAddUser(contentAddUser)"
                    *ngIf="onChangeTeamPermission()"
                    style="cursor: pointer"
+                   ngbTooltip="Add a user"
+                   placement="top"
                 >
                     <fa-icon class="fa-2x"
                              [icon]="faPlusSquare"
@@ -110,6 +112,8 @@
                            (click)="onRemoveUserFromTeam(user)"
                            *ngIf="onChangeTeamPermission()"
                            style="cursor: pointer"
+                           ngbTooltip="Delete"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-2x"
                                     [icon]="faMinusSquare"

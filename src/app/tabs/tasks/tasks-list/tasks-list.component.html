@@ -66,7 +66,7 @@
                     *ngFor="let task of tasks | appFilter:searchText"
                     >
                   <div class="container-fluid row">
-                    <div class="d-flex flex-column col col-lg-10 col-md-12">
+                    <div class="d-flex flex-column col col-lg-9 col-md-12">
                       <div class="d-flex align-items-center">
                         <h5 class="my-0" (click)="onViewTask(task)">{{ task.name }}</h5>
                         <fa-icon class="ml-2" [icon]="faCheck" *ngIf="task.over" style="color: green;"></fa-icon>
@@ -85,19 +85,23 @@
                         </div>
                       </div>
                     </div>
-                    <div class="d-flex align-items-center col-lg-2 col-md-12 justify-content-end">
-                        <a class="mr-2 my-2"
+                    <div class="d-flex align-items-center col-lg-3 col-md-12 justify-content-end">
+                        <a class="mr-3 my-2"
                            style="cursor:pointer;"
                            (click)="onViewTask(task)"
+                           ngbTooltip="Info"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                     [icon]="faInfoCircle"
                                     style="color:gray;"></fa-icon>
                         </a>
-                        <a class="mr-2 my-2"
+                        <a class="my-2"
                            style="cursor:pointer;"
                            (click)="openDelete(contentDelete, task)"
                            *ngIf="onDeleteTaskPermission()"
+                           ngbTooltip="Delete"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                      [icon]="faTrash"

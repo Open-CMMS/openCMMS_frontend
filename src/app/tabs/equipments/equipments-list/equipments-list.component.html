@@ -17,24 +17,28 @@
     <div class="list-group">
         <ul class="list-group">
             <li
-                class="container-fluid list-group-item font-weight-bold "
+                class="container-fluid list-group-item font-weight-bold"
                 *ngFor="let equipment of equipments;"
                 >
                 <div class="d-flex container-fluid row flex-wrap justify-content-between align-items-center">
-                    <h5 class="col-sm-8 my-2" (click)="onViewEquipment(equipment)">{{ equipment.name }} {{ equipment.list_of_files }}</h5>
+                    <h5 class="col-sm-8" (click)="onViewEquipment(equipment)">{{ equipment.name }} {{ equipment.list_of_files }}</h5>
                     <div class="d-flex justify-content-end align-items-center">
-                        <a class="mr-2 my-2"
+                        <a class="mr-3 my-2"
                            style="cursor:pointer;"
                            (click)="onViewEquipment(equipment)"
+                           ngbTooltip="Info"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                     [icon]="faInfoCircle"
                                     style="color: gray"></fa-icon>
                         </a>
-                        <a class="mr-2 my-2"
+                        <a class="my-2"
                            style="cursor: pointer"
                            (click)="openDelete(contentDelete, equipment)"
                            *ngIf="onDeleteEquipmentPermission()"
+                           ngbTooltip="Delete"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                     [icon]="faTrash"

@@ -18,22 +18,25 @@
                 class="container-fluid list-group-item font-weight-bold"
                 *ngFor="let teamType of teamTypes; let i = index"
                 >
-                <div class="container-fluid row d-flex flex-wrap justify-content-between">
+                <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
                     <h5 class="col-sm-8" (click)="onViewTeamType(i)">{{ teamType.name }}</h5>
-
                     <div class="d-flex">
-                        <a class="mx-2 my-2"
+                        <a class="mr-3 my-2"
                            style="cursor: pointer;"
                            (click)="onViewTeamType(i)"
+                           ngbTooltip="Info"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                     [icon]="faInfoCircle"
                                      style="color: gray"></fa-icon>
                         </a>
-                        <a class="mx-2 my-2"
+                        <a class="my-2"
                            style="cursor: pointer"
                            (click)="openDelete(contentDelete, i)"
                            *ngIf="onDeleteTeamTypesPermission()"
+                           ngbTooltip="Delete"
+                           placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                     [icon]="faTrash"
