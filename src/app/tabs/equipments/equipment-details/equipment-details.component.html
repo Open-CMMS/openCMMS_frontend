@@ -163,7 +163,7 @@
           <span class="col-md-3">{{ field.name }}</span>
 
           <div class="col-md-4">
-            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0" >
+            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0">
             <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0">
               <option disabled selected value> -- select an option -- </option>
               <option *ngFor="let fieldValue of field.value" [value]="fieldValue" >{{ fieldValue }}</option>

@@ -507,6 +507,9 @@ export class EquipmentDetailsComponent implements OnInit {
         }
       });
     }
+    // console.log("initial fields:",this.initialFields);
+    // console.log("equipmenttype fields:",this.equipmentTypeFields);
+    // console.log(missing_value);
     return missing_value;
   }
 
