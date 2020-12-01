@@ -188,16 +188,25 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     const formValues = this.setPasswordForm.value;
-    this.userService.updateUserPassword(this.user, formValues.password).subscribe(userUpdated => {
-      this.updateError = false;
-      this.onInfoPage = true;
-      this.changePwdActivated = false;
-      this.initForm();
-      this.userService.getUsers();
-    },
-    (error) => {
-      this.updateError = true;
-    });
+    this.authenticationService.verifyPassword(this.user.username, formValues.oldPassword).subscribe(
+      (response) => {
+        if (response === true) {
+          this.userService.updateUserPassword(this.user, formValues.password).subscribe(userUpdated => {
+            this.updateError = false;
+            this.onInfoPage = true;
+            this.changePwdActivated = false;
+            this.initForm();
+            this.userService.getUsers();
+          },
+          (error) => {
+            this.updateError = true;
+          });
+        } else if (response === false) {
+          this.setPasswordForm.controls.oldPassword.setErrors({wrong: true});
+          console.log(this.setPasswordForm.controls.oldPassword.errors);
+        }
+      }
+    );
   }
 
   /**
@@ -260,6 +269,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       email: this.user.email
     });
     this.setPasswordForm = this.formBuilder.group({
+      oldPassword:  ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(7)]],
       confPassword: ['', Validators.required]
     }, {
