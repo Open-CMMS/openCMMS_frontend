@@ -67,7 +67,7 @@
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
     <div class="d-flex flex-wrap justify-content-between">
         <div class="d-flex">
-            <h2 class="font-weight-bold" *ngIf="loaded">Equipment : {{currentEquipment.name}}</h2>
+            <h2 class="font-weight-bold" *ngIf="loaded">{{currentEquipment.name}}</h2>
         </div>
         <div class="d-flex btn-group" role="group">
             <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteEquipmentPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
@@ -77,7 +77,7 @@
     <div class="card mt-5">
       <div class="card-header d-flex justify-content-between">
         <div class="d-flex">
-          <h3 class="font-weight-bold"> Equipment info : </h3>
+          <h3 class="font-weight-bold"> Equipment informations</h3>
         </div>
         <div class="d-flex">
           <label for="files"></label>
@@ -95,9 +95,9 @@
           </a>
         </div>
       </div>
-      <div class="row">
-          <div class="col-12">
-              <div class="px-2 py-1">
+      <div class="card-body">
+          <div class="row col-12">
+              <div class="py-1">
                   <p *ngIf="loaded"><span class="font-weight-bold">Name :</span> {{ currentEquipment.name }} <p>
               </div>
           </div>
@@ -105,7 +105,7 @@
     </div>
   <div class="card mt-5">
     <div class="card-header d-flex justify-content-between">
-      <h3 class="font-weight-bold">Fields : </h3>
+      <h3 class="font-weight-bold">Fields</h3>
       <a class="mr-2 my-2"
          (click)="openModifyField()"
          *ngIf="onChangeEquipmentPermission() &&  (!(modifyFields) && !(equipmentTypeModified))"
@@ -256,7 +256,7 @@
     <div class="card mt-5">
         <div class="card-header d-flex justify-content-between align-items-center">
             <div class="d-flex">
-                <h3 class="font-weight-bold"> Files : </h3>
+                <h3 class="font-weight-bold"> Files</h3>
             </div>
             <div class="d-flex">
                 <label for="files"></label>

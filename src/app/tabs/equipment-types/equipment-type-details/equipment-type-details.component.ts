@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faInfoCircle, faPencilAlt, faSave, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faPencilAlt, faSave, faPlusSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Equipment } from 'src/app/models/equipment';
 import { EquipmentType } from 'src/app/models/equipment-type';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -21,6 +21,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   faPencilAlt = faPencilAlt;
   faSave = faSave;
   faPlusSquare = faPlusSquare;
+  faTrash = faTrash;
 
   // Local variables
   id: number;
