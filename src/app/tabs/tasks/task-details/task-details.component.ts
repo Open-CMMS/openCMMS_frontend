@@ -82,6 +82,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   files: any[] = [];
   newFile: any = null;
   fileToUpload: any[] = [];
+  fileCheck: boolean;
 
   // End conditions
   endConditionValues: any = {};
@@ -112,6 +113,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   addTeamForm: FormGroup;
   dropdownTeamsSettings: IDropdownSettings;
 
+
   /**
    * Constructor of TaskDetailsComponent
    * @param taskService the service used to handle tasks
@@ -138,6 +140,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     let id: number;
+    this.fileCheck = true;
     this.route.params.subscribe(params => {
       id = +params.id;
     });
@@ -356,6 +359,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     (error) => {});
   }
 
+  getSizeFile(content) {
+    console.log(content.target.files[0].size / 1000000);
+    if (content.target.files[0].size / 1000000 <= 10) {
+    this.fileCheck = true;
+    } else {
+      this.fileCheck = false;
+    }
+  }
+
+  isSizeFileOk(): boolean {
+    return this.fileCheck;
+  }
   /**
    * Function that is triggered to load the modal template for team addition
    * @param content the modal to open
@@ -564,6 +579,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * Function that update the task when a new file is attached to it
    */
   onUpdateTaskWithNewFile() {
+    this.fileCheck = true;
     if (this.newFile !== null) {
       this.fileService.uploadFile(this.newFile.data).subscribe(
         (file) => {

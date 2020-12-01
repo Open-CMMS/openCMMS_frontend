@@ -31,12 +31,14 @@
         <h4 class="modal-title" id="modal-add-file">Add a new file</h4>
     </div>
     <div class="modal-body">
-        <input type="file" class="form-control-file" (change)="onSetFileToUpload($event)">
-        <small class="text-muted">This file will be added as a manual.</small>
+        <input type="file" class="form-control-file" (change)="onSetFileToUpload($event);getSizeFile($event)">
+        <small *ngIf="isSizeFileOk()" class="text-muted">This file will be added as a manual.</small>
+        <small *ngIf="!isSizeFileOk()" class="alert-danger">The size of the file must be under 10 Mo.</small>
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" [disabled]="newFile === null" (click)="onUpdateTaskWithNewFile(); modal.close('OK')">Add</button>
+        <button type="button" class="btn btn-success" [disabled]="newFile === null || !isSizeFileOk()" (click)="onUpdateTaskWithNewFile(); modal.close('OK')">Add</button>
     </div>
 </ng-template>
 
