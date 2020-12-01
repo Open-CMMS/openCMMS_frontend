@@ -85,9 +85,24 @@
                         </div>
                       </div>
                     </div>
-                    <div class="d-flex justify-content-end">
-                      <button class="btn btn-info mr-2 my-2" (click)="onViewTask(task)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
-                      <button class="btn btn-danger my-2" (click)="openDelete(contentDelete, task)" *ngIf="onDeleteTaskPermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a class="mr-2 my-2"
+                           style="cursor:pointer;"
+                           (click)="onViewTask(task)"
+                        >
+                            <fa-icon class="fa-lg"
+                                    [icon]="faInfoCircle"
+                                    style="color:gray;"></fa-icon>
+                        </a>
+                        <a class="mr-2 my-2"
+                           style="cursor:pointer;"
+                           (click)="openDelete(contentDelete, task)"
+                           *ngIf="onDeleteTaskPermission()"
+                        >
+                            <fa-icon class="fa-lg"
+                                     [icon]="faTrash"
+                                     style="color:#dc3545"></fa-icon>
+                        </a>
                     </div>
                   </div>
                 </li>

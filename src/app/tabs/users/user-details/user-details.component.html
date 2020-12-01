@@ -155,7 +155,15 @@
           <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
             <h5 class="col-md-8" style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team.id)">{{ team.name }}</h5>
             <div class="col-md-2 my-1">
-              <button class="btn btn-info" (click)="onViewTeam(team.id)"><fa-icon [icon]="faInfoCircle" ></fa-icon></button>
+              <a class="mr-2 my-2"
+                 (click)="onViewTeam(team.id)"
+                 style="cursor: pointer"
+              >
+                  <fa-icon class="fa-lg"
+                           [icon]="faInfoCircle"
+                           style="color:gray">
+                  </fa-icon>
+              </a>
             </div>
           </div>
         </li>

@@ -90,7 +90,15 @@
                     <div class="container-fluid row justify-content-between">
                         <h5 (click)="onViewTeam(team)">{{ team.name }}</h5>
                         <div class="d-flex">
-                            <button class="btn btn-info" (click)="onViewTeam(team)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                            <a class="mr-2 my-2" 
+                               (click)="onViewTeam(team)"
+                               style="cursor:pointer;"
+                            >
+                                <fa-icon class="fa-lg"
+                                         [icon]="faInfoCircle"
+                                         style="color: gray"
+                                ></fa-icon>
+                            </a>
                         </div>
                     </div>
                 </li>
