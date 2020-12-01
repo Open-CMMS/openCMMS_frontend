@@ -2,104 +2,60 @@
     <div class="d-flex flex-wrap">
       <h2 class="font-weight-bold">Create a new equipment type</h2>
     </div>
-
     <form [formGroup]="equipmentTypeForm" (ngSubmit)="onSubmit()" >
       <div class="form-group">
         <label for="name">Name</label>
         <input type="text" class='form-control' formControlName="name" id="name">
       </div>
-      <form [formGroup]="fieldForm" (ngSubmit)="onSubmitField()">
-        <div class="form-group">
-          <label>Fields</label>
-          <br>
-          <button class="btn btn-outline-secondary" type="button" (click)="onOpenField()">
-            <span class="mr-3">Create a new field</span>
-            <fa-icon [icon]="faPlusSquare"></fa-icon>
+      <div class="form-group">
+        <label>Fields</label>
+        <br>
+        <button class="btn btn-outline-secondary" type="button" (click)="onAddField()">
+          <span class="mr-3">Create a new field</span>
+          <fa-icon [icon]="faPlusSquare"></fa-icon>
+        </button>
+      </div>
+      <div class="form-group" *ngFor="let field of fields; let i = index">
+        <div class="d-flex flex-wrap form-row">
+          <button class="btn btn-link my-1" ngbTooltip="Delete"
+                  placement="bottom" (click)="deleteField(i)">
+            <fa-icon [icon]="faMinusCircle" style="color: red; font-size:22px;"></fa-icon>
           </button>
+          <input type="text"
+                 placeholder="Field name"
+                 class="form-control col-md-5 mr-md-2 my-1"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]="field.name"
+          >
+          <input type="text"
+                 placeholder="Field value"
+                 class="form-control col-md-5 mr-md-2 my-1"
+                 [ngModelOptions]="{standalone: true}"
+                 [(ngModel)]=field.value
+          >
+          <fa-icon class="d-flex align-items-center"
+                   [icon]="faCheck"
+                   style="color: green;"
+                   *ngIf="canValidateLine(field)"
+                   ngbTooltip="This field is completed"
+                   placement="bottom"
+          ></fa-icon>
+          <fa-icon class="d-flex align-items-center"
+                   [icon]="faTimes"
+                   style="color: red;"
+                   *ngIf="!canValidateLine(field)"
+                   ngbTooltip="This field is not completed"
+                   placement="bottom"
+          ></fa-icon>
         </div>
-        <div class="form-group" *ngIf='openField'>
-          <div class="form-row d-flex justify-content-between">
-            <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="onCloseField()">
-              <fa-icon [icon]="faMinusCircle" style="color:red;font-size: 22px;"></fa-icon>
-            </button>
-            <input
-              type="text"
-              placeholder="Field name"
-              class='form-control col-md-4 mr-md-2 my-1'
-              formControlName="fieldName"
-              >
-              <input
-              type="text"
-              placeholder="Field value"
-              class='form-control col-md-5 mr-md-2 my-1'
-              formControlName="fieldValue"
-              data-toggle="tooltip"
-              title="You can enter multiple values separated by a comma.">
-            <span
-              [ngbTooltip]="!fieldForm.invalid ? 'Add' : 'Field name required'"
-              placement="bottom">
-              <button
-              class="btn btn-link my-1"
-              (click)="onAddField()"
-              [disabled]="fieldForm.invalid"
-              >
-                <fa-icon [icon]="faPlusCircle" style="color: #0069d9;font-size: 22px;"></fa-icon>
-              </button>
-            </span>
-          </div>
-        </div>
-        <div class="form-group" *ngFor="let field of fieldList">
-          <div class="form-row d-flex flex-wrap justify-content-between">
-            <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteField(field)">
-              <fa-icon [icon]="faMinusCircle" style="color:red;font-size: 22px;"></fa-icon>
-            </button>
-            <input
-              type="text"
-              class="form-control col-md-4 mr-md-2 my-1"
-              [(ngModel)]="field[FIELDNAME_NAME]"
-              [attr.disabled]="!isEditingField(field) ? '' : null"
-              [ngModelOptions]="{standalone: true}"
-            >
-            <input
-            type="text"
-            class='form-control col-md-5 mr-md-2 my-1'
-            [(ngModel)]="field[FIELDVALUE_NAME]"
-            [attr.disabled]="!isEditingField(field)? '' : null"
-            [ngModelOptions]="{standalone: true}"
-            >
-            <button
-              *ngIf="!isEditingField(field)"
-              class="btn btn-link my-1"
-              (click)="onEditField(field)"
-              style="
-                color:grey;
-                margin-left:4px;
-                margin-right:12px"
-            >
-              <fa-icon [icon]="faPencilAlt"></fa-icon>
-            </button>
-            <button
-              *ngIf="isEditingField(field)"
-              class="btn btn-link my-1"
-              (click)="onEditField(field)"
-              style="
-                color:grey;
-                margin-left:4px;
-                margin-right:12px"
-              [disabled]="isEditingFieldValid(field)"
-              >
-              <fa-icon [icon]="faSave"></fa-icon>
-            </button>
-          </div>
-        </div>
-      </form>
+      </div>
       <div class="d-flex justify-content-between align-items-center">
         <button class="btn btn-danger nav-link" routerLink="/equipment-types">Cancel</button>
         <button
           class="btn btn-primary"
           type="submit"
           title="Name required and fields should not be in edition mode"
-          [disabled]="equipmentTypeForm.invalid || !addField || !(canValidateForm())"
+          [disabled]="equipmentTypeForm.invalid || !(canValidateForm())"
         >
           Create Equipment Type
         </button>
