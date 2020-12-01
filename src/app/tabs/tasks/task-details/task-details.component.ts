@@ -358,16 +358,20 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     },
     (error) => {});
   }
-
+  /**
+   * Function that get the size of the file the user want to upload.
+   * @param content the modal to open
+   */
   getSizeFile(content) {
-    console.log(content.target.files[0].size / 1000000);
     if (content.target.files[0].size / 1000000 <= 10) {
     this.fileCheck = true;
     } else {
       this.fileCheck = false;
     }
   }
-
+  /**
+   * Provide a boolean which allow us to know if the size of the file is correct.
+   */
   isSizeFileOk(): boolean {
     return this.fileCheck;
   }
