@@ -31,12 +31,14 @@
         <h4 class="modal-title" id="modal-add-file">Add a new file</h4>
     </div>
     <div class="modal-body">
-        <input type="file" class="form-control-file" (change)="onSetFileToUpload($event)">
-        <small class="text-muted">This file will be added as a manual.</small>
+        <input type="file" class="form-control-file" (change)="onSetFileToUpload($event);getSizeFile($event)">
+        <small *ngIf="isSizeFileOk()" class="text-muted">This file will be added as a manual.</small>
+        <small *ngIf="!isSizeFileOk()" class="alert-danger">The size of the file must be under 10 Mo.</small>
+
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" [disabled]="newFile === null" (click)="onUpdateTaskWithNewFile(); modal.close('OK')">Add</button>
+        <button type="button" class="btn btn-success" [disabled]="newFile === null || !isSizeFileOk()" (click)="onUpdateTaskWithNewFile(); modal.close('OK')">Add</button>
     </div>
 </ng-template>
 
@@ -82,7 +84,7 @@
 <!-- ########## PAGE ########## -->
 
 <div class="container-fluid col-md-8 mt-3 justify-content-center" *ngIf="loaded">
-    <div class="container-fluid d-flex justify-content-between">
+    <div class="container-fluid d-flex justify-content-between mt-md-4 mb-md-4">
         <div class="d-flex">
             <h2 class="font-weight-bold">{{ task?.name }}</h2>
         </div>
@@ -95,14 +97,14 @@
     </div>
     <div class="card mt-3">
         <div class="card-header">
-            <h3 class="font-weight-bold"> Task info : </h3>
+            <h3 class="font-weight-bold">Task informations</h3>
         </div>
         <div class="row">
             <div class="col-12">
                 <div class="px-2 py-1">
                     <p><span class="font-weight-bold">Description :</span></p>
                     <div class="input-group row col-md-6 col-sm-12">
-                        <textarea class="form-control"[attr.disabled]="!inputEnabled.description ? '' : null" [(ngModel)]="task.description"></textarea>
+                        <textarea class="form-control" [attr.disabled]="!inputEnabled.description ? '' : null" [(ngModel)]="task.description"></textarea>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" *ngIf="inputEnabled.description" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
@@ -169,8 +171,9 @@
                             <button class="btn btn-outline-secondary" (click)="saveInput('equipment')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                     </div>
-                    <span class="mb-2" *ngIf="task.equipment === null">No related equipment !</span>
-                    <br>
+                    <div class="mb-md-4">
+                        <span *ngIf="task.equipment === null">No related equipment !</span>
+                    </div>
 
                     <p>
                         <span class="font-weight-bold">Files associated :</span>
@@ -198,8 +201,9 @@
                             </li>
                         </ul>
                     </div>
-                    <span class="mb-2" *ngIf="files.length === 0">No related files !</span>
-                    <br>
+                    <div class="mb-md-4">
+                        <span class="mb-2" *ngIf="files.length === 0">No related files !</span>
+                    </div>
 
                     <p><span class="font-weight-bold">Trigger conditions :</span></p>
                     <ul class="col-12 list-group">
@@ -211,7 +215,9 @@
                             <span class="text-muted">{{ triggerCondition.value }}</span>
                         </li>
                     </ul>
-                    <span *ngIf="task.trigger_conditions.length === 0">No trigger conditions !</span>
+                    <div class="mb-md-4">
+                        <span *ngIf="task.trigger_conditions.length === 0">No trigger conditions !</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -220,10 +226,21 @@
     <div class="card mt-5">
         <div class="card-header d-flex justify-content-between">
             <div class="d-flex">
-                <h3 class="font-weight-bold"> Teams : </h3>
+                <h3 class="font-weight-bold">Teams</h3>
             </div>
             <div class="d-flex">
-                <button class="d-flex btn btn-secondary" (click)="openAddTeam(contentAddTeam)" *ngIf="onChangeTaskPermission() && onViewTeamsPermission() && !task.over"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
+                <a class="mr-2 my-2"
+                   (click)="openAddTeam(contentAddTeam)"
+                   *ngIf="onChangeTaskPermission() && onViewTeamsPermission() && !task.over"
+                   style="cursor: pointer"
+                   ngbTooltip="Add a team"
+                   placement="top"
+                >
+                    <fa-icon class="fa-2x"
+                             [icon]="faPlusSquare"
+                             style="color: gray"
+                    ></fa-icon>
+                </a>
             </div>
         </div>
         <div class="d-flex flex-wrap">
@@ -233,22 +250,40 @@
                     *ngFor="let team of task.teams"
                     >
                     <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
-                        <h5 class="col-md-8" style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
-                        <div class="col-md-2 my-1">
-                            <button class="btn btn-info" (click)="onViewTeam(team)"><fa-icon [icon]="faInfoCircle" ></fa-icon></button>
-                            <button class="btn btn-danger" (click)="onRemoveTeamFromTask(team)" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faMinusSquare"></fa-icon></button>
+                        <h5 class="d-flex justify-content-start" style="margin-bottom: 0px; vertical-align: middle;" (click)="onViewTeam(team)">{{ team.name }}</h5>
+                        <div class="d-flex justify-content-end align-items-center">
+                            <a class="mr-3 my-2"
+                               style="cursor:pointer;"
+                               (click)="onViewTeam(team)"
+                               ngbTooltip="Info"
+                               placement="bottom"
+                            ><fa-icon class="fa-lg"
+                                      [icon]="faInfoCircle"
+                                      style="color: gray"></fa-icon>
+                            </a>
+                            <a class="my-2"
+                               style="cursor:pointer;"
+                               (click)="onRemoveTeamFromTask(team)"
+                               ngbTooltip="Delete"
+                               placement="bottom"
+                            ><fa-icon class="fa-lg"
+                                      [icon]="faMinusCircle"
+                                      style="color: #dc3545"></fa-icon>
+                            </a>
                         </div>
                     </div>
                 </li>
             </ul>
-            <span *ngIf="task.teams.length === 0">No teams assigned !</span>
+            <div class="mb-md-3 mt-md-3 px-2 py-1">
+                <span *ngIf="task.teams.length === 0">No teams assigned !</span>
+            </div>
         </div>
     </div>
 
     <div class="card mt-5">
         <div class="card-header d-flex">
             <div class="d-flex">
-                <h3 class="font-weight-bold"> Validation : </h3>
+                <h3 class="font-weight-bold">Validation</h3>
             </div>
         </div>
         <div class="d-flex">
@@ -289,15 +324,17 @@
                     </div>
                     <div class="col-md-1">
                         <button class="btn btn-outline-dark" (click)="onValidateEndCondition(endCondition)" *ngIf="endCondition.value === null && isAValidValue(endCondition)"><fa-icon [icon]="faCheck"></fa-icon></button>
-                        <fa-icon [icon]="faCheckCircle" size="2x" style="color: green;" *ngIf="endCondition.value !== null"></fa-icon>
+                        <fa-icon [icon]="faCheckCircle" size="lg" style="color: green;" *ngIf="endCondition.value !== null"></fa-icon>
                     </div>
                 </li>
             </ul>
-                <span *ngIf="task.end_conditions.length === 0">No end conditions !</span>
             <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="validationError">
                 <p class="font-weight-bold">Error when validating the task :</p>
                 <p>Check that you have filled all the conditions above !</p>
             </div>
+        </div>
+        <div class="mb-md-4 mb-md-3 mt-md-3 px-2 py-1">
+            <span *ngIf="task.end_conditions.length === 0">No end conditions !</span>
         </div>
     </div>
 

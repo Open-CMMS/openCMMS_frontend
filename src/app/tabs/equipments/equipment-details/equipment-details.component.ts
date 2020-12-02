@@ -436,6 +436,13 @@ export class EquipmentDetailsComponent implements OnInit {
   }
 
   /**
+   * Function to see if fields are empty or no
+   */
+  fieldsIsEmpty() {
+    return this.fields.length === 0;
+  }
+
+  /**
    * Fonction to modify the value of the field that correspond to the new selected equipment type
    * @param event the value of the field
    * @param index the index of the modified field

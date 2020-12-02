@@ -149,6 +149,10 @@ export class UserService {
     + username);
   }
 
+  /**
+   * Function that ask backend to resend the onbarding mail
+   * @param userId the user id
+   */
   resendOnboardingMail(userId: number) {
     return this.httpClient.get<any>(this.BASE_URL_API + '/api/usersmanagement/resend_inscription_email?userid=' + userId);
   }

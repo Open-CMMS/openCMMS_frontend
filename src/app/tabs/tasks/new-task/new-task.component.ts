@@ -343,7 +343,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
     });
     this.dropdownEquipmentsSettings = {
-      singleSelection: false,
+      singleSelection: true,
       idField: 'id',
       textField: 'value',
       selectAllText: 'Select All',
@@ -372,8 +372,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   /**
    * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
-   * @param files array of files
-   * @param fileId array of files id
+   * @param files the list
+   * @fileId: file that need to be removed
    */
   onRemoveFile(files: any[], fileId: any) {
     let index: number;
@@ -396,7 +396,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       end_date: [null],
       duration: ['', Validators.pattern(localDurationRegex)],
       equipment: [''],
@@ -426,13 +426,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       });
     }
 
-    const equipments = [];
-    if (formValues.equipment) {
-      formValues.equipment.forEach(item => {
-        equipments.push(item.id);
-      });
-    }
-    // const equipment = formValues.equipment ? formValues.equipment : null;
+    const equipment = formValues.equipment ? formValues.equipment : null;
     const end_date = formValues.end_date ? this.taskService.normaliseEndDateValue(formValues.end_date) : null;
     const duration = formValues.duration ? this.taskService.normaliseDurationValue(formValues.duration, ['d', 'h', 'm']) : '';
     const over = false;
@@ -477,7 +471,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
                                 end_date,
                                 duration,
                                 false,
-                                equipments,
+                                equipment,
                                 teams,
                                 files,
                                 over,
