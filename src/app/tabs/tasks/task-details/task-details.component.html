@@ -171,8 +171,9 @@
                             <button class="btn btn-outline-secondary" (click)="saveInput('equipment')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>
                     </div>
-                    <span class="mb-2" *ngIf="task.equipment === null">No related equipment !</span>
-                    <br>
+                    <div class="mb-md-4">
+                        <span *ngIf="task.equipment === null">No related equipment !</span>
+                    </div>
 
                     <p>
                         <span class="font-weight-bold">Files associated :</span>
@@ -200,8 +201,9 @@
                             </li>
                         </ul>
                     </div>
-                    <span class="mb-2" *ngIf="files.length === 0">No related files !</span>
-                    <br>
+                    <div class="mb-md-4">
+                        <span class="mb-2" *ngIf="files.length === 0">No related files !</span>
+                    </div>
 
                     <p><span class="font-weight-bold">Trigger conditions :</span></p>
                     <ul class="col-12 list-group">
@@ -213,7 +215,9 @@
                             <span class="text-muted">{{ triggerCondition.value }}</span>
                         </li>
                     </ul>
-                    <span *ngIf="task.trigger_conditions.length === 0">No trigger conditions !</span>
+                    <div class="mb-md-4">
+                        <span *ngIf="task.trigger_conditions.length === 0">No trigger conditions !</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -270,7 +274,9 @@
                     </div>
                 </li>
             </ul>
-            <span *ngIf="task.teams.length === 0">No teams assigned !</span>
+            <div class="mb-md-3 mt-md-3 px-2 py-1">
+                <span *ngIf="task.teams.length === 0">No teams assigned !</span>
+            </div>
         </div>
     </div>
 
@@ -322,11 +328,13 @@
                     </div>
                 </li>
             </ul>
-            <span *ngIf="task.end_conditions.length === 0">No end conditions !</span>
             <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="validationError">
                 <p class="font-weight-bold">Error when validating the task :</p>
                 <p>Check that you have filled all the conditions above !</p>
             </div>
+        </div>
+        <div class="mb-md-4 mb-md-3 mt-md-3 px-2 py-1">
+            <span *ngIf="task.end_conditions.length === 0">No end conditions !</span>
         </div>
     </div>
 
