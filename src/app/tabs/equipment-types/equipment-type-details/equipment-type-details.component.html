@@ -19,7 +19,7 @@
         <div class="modal-body">
             <div class="col-sm-8 col-sm-offset-2">
               <div class="form-group">
-                <label for="name">Nom</label>
+                <label for="name">Name</label>
                 <input id="name" type="text" class='form-control' formControlName="name" [(ngModel)]="name">
               </div>
           </div>
@@ -34,21 +34,36 @@
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
     <div class="container-fluid d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <div class="d-flex">
-            <h2 class="font-weight-bold">Equipment Type {{ name }}</h2>
+            <h2 class="font-weight-bold">{{ name }}</h2>
         </div>
         <div class="d-flex btn-group" role="group">
-            <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeEquipmentTypePermission()"><fa-icon [icon]=""></fa-icon> Modify</button>
-            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteEquipmentTypePermission()"><fa-icon [icon]=""></fa-icon> Delete</button>
+            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteEquipmentTypePermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
         </div>
     </div>
     <div class="card mt-5">
-        <div class="card-header">
-            <h3 class="font-weight-bold">Equipment type</h3>
+        <div class="card-header d-flex justify-content-between">
+            <div class="d-flex">
+                <h3 class="font-weight-bold"> Equipment Type informations </h3>
+            </div>
+            <div class="d-flex">
+                <a class="mr-2 my-2"
+                (click)="openModify(contentModify)"
+                *ngIf="onChangeEquipmentTypePermission()"
+                style="cursor:pointer"
+                ngbTooltip="Modify"
+                placement="top"
+            >
+                <fa-icon class="fa-lg"
+                            [icon]="faPencilAlt"
+                            style="color: gray"
+                ></fa-icon>
+            </a>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="px-2 py-1">
-                    <p><span class="font-weight-bold">Equipment Type Name  :</span> {{ name }} <p>
+        <div class="card-body">
+            <div class="row col-12">
+                <div class="py-1">
+                    <p><span class="font-weight-bold">Name  :</span> {{ name }} <p>
                 </div>
             </div>
         </div>

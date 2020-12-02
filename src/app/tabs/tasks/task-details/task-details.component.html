@@ -97,14 +97,14 @@
     </div>
     <div class="card mt-3">
         <div class="card-header">
-            <h3 class="font-weight-bold">Task info</h3>
+            <h3 class="font-weight-bold">Task informations</h3>
         </div>
         <div class="row">
             <div class="col-12">
                 <div class="px-2 py-1">
                     <p><span class="font-weight-bold">Description :</span></p>
                     <div class="input-group row col-md-6 col-sm-12">
-                        <textarea class="form-control"[attr.disabled]="!inputEnabled.description ? '' : null" [(ngModel)]="task.description"></textarea>
+                        <textarea class="form-control" [attr.disabled]="!inputEnabled.description ? '' : null" [(ngModel)]="task.description"></textarea>
                         <div class="input-group-append">
                             <button class="btn btn-outline-secondary" *ngIf="inputEnabled.description" (click)="saveInput('description')"><fa-icon [icon]="faSave"></fa-icon></button>
                         </div>

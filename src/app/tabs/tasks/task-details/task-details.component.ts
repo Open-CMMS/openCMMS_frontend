@@ -16,8 +16,9 @@ import {
   faCheck,
   faBook,
   faPlusCircle,
-  faMinusCircle } from '@fortawesome/free-solid-svg-icons';
-import { faPlusSquare, faMinusSquare, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
+  faMinusCircle,
+  faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMinusSquare, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Equipment } from 'src/app/models/equipment';
@@ -450,8 +451,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/teams', team.id]);
   }
 
+  /**
+   * Function that is triggered to delete a file from the task
+   * @param file the file to delete
+   */
   onDeleteFile(file) {
-    const fileToDelete = this.task.files.find(taskFile => taskFile.file.split('/')[1] === file.fileName);
+    const fileToDelete = this.task.files.find(taskFile => taskFile.file.split('/')[-1] === file.fileLink.split('/')[-1]);
     this.fileService.deleteFile(fileToDelete.id).subscribe(
       (_) => {
         this.getTask(this.task.id);
