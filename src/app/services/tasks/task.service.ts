@@ -59,10 +59,40 @@ export class TaskService {
 
   /**
    * Function that saves a new task in the Task database
-   * @param newTask the new task to be created
+   * @param name name of the task
+   * @param description description of the task
+   * @param end_date end_date of the task
+   * @param duration duration of the task
+   * @param equipment equipment assigned to the task
+   * @param equipment_type equipment type assigned to the task
+   * @param teams teams assigned to the task
+   * @param files files associated to the task
+   * @param trigger_conditions trigger conditions of the task
+   * @param end_conditions end conditions of the task
    */
-  createTask(newTask: Task): Observable<Task> {
-    const taskJson = JSON.stringify(newTask);
+  createTask(
+      name: string,
+      description: string,
+      end_date: string,
+      duration: string,
+      equipment: number,
+      equipment_type: number,
+      teams: number[],
+      files: number[],
+      trigger_conditions: any[],
+      end_conditions: any[]): Observable<any> {
+    const taskJson = JSON.stringify({
+      name,
+      description,
+      end_date,
+      duration,
+      equipment,
+      equipment_type,
+      teams,
+      files,
+      trigger_conditions,
+      end_conditions
+    });
 
     const httpOptions = {
       headers: new HttpHeaders({
