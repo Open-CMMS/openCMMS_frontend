@@ -27,7 +27,17 @@
                     <div class="container-fluid row d-flex flex-wrap justify-content-between align-items-center">
                         <h5 class="col-sm-8" style="padding-left: 0px;">{{ template.name }}</h5>
                         <div class="my-1">
-                            <button class="btn btn-danger" (click)="openDelete(contentDelete, template)" *ngIf="onDeleteTeamPermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
+                            <a class="my-2"
+                               style="cursor:pointer;"
+                               (click)="openDelete(contentDelete, template)"
+                               *ngIf="onDeleteTeamPermission()"
+                               ngbTooltip="Delete"
+                               placement="bottom"
+                            >
+                                <fa-icon class="fa-lg"
+                                        [icon]="faTrash"
+                                        style="color: #dc3545"></fa-icon>
+                            </a>
                         </div>
                     </div>
                 </li>

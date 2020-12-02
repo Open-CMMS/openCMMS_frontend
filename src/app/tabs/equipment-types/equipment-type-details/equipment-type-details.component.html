@@ -43,7 +43,7 @@
     </div>
     <div class="card mt-5">
         <div class="card-header">
-            <h3 class="font-weight-bold"> Equipment type info : </h3>
+            <h3 class="font-weight-bold">Equipment type</h3>
         </div>
         <div class="row">
             <div class="col-12">
@@ -56,7 +56,7 @@
     <div class="card mt-5">
         <div class="card-header d-flex justify-content-between">
             <div class="d-flex">
-                <h3 class="font-weight-bold"> Equipments : </h3>
+                <h3 class="font-weight-bold">Equipments</h3>
             </div>
         </div>
         <div class="d-flex">
@@ -67,7 +67,17 @@
                     <div class="container-fluid row justify-content-between">
                         <h5 (click)="onViewEquipment(equipment)">{{ equipment.name }}</h5>
                         <div class="d-flex">
-                            <button class="btn btn-info" (click)="onViewEquipment(equipment)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                            <a class="mr-2 my-2"
+                               (click)="onViewEquipment(equipment)"
+                               style="cursor: pointer"
+                               ngbTooltip="Info"
+                               placement="bottom"
+                            >
+                                <fa-icon class="fa-lg"
+                                         [icon]="faInfoCircle"
+                                         style="color: gray"
+                                ></fa-icon>
+                            </a>
                         </div>
                     </div>
                 </li>
@@ -76,9 +86,29 @@
     </div>
     <div class="card mt-5">
             <div class="card-header d-flex justify-content-between">
-              <h3 class="font-weight-bold"> Fields : </h3>
-              <button class="d-flex btn btn-link" (click)="openModifyField()" *ngIf="onChangeEquipmentTypePermission() && (!modifyFields)"><fa-icon [icon]="faPencilAlt" style="color: gray; font-size:22px;"></fa-icon></button>
-              <button class="d-flex btn btn-link" (click)="saveFields()" *ngIf="onChangeEquipmentTypePermission() && (modifyFields)"><fa-icon [icon]="faSave" style="color: gray;font-size:22px;"></fa-icon></button>
+              <h3 class="font-weight-bold">Fields</h3>
+              <a class="d-flex align-items-center"
+                 (click)="openModifyField()"
+                 *ngIf="onChangeEquipmentTypePermission() && (!modifyFields)"
+                 style="cursor:pointer;"
+                 ngbTooltip="Modify fields"
+                 placement="top"
+              >
+                  <fa-icon class="fa-lg"
+                           [icon]="faPencilAlt"
+                           style="color: gray;"></fa-icon>
+              </a>
+              <a class="d-flex align-items-center"
+                 (click)="saveFields()"
+                 *ngIf="onChangeEquipmentTypePermission() && (modifyFields)"
+                 ngbTooltip="Save"
+                 placement="top"
+                 style="cursor:pointer;"
+              >
+                  <fa-icon class="fa-lg"
+                           [icon]="faSave"
+                           style="color: gray;"></fa-icon>
+              </a>
             </div>
         <div class="d-flex">
             <ul class="w-100 list-group">
