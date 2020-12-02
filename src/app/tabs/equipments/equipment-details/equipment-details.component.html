@@ -214,11 +214,28 @@
           <span class="col-md-5 font-weight-bold">Description</span>
         </div>
       </li>
-      <li class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
+
+      <form [formGroup]="modifyEquipmentType" (ngSubmit)="saveFields()">
+        <li class="form-group list-group-item" *ngFor="let field of equipmentTypeFields; let i = index">
+          <div class="container-fluid row" style="margin-bottom: 10px">
+            <span class="col-md-3">{{ field.name }}</span>
+            <div class="col-md-4">
+              <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0">
+              <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0">
+                <option disabled selected value> -- select an option -- </option>
+                <option *ngFor="let fieldValue of field.value" [value]="fieldValue" >{{ fieldValue }}</option>
+              </select>
+            </div>
+            <div class="col-md-5">
+              <input class="form-control" id="field-description" type="text" placeholder="description">
+            </div>
+          </div>
+        </li> 
+      </form>
+
+      <!-- <li class="form-group list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
         <div class="container-fluid row" style="margin-bottom: 10px">
-
           <span class="col-md-3">{{ field.name }}</span>
-
           <div class="col-md-4">
             <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0">
             <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0">
@@ -232,7 +249,7 @@
           </div>
 
         </div>
-      </li>
+      </li> -->
       <li class="form-group list-group-item">
         <button type="button" class="btn btn-outline-secondary" (click)="addField()">
           <span style="margin-right: 10px">Create a new field</span>
