@@ -60,31 +60,47 @@
 </ng-template>
 
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
-    <div class="container-fluid d-flex flex-wrap justify-content-between">
+    <div class="container-fluid d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <div class="d-flex">
-            <h3 class="font-weight-bold" *ngIf="loading">Team {{ team.name }}</h3>
+            <h3 class="font-weight-bold" *ngIf="loading">{{ team.name }}</h3>
         </div>
         <div class="d-flex btn-group-sm" role="group">
-            <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeTeamPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
             <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteTeamPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
         </div>
     </div>
     <div class="card mt-5">
-        <div class="card-header">
-            <h3 class="font-weight-bold"> Team info : </h3>
+        <div class="card-header d-flex justify-content-between">
+            <div class="d-flex">
+                <h3 class="font-weight-bold">Team informations</h3>
+            </div>
+            <div class="d-flex">
+            <label for="files"></label>
+            <a class="mr-2 my-2"
+                (click)="openModify(contentModify)"
+                *ngIf="onChangeTeamPermission()"
+                style="cursor:pointer"
+                ngbTooltip="Modify"
+                placement="top"
+            >
+                <fa-icon class="fa-lg"
+                            [icon]="faPencilAlt"
+                            style="color: gray"
+                ></fa-icon>
+            </a>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="px-2 py-1">
-                    <p *ngIf="loading"><span class="font-weight-bold">Team Name  :</span> {{ team.name }} <p>
-                    <p *ngIf="loading"><span class="font-weight-bold">Team Type  :</span> {{ teamType.name }} </p>
+        <div class="card-body">
+            <div class="row col-12">
+                <div class="py-1">
+                    <p *ngIf="loading"><span class="font-weight-bold">Name  :</span> {{ team.name }} <p>
+                    <p *ngIf="loading"><span class="font-weight-bold">Type  :</span> {{ teamType.name }} </p>
                 </div>
             </div>
         </div>
     </div>
     <div class="card mt-5">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="font-weight-bold"> Users : </h3>
+            <h3 class="font-weight-bold">Users</h3>
             <div class="d-flex">
                 <a class="mr-2 my-2"
                    (click)="openAddUser(contentAddUser)"

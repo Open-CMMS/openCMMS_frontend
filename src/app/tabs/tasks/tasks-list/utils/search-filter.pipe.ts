@@ -1,14 +1,11 @@
-import { HttpClient } from '@angular/common/http';
-import { Pipe, PipeTransform, ɵALLOW_MULTIPLE_PLATFORMS} from '@angular/core';
-import { Team } from 'src/app/models/team';
-import { TeamService } from 'src/app/services/teams/team.service';
+import { Pipe, PipeTransform} from '@angular/core';
 @Pipe({ name: 'appFilter'})
 export class FilterPipe implements PipeTransform {
 
-  constructor(private httpClient: HttpClient,
-              private teamService: TeamService ) { }
+  constructor() { }
 
   transform(items: any[], searchText: string): any[] {
+    searchText = searchText.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     if (!items) {
       return [];
     }
@@ -22,13 +19,13 @@ export class FilterPipe implements PipeTransform {
       return items.filter( it => {
         all_teams = '';
         it.teams.forEach( team => {
-          all_teams = all_teams.concat(team.name.toLocaleLowerCase() + ' ');
+          all_teams = all_teams.concat(team.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase() + ' ');
         });
         return all_teams.includes(searchTextWithout);
       });
     } else {
       return items.filter( it => {
-        return it.name.toLocaleLowerCase().includes(searchText);
+        return it.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase().includes(searchText);
       });
     }
   }

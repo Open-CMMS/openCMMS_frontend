@@ -104,14 +104,13 @@
 
 
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
-    <div class="container-fluid d-flex flex-wrap justify-content-between">
+    <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <div class="d-flex">
-            <h2 class="font-weight-bold" *ngIf="loaded">User : {{ user.first_name }} {{ user.last_name }}</h2>
+            <h2 class="font-weight-bold" *ngIf="loaded">{{ user.first_name }} {{ user.last_name }}</h2>
         </div>
         <div class="d-flex">
             <button class="btn btn-link" (click)="openResend(contentResendMail)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faEnvelope"></fa-icon> Resend onboarding mail</button>
             <div class="d-flex btn-group" role="group">
-                <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon> Modify</button>
                 <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteUserPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
             </div>
         </div>
@@ -125,13 +124,29 @@
         </ngb-alert>
     </div>
     <div class="card mt-5">
-        <div class="card-header">
-            <h3 class="font-weight-bold"> User info : </h3>
+        <div class="card-header d-flex justify-content-between">
+            <div class="d-flex">
+                <h3 class="font-weight-bold"> User informations</h3>
+            </div>
+            <div class="d-flex">
+                <a class="mr-2 my-2"
+                   (click)="openModify(contentModify)"
+                   *ngIf="onChangeUserPermission()"
+                   style="cursor:pointer"
+                   ngbTooltip="Modify"
+                   placement="top"
+                >
+                    <fa-icon class="fa-lg"
+                             [icon]="faPencilAlt"
+                             style="color: gray"
+                    ></fa-icon>
+                </a>
+              </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="px-2 py-1">
-                    <p *ngIf="loaded"><span class="font-weight-bold" >First Name  :</span> {{ user.first_name }} <p>
+        <div class="card-body">
+            <div class=" row col-md-12">
+                <div class="py-1">
+                    <p *ngIf="loaded"><span class="font-weight-bold">First Name  :</span> {{ user.first_name }} <p>
                     <p *ngIf="loaded"><span class="font-weight-bold">Last Name  :</span> {{ user.last_name }} </p>
                     <p *ngIf="loaded"><span class="font-weight-bold">Username  :</span> {{ user.username }} </p>
                     <p *ngIf="loaded"><span class="font-weight-bold">Email Address  :</span> {{ user.email }} </p>
@@ -143,7 +158,7 @@
   <div class="card mt-5">
     <div class="card-header d-flex justify-content-between">
       <div class="d-flex">
-        <h3 class="font-weight-bold"> Teams : </h3>
+        <h3 class="font-weight-bold">Teams</h3>
       </div>
     </div>
     <div class="d-flex flex-wrap">
@@ -171,9 +186,6 @@
       <span *ngIf="teams.length === 0">No teams assigned !</span>
     </div>
   </div>
-
-
-
     <div class="row mt-5" *ngIf="onInfoPage">
         <div class="col-md-12">
             <button class="btn btn-primary" (click)="onActivateChangePassword()">Change Password</button>
