@@ -22,6 +22,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faPlus = faPlus;
   faCheck = faCheck;
   faSearch = faSearch;
+  taskState: boolean;
 
   tasks: Task[] = [];
   currentUser: UserProfile;
@@ -57,6 +58,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     this.route.url.subscribe(
       (route) => {
         if (route[0].path === 'tasks') { // Users tasks display
+          this.taskState = true;
           this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
             (currentUser) => {
               this.currentUser = currentUser;
@@ -70,6 +72,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
           );
           this.myTasks = true;
         } else { // path equals tasks-management: all the tasks are displayed
+          this.taskState = false;
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
