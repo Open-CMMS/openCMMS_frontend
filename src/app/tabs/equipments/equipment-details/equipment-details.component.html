@@ -215,7 +215,7 @@
         </div>
       </li>
 
-      <form [formGroup]="modifyEquipmentType" (ngSubmit)="saveFields()">
+      <!-- <form [formGroup]="modifyEquipmentType" (ngSubmit)="saveFields()">
         <li class="form-group list-group-item" *ngFor="let field of equipmentTypeFields; let i = index">
           <div class="container-fluid row" style="margin-bottom: 10px">
             <span class="col-md-3">{{ field.name }}</span>
@@ -231,25 +231,24 @@
             </div>
           </div>
         </li> 
-      </form>
+      </form> -->
 
-      <!-- <li class="form-group list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
+      <li class="form-group list-group-item" *ngFor="let field of equipmentTypeFields; let i = index">
         <div class="container-fluid row" style="margin-bottom: 10px">
           <span class="col-md-3">{{ field.name }}</span>
           <div class="col-md-4">
-            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0">
-            <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0">
+            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
+            <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
               <option disabled selected value> -- select an option -- </option>
               <option *ngFor="let fieldValue of field.value" [value]="fieldValue" >{{ fieldValue }}</option>
             </select>
           </div>
-
           <div class="col-md-5">
             <input class="form-control" id="field-description" type="text" placeholder="description">
           </div>
-
         </div>
-      </li> -->
+      </li>
+
       <li class="form-group list-group-item">
         <button type="button" class="btn btn-outline-secondary" (click)="addField()">
           <span style="margin-right: 10px">Create a new field</span>
