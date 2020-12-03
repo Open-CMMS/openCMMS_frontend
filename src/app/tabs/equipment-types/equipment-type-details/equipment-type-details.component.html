@@ -19,7 +19,7 @@
         <div class="modal-body">
             <div class="col-sm-8 col-sm-offset-2">
               <div class="form-group">
-                <label for="name">Nom</label>
+                <label for="name">Name</label>
                 <input id="name" type="text" class='form-control' formControlName="name" [(ngModel)]="name">
               </div>
           </div>
@@ -32,23 +32,38 @@
 </ng-template>
 
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
-    <div class="container-fluid d-flex flex-wrap justify-content-between">
+    <div class="container-fluid d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <div class="d-flex">
-            <h2 class="font-weight-bold">Equipment Type {{ name }}</h2>
+            <h2 class="font-weight-bold">{{ name }}</h2>
         </div>
         <div class="d-flex btn-group" role="group">
-            <button class="btn btn-secondary" (click)="openModify(contentModify)" *ngIf="onChangeEquipmentTypePermission()"><fa-icon [icon]=""></fa-icon> Modify</button>
-            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteEquipmentTypePermission()"><fa-icon [icon]=""></fa-icon> Delete</button>
+            <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteEquipmentTypePermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
         </div>
     </div>
     <div class="card mt-5">
-        <div class="card-header">
-            <h3 class="font-weight-bold"> Equipment type info : </h3>
+        <div class="card-header d-flex justify-content-between">
+            <div class="d-flex">
+                <h3 class="font-weight-bold"> Equipment Type informations </h3>
+            </div>
+            <div class="d-flex">
+                <a class="mr-2 my-2"
+                (click)="openModify(contentModify)"
+                *ngIf="onChangeEquipmentTypePermission()"
+                style="cursor:pointer"
+                ngbTooltip="Modify"
+                placement="top"
+            >
+                <fa-icon class="fa-lg"
+                            [icon]="faPencilAlt"
+                            style="color: gray"
+                ></fa-icon>
+            </a>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="px-2 py-1">
-                    <p><span class="font-weight-bold">Equipment Type Name  :</span> {{ name }} <p>
+        <div class="card-body">
+            <div class="row col-12">
+                <div class="py-1">
+                    <p><span class="font-weight-bold">Name  :</span> {{ name }} <p>
                 </div>
             </div>
         </div>
@@ -56,7 +71,7 @@
     <div class="card mt-5">
         <div class="card-header d-flex justify-content-between">
             <div class="d-flex">
-                <h3 class="font-weight-bold"> Equipments : </h3>
+                <h3 class="font-weight-bold">Equipments</h3>
             </div>
         </div>
         <div class="d-flex">
@@ -67,7 +82,17 @@
                     <div class="container-fluid row justify-content-between">
                         <h5 (click)="onViewEquipment(equipment)">{{ equipment.name }}</h5>
                         <div class="d-flex">
-                            <button class="btn btn-info" (click)="onViewEquipment(equipment)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                            <a class="mr-2 my-2"
+                               (click)="onViewEquipment(equipment)"
+                               style="cursor: pointer"
+                               ngbTooltip="Info"
+                               placement="bottom"
+                            >
+                                <fa-icon class="fa-lg"
+                                         [icon]="faInfoCircle"
+                                         style="color: gray"
+                                ></fa-icon>
+                            </a>
                         </div>
                     </div>
                 </li>
@@ -76,9 +101,29 @@
     </div>
     <div class="card mt-5">
             <div class="card-header d-flex justify-content-between">
-              <h3 class="font-weight-bold"> Fields : </h3>
-              <button class="d-flex btn btn-link" (click)="openModifyField()" *ngIf="onChangeEquipmentTypePermission() && (!modifyFields)"><fa-icon [icon]="faPencilAlt" style="color: gray; font-size:22px;"></fa-icon></button>
-              <button class="d-flex btn btn-link" (click)="saveFields()" *ngIf="onChangeEquipmentTypePermission() && (modifyFields)"><fa-icon [icon]="faSave" style="color: gray;font-size:22px;"></fa-icon></button>
+              <h3 class="font-weight-bold">Fields</h3>
+              <a class="d-flex align-items-center"
+                 (click)="openModifyField()"
+                 *ngIf="onChangeEquipmentTypePermission() && (!modifyFields)"
+                 style="cursor:pointer;"
+                 ngbTooltip="Modify fields"
+                 placement="top"
+              >
+                  <fa-icon class="fa-lg"
+                           [icon]="faPencilAlt"
+                           style="color: gray;"></fa-icon>
+              </a>
+              <a class="d-flex align-items-center"
+                 (click)="saveFields()"
+                 *ngIf="onChangeEquipmentTypePermission() && (modifyFields)"
+                 ngbTooltip="Save"
+                 placement="top"
+                 style="cursor:pointer;"
+              >
+                  <fa-icon class="fa-lg"
+                           [icon]="faSave"
+                           style="color: gray;"></fa-icon>
+              </a>
             </div>
         <div class="d-flex">
             <ul class="w-100 list-group">
