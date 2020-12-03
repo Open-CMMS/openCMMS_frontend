@@ -13,7 +13,8 @@
 
 <div class="container-fluid justify-content-center col-md-8 mt-3">
     <div class="d-flex flex-wrap justify-content-between align-items-center mt-md-4 mb-md-4">
-      <h3 class="font-weight-bold">Tasks Management</h3>
+      <h3 *ngIf="taskState" class="font-weight-bold">My Tasks</h3>
+      <h3 *ngIf="!taskState" class="font-weight-bold">Task Management</h3>
       <div class="my-3" *ngIf="onAddTeamPermission()">
         <button class="btn btn-primary" *ngIf="onAddTeamPermission" (click)="onCreateTask()"><fa-icon [icon]="faPlus"></fa-icon> Create new task</button>
       </div>
