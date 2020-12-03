@@ -33,10 +33,38 @@
         </div>
         <div class="form-group">
             <label for="equipment">Equipment</label>
-            <select id="equipment" class="form-control" [(ngModel)]="selectedEquipment" formControlName="equipment" [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}">
-                <option [ngValue]="null" defaultSelected="selected">---</option>
-                <option *ngFor="let equipment of this.equipments" [ngValue]="equipment.id">{{ equipment.name }}</option>
-            </select>
+           <div class="px-2" ngbRadioGroup>
+               <input  class="mr-md-2" type="radio" id="no-equipment" value="no-equipment"  formControlName="equipment_or_equipment_type" name="equipment_or_equipment_type" [ngModel]="equipment_or_equipment_type">
+               <label class="mr-md-5" for="no-equipment">No equipment</label>
+
+               <input class="mr-md-2" type="radio" id="equipment" value="equipment"  formControlName="equipment_or_equipment_type" name="equipment_or_equipment_type">
+               <label class="mr-md-5" for="equipment">A specific equipment</label>
+
+               <input class="mr-md-2" type="radio" id="equipment_type"  formControlName="equipment_or_equipment_type" value="equipment_type" name="equipment_or_equipment_type">
+               <label class="mr-md-5" for="equipment_type">All equipments of a type</label>
+           </div>
+        </div>
+        <div class="form-group">
+            <ng-multiselect-dropdown
+                    *ngIf="createForm.value.equipment_or_equipment_type === 'equipment'"
+                    placeholder="Select an equipment"
+                    [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}"
+                    [settings]="dropdownEquipmentsSettings"
+                    [data]="equipmentList"
+                    formControlName="equipment"
+            >
+            </ng-multiselect-dropdown>
+        </div>
+        <div class="form-group">
+            <ng-multiselect-dropdown
+                    placeholder="Select an equipment type"
+                    *ngIf="createForm.value.equipment_or_equipment_type === 'equipment_type'"
+                    [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}"
+                    [settings]="dropdownEquipmentTypesSettings"
+                    [data]="equipmentTypesList"
+                    formControlName="equipment_type"
+            >
+            </ng-multiselect-dropdown>
         </div>
         <div class="form-group">
             <label for="end_date">Task end date </label>
@@ -88,18 +116,6 @@
                     style="margin-left: -15px;"
                 >
                 </ng-multiselect-dropdown>
-
-                <!-- <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Date'">
-                    <input class="form-control my-1"
-                        placeholder="yyyy-mm-dd"
-                        name="dateTriggerCondition"
-                        ngbDatepicker
-                        #datePicker="ngbDatepicker"
-                        [(ngModel)]=triggerCondition.value
-                        [ngModelOptions]="{standalone: true}"
-                    />
-                    <button class="btn btn-outline-secondary" (click)="datePicker.toggle()" type="button"><fa-icon [icon]="faCalendar"></fa-icon></button>
-                </div> -->
 
                 <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Duration'">
                     <input 
@@ -179,7 +195,7 @@
                     <div class="container-fluid row justify-content-between align-items-center">
                         <div class="col-8">
                             <h5 style="margin-bottom: 0px; vertical-align: middle;">{{ file.name }} </h5>
-                            <span class="badge badge-pill badge-success" style="font-size: 10px;"><fa-icon [icon]="faPlus" size="xs"></fa-icon> Additionnal file</span>
+                            <span class="badge badge-pill badge-success" style="font-size: 10px;"><fa-icon [icon]="faPlus" size="xs"></fa-icon> Additional file</span>
                         </div>
                         <div class="col-1">
                             <button class="btn btn-danger" (click)="onRemoveFile(newFiles, file.data)"><fa-icon [icon]="faMinusSquare" size="lg"></fa-icon></button>
