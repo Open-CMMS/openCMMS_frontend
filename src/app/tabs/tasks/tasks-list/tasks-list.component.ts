@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import { faTrash, faInfoCircle, faPlus, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
@@ -31,6 +31,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
   // Search text
   searchText = '';
+
+  modalTaskName = '';
 
   /**
    * Constructor for the TasksList component
@@ -96,6 +98,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
    * @param task the task concerned by the deletion
    */
   openDelete(content, task: Task) {
+    this.modalTaskName = task.name;
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteTask(task);

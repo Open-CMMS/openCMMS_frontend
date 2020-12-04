@@ -22,6 +22,7 @@ export class TeamsListComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   teams: Team[] = [];
   teamsSubscription: Subscription;
+  modalTeamName = '';
 
   /**
    * Constructor for the TeamList component
@@ -63,6 +64,7 @@ export class TeamsListComponent implements OnInit, OnDestroy {
    * @param team the team concerned by the deletion
    */
   openDelete(content, team: Team) {
+    this.modalTeamName = team.name;
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteTeam(team);
