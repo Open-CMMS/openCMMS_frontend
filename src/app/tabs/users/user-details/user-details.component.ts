@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { faPencilAlt, faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faTrash, faInfoCircle, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
@@ -26,6 +26,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   faPencilAlt = faPencilAlt;
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
+  faEnvelope = faEnvelope;
 
 // Local variables
   loaded = false;
@@ -42,6 +43,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   changePwdActivated = false;
   teamsSubscription: Subscription;
   teams = [];
+  resendSuccess = null;
 
   // Forms
   userUpdateForm: FormGroup;
@@ -134,6 +136,24 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function that calls the service function that resend the onboarding mail to the current user
+   */
+  onResendOnboardingMail() {
+    this.userService.resendOnboardingMail(this.user.id).subscribe(
+      (response) => {
+        this.resendSuccess = true;
+      },
+      (error) => {
+        this.resendSuccess = false;
+      }
+    );
+    setTimeout(
+      () => {
+        this.resendSuccess = null;
+      }, 10000);
+  }
+
+  /**
    * Function to modify a user
    */
   onModifyUser() {
@@ -168,15 +188,35 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     const formValues = this.setPasswordForm.value;
-    this.userService.updateUserPassword(this.user, formValues.password).subscribe(userUpdated => {
-      this.updateError = false;
-      this.onInfoPage = true;
-      this.changePwdActivated = false;
-      this.initForm();
-      this.userService.getUsers();
-    },
-    (error) => {
-      this.updateError = true;
+    this.authenticationService.verifyPassword(this.user.username, formValues.oldPassword).subscribe(
+      (response) => {
+        if (response === true) {
+          this.userService.updateUserPassword(this.user, formValues.password).subscribe(userUpdated => {
+            this.updateError = false;
+            this.onInfoPage = true;
+            this.changePwdActivated = false;
+            this.initForm();
+            this.userService.getUsers();
+          },
+          (error) => {
+            this.updateError = true;
+          });
+        } else if (response === false) {
+          this.setPasswordForm.controls.oldPassword.setErrors({wrong: true});
+        }
+      }
+    );
+  }
+
+  /**
+   * Function that opens the modal to confirm a deletion
+   * @param content the modal template to load
+   */
+  openResend(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-resend'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onResendOnboardingMail();
+      }
     });
   }
 
@@ -228,6 +268,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       email: this.user.email
     });
     this.setPasswordForm = this.formBuilder.group({
+      oldPassword:  ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(7)]],
       confPassword: ['', Validators.required]
     }, {

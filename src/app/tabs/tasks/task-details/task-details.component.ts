@@ -16,8 +16,9 @@ import {
   faCheck,
   faBook,
   faPlusCircle,
-  faMinusCircle } from '@fortawesome/free-solid-svg-icons';
-import { faPlusSquare, faMinusSquare, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
+  faMinusCircle,
+  faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMinusSquare, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Equipment } from 'src/app/models/equipment';
@@ -82,9 +83,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   files: any[] = [];
   newFile: any = null;
   fileToUpload: any[] = [];
+  fileCheck: boolean;
 
   // End conditions
-  endConditionValues: any[] = [];
+  endConditionValues: any = {};
   validationError = false;
 
   // Input activation
@@ -112,6 +114,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   addTeamForm: FormGroup;
   dropdownTeamsSettings: IDropdownSettings;
 
+
   /**
    * Constructor of TaskDetailsComponent
    * @param taskService the service used to handle tasks
@@ -138,6 +141,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     let id: number;
+    this.fileCheck = true;
     this.route.params.subscribe(params => {
       id = +params.id;
     });
@@ -355,7 +359,23 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     },
     (error) => {});
   }
-
+  /**
+   * Function that get the size of the file the user want to upload.
+   * @param content the modal to open
+   */
+  getSizeFile(content) {
+    if (content.target.files[0].size / 1000000 <= 10) {
+    this.fileCheck = true;
+    } else {
+      this.fileCheck = false;
+    }
+  }
+  /**
+   * Provide a boolean which allow us to know if the size of the file is correct.
+   */
+  isSizeFileOk(): boolean {
+    return this.fileCheck;
+  }
   /**
    * Function that is triggered to load the modal template for team addition
    * @param content the modal to open
@@ -431,8 +451,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/teams', team.id]);
   }
 
+  /**
+   * Function that is triggered to delete a file from the task
+   * @param file the file to delete
+   */
   onDeleteFile(file) {
-    const fileToDelete = this.task.files.find(taskFile => taskFile.file.split('/')[1] === file.fileName);
+    const fileToDelete = this.task.files.find(taskFile => taskFile.file.split('/')[-1] === file.fileLink.split('/')[-1]);
     this.fileService.deleteFile(fileToDelete.id).subscribe(
       (_) => {
         this.getTask(this.task.id);
@@ -450,6 +474,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.taskService.deleteTask(this.task.id).subscribe(
       (resp) => {
         this.teamService.getTeams();
+        this.taskService.getTasks();
         this.router.navigate(['/tasks']);
     });
   }
@@ -506,14 +531,17 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         case 'Checkbox':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         case 'Integer':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         case 'Description':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         default:
           break;
@@ -560,6 +588,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * Function that update the task when a new file is attached to it
    */
   onUpdateTaskWithNewFile() {
+    this.fileCheck = true;
     if (this.newFile !== null) {
       this.fileService.uploadFile(this.newFile.data).subscribe(
         (file) => {

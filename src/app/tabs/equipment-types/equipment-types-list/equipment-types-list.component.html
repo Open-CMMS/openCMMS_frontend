@@ -20,10 +20,28 @@
                 >
                 <div class="d-flex container-fluid row flex-wrap justify-content-between">
                     <h5 class="col-sm-8" (click)="onViewEquipmentType(i)">{{ equipmentType.name }}</h5>
-
-                    <div class="d-flex">
-                        <button class="btn btn-info mx-2" (click)="onViewEquipmentType(i)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
-                        <button class="btn btn-danger" (click)="openDelete(contentDelete, i)" *ngIf="onDeleteEquipmentTypePermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
+                    <div class="d-flex justify-content-end">
+                        <a class="mr-3 my-2"
+                           (click)="onViewEquipmentType(i)"
+                           style="cursor: pointer"
+                           ngbTooltip="Info"
+                           placement="bottom"
+                        >
+                            <fa-icon class="fa-lg"
+                                     [icon]="faInfoCircle"
+                                     style="color:gray"></fa-icon>
+                        </a>
+                        <a class="my-2"
+                           (click)="openDelete(contentDelete, i)"
+                           *ngIf="onDeleteEquipmentTypePermission()"
+                           style="cursor: pointer;"
+                           ngbTooltip="Delete"
+                           placement="bottom"
+                        >
+                            <fa-icon class="fa-lg"
+                                    [icon]="faTrash"
+                                    style="color:#dc3545"></fa-icon>
+                        </a>
                     </div>
                 </div>
             </li>

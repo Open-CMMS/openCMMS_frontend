@@ -9,7 +9,7 @@ import {AuthenticationService} from 'src/app/services/auth/authentication.servic
 import {UtilsService} from 'src/app/services/utils/utils.service';
 import {Subject} from 'rxjs/internal/Subject';
 import {FileService} from 'src/app/services/files/file.service';
-import {faMinusSquare, faMinusCircle, faSave} from '@fortawesome/free-solid-svg-icons';
+import {faMinusSquare, faMinusCircle, faSave, faCheck, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
 import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
 import {EquipmentType} from 'src/app/models/equipment-type';
@@ -22,13 +22,19 @@ import {Field} from '../../../models/field';
   styleUrls: ['./equipment-details.component.scss']
 })
 export class EquipmentDetailsComponent implements OnInit {
-// Local variables
+
+  // Icons
   faPlusSquare = faPlusSquare;
   faPencilAlt = faPencilAlt;
   faMinusCircle = faMinusCircle;
   faSave = faSave;
   faTrash = faTrash;
   faMinusSquare = faMinusSquare;
+  faCheck = faCheck;
+  faTimes = faTimes;
+
+  // Local variables
+
   loaded = false;
   updateError = false;
   filesSubject = new Subject<File[]>();
@@ -58,6 +64,11 @@ export class EquipmentDetailsComponent implements OnInit {
   fieldTemplate = null;
   equipmentTypeModified = false;
   currentSelectFields: [];
+  isCurrentEquipmentTypeFields = [];
+
+  // Constants
+  INIT_FIELD_NAME  = '';
+  INIT_FIELD_VALUE = '';
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -178,6 +189,11 @@ export class EquipmentDetailsComponent implements OnInit {
         if (this.modifyFields) {
           this.currentEquipment.fields = this.fields;
           this.modifyFields = false;
+          if (this.new_fields.length !== 0) {
+            this.new_fields.forEach(element => {
+              this.currentEquipment.fields.push(element);
+            });
+          }
           if (this.equipmentTypeModified) {
             this.currentEquipment.fields = this.initialFields;
             this.equipmentTypeModified = false;
@@ -234,6 +250,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * Fonction that allows to modify the fields
    */
   openModifyField() {
+    this.new_fields = [];
     this.modifyFields = true;
     this.equipmentTypes = this.equipmentTypeService.getEquipmentTypes();
     if (this.equipmentTypes.length === 0) {
@@ -246,6 +263,7 @@ export class EquipmentDetailsComponent implements OnInit {
       .subscribe(
         (response) => {
           this.currentEquipmentTypeFields = response.field;
+          this.isCurrentEquipmentTypeField();
         }
       );
   }
@@ -384,6 +402,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param event The EquipmentType selected
    */
   initEquipmentTypeFields(event) {
+    this.new_fields = [];
     this.equipmentTypeModified = (this.currentEquipment.equipment_type.id !== Number(event));
     if (this.equipmentTypeModified) {
       this.equipmentTypeService.getEquipmentType(Number(event))
@@ -414,6 +433,13 @@ export class EquipmentDetailsComponent implements OnInit {
         }
       }
     });
+  }
+
+  /**
+   * Function to see if fields are empty or no
+   */
+  fieldsIsEmpty() {
+    return this.fields.length === 0;
   }
 
   /**
@@ -493,16 +519,16 @@ export class EquipmentDetailsComponent implements OnInit {
       } else {
         missing_value = true;
       }
-      if (this.new_fields.length !== 0) {
-        this.new_fields.forEach(element => {
-          if ((element.name === '') || (element.value.length === 0)) {
-            missing_value = true;
-          }
-        });
-      }
     } else {
       this.fields.forEach(element => {
         if ((element.value.length === 0) && !(element.field_value)) {
+          missing_value = true;
+        }
+      });
+    }
+    if (this.new_fields.length !== 0) {
+      this.new_fields.forEach(element => {
+        if ((element.name === '') || (element.value.length === 0)) {
           missing_value = true;
         }
       });
@@ -511,11 +537,55 @@ export class EquipmentDetailsComponent implements OnInit {
   }
 
   /**
-   * Function to delete a field in the form
+   * Function to delete a new field in the form
    * @param i the index of the field
    */
   deleteField(i: number) {
     this.new_fields.splice(i, 1);
+  }
+
+  /**
+   * Function to delete a current field of the Equipment
+   * @param field the field
+   * @param i the index of the field
+   */
+  deleteCurrentField(field, i: number) {
+    this.fields.splice(i, 1);
+    this.equipmentService.deleteFieldEquipment(this.currentEquipment.id, field.id).subscribe(
+        (resp) => {
+          console.log('resp', resp);
+        }
+    );
+  }
+
+  /**
+   * Function to know if a current field is related to the equipment type
+   */
+  isCurrentEquipmentTypeField() {
+    let isCurrentEquipmentTypeField = false;
+    this.fields.forEach(field => {
+      this.currentEquipmentTypeFields.forEach(element => {
+        if (element.id === field.field) {
+          isCurrentEquipmentTypeField = true;
+        }
+      });
+      this.isCurrentEquipmentTypeFields.push({id: field.field, isEquipmentTypeField: isCurrentEquipmentTypeField});
+      isCurrentEquipmentTypeField = false;
+    });
+  }
+
+  /**
+   * Function to know if a field can be delete
+   * @param field the field
+   */
+  canDeleteField(field) {
+    let canDelete = false;
+    this.isCurrentEquipmentTypeFields.forEach(element => {
+      if (element.id === field.field) {
+        canDelete = !(element.isEquipmentTypeField);
+      }
+    });
+    return canDelete;
   }
 
   /**
@@ -528,5 +598,25 @@ export class EquipmentDetailsComponent implements OnInit {
       });
     }
     this.onModifyEquipment();
+  }
+
+  /**
+   * Function to check if a field line is completed.
+   * @param field the field to check
+   */
+  canValidateLine(field) {
+    let filled = true;
+    if (!this.fieldIsFill(field)) {
+      filled = false;
+    }
+    return filled;
+  }
+
+  /**
+   * Function to check if a field is completed
+   * @param field the field to check
+   */
+  fieldIsFill(field) {
+    return (field.name !== this.INIT_FIELD_NAME && field.value !== this.INIT_FIELD_VALUE);
   }
 }
