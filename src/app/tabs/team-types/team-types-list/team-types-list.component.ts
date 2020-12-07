@@ -18,11 +18,12 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
  * Class for the component in charge of listing all team types
  */
 export class TeamTypesListComponent implements OnInit, OnDestroy {
+  // Local variables
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
-
   teamTypes: TeamType[] = [];
   teamTypesSubscription: Subscription;
+  modalTeamTypeName = '';
 
   /**
    * Constructor for the TeamTypeListComponent
@@ -63,7 +64,8 @@ export class TeamTypesListComponent implements OnInit, OnDestroy {
    * @param contentDelete the content to put in the modal
    * @param i the index of the teamtype to delete
    */
-  openDelete(contentDelete, i: number) {
+  openDelete(contentDelete, teamType, i) {
+    this.modalTeamTypeName = teamType.name;
     this.modalService.open(contentDelete, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteTeamType(i);

@@ -16,16 +16,19 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
 })
 export class EquipmentTypesListComponent implements OnInit, OnDestroy {
 
+  // Local variables
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
-
   equipmentTypes: EquipmentType[] = [];
   equipmentTypesSubscription: Subscription;
+  modalEquipmentTypeName = '';
+
 
   /**
    * Constructor for the EquipmentTypeListComponent
    * @param equipmentTypeService the service to communicate with backend on EquipmentType objects
    * @param router the service used to handle redirections
+   * @param modalService the service to handle modal
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
    */
@@ -60,9 +63,11 @@ export class EquipmentTypesListComponent implements OnInit, OnDestroy {
   /**
    * Function that opens the delete modal
    * @param contentDelete the content to put in the modal
+   * @param equipmentType the equipment type
    * @param i the index of the equipment type to delete
    */
-  openDelete(contentDelete, i: number) {
+  openDelete(contentDelete, equipmentType: EquipmentType, i: number) {
+    this.modalEquipmentTypeName = equipmentType.name;
     this.modalService.open(contentDelete, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteEquipmentType(i);
