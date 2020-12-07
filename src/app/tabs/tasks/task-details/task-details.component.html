@@ -320,7 +320,7 @@
         <div class="d-flex">
             <ul class="w-100 list-group ">
                 <li
-                    class="container-fluid list-group-item d-flex justify-content-between align-items-center"
+                    class="container-fluid list-group-item flex-wrap d-flex justify-content-between align-items-center"
                     *ngFor="let endCondition of task.end_conditions;"
                     >
                     <div class="col-md-10">
@@ -346,8 +346,16 @@
                             {{ endCondition.value }}
                         </div>
                         <!-- Photo -->
-                        <div class="form-group" *ngIf="endCondition.field_name === 'Photo' && endCondition.value === null">
-                            <input [(ngModel)]="endConditionValues[endCondition.id]" [ngModelOptions]="{standalone: true}" type="file" class="form-control form-control-file" [disabled]="!isSelectedFile(endCondition) && fileToUpload.length > 0" (change)="onSetPhotoToUpload(endCondition, $event)">
+                        <div class="form-group form-control-file" *ngIf="endCondition.field_name === 'Photo' && endCondition.value === null">
+                            <div class="col-sm-12">
+                                <input
+                                        [(ngModel)]="endConditionValues[endCondition.id]"
+                                        [ngModelOptions]="{standalone: true}"
+                                        type="file"
+                                        [disabled]="!isSelectedFile(endCondition) && fileToUpload.length > 0"
+                                        (change)="onSetPhotoToUpload(endCondition, $event)"
+                                >
+                            </div>
                         </div>
                         <div class="form-group" *ngIf="endCondition.field_name === 'Photo' && endCondition.value !== null ">
                             <a class="mr-2" href="{{ BASE_URL_API }}{{ '/' +endCondition.value.split('/')[2] + '/' + endCondition.value.split('/')[3] }}" target="_blank">See the photo</a>
