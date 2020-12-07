@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Team } from 'src/app/models/team';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { faTrash, faInfoCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -25,6 +24,8 @@ export class TemplatesListComponent implements OnInit, OnDestroy {
 
   templates: Template[] = [];
   templatesSubscription: Subscription;
+
+  modalTemplateName = '';
 
   /**
    * Constructor for the TeamList component
@@ -58,6 +59,7 @@ export class TemplatesListComponent implements OnInit, OnDestroy {
    * @param team the team concerned by the deletion
    */
   openDelete(content, template: Template) {
+    this.modalTemplateName = template.name;
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteTeam(template);

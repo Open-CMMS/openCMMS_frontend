@@ -28,6 +28,8 @@ import { Subscription, Subject } from 'rxjs';
 import { FileService } from 'src/app/services/files/file.service';
 import { environment } from 'src/environments/environment';
 import { durationRegex } from 'src/app/shares/consts';
+import {EquipmentType} from '../../../models/equipment-type';
+import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
 
 @Component({
   selector: 'app-task-details',
@@ -63,7 +65,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   BASE_URL_API = environment.baseUrl;
 
   // Task
-  task: Task = null;
+  task = null;
   taskDuration = '';
   teamsTask: Team[] = [];
 
@@ -71,6 +73,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   equipments: Equipment[] = [];
   equipmentsList = [];
   selectedEquipment = [];
+
+  // Equipment types
+  equipment_types: EquipmentType[] = [];
+  equipmentTypesList = [];
+  selectedEquipmentType = [];
 
   // Teams
   teams: Team[] = [];
@@ -96,13 +103,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     description: false,
     date: false,
     duration: false,
-    equipment: false
+    equipment: false,
+    equipment_type: false,
   };
 
   // Subscriptions
   teamSubscription: Subscription;
   equipmentSubscription: Subscription;
-
+  equipmentTypeSubscription: Subscription;
 
   // End conditions
   endConditionsSubject = new Subject<any[]>();
@@ -123,6 +131,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param route the service used to handle route parameters
    * @param teamService the service used to handle teams
    * @param equipmentService the service used to handle equipments
+   * @param equipmentTypeService the service used to handle equipment types
    * @param router the service used to handle routing
    * @param modalService the service used to handle modals
    * @param utilsService the service used for useful methods
@@ -134,6 +143,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private teamService: TeamService,
               private equipmentService: EquipmentService,
+              private equipmentTypeService: EquipmentTypeService,
               private router: Router,
               private modalService: NgbModal,
               private utilsService: UtilsService,
@@ -162,8 +172,15 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.equipments = equipments;
     });
 
+    // Subscribing to the equipment types
+    this.equipmentTypeSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
+        (equipmentTypes) => {
+          this.equipment_types = equipmentTypes;
+        });
+
     // Updating every subscriptions
     this.equipmentService.emitEquipments();
+    this.equipmentTypeService.emitEquipmentTypes();
     this.teamService.emitTeams();
   }
 
@@ -271,6 +288,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       case 'equipment':
         this.inputEnabled.equipment = true;
         break;
+      case 'equipment_type':
+        this.inputEnabled.equipment_type = true;
+        break;
       default:
         break;
     }
@@ -300,6 +320,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       case 'equipment':
         updatedField = {equipment: this.task.equipment.id};
         this.inputEnabled.equipment = false;
+        break;
+      case 'equipment_type':
+        updatedField = {equipment_type: this.task.equipment_type.id};
+        this.inputEnabled.equipment_type = false;
         break;
       default:
         break;
@@ -443,6 +467,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    */
   onViewEquipment(idEquipment: number) {
     this.router.navigate(['/equipments', idEquipment]);
+  }
+
+  /**
+   * Function that navigate the equipment type detail page linked to this task
+   * @param idEquipmentType the id of the equipment to consult
+   */
+  onViewEquipmentType(idEquipmentType: number) {
+    this.router.navigate(['/equipment-types', idEquipmentType]);
   }
 
   /**
@@ -628,7 +660,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that tests if an end condition file is beeing selected.
+   * Function that tests if an end condition file is being selected.
    * @param condition the condition concerned.
    */
   isSelectedFile(condition) {
@@ -695,6 +727,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.teamSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
+    this.equipmentTypeSubscription.unsubscribe();
   }
 
   /**

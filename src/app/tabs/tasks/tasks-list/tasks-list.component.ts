@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import { faTrash, faInfoCircle, faPlus, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
@@ -22,6 +22,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faPlus = faPlus;
   faCheck = faCheck;
   faSearch = faSearch;
+  taskState: boolean;
 
   tasks: Task[] = [];
   currentUser: UserProfile;
@@ -31,6 +32,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
 
   // Search text
   searchText = '';
+
+  modalTaskName = '';
 
   /**
    * Constructor for the TasksList component
@@ -57,6 +60,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     this.route.url.subscribe(
       (route) => {
         if (route[0].path === 'tasks') { // Users tasks display
+          this.taskState = true;
           this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
             (currentUser) => {
               this.currentUser = currentUser;
@@ -70,6 +74,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
           );
           this.myTasks = true;
         } else { // path equals tasks-management: all the tasks are displayed
+          this.taskState = false;
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
@@ -96,6 +101,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
    * @param task the task concerned by the deletion
    */
   openDelete(content, task: Task) {
+    this.modalTaskName = task.name;
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteTask(task);

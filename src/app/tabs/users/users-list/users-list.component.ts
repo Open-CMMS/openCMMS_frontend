@@ -23,6 +23,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   users: UserProfile[] = [];
   usersSubscription: Subscription;
+  modalUserName = '';
 
   /**
    * Constructor for the TeamList component
@@ -67,6 +68,7 @@ export class UsersListComponent implements OnInit, OnDestroy {
    * @param user the user concerned by the deletion
    */
   openDelete(content, user: UserProfile) {
+    this.modalUserName = user.first_name + ' ' + user.last_name;
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteUser(user);
