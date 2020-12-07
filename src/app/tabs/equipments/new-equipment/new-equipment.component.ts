@@ -200,36 +200,11 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
         (response) => {
           this.equipmentType = response;
           this.equipmentTypeFields = response.field;
+          response.field.forEach(field => {
+            this.initialFields.push({field: field.id, name: field.name, value: '', description: ''});
+          });
         }
       );
-  }
-
-  /**
-   * Fonction to modify the value of the field that correspond to the selected equipment type
-   * @param event the value of the field
-   * @param index the index of the modified field
-   */
-  modifyEquipmentTypeFieldValue(event, index) {
-    const field = this.equipmentTypeFields[index].id;
-    const name = this.equipmentTypeFields[index].name;
-    const value = ((event.id === 'field-value-text') || (event.id === 'field-value-select')) ? event.value : '';
-    const description = (event.id === 'field-description') ? event.value : '';
-    let alreadyInInitialFields = false;
-    this.initialFields.forEach(element => {
-      if (element.field === field) {
-        alreadyInInitialFields = true;
-        if ((event.id === 'field-value-text') || (event.id === 'field-value-select')) {
-          element.value = event.value;
-        } else {
-          element.description = event.value;
-        }
-      }
-    });
-    if (!(alreadyInInitialFields)) {
-      const jsonCopy = JSON.stringify({field, name, value, description});
-      const objectCopy = JSON.parse(jsonCopy);
-      this.initialFields.splice(index, 1, objectCopy);
-    }
   }
 
   /**
@@ -240,7 +215,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     if ((this.equipmentTypeFields.length === this.initialFields.length)) {
       if ((this.equipmentTypeFields.length !== 0)) {
         this.initialFields.forEach(element => {
-          if (!(element.value)) {
+          if (element.value === '') {
             missing_value = true;
           }
         });
