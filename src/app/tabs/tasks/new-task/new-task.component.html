@@ -1,4 +1,4 @@
-  <div class="container-fluid col-md-8 mt-3 justify-content-center">
+  <div class="container-fluid col-md-5 mt-3 justify-content-center">
     <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <h2 class="font-weight-bold">Create a new task</h2>
     </div>
@@ -170,7 +170,7 @@
         </div>
         <div class="form-group">
             <label for="file">Upload File</label>
-            <input formControlName="file" id="file" type="file" multiple class="form-control" (change)="onAddFile($event)">
+            <input formControlName="file" id="file" type="file" multiple class="form-control text-truncate" (change)="onAddFile($event)">
         </div>
         <div class="list-group">
             <ul class="list-group">
