@@ -9,6 +9,7 @@ export class DataProvider {
   is_activated: boolean;
   equipment: Equipment;
   ip_address: string;
+  port: string;
   field_object: Field;
 
   /**
@@ -30,6 +31,7 @@ export class DataProvider {
     is_activated: boolean,
     equipment: Equipment,
     ip_address: string,
+    port: string,
     field_object: Field) {
       this.id = id;
       this.name = name;
@@ -38,6 +40,7 @@ export class DataProvider {
       this.is_activated = is_activated;
       this.equipment = equipment;
       this.ip_address = ip_address;
+      this.port = port;
       this.field_object = field_object;
     }
 }

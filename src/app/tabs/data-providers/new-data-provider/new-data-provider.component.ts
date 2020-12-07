@@ -78,6 +78,7 @@ export class NewDataProviderComponent implements OnInit {
       fileName: ['', Validators.required],
       equipment: ['', Validators.required],
       equipment_ip: ['', Validators.required],
+      port: [''],
       field: ['', Validators.required],
       recurrence: ['', [Validators.pattern(regex_time), Validators.required]],
       activated: [true, Validators.required],
@@ -109,6 +110,7 @@ export class NewDataProviderComponent implements OnInit {
       formValues.activated,
       formValues.equipment,
       formValues.equipment_ip,
+      formValues.port,
       formValues.field
     );
     this.dataProviderService.testDataProvider(newDataProvider, false).subscribe(
@@ -139,6 +141,7 @@ export class NewDataProviderComponent implements OnInit {
       formValues.activated,
       formValues.equipment,
       formValues.equipment_ip,
+      formValues.port,
       formValues.field
       );
     this.dataProviderService.createDataProvider(newDataProvider).subscribe(
