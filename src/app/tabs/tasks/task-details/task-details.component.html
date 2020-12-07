@@ -294,6 +294,7 @@
                             <a class="my-2"
                                style="cursor:pointer;"
                                (click)="onRemoveTeamFromTask(team)"
+                               *ngIf="onChangeTaskPermission() && !task.over"
                                ngbTooltip="Delete"
                                placement="bottom"
                             ><fa-icon class="fa-lg"
