@@ -9,7 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { faInfoCircle, faPencilAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faPencilAlt, faTrash, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 
@@ -23,6 +23,7 @@ export class TeamTypeDetailsComponent implements OnInit {
   faInfoCircle = faInfoCircle;
   faPencilAlt = faPencilAlt;
   faTrash = faTrash;
+  faChevronLeft = faChevronLeft;
 
   // local variables
   id: number;
@@ -289,6 +290,13 @@ export class TeamTypeDetailsComponent implements OnInit {
       this.authenticationService.getCurrentUserPermissions(),
       'delete_teamtype'
       );
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onViewListing() {
+    this.router.navigate(['team-types/']);
   }
 
 }

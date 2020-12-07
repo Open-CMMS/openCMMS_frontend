@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faTrash, faPen, faSave, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPen, faSave, faInfoCircle, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Field } from 'src/app/models/field';
@@ -21,6 +21,7 @@ export class DataProviderDetailsComponent implements OnInit {
   faTrash = faTrash;
   faPen = faPen;
   faSave = faSave;
+  faChevronLeft = faChevronLeft;
 
   // onTest variables
   tested = false;
@@ -266,6 +267,13 @@ export class DataProviderDetailsComponent implements OnInit {
       }
     },
     () => {});
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onViewListing() {
+    this.router.navigate(['data-providers/']);
   }
 
 }
