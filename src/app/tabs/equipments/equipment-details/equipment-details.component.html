@@ -119,18 +119,20 @@
           >
           </fa-icon>
       </a>
-      <a class="mr-2 my-2"
-         (click)="saveFields()"
-         *ngIf="onChangeEquipmentPermission() && (modifyFields || equipmentTypeModified) && !(missingEquipmentTypeFieldsValue())"
-         style="cursor: pointer"
-         ngbTooltip="Save fields"
-         placement="top"
+      <button
+              class="d-flex btn btn-link mr-2 my-2"
+              (click)="saveFields()"
+              *ngIf="onChangeEquipmentPermission() && (modifyFields || equipmentTypeModified)"
+              style="cursor: pointer"
+              ngbTooltip="Save fields"
+              placement="top"
+              [disabled]="missingEquipmentTypeFieldsValue()"
       >
           <fa-icon class="fa-lg"
                    [icon]="faSave"
                    style="color: gray"
           ></fa-icon>
-      </a>
+      </button>
     </div>
     <div class="row">
       <div class="col-10">
@@ -164,7 +166,7 @@
 
             <p class="col-md-3 my-1" *ngIf="!(field.field_value)">
               <span *ngIf="(!(field.field_value) && !(modifyFields))">{{ field.value }}</span>
-              <input class="form-control" id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [ngModel]=field.value>
+              <input class="form-control" id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [(ngModel)]=field.value>
             </p>
 
             <p class="col-md-3 my-1" *ngIf="field.field_value">
@@ -178,8 +180,11 @@
             <p class="col-md-5 my-1">
               <span *ngIf="field.description">{{ field.description}}</span>
             </p>
-
-              <button class="col-md-1 align-content-md-end my-1 d-flex btn btn-link"  ngbTooltip="Delete" (click)="deleteCurrentField(field, i)" *ngIf="modifyFields && canDeleteField(field)"><fa-icon [icon]="faTrash" style="color: gray; font-size:22px;"></fa-icon></button>
+            <div class="d-flex col-md-1 flex-wrap">
+              <button class="btn btn-link"  ngbTooltip="Delete" placement="top" (click)="deleteCurrentField(field, i)" *ngIf="modifyFields && canDeleteField(field)">
+                <fa-icon [icon]="faTrash" style="color: gray; font-size:22px;"></fa-icon>
+              </button>
+            </div>
 
           </div>
         </li>
@@ -214,14 +219,14 @@
           <span class="col-md-5 font-weight-bold">Description</span>
         </div>
       </li>
-      <li class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
+      <li class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index">
         <div class="container-fluid row" style="margin-bottom: 10px">
 
           <span class="col-md-3">{{ field.name }}</span>
 
           <div class="col-md-4">
-            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0" >
-            <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0">
+            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0" [(ngModel)]="this.initialFields[i].value">
+            <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0" [(ngModel)]="this.initialFields[i].value">
               <option disabled selected value> -- select an option -- </option>
               <option *ngFor="let fieldValue of field.value" [value]="fieldValue" >{{ fieldValue }}</option>
             </select>

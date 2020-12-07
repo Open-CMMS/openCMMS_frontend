@@ -16,7 +16,8 @@
         <div class="form-group">
           <label>Fields</label>
         </div>
-      <div class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyEquipmentTypeFieldValue($event.target, i)">
+    </form>
+      <div class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index">
         <div class="d-flex flex-wrap input-group-append form-group" style="margin-bottom: 10px">
           <span
             class="col-md-3 my-1"
@@ -29,11 +30,13 @@
             type="text" placeholder="value"
             class="form-control col-md-4 mr-md-2 my-1"
             *ngIf="field.value.length === 0"
+            [(ngModel)]="this.initialFields[i].value"
           >
           <select
             id="field-value-select"
             class="form-control col-md-4 mr-md-2 my-1"
             *ngIf="field.value.length !== 0"
+            [(ngModel)]="this.initialFields[i].value"
           >
             <option disabled selected value> -- select an option -- </option>
             <option *ngFor="let fieldValue of field.value" [value]="fieldValue">{{ fieldValue }}</option>
@@ -84,6 +87,7 @@
                 <fa-icon class="d-flex align-items-center" [icon]="faTimes" style="color: red;" *ngIf="!canValidateLine(field)"></fa-icon>
             </div>
         </div>
+        <form [formGroup]="createForm" (ngSubmit)="onCreateEquipment()">
         <div class="form-group">
             <label for="file">Upload File</label>
             <input formControlName="file" id="file" type="file" multiple class="form-control text-truncate" (change)="onFileUpload($event)">
