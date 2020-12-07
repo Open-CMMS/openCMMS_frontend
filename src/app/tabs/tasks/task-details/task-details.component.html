@@ -85,15 +85,16 @@
 
 <div class="container-fluid col-md-8 mt-3 justify-content-center" *ngIf="loaded">
     <div class="container-fluid d-flex justify-content-between mt-md-4 mb-md-4">
-        <div class="d-flex">
-            <h2 class="font-weight-bold">{{ task?.name }}</h2>
+        <div class="d-block">
+            <h2 class="font-weight-bold" style="margin-bottom: 0px;">{{ task?.name }}</h2>
+            <small class="text-muted">Created by <span class="font-weight-bold">{{task?.created_by?.first_name }} {{task?.created_by?.last_name }}</span></small>
         </div>
         <div class="d-flex btn-group" role="group">
             <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteTaskPermission() && !task.over"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
         </div>
     </div>
     <div class="container-fluid alert alert-success mt-3" role="alert" *ngIf="task.over">
-        <p class="font-weight-bold">This task has already been completed !</p>
+        <p>This task has already been completed by <span class="font-weight-bold">{{ task?.achieved_by?.first_name }} {{ task?.achieved_by?.last_name }}</span> !</p>
     </div>
     <div class="card mt-3">
         <div class="card-header">
