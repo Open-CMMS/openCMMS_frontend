@@ -18,10 +18,12 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
  */
 export class TeamsListComponent implements OnInit, OnDestroy {
   // Local Variables
-  faTrash = faTrash;
-  faInfoCircle = faInfoCircle;
   teams: Team[] = [];
   teamsSubscription: Subscription;
+
+  // Icons
+  faTrash = faTrash;
+  faInfoCircle = faInfoCircle;
 
   /**
    * Constructor for the TeamList component

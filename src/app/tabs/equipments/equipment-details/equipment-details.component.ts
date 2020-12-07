@@ -9,7 +9,7 @@ import {AuthenticationService} from 'src/app/services/auth/authentication.servic
 import {UtilsService} from 'src/app/services/utils/utils.service';
 import {Subject} from 'rxjs/internal/Subject';
 import {FileService} from 'src/app/services/files/file.service';
-import {faMinusSquare, faMinusCircle, faSave, faCheck, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {faMinusSquare, faMinusCircle, faSave, faCheck, faTimes, faChevronLeft} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
 import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
 import {EquipmentType} from 'src/app/models/equipment-type';
@@ -32,6 +32,7 @@ export class EquipmentDetailsComponent implements OnInit {
   faMinusSquare = faMinusSquare;
   faCheck = faCheck;
   faTimes = faTimes;
+  faChevronLeft = faChevronLeft;
 
   // Local variables
 
@@ -618,5 +619,12 @@ export class EquipmentDetailsComponent implements OnInit {
    */
   fieldIsFill(field) {
     return (field.name !== this.INIT_FIELD_NAME && field.value !== this.INIT_FIELD_VALUE);
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onViewListing() {
+    this.router.navigate(['equipments/']);
   }
 }

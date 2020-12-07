@@ -17,6 +17,7 @@ import {
   faBook,
   faPlusCircle,
   faMinusCircle,
+  faChevronLeft,
   faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { faMinusSquare, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -51,6 +52,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   faCheck = faCheck;
   faBook = faBook;
   faCheckCircle = faCheckCircle;
+  faChevronLeft = faChevronLeft;
 
   /*
     ##### Local variables #####
@@ -693,6 +695,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.teamSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onViewListing() {
+    this.router.navigate(['tasks/']);
   }
 
 }

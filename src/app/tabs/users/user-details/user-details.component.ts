@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { faPencilAlt, faTrash, faInfoCircle, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faTrash, faInfoCircle, faEnvelope, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
@@ -27,6 +27,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
   faEnvelope = faEnvelope;
+  faChevronLeft = faChevronLeft;
 
 // Local variables
   loaded = false;
@@ -306,6 +307,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.currentUserSubscription.unsubscribe();
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onViewListing() {
+    this.router.navigate(['users/']);
   }
 
 }
