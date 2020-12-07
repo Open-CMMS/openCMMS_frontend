@@ -1,9 +1,0 @@
-<div class="container-fluid justify-content-center col-10 mt-3">
-    <div class="d-flex justify-content-between align-items-center">
-        <h3 class="font-weight-bold">Teams Management</h3>
-        <div class="my-3" *ngIf="onAddTeamPermission()">
-          <button class="btn btn-primary" (click)="onCreateTeam()"><fa-icon [icon]="faPlus"></fa-icon> Create new team</button>
-        </div>
-    </div>
-    <app-teams-list></app-teams-list>
-</div>
