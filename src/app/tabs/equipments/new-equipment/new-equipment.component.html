@@ -86,7 +86,7 @@
         </div>
         <div class="form-group">
             <label for="file">Upload File</label>
-            <input formControlName="file" id="file" type="file" multiple class="form-control" (change)="onFileUpload($event)">
+            <input formControlName="file" id="file" type="file" multiple class="form-control text-truncate" (change)="onFileUpload($event)">
         </div>
         <div class="list-group">
             <ul class="list-group">
@@ -101,7 +101,7 @@
                 </li>
             </ul>
         </div>
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center mt-4">
           <button class="btn btn-danger nav-link" routerLink="/equipments">Cancel</button>
           <button
             type="submit"
