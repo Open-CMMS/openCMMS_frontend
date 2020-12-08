@@ -241,14 +241,16 @@ export class DataProviderDetailsComponent implements OnInit {
    */
   onTest() {
     this.dataProviderService.testDataProvider(this.localDataProvider, true).subscribe(
-      () => {
-        this.tested = true;
-        this.success = true;
+      (res) => {
+        if (res.data) {
+          this.tested = true;
+          this.success = true;
+        }
+        if (res.error) {
+          this.tested = true;
+          this.success = false;
+        }
       },
-      () => {
-        this.tested = true;
-        this.success = false;
-      }
     );
   }
 

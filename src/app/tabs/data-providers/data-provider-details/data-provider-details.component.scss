@@ -61,3 +61,21 @@
   .slider.round:before {
     border-radius: 50%;
   }
+
+.activated {
+  color: #2196F3;
+}
+
+.deactivated {
+  color: #ccc;
+}
+
+.success {
+  color: #28a745;
+  margin-right: 4px;
+}
+
+.failed {
+  color: #dc3545;
+  margin-right: 4px;
+}
