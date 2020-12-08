@@ -118,6 +118,7 @@ export class DataProviderService {
 
   createDataProvider(newDataProvider: DataProvider): Observable<DataProvider> {
     const dpJson = JSON.stringify(newDataProvider);
+    console.log(dpJson);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-type': 'application/json'
@@ -178,6 +179,7 @@ export class DataProviderService {
       dataProvider = this.formatDataProvider(dataProvider);
     }
     const dpJson = JSON.stringify(dataProvider);
+    console.log(dpJson);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-type': 'application/json'
