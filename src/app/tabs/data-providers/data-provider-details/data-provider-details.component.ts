@@ -43,7 +43,8 @@ export class DataProviderDetailsComponent implements OnInit {
     recurrence: false,
     ip_address: false,
     equipment: false,
-    field: false
+    field: false,
+    port: false,
   };
 
 
@@ -79,6 +80,7 @@ export class DataProviderDetailsComponent implements OnInit {
           response.is_activated,
           response.equipment,
           response.ip_address,
+          response.port,
           response.field_object);
         this.loaded = true;
         this.selectedEquipment = this.localDataProvider.equipment;
@@ -122,6 +124,9 @@ export class DataProviderDetailsComponent implements OnInit {
       case 'ip_address':
         this.inputEnabled.ip_address = true;
         break;
+      case 'port':
+        this.inputEnabled.port = true;
+        break;
       case 'field':
         this.inputEnabled.equipment = false;
         this.inputEnabled.field = true;
@@ -164,6 +169,9 @@ export class DataProviderDetailsComponent implements OnInit {
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = false;
+        break;
+      case 'port':
+        this.inputEnabled.port = false;
         break;
       case 'field':
         this.inputEnabled.field = false;
