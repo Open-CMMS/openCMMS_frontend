@@ -44,6 +44,7 @@ describe('DataProviderService', () => {
         is_activated: true,
         equipment: eq1,
         ip_address: '192.168.101.1',
+        port: 87,
         field_object : field1,
       },
       {
@@ -54,6 +55,7 @@ describe('DataProviderService', () => {
         is_activated: false,
         equipment: eq1,
         ip_address: '192.168.101.2',
+        port: 88,
         field_object : field1
       }];
     service.getDataProviders();
@@ -70,6 +72,7 @@ describe('DataProviderService', () => {
                           expect(dataProviders[0].recurrence).toBe('1d');
                           expect(dataProviders[0].equipment).toBe(eq1);
                           expect(dataProviders[0].ip_address).toBe('192.168.101.1');
+                          expect(dataProviders[0].port).toBe(87);
                           expect(dataProviders[0].field_object).toBe(field1);
 
                           expect(dataProviders[1].id).toBe(2);
@@ -78,6 +81,7 @@ describe('DataProviderService', () => {
                           expect(dataProviders[1].recurrence).toBe('2d');
                           expect(dataProviders[1].equipment).toBe(eq1);
                           expect(dataProviders[1].ip_address).toBe('192.168.101.2');
+                          expect(dataProviders[1].port).toBe(88);
                           expect(dataProviders[1].field_object).toBe(field1);
                         });
 
@@ -103,6 +107,7 @@ describe('DataProviderService', () => {
         is_activated: true,
         equipment: eq1,
         ip_address: '192.168.101.1',
+        port: 87,
         field_object : field1,
         },
         {
@@ -113,6 +118,7 @@ describe('DataProviderService', () => {
           is_activated: false,
           equipment: eq1,
           ip_address: '192.168.101.2',
+          port: 88,
           field_object : field1
         }
       ];
@@ -124,6 +130,7 @@ describe('DataProviderService', () => {
       expect(dataProvider.recurrence).toBe('1d');
       expect(dataProvider.equipment).toBe(eq1);
       expect(dataProvider.ip_address).toBe('192.168.101.1');
+      expect(dataProvider.port).toBe(87);
       expect(dataProvider.field_object).toBe(field1);
     });
 
@@ -145,10 +152,11 @@ describe('DataProviderService', () => {
       is_activated: true,
       equipment: eq1,
       ip_address: '192.168.101.1',
+      port: 87,
       field_object : field1
     };
     httpTestingController.expectOne(BASE_URL_API + '/api/dataproviders/');
-    const newDataProvider = new DataProvider(1, 'DataProvider 1', 'test1.py', '1d', true, eq1, '192.168.101.1', field1 );
+    const newDataProvider = new DataProvider(1, 'DataProvider 1', 'test1.py', '1d', true, eq1, '192.168.101.1', 87, field1);
     service.updateDataProvider(1, newDataProvider, true).subscribe(
       dataProvider => {
         expect(dataProvider.id).toBe(1);
@@ -158,6 +166,7 @@ describe('DataProviderService', () => {
         expect(dataProvider.is_activated).toBe(true);
         expect(dataProvider.equipment).toBe(eq1);
         expect(dataProvider.ip_address).toBe('192.168.101.1');
+        expect(dataProvider.port).toBe(87);
         expect(dataProvider.field_object).toBe(field1);
       }
     );
@@ -180,7 +189,7 @@ describe('DataProviderService', () => {
     const eq1: Equipment = new Equipment(1, 'test', 'equipmentTypeTest', test, test2);
     const field1: Field = new Field(1, 'field1', ['test'], 'ceci est un test');
     httpTestingController.expectOne(BASE_URL_API + '/api/dataproviders/');
-    const newDataProvider = new DataProvider(1, 'DataProvider 1', 'test1.py', '1d', true, eq1, '192.168.101.1', field1 );
+    const newDataProvider = new DataProvider(1, 'DataProvider 1', 'test1.py', '1d', true, eq1, '192.168.101.1', 87, field1 );
 
     service.testDataProvider(newDataProvider, true).subscribe();
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/dataproviders/test/');
