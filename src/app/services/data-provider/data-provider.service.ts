@@ -141,8 +141,8 @@ export class DataProviderService {
       dataProvider.recurrence,
       dataProvider.is_activated,
       equipment_id,
-      dataProvider.port,
       dataProvider.ip_address,
+      dataProvider.port,
       field_id,
     );
   }
