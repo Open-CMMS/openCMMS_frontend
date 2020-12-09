@@ -64,7 +64,7 @@
             <ul class="list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
-                    *ngFor="let task of tasks | appFilter:searchText"
+                    *ngFor="let task of tasks | appFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }"
                     >
                   <div class="container-fluid row">
                     <div class="d-flex flex-column col col-lg-9 col-md-12">
@@ -113,5 +113,8 @@
                 </li>
             </ul>
         </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center py-4">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
 </div>

@@ -16,7 +16,7 @@ import { UserProfile } from 'src/app/models/user-profile';
 })
 export class TasksListComponent implements OnInit, OnDestroy {
 
-  // Local Variables
+  // Icon
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
   faPlus = faPlus;
@@ -24,11 +24,13 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faSearch = faSearch;
   taskState: boolean;
 
+  // Local variables
   tasks: Task[] = [];
   currentUser: UserProfile;
   tasksSubscription: Subscription = null;
   currentUserSubscription: Subscription = null;
   myTasks: boolean;
+  p = 1;
 
   // Search text
   searchText = '';
