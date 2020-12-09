@@ -78,6 +78,7 @@ export class NewDataProviderComponent implements OnInit {
       fileName: ['', Validators.required],
       equipment: ['', Validators.required],
       equipment_ip: ['', Validators.required],
+      port: [null],
       field: ['', Validators.required],
       recurrence: ['', [Validators.pattern(regex_time), Validators.required]],
       activated: [true, Validators.required],
@@ -109,22 +110,21 @@ export class NewDataProviderComponent implements OnInit {
       formValues.activated,
       formValues.equipment,
       formValues.equipment_ip,
+      formValues.port,
       formValues.field
     );
     this.dataProviderService.testDataProvider(newDataProvider, false).subscribe(
-      (response) => {
-        if (response) {
-          this.tested = true;
-          this.success = true;
-          this.response = true;
+        (res) => {
+          if (res.data) {
+            this.tested = true;
+            this.success = true;
+          }
+          if (res.error) {
+            this.tested = true;
+            this.success = false;
+          }
         }
-      },
     );
-    if (!this.response) {
-      this.tested = true;
-      this.success = false;
-    }
-    this.response = false;
   }
 
   /**
@@ -139,6 +139,7 @@ export class NewDataProviderComponent implements OnInit {
       formValues.activated,
       formValues.equipment,
       formValues.equipment_ip,
+      formValues.port,
       formValues.field
       );
     this.dataProviderService.createDataProvider(newDataProvider).subscribe(

@@ -18,10 +18,13 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
  */
 export class TeamsListComponent implements OnInit, OnDestroy {
   // Local Variables
-  faTrash = faTrash;
-  faInfoCircle = faInfoCircle;
   teams: Team[] = [];
   teamsSubscription: Subscription;
+  modalTeamName = '';
+
+  // Icons
+  faTrash = faTrash;
+  faInfoCircle = faInfoCircle;
 
   /**
    * Constructor for the TeamList component
@@ -63,6 +66,7 @@ export class TeamsListComponent implements OnInit, OnDestroy {
    * @param team the team concerned by the deletion
    */
   openDelete(content, team: Team) {
+    this.modalTeamName = team.name;
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteTeam(team);

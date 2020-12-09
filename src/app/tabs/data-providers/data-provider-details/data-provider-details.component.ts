@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faTrash, faPen, faSave, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faPen, faSave, faInfoCircle, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Field } from 'src/app/models/field';
@@ -21,6 +21,7 @@ export class DataProviderDetailsComponent implements OnInit {
   faTrash = faTrash;
   faPen = faPen;
   faSave = faSave;
+  faChevronLeft = faChevronLeft;
 
   // onTest variables
   tested = false;
@@ -42,7 +43,8 @@ export class DataProviderDetailsComponent implements OnInit {
     recurrence: false,
     ip_address: false,
     equipment: false,
-    field: false
+    field: false,
+    port: false,
   };
 
 
@@ -78,6 +80,7 @@ export class DataProviderDetailsComponent implements OnInit {
           response.is_activated,
           response.equipment,
           response.ip_address,
+          response.port,
           response.field_object);
         this.loaded = true;
         this.selectedEquipment = this.localDataProvider.equipment;
@@ -121,6 +124,9 @@ export class DataProviderDetailsComponent implements OnInit {
       case 'ip_address':
         this.inputEnabled.ip_address = true;
         break;
+      case 'port':
+        this.inputEnabled.port = true;
+        break;
       case 'field':
         this.inputEnabled.equipment = false;
         this.inputEnabled.field = true;
@@ -163,6 +169,9 @@ export class DataProviderDetailsComponent implements OnInit {
         break;
       case 'ip_address':
         this.inputEnabled.ip_address = false;
+        break;
+      case 'port':
+        this.inputEnabled.port = false;
         break;
       case 'field':
         this.inputEnabled.field = false;
@@ -232,14 +241,16 @@ export class DataProviderDetailsComponent implements OnInit {
    */
   onTest() {
     this.dataProviderService.testDataProvider(this.localDataProvider, true).subscribe(
-      () => {
-        this.tested = true;
-        this.success = true;
+      (res) => {
+        if (res.data) {
+          this.tested = true;
+          this.success = true;
+        }
+        if (res.error) {
+          this.tested = true;
+          this.success = false;
+        }
       },
-      () => {
-        this.tested = true;
-        this.success = false;
-      }
     );
   }
 
@@ -266,6 +277,13 @@ export class DataProviderDetailsComponent implements OnInit {
       }
     },
     () => {});
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onViewListing() {
+    this.router.navigate(['data-providers/']);
   }
 
 }

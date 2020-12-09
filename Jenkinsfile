@@ -18,7 +18,7 @@ pipeline{
         stage ('ANALYSE DU CODE ET TESTS UNITAIRES'){
             when {
                 expression{
-                    return GIT_BRANCH =~ "feature/*"
+                    return GIT_BRANCH =~ "feature/*" || GIT_BRANCH =~ "hotfix/*"
                 }
             }
             parallel{
@@ -69,7 +69,7 @@ pipeline{
         stage("Formatage du code"){
             when {
                 expression{
-                    return GIT_BRANCH =~ "feature/*"
+                    return GIT_BRANCH =~ "feature/*" || GIT_BRANCH =~ "hotfix/*"
                 }
             }
             steps("Application de  l'outil"){

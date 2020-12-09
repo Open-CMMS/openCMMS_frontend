@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { FilterPipe } from './utils/search-filter.pipe';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 describe('TasksListComponent', () => {
   let component: TasksListComponent;
@@ -14,7 +15,7 @@ describe('TasksListComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ TasksListComponent, FilterPipe ],
-      imports: [ RouterTestingModule, HttpClientTestingModule ]
+      imports: [ RouterTestingModule, HttpClientTestingModule, NgxPaginationModule ]
     })
     .compileComponents();
 

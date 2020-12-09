@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Team } from 'src/app/models/team';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TeamService } from 'src/app/services/teams/team.service';
-import { faPencilAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import { faPencilAlt, faTrash, faPlusSquare, faMinusSquare, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { UserProfile } from 'src/app/models/user-profile';
 import { TeamType } from 'src/app/models/team-type';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -29,6 +28,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
   faTrash = faTrash;
   faPlusSquare = faPlusSquare;
   faMinusSquare = faMinusSquare;
+  faChevronLeft = faChevronLeft;
 
   // Local variables
   team: Team = null;
@@ -336,4 +336,12 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
     this.teamTypesSubscription.unsubscribe();
     this.usersSubscription.unsubscribe();
   }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onViewListing() {
+    this.router.navigate(['/teams/']);
+  }
+
 }

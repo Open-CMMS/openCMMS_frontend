@@ -7,7 +7,7 @@ import {EquipmentService} from 'src/app/services/equipments/equipment.service';
 import {Subscription, Subject} from 'rxjs';
 import {EquipmentType} from 'src/app/models/equipment-type';
 import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-type.service';
-import {faMinusSquare, faPlusSquare, faMinusCircle, faPencilAlt, faSave, faPlusCircle} from '@fortawesome/free-solid-svg-icons';
+import {faMinusSquare, faPlusSquare, faMinusCircle, faPencilAlt, faPlusCircle, faCheck, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClient} from '@angular/common/http';
 import {Field} from 'src/app/models/field';
@@ -25,7 +25,8 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   faMinusCircle = faMinusCircle;
   faPlusCircle = faPlusCircle;
   faPencilAlt = faPencilAlt;
-  faSave = faSave;
+  faCheck = faCheck;
+  faTimes = faTimes;
 
   // Local variables
   submitted = false;
@@ -40,20 +41,15 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   filesSubscription: Subscription;
   myFiles: File[] = [];
   files: number[] = [];
-  openField = false;
-  addField = true;
-  editingFieldValid = true;
 
   // Fields
-  field = null;
-  fields = [];
+
   initialFields = [];
-  editingField = [];
+  fields = [];
   fieldTemplate = null;
 
   // Forms
   createForm: FormGroup;
-  addFieldForm: FormGroup;
 
   // Constants
   INIT_FIELD_NAME  = '';
@@ -107,11 +103,6 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
       name: ['', [Validators.required]],
       equipmentType: ['', Validators.required],
       file: ['']
-    });
-    this.addFieldForm = this.formBuilder.group({
-      name: [this.INIT_FIELD_NAME, [Validators.required]],
-      value: [this.INIT_FIELD_VALUE, [Validators.required]],
-      description: [this.INIT_FIELD_DESCRIPTION]
     });
   }
 
@@ -179,40 +170,12 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that set openField to true and addField to false
-   */
-  onOpenField() {
-    this.openField = true;
-    this.addField = false;
-  }
-
-  /**
-   * Function that set openField to false and addField to true
-   */
-  onCloseField() {
-    this.openField = false;
-    this.addField = true;
-  }
-
-  /**
-   * Function to add a field with a name, a value and optionally a description
+   * Function to add a field to the field list: fields
    */
   onAddField() {
-    const formValues = this.addFieldForm.value;
-    const field = {
-      name: formValues.name,
-      value: formValues.value,
-      description: formValues.description
-    };
-    const jsonCopy = JSON.stringify(field);
+    const jsonCopy = JSON.stringify(this.fieldTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     this.fields.push(objectCopy);
-    this.editingField.push(false);
-    this.addFieldForm.controls.name.setValue(this.INIT_FIELD_NAME);
-    this.addFieldForm.controls.value.setValue(this.INIT_FIELD_VALUE);
-    this.addFieldForm.controls.description.setValue(this.INIT_FIELD_DESCRIPTION);
-    this.openField = false;
-    this.addField = true;
   }
 
   /**
@@ -220,9 +183,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    */
   initAddFieldTemplate() {
     this.fieldTemplate = {
-      name: '',
-      value: '',
-      description: ''
+      name: this.INIT_FIELD_NAME,
+      value: this.INIT_FIELD_VALUE,
+      description: this.INIT_FIELD_DESCRIPTION
     };
   }
 
@@ -237,36 +200,11 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
         (response) => {
           this.equipmentType = response;
           this.equipmentTypeFields = response.field;
+          response.field.forEach(field => {
+            this.initialFields.push({field: field.id, name: field.name, value: '', description: ''});
+          });
         }
       );
-  }
-
-  /**
-   * Fonction to modify the value of the field that correspond to the selected equipment type
-   * @param event the value of the field
-   * @param index the index of the modified field
-   */
-  modifyEquipmentTypeFieldValue(event, index) {
-    const field = this.equipmentTypeFields[index].id;
-    const name = this.equipmentTypeFields[index].name;
-    const value = ((event.id === 'field-value-text') || (event.id === 'field-value-select')) ? event.value : '';
-    const description = (event.id === 'field-description') ? event.value : '';
-    let alreadyInInitialFields = false;
-    this.initialFields.forEach(element => {
-      if (element.field === field) {
-        alreadyInInitialFields = true;
-        if ((event.id === 'field-value-text') || (event.id === 'field-value-select')) {
-          element.value = event.value;
-        } else {
-          element.description = event.value;
-        }
-      }
-    });
-    if (!(alreadyInInitialFields)) {
-      const jsonCopy = JSON.stringify({field, name, value, description});
-      const objectCopy = JSON.parse(jsonCopy);
-      this.initialFields.splice(index, 1, objectCopy);
-    }
   }
 
   /**
@@ -277,7 +215,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     if ((this.equipmentTypeFields.length === this.initialFields.length)) {
       if ((this.equipmentTypeFields.length !== 0)) {
         this.initialFields.forEach(element => {
-          if (!(element.value)) {
+          if (element.value === '') {
             missing_value = true;
           }
         });
@@ -289,53 +227,28 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function to delete a field in the form
-   * @param i the index of the field
+   * Function to delete a field.
+   * @param i the position of the field to delete.
    */
   deleteField(i: number) {
     this.fields.splice(i, 1);
-    this.editingField.splice(i, 1);
   }
 
+  /**
+   * ngOnDestroy
+   */
   ngOnDestroy() {
     this.filesSubscription.unsubscribe();
     this.equipmentTypesSubscription.unsubscribe();
   }
 
   /**
-   * Function to know if we are editing a specific field.
-   * @param field the field
-   */
-  isEditingField(field) {
-    const indexOf = this.fields.indexOf(field);
-    return this.editingField[indexOf];
-  }
-
-  /**
-   * Function to verify if the name and the value of the edited field are not empty.
-   * @param field the field
-   */
-  isEditingFieldValid(field) {
-    this.editingFieldValid = (field.name.length === 0 || field.value.length === 0);
-    return this.editingFieldValid;
-  }
-
-  /**
-   * Function to edit a specific field in the list of field
-   * @param field the field
-   */
-  onEditField(field) {
-    const indexOf = this.fields.indexOf(field);
-    this.editingField[indexOf] = !this.editingField[indexOf];
-  }
-
-  /**
-   * Function to verify if the form can be validate, in particular if one field is being editing
+   * Function to check if all the fields are completed.
    */
   canValidateForm() {
     let canValidateForm = true;
-    this.editingField.forEach(element => {
-      if (element) {
+    this.fields.forEach(field => {
+      if (!this.fieldIsFill(field)) {
         canValidateForm = false;
       }
     });
@@ -343,20 +256,23 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function call on submit addFieldForm form.
+   * Function to check if a field line is completed.
+   * @param field the field to check
    */
-  onSubmitField() {
-    if (this.addFieldForm.invalid) {
-      return;
+  canValidateLine(field) {
+    let filled = true;
+    if (!this.fieldIsFill(field)) {
+      filled = false;
     }
+    return filled;
   }
 
   /**
-   * Function to know if a object is empty
-   * @param obj the object
+   * Function to check if a field is completed
+   * @param field the field to check
    */
-  isEmpty(obj) {
-    return Object.keys(obj).length === 0;
+  fieldIsFill(field) {
+    return (field.name !== this.INIT_FIELD_NAME && field.value !== this.INIT_FIELD_VALUE);
   }
 
 }

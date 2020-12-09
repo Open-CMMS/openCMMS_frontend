@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Subscription, Subject, Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription, Subject } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,10 +21,11 @@ import {
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FileService } from 'src/app/services/files/file.service';
 import { Template } from 'src/app/models/template';
-import { TemplateService } from 'src/app/services/templates/template.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { UserProfile } from 'src/app/models/user-profile';
 import { durationRegex } from 'src/app/shares/consts';
+import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
+import {EquipmentType} from '../../../models/equipment-type';
 
 @Component({
   selector: 'app-new-task',
@@ -35,10 +36,13 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   // Local variables
   equipments: Equipment[];
+  equipment_types: EquipmentType[];
+  equipment_or_equipment_type = 'no-equipment';
   teams: Team[];
 
   teamSubscription: Subscription;
   equipmentSubscription: Subscription;
+  equipmentTypeSubscription: Subscription;
   creationError = false;
 
   // Icons
@@ -54,12 +58,14 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   // Multiple Select
   teamsList = [];
   equipmentList = [];
+  equipmentTypesList = [];
   triggerConditionsList = [];
   selectedTriggerCondition = [];
   endConditionsList = [];
   selectedEndConditions = [];
   dropdownTeamsSettings: IDropdownSettings;
   dropdownEquipmentsSettings: IDropdownSettings;
+  dropdownEquipmentTypesSettings: IDropdownSettings;
   dropdownTriggerConditionsSettings: IDropdownSettings;
   dropdownEndConditionsSettings: IDropdownSettings;
 
@@ -75,7 +81,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   // Files
   filesSubject = new Subject<File[]>();
-  filesSubscription: Subscription;
   newFiles: any[] = []; // {name, data}
   templateFiles: any[] = []; // {id, name}
 
@@ -84,7 +89,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   // Templates
   templates: Template[] = [];
-  templatesSubscription: Subscription;
   selectedTemplate: Template = null;
   requirements: any = null;
 
@@ -101,13 +105,16 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * @param teamService the service to communicate with backend on Team objects
    * @param taskService the service to communicate with backend on Task objects
    * @param equipmentService the service to communicate with backend on Equipment
+   * @param equipmentTypeService the service to communicate with backend on EquipmentType
    * @param fileService the service to communicate with backend on File
    * @param formBuilder the service to handle forms
+   * @param authService the service to handle authentication
    */
   constructor(private router: Router,
               private taskService: TaskService,
               private teamService: TeamService,
               private equipmentService: EquipmentService,
+              private equipmentTypeService: EquipmentTypeService,
               private fileService: FileService,
               private formBuilder: FormBuilder,
               private authService: AuthenticationService
@@ -136,6 +143,12 @@ export class NewTaskComponent implements OnInit, OnDestroy {
         this.equipments = equipments;
         this.initEquipmentsSelect();
       }
+    );
+    this.equipmentTypeSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
+        (equipment_types: EquipmentType[]) => {
+          this.equipment_types = equipment_types;
+          this.initEquipmentTypesSelect();
+        }
     );
     this.currentUserSubscription = this.authService.currentUserSubject.subscribe(
       (currentUser) => {
@@ -167,13 +180,23 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       for (const team of this.selectedTemplate.teams) {
         tempTeams.push({id: team.id.toString(), value: team.name});
       }
+      let equipment_or_equipment_type = 'no-equipment';
+      if (this.selectedTemplate.equipment) {
+          equipment_or_equipment_type = 'equipment';
+      } else {
+        if (this.selectedTemplate.equipment_type) {
+          equipment_or_equipment_type = 'equipment_type';
+        }
+      }
       // Loading basic informations from template
       this.createForm.setValue({
         name: '',
         description: this.selectedTemplate.description,
         end_date: this.selectedTemplate.end_date,
         duration: this.selectedTemplate.duration,
-        equipment: this.selectedTemplate.equipment.id.toString(),
+        equipment: this.selectedTemplate.equipment ? this.selectedTemplate.equipment.id.toString() : null,
+        equipment_type: this.selectedTemplate.equipment_type ? this.selectedTemplate.equipment_type.id.toString() : null,
+        equipment_or_equipment_type,
         teams: tempTeams,
         file: ''
       });
@@ -203,6 +226,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       end_date: null,
       duration: '',
       equipment: '',
+      equipment_type: '',
+      equipment_or_equipment_type: '',
       teams: '',
       file: ''
     });
@@ -346,8 +371,22 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       singleSelection: true,
       idField: 'id',
       textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
+      allowSearchFilter: true
+    };
+  }
+
+  /**
+   * Function that initialize the select for the equipment type
+   */
+  initEquipmentTypesSelect() {
+    this.equipmentTypesList = [];
+    this.equipment_types.forEach(equipment_type => {
+      this.equipmentTypesList.push({id: equipment_type.id.toString(), value: equipment_type.name});
+    });
+    this.dropdownEquipmentTypesSettings = {
+      singleSelection: true,
+      idField: 'id',
+      textField: 'value',
       allowSearchFilter: true
     };
   }
@@ -357,7 +396,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   */
 
   /**
-   * Function that adds a file in the right array depending on the origin of the file (template or additionnal)
+   * Function that adds a file in the right array depending on the origin of the file (template or additional)
    * @param event the event triggered by the file input on upload
    */
   onAddFile(event) {
@@ -372,7 +411,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   /**
    * Function that is triggered when a file is removed from the files uploaded(when button "Minus" is pressed)
-   * @param file file that need to be removed
+   * @param files the list
+   * @param fileId id of the file hat need to be removed
    */
   onRemoveFile(files: any[], fileId: any) {
     let index: number;
@@ -395,10 +435,12 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
     this.createForm = this.formBuilder.group({
       name: ['', Validators.required],
-      description: ['', Validators.required],
+      description: [''],
       end_date: [null],
       duration: ['', Validators.pattern(localDurationRegex)],
+      equipment_or_equipment_type: [''],
       equipment: [''],
+      equipment_type: [''],
       teams: [''],
       file: ['']
     });
@@ -425,10 +467,14 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       });
     }
 
-    const equipment = formValues.equipment ? formValues.equipment : null;
+    const equipment = (
+        formValues.equipment && (formValues.equipment_or_equipment_type === 'equipment')
+    ) ? formValues.equipment[0].id : null;
+    const equipment_type = (
+        formValues.equipment_type && (formValues.equipment_or_equipment_type === 'equipment_type')
+    ) ? formValues.equipment_type[0].id : null;
     const end_date = formValues.end_date ? this.taskService.normaliseEndDateValue(formValues.end_date) : null;
     const duration = formValues.duration ? this.taskService.normaliseDurationValue(formValues.duration, ['d', 'h', 'm']) : '';
-    const over = false;
 
     const trigger_conditions: any[] = [];
     if (this.triggerConditions.length > 0) {
@@ -464,20 +510,17 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     // Here we use an async function to wait for all the file to be uploaded before creating the task
     this.uploadFiles(files).then(
       (_) => {
-        const newTask = new Task(1,
-                                formValues.name,
-                                formValues.description,
-                                end_date,
-                                duration,
-                                false,
-                                equipment,
-                                teams,
-                                files,
-                                over,
-                                trigger_conditions,
-                                end_conditions);
-
-        this.taskService.createTask(newTask).subscribe(
+        this.taskService.createTask(
+            formValues.name,
+            formValues.description,
+            end_date,
+            duration, equipment,
+            equipment_type,
+            teams,
+            files,
+            trigger_conditions,
+            end_conditions
+        ).subscribe(
           (task: Task) => {
             this.router.navigate(['/tasks']);
             this.taskService.getTasks();

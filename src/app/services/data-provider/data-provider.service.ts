@@ -78,6 +78,7 @@ export class DataProviderService {
               element.is_activated,
               element.equipment,
               element.ip_address,
+              element.port,
               element.field_object);
             this.dataProviders.push(dataProvider);
           });
@@ -141,6 +142,7 @@ export class DataProviderService {
       dataProvider.is_activated,
       equipment_id,
       dataProvider.ip_address,
+      dataProvider.port,
       field_id,
     );
   }

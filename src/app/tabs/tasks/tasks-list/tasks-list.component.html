@@ -3,7 +3,7 @@
         <h4 class="modal-title" id="modal-delete">Delete Task</h4>
     </div>
     <div class="modal-body">
-        <p>Are you sure you want to delete this task ?</p>
+        <p>Are you sure you want to delete <span class="font-weight-bold">{{ modalTaskName }} ? </span></p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
@@ -12,8 +12,9 @@
 </ng-template>
 
 <div class="container-fluid justify-content-center col-md-8 mt-3">
-    <div class="d-flex flex-wrap justify-content-between align-items-center">
-      <h3 class="font-weight-bold">Tasks Management</h3>
+    <div class="d-flex flex-wrap justify-content-between align-items-center mt-md-4 mb-md-4">
+      <h3 *ngIf="taskState" class="font-weight-bold">My Tasks</h3>
+      <h3 *ngIf="!taskState" class="font-weight-bold">Task Management</h3>
       <div class="my-3" *ngIf="onAddTeamPermission()">
         <button class="btn btn-primary" *ngIf="onAddTeamPermission" (click)="onCreateTask()"><fa-icon [icon]="faPlus"></fa-icon> Create new task</button>
       </div>
@@ -63,10 +64,10 @@
             <ul class="list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
-                    *ngFor="let task of tasks | appFilter:searchText"
+                    *ngFor="let task of tasks | appFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }"
                     >
-                  <div class="container-fluid row justify-content-between">
-                    <div class="d-flex flex-column">
+                  <div class="container-fluid row">
+                    <div class="d-flex flex-column col col-lg-9 col-md-12">
                       <div class="d-flex align-items-center">
                         <h5 class="my-0" (click)="onViewTask(task)">{{ task.name }}</h5>
                         <fa-icon class="ml-2" [icon]="faCheck" *ngIf="task.over" style="color: green;"></fa-icon>
@@ -85,13 +86,35 @@
                         </div>
                       </div>
                     </div>
-                    <div class="d-flex justify-content-end">
-                      <button class="btn btn-info mr-2 my-2" (click)="onViewTask(task)"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
-                      <button class="btn btn-danger my-2" (click)="openDelete(contentDelete, task)" *ngIf="onDeleteTaskPermission()"><fa-icon [icon]="faTrash"></fa-icon></button>
+                    <div class="d-flex align-items-center col-lg-3 col-md-12 justify-content-end">
+                        <a class="mr-3 my-2"
+                           style="cursor:pointer;"
+                           (click)="onViewTask(task)"
+                           ngbTooltip="Info"
+                           placement="bottom"
+                        >
+                            <fa-icon class="fa-lg"
+                                    [icon]="faInfoCircle"
+                                    style="color:gray;"></fa-icon>
+                        </a>
+                        <a class="my-2"
+                           style="cursor:pointer;"
+                           (click)="openDelete(contentDelete, task)"
+                           *ngIf="onDeleteTaskPermission()"
+                           ngbTooltip="Delete"
+                           placement="bottom"
+                        >
+                            <fa-icon class="fa-lg"
+                                     [icon]="faTrash"
+                                     style="color:#dc3545"></fa-icon>
+                        </a>
                     </div>
                   </div>
                 </li>
             </ul>
         </div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center py-4">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
 </div>

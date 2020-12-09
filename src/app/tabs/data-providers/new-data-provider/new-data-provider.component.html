@@ -1,5 +1,5 @@
-<div class="container-fluid col-md-5 mt-3 justify-content-center" style="margin-bottom: 100px">
-    <div class="d-flex flex-wrap my-5">
+<div class="container-fluid col-md-8 mt-3 justify-content-center">
+    <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <h2 class="font-weight-bold">Create a new data provider</h2>
     </div>
         <form [formGroup]="createForm" (ngSubmit)="onCreateDataProvider()">
@@ -26,6 +26,10 @@
         <div class="form-group">
             <label for="equipment_ip">Equipment IP</label>
             <input type="text" class="form-control" id="equipment_ip" formControlName="equipment_ip">
+        </div>
+        <div class="form-group">
+            <label for="port">Port</label>
+            <input type="number" class="form-control" id="port" formControlName="port">
         </div>
         <div class="form-group">
             <label for="field">Field</label>

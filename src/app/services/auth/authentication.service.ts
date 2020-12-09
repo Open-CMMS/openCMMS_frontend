@@ -141,7 +141,25 @@ export class AuthenticationService {
   }
 
   /**
-   * Function that verifies is the access to set a password is valid
+   * Function that verifies if the password is correct
+   * @param username the user
+   * @param password the user password
+   */
+  verifyPassword(username: string, password: string) {
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/x-www-form-urlencoded'
+      })
+    };
+
+    const params = new HttpParams().set('username', username).set('password', password);
+
+    return this.httpClient.post<any>(this.BASE_URL_API + '/api/usersmanagement/check_password', params, httpOptions );
+  }
+
+  /**
+   * Function that verifies if the access to set a password is valid
    * @param username the user that wants to reset his password
    * @param token the token given in the URL by the API
    */

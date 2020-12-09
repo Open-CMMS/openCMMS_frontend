@@ -62,6 +62,7 @@ import { DataProviderManagementComponent } from './tabs/data-providers/data-prov
 import { DataProviderListComponent } from './tabs/data-providers/data-provider-list/data-provider-list.component';
 import { NewDataProviderComponent } from './tabs/data-providers/new-data-provider/new-data-provider.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -104,7 +105,7 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     DataProviderManagementComponent,
     DataProviderListComponent,
     NewDataProviderComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -115,6 +116,7 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     NgbModule,
     BrowserAnimationsModule,
     appRoutingModule,
+    NgxPaginationModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
