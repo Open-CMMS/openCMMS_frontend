@@ -93,6 +93,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   newFile: any = null;
   fileToUpload: any[] = [];
   fileCheck: boolean;
+  fileTypeCheck: boolean;
 
   // End conditions
   endConditionValues: any = {};
@@ -154,6 +155,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     let id: number;
     this.fileCheck = true;
+    this.fileTypeCheck = true;
     this.route.params.subscribe(params => {
       id = +params.id;
     });
@@ -389,7 +391,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * Function that get the size of the file the user want to upload.
    * @param content the modal to open
    */
-  getSizeFile(content) {
+  getFileInfo(content) {
+    if (content.target.files[0].type === 'image/png'
+        || content.target.files[0].type === 'image/jpeg'
+        || content.target.files[0].type === 'application/pdf') {
+          this.fileTypeCheck = true;
+    } else {
+      this.fileTypeCheck = false;
+    }
     if (content.target.files[0].size / 1000000 <= 10) {
     this.fileCheck = true;
     } else {
@@ -401,6 +410,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    */
   isSizeFileOk(): boolean {
     return this.fileCheck;
+  }
+  /**
+   * Provide a boolean which allow us to know if the type of the file is correct.
+   */
+  isTypeFileOk(): boolean {
+    return this.fileTypeCheck;
   }
   /**
    * Function that is triggered to load the modal template for team addition
