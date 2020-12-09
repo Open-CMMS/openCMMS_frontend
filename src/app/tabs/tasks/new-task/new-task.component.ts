@@ -40,6 +40,9 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   equipment_or_equipment_type = 'no-equipment';
   teams: Team[];
 
+  triggerConditionRecurrenceName = 'Recurrence';
+  selectedFieldObject: any;
+
   teamSubscription: Subscription;
   equipmentSubscription: Subscription;
   equipmentTypeSubscription: Subscription;
@@ -217,6 +220,14 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function that retrieve the recurrence trigger condition
+   */
+  getTriggerConditionRecurrence(triggerCondition) {
+    const temp = triggerCondition.triggerConditionsList.find(tc => tc.value === this.triggerConditionRecurrenceName);
+    return temp;
+  }
+
+  /**
    * Function that reset all the fields when the template is unselected
    */
   emptyFields() {
@@ -260,14 +271,17 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * @param trigger_conditions_types the array with the different types of trigger conditions
    */
   initTriggerConditionSelectTemplate(trigger_conditions_types: any[]) {
+    const temp = [trigger_conditions_types.find(tc => tc.value === this.triggerConditionRecurrenceName)];
     this.triggerConditionSelectTemplate = {
         selectedTriggerCondition: [],
         triggerConditionsList: trigger_conditions_types,
+        triggerConditionsListRecurrenceOnly: temp,
         dropdownTriggerConditionsSettings: {
           singleSelection: true,
           idField: 'id',
           textField: 'value',
-          allowSearchFilter: true
+          allowSearchFilter: true,
+          closeDropDownOnSelection: true
         },
         value: null,
         description: null
@@ -319,7 +333,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
           singleSelection: true,
           idField: 'id',
           textField: 'value',
-          allowSearchFilter: true
+          allowSearchFilter: true,
+          closeDropDownOnSelection: true
         },
         description: null
       };
@@ -371,7 +386,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       singleSelection: true,
       idField: 'id',
       textField: 'value',
-      allowSearchFilter: true
+      allowSearchFilter: true,
+      closeDropDownOnSelection: true
     };
   }
 
@@ -387,7 +403,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       singleSelection: true,
       idField: 'id',
       textField: 'value',
-      allowSearchFilter: true
+      allowSearchFilter: true,
+      closeDropDownOnSelection: true
     };
   }
 
@@ -483,7 +500,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
           field: triggerCondition.selectedTriggerCondition[0].id,
           name: triggerCondition.selectedTriggerCondition[0].value,
           description: triggerCondition.description,
-          value: triggerCondition.value
+          value: triggerCondition.value,
+          delay: triggerCondition.delay
         });
       }
     }
