@@ -83,6 +83,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   filesSubject = new Subject<File[]>();
   newFiles: any[] = []; // {name, data}
   templateFiles: any[] = []; // {id, name}
+  fileTypeCheck: boolean;
+  fileCheck: boolean;
 
   // Forms
   createForm: FormGroup;
@@ -159,6 +161,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     this.authService.emitCurrentUser();
     this.equipmentService.emitEquipments();
     this.initForm();
+    this.fileTypeCheck = true;
+    this.fileCheck = true;
   }
 
   /*
@@ -400,13 +404,15 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * @param event the event triggered by the file input on upload
    */
   onAddFile(event) {
-    const filepath = event.target.files[0].name.split('/');
-    const fileName = filepath[filepath.length - 1];
-    let formData: FormData;
-    formData = new FormData();
-    formData.append('file', event.target.files[0], event.target.files[0].name);
-    formData.append('is_manual', 'true' );
-    this.newFiles.push({name: fileName, data: formData});
+    if (this.isSizeFileOk() && this.isTypeFileOk()) {
+      const filepath = event.target.files[0].name.split('/');
+      const fileName = filepath[filepath.length - 1];
+      let formData: FormData;
+      formData = new FormData();
+      formData.append('file', event.target.files[0], event.target.files[0].name);
+      formData.append('is_manual', 'true' );
+      this.newFiles.push({name: fileName, data: formData});
+      }
   }
 
   /**
@@ -426,6 +432,36 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     }
   }
 
+ /**
+  * Function that get the size of the file the user want to upload.
+  * @param content the modal to open
+  */
+  getFileInfo(content) {
+    if (content.target.files[0].type === 'image/png'
+        || content.target.files[0].type === 'image/jpeg'
+        || content.target.files[0].type === 'application/pdf') {
+          this.fileTypeCheck = true;
+    } else {
+      this.fileTypeCheck = false;
+    }
+    if (content.target.files[0].size / 1000000 <= 10) {
+    this.fileCheck = true;
+    } else {
+      this.fileCheck = false;
+    }
+  }
+  /**
+   * Provide a boolean which allow us to know if the size of the file is correct.
+   */
+  isSizeFileOk(): boolean {
+    return this.fileCheck;
+  }
+  /**
+   * Provide a boolean which allow us to know if the type of the file is correct.
+   */
+  isTypeFileOk(): boolean {
+    return this.fileTypeCheck;
+  }
   /**
    * Function that initialize the fields in the form to create a new Team
    */

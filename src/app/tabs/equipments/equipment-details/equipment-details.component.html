@@ -53,14 +53,17 @@
             <form class="form" [formGroup]="equipmentUpdateForm">
                 <div class="form-group">
                     <label for="files">Files</label>
-                    <input type="file" id="files" class="form-control" (change)="onFileUpload($event)">
+                    <input type="file" accept="image/*,application/pdf" id="files" class="form-control text-truncate" (change)="getFileInfo($event);onFileUpload($event)">
+                    <small *ngIf="isSizeFileOk() && isTypeFileOk()" class="text-muted">This file will be added as a manual.</small>
+                    <small *ngIf="!isSizeFileOk()" class="alert-danger">The size of the file must be under 10 Mo.</small>
+                    <small *ngIf="!isTypeFileOk()" class="alert-danger">The file must be an image or a PDF.</small>
                 </div>
             </form>
         </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Add</button>
+        <button type="button" [disabled]="!isSizeFileOk()|| !isTypeFileOk()" class="btn btn-success" (click)="modal.close('OK')">Add</button>
     </div>
 </ng-template>
 
