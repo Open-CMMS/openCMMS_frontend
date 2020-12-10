@@ -158,6 +158,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
     this.authService.emitCurrentUser();
     this.equipmentService.emitEquipments();
+    this.equipmentTypeService.emitEquipmentTypes();
     this.initForm();
   }
 
