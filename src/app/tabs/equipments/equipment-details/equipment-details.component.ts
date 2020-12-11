@@ -15,6 +15,7 @@ import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-t
 import {EquipmentType} from 'src/app/models/equipment-type';
 import {Subscription} from 'rxjs/internal/Subscription';
 import {Field} from '../../../models/field';
+import {UrlService} from "../../../services/shared/url.service";
 
 @Component({
   selector: 'app-equipment-details',
@@ -66,6 +67,7 @@ export class EquipmentDetailsComponent implements OnInit {
   equipmentTypeModified = false;
   currentSelectFields: [];
   isCurrentEquipmentTypeFields = [];
+  previousUrl = '';
 
   // Constants
   INIT_FIELD_NAME  = '';
@@ -91,13 +93,17 @@ export class EquipmentDetailsComponent implements OnInit {
               private authenticationService: AuthenticationService,
               private utilsService: UtilsService,
               private fileService: FileService,
-              private equipmentTypeService: EquipmentTypeService) {
+              private equipmentTypeService: EquipmentTypeService,
+              private urlService: UrlService) {
   }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     this.filesId = [];
     this.myFiles = [];
     this.myFilesPath = [];
@@ -599,7 +605,7 @@ export class EquipmentDetailsComponent implements OnInit {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['equipments/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 }
