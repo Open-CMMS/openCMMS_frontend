@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import {UrlService} from "./services/shared/url.service";
+import {UrlService} from 'src/app/services/shared/url.service';
 
 @Component({
   selector: 'app-root',
