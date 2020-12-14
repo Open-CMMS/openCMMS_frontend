@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
 import { CrossMatch } from 'src/app/shares/cross-match.validator';
 import {TeamService} from '../../../services/teams/team.service';
 import {Team} from '../../../models/team';
-import {UrlService} from "../../../services/shared/url.service";
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-user-details',

@@ -57,7 +57,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   INIT_FIELD_NAME  = '';
   INIT_FIELD_VALUE = '';
   INIT_FIELD_DESCRIPTION = '';
-  
+
 
   /**
    * Constructor for the NewEquipmentComponent

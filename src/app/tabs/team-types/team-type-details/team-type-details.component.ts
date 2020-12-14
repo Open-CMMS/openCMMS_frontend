@@ -12,7 +12,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { faInfoCircle, faPencilAlt, faTrash, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
-import {UrlService} from "../../../services/shared/url.service";
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-user-details',
