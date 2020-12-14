@@ -100,8 +100,13 @@ export class SigninComponent implements OnInit {
       })
       .catch(
         error => {
-          this.error = error.error;
-          this.loading = false;
+            if (error.error === 'User has no team') {
+                this.error = 'No Team assigned. Contact the administrator to solve this problem.';
+                this.loading = false;
+            } else {
+                this.error = error.error;
+                this.loading = false;
+            }
         }
       );
   }
