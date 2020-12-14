@@ -77,6 +77,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
           this.myTasks = true;
         } else { // path equals tasks-management: all the tasks are displayed
           this.taskState = false;
+          this.taskService.getTasks();
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
