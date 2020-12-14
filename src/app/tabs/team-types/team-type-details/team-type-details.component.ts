@@ -61,6 +61,7 @@ export class TeamTypeDetailsComponent implements OnInit {
    * @param formBuilder the service to handle forms
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
+   * @param urlService the service used to handle URL
    */
   constructor(private router: Router,
               private teamTypeService: TeamTypeService,

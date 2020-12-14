@@ -143,6 +143,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param authenticationService the service used to handle authentication
    * @param formBuilder the service used to handle forms
    * @param fileService the service used to handle files
+   * @param urlService the service used to handle URL
    */
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,

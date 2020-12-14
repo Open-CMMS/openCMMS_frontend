@@ -62,6 +62,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
    * @param modalService the service used to handle modal windows
    * @param authenticationService the auth service
    * @param utilsService the service used for useful functions
+   * @param urlService the service used to handle URL
    */
   constructor(private router: Router,
               private userService: UserService,
