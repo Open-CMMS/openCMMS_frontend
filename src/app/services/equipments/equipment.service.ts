@@ -31,11 +31,11 @@ export class EquipmentService {
    */
   getEquipments() {
     this.equipments = [];
-    this.httpClient.get<Equipment[]>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/')
+    this.httpClient.get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/')
                   .subscribe(
                     (response) => {
                       response.forEach(element => {
-                        const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files, element.fields);
+                        const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files, element.field);
                         this.equipments.push(equipment);
                       });
                       this.emitEquipments();

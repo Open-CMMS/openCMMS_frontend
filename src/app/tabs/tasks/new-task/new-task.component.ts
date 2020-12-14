@@ -40,7 +40,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   equipment_or_equipment_type = 'no-equipment';
   teams: Team[];
 
-  triggerConditionRecurrenceName = 'Recurrence';
   selectedFieldObject: any;
 
   teamSubscription: Subscription;
@@ -77,6 +76,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   triggerConditionSelectTemplate = null;
   triggerConditionDurationRegex: string;
   triggerConditionDurationError = false;
+  triggerConditionRecurrenceName = 'Recurrence';
 
   // End Conditions
   endConditions = [];
@@ -100,7 +100,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   currentUserSubscription: Subscription;
 
   // Equipments
-  selectedEquipment: Equipment = null;
+  selectedEquipment: any = null;
+  selectedEquipmentIdValue: any = null;
 
   /**
    * Constructor for the NewTeamComponent
@@ -254,6 +255,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   addTriggerCondition() {
     const jsonCopy = JSON.stringify(this.triggerConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
+    objectCopy.id = this.triggerConditions.length;
     this.triggerConditions.push(objectCopy);
   }
 
@@ -262,7 +264,21 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * @param i the index of the trigger condition
    */
   deleteTriggerCondition(i: number) {
-    this.triggerConditions.splice(i, 1);
+    const temp = this.triggerConditions.splice(i, 1);
+  }
+
+  /**
+   * Function that removes specific trigger conditions id the equipment is unselected
+   */
+  removeForbiddenFields() {
+    if (this.createForm.value.equipment_or_equipment_type === 'no-equipment') {
+      this.selectedEquipmentIdValue = null;
+      for (const tc of this.triggerConditions) {
+        if (tc.selectedTriggerCondition[0] && tc.selectedTriggerCondition[0].value !== this.triggerConditionRecurrenceName) {
+          this.triggerConditions.splice(this.triggerConditions.indexOf(tc), 1);
+        }
+      }
+    }
   }
 
   /**
@@ -284,7 +300,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
           closeDropDownOnSelection: true
         },
         value: null,
-        description: null
+        description: null,
+        field: null
       };
   }
 
@@ -309,6 +326,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   addEndCondition() {
     const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
+    objectCopy.id = this.endConditions.length;
     this.endConditions.push(objectCopy);
   }
 
@@ -380,7 +398,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   initEquipmentsSelect() {
     this.equipmentList = [];
     this.equipments.forEach(equipment => {
-      this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
+      this.equipmentList.push({id: equipment.id.toString(), value: equipment.name, fields: equipment.fields});
     });
     this.dropdownEquipmentsSettings = {
       singleSelection: true,
@@ -389,6 +407,16 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       allowSearchFilter: true,
       closeDropDownOnSelection: true
     };
+  }
+
+  /**
+   * Function that set the right equipment in the varaible selectedEquipment for field selection in the trigger conditions display
+   * @param equipment the equipment selected
+   */
+  setSelectedEquipment(equipment: any) {
+    if (equipment) {
+      this.selectedEquipment = this.equipmentList.find(eq => eq.id === equipment[0]?.id);
+    }
   }
 
   /**
@@ -501,7 +529,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
           name: triggerCondition.selectedTriggerCondition[0].value,
           description: triggerCondition.description,
           value: triggerCondition.value,
-          delay: triggerCondition.delay
+          delay: triggerCondition.delay,
+          field_object_id: triggerCondition.field_object.id
         });
       }
     }

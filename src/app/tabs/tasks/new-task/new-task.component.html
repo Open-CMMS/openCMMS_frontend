@@ -33,7 +33,7 @@
         </div>
         <div class="form-group">
             <label for="equipment">Equipment</label>
-           <div class="px-2" ngbRadioGroup>
+           <div class="px-2" ngbRadioGroup (change)="removeForbiddenFields()">
                <input  class="" type="radio" id="no-equipment" value="no-equipment"  formControlName="equipment_or_equipment_type" name="equipment_or_equipment_type" [ngModel]="equipment_or_equipment_type">
                <label class="col-sm-3" for="no-equipment">No equipment</label>
 
@@ -51,9 +51,10 @@
                     [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}"
                     [settings]="dropdownEquipmentsSettings"
                     [data]="equipmentList"
+                    [(ngModel)]="selectedEquipmentIdValue"
+                    (ngModelChange)="setSelectedEquipment(selectedEquipmentIdValue)"
                     formControlName="equipment"
-            >
-            </ng-multiselect-dropdown>
+            ></ng-multiselect-dropdown>
         </div>
         <div class="form-group">
             <ng-multiselect-dropdown
@@ -63,11 +64,10 @@
                     [settings]="dropdownEquipmentTypesSettings"
                     [data]="equipmentTypesList"
                     formControlName="equipment_type"
-            >
-            </ng-multiselect-dropdown>
+            ></ng-multiselect-dropdown>
         </div>
         <div class="form-group">
-            <label for="end_date">Task end date </label>
+            <label for="end_date">Task end date</label>
             <div class="input-group">
                 <input class="form-control" placeholder="yyyy-mm-dd" id="end_date"
                         name="end_date" ngbDatepicker #endDatePicker="ngbDatepicker" formControlName="end_date">
@@ -103,7 +103,7 @@
         </div>
         <div class="row col-md-12 form-group" *ngFor="let triggerCondition of triggerConditions.reverse(); let i = index">
             <div class="input-group align-items-center">
-                <button class="btn btn-link my-1" style="padding-left: 0px;" ngbTooltip="Delete" placement="bottom" (click)="deleteTriggerCondition(i)">
+                <button type="button" class="btn btn-link my-1" style="padding-left: 0px;" ngbTooltip="Delete" placement="bottom" (click)="deleteTriggerCondition(triggerCondition.id)">
                     <fa-icon [icon]="faMinusCircle"  style="color: red;font-size: 22px;"></fa-icon>
                 </button>
                 <ng-multiselect-dropdown 
@@ -114,8 +114,7 @@
                     name="triggerCondition"
                     class="col-md-4 mr-md-1 my-1"
                     style="padding-left: 0px;padding-right: 0px;"
-                >
-                </ng-multiselect-dropdown>
+                ></ng-multiselect-dropdown>
 
                 <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === triggerConditionRecurrenceName">
                     <input 
@@ -144,6 +143,10 @@
                 </div>
 
                 <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value !== triggerConditionRecurrenceName">
+                    <select id="field-object" class="form-control my-1 mx-md-1" [(ngModel)]="triggerCondition.field_object" [ngModelOptions]="{standalone: true}">
+                        <option [ngValue]="null" defaultSelected="selected">Select a field to monitor ...</option>
+                        <option *ngFor="let field of selectedEquipment?.fields" [ngValue]="field">{{ field.field_name }}</option>
+                    </select>
                     <input 
                     class="form-control my-1 mx-md-1"
                     type="text"
@@ -163,10 +166,6 @@
                     #triggerConditionDelay
                     [(ngModel)]="triggerCondition.delay"
                     [ngModelOptions]="{standalone: true}">
-                    <select id="field-object" class="form-control my-1 mx-md-1">
-                        <option [ngValue]="null" defaultSelected="selected">Select a field to monitor ...</option>
-                        <option *ngFor="let equipment of createForm.value.equipment.field_objects" [ngValue]="selectedFieldObject">{{ selectedFieldObject.name }}</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -179,7 +178,7 @@
         </div>
         <div class="form-group" *ngFor="let endCondition of endConditions.reverse(); let i = index">
             <div class="input-group align-items-center">
-                <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(i)">
+                <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(endCondition.id)">
                     <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
                   </button>
                 <ng-multiselect-dropdown
