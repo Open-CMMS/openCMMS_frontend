@@ -31,7 +31,7 @@
         <h4 class="modal-title" id="modal-add-file">Add a new file</h4>
     </div>
     <div class="modal-body">
-        <input accept='image/*,appliaction/pdf' type="file" class="form-control text-truncate" (change)="getFileInfo($event,'assoc');onSetFileToUpload($event)">
+        <input accept='image/*,application/pdf' type="file" class="form-control text-truncate" (change)="getFileInfo($event,'assoc');onSetFileToUpload($event)">
         <small *ngIf="isSizeFileOk() && isTypeFileOk()" class="text-muted">This file will be added as a manual.</small>
         <small *ngIf="!isSizeFileOk()" class="alert-danger">The size of the file must be under 10 Mo.</small>
         <small *ngIf="!isTypeFileOk()" class="alert-danger">The file must be an image or a PDF.</small>
@@ -353,7 +353,7 @@
                                         [ngModelOptions]="{standalone: true}"
                                         class="form-control text-truncate"
                                         type="file"
-                                        accept='image/*,appliaction/pdf'
+                                        accept='image/*,application/pdf'
                                         [disabled]="!isSelectedFile(endCondition) && fileToUpload.length > 0"
                                         (change)="onSetPhotoToUpload(endCondition, $event);getFileInfo($event,'valid')"
                                 >

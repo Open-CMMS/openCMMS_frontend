@@ -30,7 +30,7 @@ import { environment } from 'src/environments/environment';
 import { durationRegex } from 'src/app/shares/consts';
 import {EquipmentType} from '../../../models/equipment-type';
 import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
-import {UrlService} from "../../../services/shared/url.service";
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-task-details',
