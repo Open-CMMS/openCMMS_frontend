@@ -15,7 +15,7 @@ import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-t
 import {EquipmentType} from 'src/app/models/equipment-type';
 import {Subscription} from 'rxjs/internal/Subscription';
 import {Field} from '../../../models/field';
-import {UrlService} from "../../../services/shared/url.service";
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-equipment-details',
@@ -84,6 +84,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param utilsService the service used for useful functions
    * @param fileService the file service
    * @param equipmentTypeService the equipment Type service
+   * @param urlService the service used to handle URL
    */
   constructor(private router: Router,
               private equipmentService: EquipmentService,

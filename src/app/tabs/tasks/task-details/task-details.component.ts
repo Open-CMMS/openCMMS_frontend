@@ -30,7 +30,7 @@ import { environment } from 'src/environments/environment';
 import { durationRegex } from 'src/app/shares/consts';
 import {EquipmentType} from '../../../models/equipment-type';
 import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
-import {UrlService} from "../../../services/shared/url.service";
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-task-details',
@@ -141,6 +141,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param authenticationService the service used to handle authentication
    * @param formBuilder the service used to handle forms
    * @param fileService the service used to handle files
+   * @param urlService the service used to handle URL
    */
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,
