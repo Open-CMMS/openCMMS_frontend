@@ -30,6 +30,7 @@ import { environment } from 'src/environments/environment';
 import { durationRegex } from 'src/app/shares/consts';
 import {EquipmentType} from '../../../models/equipment-type';
 import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
+import {UrlService} from "../../../services/shared/url.service";
 
 @Component({
   selector: 'app-task-details',
@@ -63,6 +64,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Useful variables
   loaded = false;
   BASE_URL_API = environment.baseUrl;
+  previousUrl = '';
 
   // Task
   task = null;
@@ -152,9 +154,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               private utilsService: UtilsService,
               private authenticationService: AuthenticationService,
               private formBuilder: FormBuilder,
-              private fileService: FileService) { }
+              private fileService: FileService,
+              private urlService: UrlService) { }
 
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     let id: number;
     this.fileCheckValid = true;
     this.fileTypeCheckValid = true;
@@ -770,8 +776,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['tasks/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

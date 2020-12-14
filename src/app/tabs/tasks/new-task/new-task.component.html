@@ -59,7 +59,7 @@
             <ng-multiselect-dropdown
                     placeholder="Select an equipment type"
                     *ngIf="createForm.value.equipment_or_equipment_type === 'equipment_type'"
-                    [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}"
+                    [ngStyle]="{'background-color': (selectedTemplate?.equipment_type) ? 'rgb(255, 255, 202)' : '#ffffff'}"
                     [settings]="dropdownEquipmentTypesSettings"
                     [data]="equipmentTypesList"
                     formControlName="equipment_type"
