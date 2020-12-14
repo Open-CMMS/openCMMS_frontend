@@ -67,11 +67,14 @@ export class EquipmentDetailsComponent implements OnInit {
   equipmentTypeModified = false;
   currentSelectFields: [];
   isCurrentEquipmentTypeFields = [];
+  fileTypeCheck: boolean;
+  fileCheck: boolean;
   previousUrl = '';
 
   // Constants
   INIT_FIELD_NAME  = '';
   INIT_FIELD_VALUE = '';
+
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -102,6 +105,8 @@ export class EquipmentDetailsComponent implements OnInit {
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.fileCheck = true;
+    this.fileTypeCheck = true;
     this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
       this.previousUrl = previousUrl;
     });
@@ -609,4 +614,39 @@ export class EquipmentDetailsComponent implements OnInit {
   onPreviousPage() {
     this.router.navigate([this.previousUrl]);
   }
+
+  /**
+   * Function that get the size of the file the user want to upload.
+   * @param content the modal to open
+   */
+  getFileInfo(content) {
+    if (content.target.files[0].type === 'image/png'
+        || content.target.files[0].type === 'image/jpeg'
+        || content.target.files[0].type === 'application/pdf') {
+          this.fileTypeCheck = true;
+    } else {
+      this.fileTypeCheck = false;
+    }
+    if (content.target.files[0].size / 1000000 <= 10) {
+    this.fileCheck = true;
+    } else {
+      this.fileCheck = false;
+    }
+  }
+  /**
+   * Provide a boolean which allow us to know if the size of the file is correct.
+   */
+  isSizeFileOk(): boolean {
+    return this.fileCheck;
+  }
+  /**
+   * Provide a boolean which allow us to know if the type of the file is correct.
+   */
+  isTypeFileOk(): boolean {
+    return this.fileTypeCheck;
+  }
+  /**
+   * Function that is triggered to load the modal template for team addition
+   * @param content the modal to open
+   */
 }

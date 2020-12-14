@@ -90,7 +90,9 @@
         <form [formGroup]="createForm" (ngSubmit)="onCreateEquipment()">
         <div class="form-group">
             <label for="file">Upload File</label>
-            <input formControlName="file" id="file" type="file" multiple class="form-control text-truncate" (change)="onFileUpload($event)">
+            <input formControlName="file" accept="image/*,application/pdf" id="file" type="file" multiple class="form-control text-truncate" (change)="getFileInfo($event);onFileUpload($event)">
+            <small *ngIf="!isSizeFileOk()" class="alert-danger">The size of the file must be under 10 Mo.</small>
+            <small *ngIf="!isTypeFileOk()" class="alert-danger">The file must be an image or a PDF.</small>
         </div>
         <div class="list-group">
             <ul class="list-group">
