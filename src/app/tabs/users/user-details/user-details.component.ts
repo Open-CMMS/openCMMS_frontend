@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { CrossMatch } from 'src/app/shares/cross-match.validator';
 import {TeamService} from '../../../services/teams/team.service';
 import {Team} from '../../../models/team';
+import {UrlService} from "../../../services/shared/url.service";
 
 @Component({
   selector: 'app-user-details',
@@ -45,6 +46,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   teamsSubscription: Subscription;
   teams = [];
   resendSuccess = null;
+  previousUrl = '';
 
   // Forms
   userUpdateForm: FormGroup;
@@ -68,12 +70,16 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private modalService: NgbModal,
               private authenticationService: AuthenticationService,
-              private utilsService: UtilsService) { }
+              private utilsService: UtilsService,
+              private urlService: UrlService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     let id: number;
     this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
       (currentUser) => {
@@ -312,8 +318,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['users/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

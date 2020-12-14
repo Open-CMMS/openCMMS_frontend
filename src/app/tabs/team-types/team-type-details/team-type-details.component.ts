@@ -12,6 +12,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { faInfoCircle, faPencilAlt, faTrash, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import {UrlService} from "../../../services/shared/url.service";
 
 @Component({
   selector: 'app-user-details',
@@ -30,6 +31,7 @@ export class TeamTypeDetailsComponent implements OnInit {
   name: string;
   perms: any[];
   teams: any[];
+  previousUrl = '';
 
   all_permissions: Permission[] = [];
   all_teams: Team[] = [];
@@ -68,12 +70,16 @@ export class TeamTypeDetailsComponent implements OnInit {
               private modalService: NgbModal,
               private formBuilder: FormBuilder,
               private utilsService: UtilsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private urlService: UrlService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     this.initFields();
     this.permissionService.getPermissions().subscribe((permissions: Permission[]) => {
       this.all_permissions = permissions;
@@ -295,8 +301,8 @@ export class TeamTypeDetailsComponent implements OnInit {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['team-types/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }
