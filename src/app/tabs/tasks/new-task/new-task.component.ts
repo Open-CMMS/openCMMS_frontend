@@ -524,14 +524,24 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     const trigger_conditions: any[] = [];
     if (this.triggerConditions.length > 0) {
       for (const triggerCondition of this.triggerConditions) {
-        trigger_conditions.push({
-          field: triggerCondition.selectedTriggerCondition[0].id,
-          name: triggerCondition.selectedTriggerCondition[0].value,
-          description: triggerCondition.description,
-          value: triggerCondition.value,
-          delay: triggerCondition.delay,
-          field_object_id: triggerCondition.field_object.id
-        });
+        if (triggerCondition.selectedTriggerCondition[0].value === this.triggerConditionRecurrenceName) {
+          trigger_conditions.push({
+            field: triggerCondition.selectedTriggerCondition[0].id,
+            name: triggerCondition.selectedTriggerCondition[0].value,
+            description: triggerCondition.description,
+            value: triggerCondition.value,
+            delay: triggerCondition.delay,
+          });
+        } else {
+          trigger_conditions.push({
+            field: triggerCondition.selectedTriggerCondition[0].id,
+            name: triggerCondition.selectedTriggerCondition[0].value,
+            description: triggerCondition.description,
+            value: triggerCondition.value,
+            delay: triggerCondition.delay,
+            field_object_id: triggerCondition.field_object.id
+          });
+        }
       }
     }
 

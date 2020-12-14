@@ -119,6 +119,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Trigger Conditions
   triggerConditionsSubject = new Subject<any[]>();
   triggerConditionSubscription: Subscription;
+  triggerConditionRecurrenceName = 'Recurrence';
 
   // Forms
   addTeamForm: FormGroup;
@@ -442,6 +443,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         // initialize Forms
         this.initForm();
         this.loaded = true;
+        console.log(this.task);
     });
   }
 
