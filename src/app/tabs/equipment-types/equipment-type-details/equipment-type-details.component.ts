@@ -35,6 +35,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   modifyFields = false;
   newFieldsValues = [];
   previousUrl = '';
+  canAddValue = [];
 
   // the Forms
   equipmentTypeForm: FormGroup;
@@ -49,6 +50,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
    * @param formBuilder the service to handle forms
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
+   * @param urlService the service used to handle URL
    */
   constructor(private router: Router,
               private equipmentTypeService: EquipmentTypeService,
@@ -86,6 +88,13 @@ export class EquipmentTypeDetailsComponent implements OnInit {
       this.name = equipment_type.name;
       this.equipments = equipment_type.equipments;
       this.fields = equipment_type.field;
+      this.fields.forEach(field => {
+        if ((field.value.length !== 0) || (field.value.length === 0 && this.equipments.length === 0)) {
+          this.canAddValue.push(true);
+        } else {
+          this.canAddValue.push(false);
+        }
+      });
     });
   }
 
