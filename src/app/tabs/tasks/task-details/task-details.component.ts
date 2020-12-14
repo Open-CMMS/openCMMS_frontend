@@ -30,7 +30,7 @@ import { environment } from 'src/environments/environment';
 import { durationRegex } from 'src/app/shares/consts';
 import {EquipmentType} from '../../../models/equipment-type';
 import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
-import {UrlService} from "../../../services/shared/url.service";
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-task-details',
@@ -96,6 +96,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   fileToUpload: any[] = [];
   fileCheck: boolean;
   fileTypeCheck: boolean;
+  fileCheckValid: boolean;
+  fileTypeCheckValid: boolean;
 
   // End conditions
   endConditionValues: any = {};
@@ -141,6 +143,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param authenticationService the service used to handle authentication
    * @param formBuilder the service used to handle forms
    * @param fileService the service used to handle files
+   * @param urlService the service used to handle URL
    */
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,
@@ -160,6 +163,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.previousUrl = previousUrl;
     });
     let id: number;
+    this.fileCheckValid = true;
+    this.fileTypeCheckValid = true;
     this.fileCheck = true;
     this.fileTypeCheck = true;
     this.route.params.subscribe(params => {
@@ -397,18 +402,37 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * Function that get the size of the file the user want to upload.
    * @param content the modal to open
    */
-  getFileInfo(content) {
-    if (content.target.files[0].type === 'image/png'
+  getFileInfo(content, key: string) {
+    if (key === 'assoc') {
+      this.fileCheck = true;
+      this.fileTypeCheck = true;
+      if (content.target.files[0].type === 'image/png'
+          || content.target.files[0].type === 'image/jpeg'
+          || content.target.files[0].type === 'application/pdf') {
+            this.fileTypeCheck = true;
+      } else {
+        this.fileTypeCheck = false;
+      }
+      if (content.target.files[0].size / 1000000 <= 10) {
+      this.fileCheck = true;
+      } else {
+        this.fileCheck = false;
+      }
+    } else if (key === 'valid') {
+        this.fileCheckValid = true;
+        this.fileTypeCheckValid = true;
+        if (content.target.files[0].type === 'image/png'
         || content.target.files[0].type === 'image/jpeg'
         || content.target.files[0].type === 'application/pdf') {
-          this.fileTypeCheck = true;
-    } else {
-      this.fileTypeCheck = false;
+          this.fileTypeCheckValid = true;
+        } else {
+          this.fileTypeCheckValid = false;
+      }
+        if (content.target.files[0].size / 1000000 <= 10) {
+      this.fileCheckValid = true;
+      } else {
+        this.fileCheckValid = false;
     }
-    if (content.target.files[0].size / 1000000 <= 10) {
-    this.fileCheck = true;
-    } else {
-      this.fileCheck = false;
     }
   }
   /**
@@ -648,7 +672,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.fileService.uploadFile(this.newFile.data).subscribe(
         (file) => {
           this.newFile = null;
-          console.log(file);
           const finalData = {files: []};
           for (const taskFile of this.task.files) {
             finalData.files.push(taskFile.id);

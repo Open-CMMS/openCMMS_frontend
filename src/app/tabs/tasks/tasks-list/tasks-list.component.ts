@@ -31,6 +31,8 @@ export class TasksListComponent implements OnInit, OnDestroy {
   currentUserSubscription: Subscription = null;
   myTasks: boolean;
   p = 1;
+  sortByDate = false;
+  sortByDuration = false;
 
   // Search text
   searchText = '';
@@ -77,6 +79,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
           this.myTasks = true;
         } else { // path equals tasks-management: all the tasks are displayed
           this.taskState = false;
+          this.taskService.getTasks();
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
@@ -164,7 +167,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     const dateA = new Date(a.end_date);
     const dateB = new Date(b.end_date);
     // @ts-ignore
-    return dateA - dateB;
+    return dateB - dateA;
   }
 
   compareDuration(a: Task, b: Task) {
@@ -200,30 +203,35 @@ export class TasksListComponent implements OnInit, OnDestroy {
           break;
       }
     });
-    return duration_in_minutes_A - duration_in_minutes_B;
+    return duration_in_minutes_B - duration_in_minutes_A;
   }
 
   /**
    * Function called when the tasks need to be sorting by end_date
    */
   sortingByEndDate() {
+    this.sortByDuration = false;
+    this.sortByDate = true;
     this.tasks.sort(this.compareDate);
     this.tasks.forEach(task => {
-      if (task.end_date == null) {
+      if (task.end_date) {
         const index = this.tasks.indexOf(task);
         this.tasks.splice(index, 1);
-        this.tasks.push(task);
+        this.tasks.unshift(task);
       }
     });
   }
 
   sortingByDuration() {
+    this.sortByDate = false;
+    this.sortByDuration = true;
+
     this.tasks.sort(this.compareDuration);
     this.tasks.forEach(task => {
-      if (task.duration === '') {
+      if (task.duration) {
         const index = this.tasks.indexOf(task);
         this.tasks.splice(index, 1);
-        this.tasks.push(task);
+        this.tasks.unshift(task);
       }
     });
   }

@@ -26,7 +26,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-            <button type="button" class="btn btn-success" [disabled]="equipmentTypeForm.invalid" type="submit">Modify</button>
+            <button class="btn btn-success" [disabled]="equipmentTypeForm.invalid" type="submit">Modify</button>
         </div>
     </form>
 </ng-template>
@@ -141,14 +141,14 @@
                         <div class="col-md-2 my-1">
                             <span class="font-weight-bold" >{{field.name}}</span>
                             <ul>
-                              <li *ngFor="let value of field.value"> {{ value }}</li>
+                              <li *ngFor="let value of field.value; let i = index"> {{ value }}</li>
                             </ul>
                         </div>
                         <input
                         type="text"
                         placeholder="value"
                         class='form-control col-md-5 my-1'
-                        *ngIf="modifyFields"
+                        *ngIf="modifyFields && canAddValue[i]"
                         style="margin-right: 10px; width: 500px"
                         [ngModelOptions]="{standalone: true}"
                         [(ngModel)]= newFieldsValues[i]

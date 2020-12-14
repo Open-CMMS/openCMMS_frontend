@@ -41,6 +41,8 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   filesSubscription: Subscription;
   myFiles: File[] = [];
   files: number[] = [];
+  fileTypeCheck: boolean;
+  fileCheck: boolean;
 
   // Fields
 
@@ -55,6 +57,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   INIT_FIELD_NAME  = '';
   INIT_FIELD_VALUE = '';
   INIT_FIELD_DESCRIPTION = '';
+
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -93,6 +96,8 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.equipmentService.emitEquipments();
     this.initForm();
     this.initAddFieldTemplate();
+    this.fileTypeCheck = true;
+    this.fileCheck = true;
   }
 
   /**
@@ -143,7 +148,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     let formData: FormData;
     let i = 0;
     for (i; i < event.target.files.length; i++) {
-      if (!this.myFiles.includes(event.target.files[i])) {
+      if (!this.myFiles.includes(event.target.files[i]) && this.isSizeFileOk() && this.isTypeFileOk()) {
         this.myFiles.push(event.target.files[i]);
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
@@ -274,5 +279,38 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   fieldIsFill(field) {
     return (field.name !== this.INIT_FIELD_NAME && field.value !== this.INIT_FIELD_VALUE);
   }
+ /**
+  * Function that get the size of the file the user want to upload.
+  * @param content the modal to open
+  */
+ getFileInfo(content) {
+  if (content.target.files[0].type === 'image/png'
+      || content.target.files[0].type === 'image/jpeg'
+      || content.target.files[0].type === 'application/pdf') {
+        this.fileTypeCheck = true;
+  } else {
+    this.fileTypeCheck = false;
+  }
+  if (content.target.files[0].size / 1000000 <= 10) {
+  this.fileCheck = true;
+  } else {
+    this.fileCheck = false;
+  }
+}
+/**
+ * Provide a boolean which allow us to know if the size of the file is correct.
+ */
+isSizeFileOk(): boolean {
+  return this.fileCheck;
+}
+/**
+ * Provide a boolean which allow us to know if the type of the file is correct.
+ */
+isTypeFileOk(): boolean {
+  return this.fileTypeCheck;
+}
+/**
+ * Function that initialize the fields in the form to create a new Team
+ */
 
 }
