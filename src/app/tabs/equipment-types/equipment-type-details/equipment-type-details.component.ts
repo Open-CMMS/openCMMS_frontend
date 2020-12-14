@@ -33,6 +33,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   equipment_type: EquipmentType;
   modifyFields = false;
   newFieldsValues = [];
+  canAddValue = [];
 
   // the Forms
   equipmentTypeForm: FormGroup;
@@ -80,6 +81,13 @@ export class EquipmentTypeDetailsComponent implements OnInit {
       this.name = equipment_type.name;
       this.equipments = equipment_type.equipments;
       this.fields = equipment_type.field;
+      this.fields.forEach(field => {
+        if ((field.value.length !== 0) || (field.value.length === 0 && this.equipments.length === 0)) {
+          this.canAddValue.push(true);
+        } else {
+          this.canAddValue.push(false);
+        }
+      });
     });
   }
 
