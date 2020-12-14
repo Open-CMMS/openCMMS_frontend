@@ -195,8 +195,12 @@ export class NewTaskComponent implements OnInit, OnDestroy {
         description: this.selectedTemplate.description,
         end_date: this.selectedTemplate.end_date,
         duration: this.selectedTemplate.duration,
-        equipment: this.selectedTemplate.equipment ? this.selectedTemplate.equipment.id.toString() : null,
-        equipment_type: this.selectedTemplate.equipment_type ? this.selectedTemplate.equipment_type.id.toString() : null,
+        equipment: this.selectedTemplate.equipment ?
+            [{id: this.selectedTemplate.equipment.id.toString(), value: this.selectedTemplate.equipment.name}]
+            : null,
+        equipment_type: this.selectedTemplate.equipment_type ?
+            [{id: this.selectedTemplate.equipment_type.id.toString(), value: this.selectedTemplate.equipment_type.name}]
+            : null,
         equipment_or_equipment_type,
         teams: tempTeams,
         file: ''
@@ -554,6 +558,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.teamSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
+    this.equipmentTypeSubscription.unsubscribe();
   }
 
 }
