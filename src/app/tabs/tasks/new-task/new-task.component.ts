@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, Subject } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import { Router } from '@angular/router';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { Team } from 'src/app/models/team';
@@ -29,16 +29,11 @@ import { durationRegex } from 'src/app/shares/consts';
 import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
 import {EquipmentType} from '../../../models/equipment-type';
 
-function noSpaceOnly(): ValidatorFn {
-  return (control: AbstractControl): {[key: string]: any} | null => {
-    return control.value.trim() === '' ? {spaceOnly: 'You can\'t choose a name with space only !'} : null;
-  };
-}
-@Component({
+Component({
   selector: 'app-new-task',
   templateUrl: './new-task.component.html',
   styleUrls: ['./new-task.component.scss']
-})
+});
 export class NewTaskComponent implements OnInit, OnDestroy {
 
   // Local variables
@@ -540,7 +535,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     const localDurationRegex = new RegExp(durationRegex);
 
     this.createForm = this.formBuilder.group({
-      name: ['', [Validators.required, noSpaceOnly()]],
+      name: ['', [Validators.required, this.noWhiteSpaceValidator]],
       description: [''],
       end_date: [null],
       duration: ['', Validators.pattern(localDurationRegex)],
@@ -713,6 +708,12 @@ export class NewTaskComponent implements OnInit, OnDestroy {
         files.push(Number(file.id));
       });
     }
+  }
+
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
   }
 
   /**

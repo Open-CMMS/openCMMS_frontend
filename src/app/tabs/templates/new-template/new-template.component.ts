@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { faCalendar, faInfoCircle, faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -311,7 +311,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   initForm() {
     const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
     this.createForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, this.noWhiteSpaceValidator]],
       description: [''],
       time: ['', Validators.pattern(regex_time)],
       equipment: [''],
@@ -383,6 +383,12 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     this.filesSubscription.unsubscribe();
     this.teamSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
+  }
+
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
   }
 
 }
