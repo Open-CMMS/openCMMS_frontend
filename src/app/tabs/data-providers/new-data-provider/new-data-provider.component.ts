@@ -77,7 +77,7 @@ export class NewDataProviderComponent implements OnInit {
       name: ['', [Validators.required, this.noWhiteSpaceValidator]],
       fileName: ['', Validators.required],
       equipment: ['', Validators.required],
-      equipment_ip: ['', Validators.required],
+      equipment_ip: ['', [Validators.required, this.noWhiteSpaceValidator]],
       port: [null],
       field: ['', Validators.required],
       recurrence: ['', [Validators.pattern(regex_time), Validators.required]],
