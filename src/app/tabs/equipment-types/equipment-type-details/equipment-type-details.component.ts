@@ -28,7 +28,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   // Local variables
   id: number;
   name: string;
-  equipments: Equipment[];
+  equipments: Equipment[] = [];
   all_equipments: Equipment[] = [];
   fields = [];
   equipment_type: EquipmentType;

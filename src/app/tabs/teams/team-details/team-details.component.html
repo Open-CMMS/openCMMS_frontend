@@ -146,6 +146,9 @@
                 </li>
             </ul>
         </div>
+        <div *ngIf="teamUsers.length < 1" class="m-3">
+            <span>No related users !</span>
+        </div>
     </div>
     <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="updateError">
         <p class="font-weight-bold">Error when updating the team properties:</p>
