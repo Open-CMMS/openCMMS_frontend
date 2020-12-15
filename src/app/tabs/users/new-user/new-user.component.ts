@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
@@ -46,11 +46,17 @@ export class NewUserComponent implements OnInit {
    */
   initForm() {
     this.createForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      firstName: ['', [Validators.required, this.noWhiteSpaceValidator]],
+      lastName: ['', [Validators.required, this.noWhiteSpaceValidator]],
       email: ['', [Validators.required, Validators.email]]
     });
   }
+
+    public noWhiteSpaceValidator(control: FormControl) {
+        const isWhiteSpace = (control.value || '').trim().length === 0;
+        const isValid = !isWhiteSpace;
+        return isValid ? null : {whitespace: true};
+    }
 
   /**
    * Function that is triggered when a new User is being created (when button "Create new User" is pressed)

@@ -591,7 +591,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   public noWhiteSpaceValidator(control: FormControl) {
     const isWhiteSpace = (control.value || '').trim().length === 0;
     const isValid = !isWhiteSpace;
-    return isValid ? null : {'whitespace': true};
+    return isValid ? null : {whitespace: true};
   }
 
   /**
