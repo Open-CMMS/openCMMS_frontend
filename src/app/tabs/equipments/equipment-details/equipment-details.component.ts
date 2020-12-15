@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {faTrash, faPencilAlt, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
 import {Equipment} from 'src/app/models/equipment';
 import {EquipmentService} from 'src/app/services/equipments/equipment.service';
@@ -16,13 +16,15 @@ import {EquipmentType} from 'src/app/models/equipment-type';
 import {Subscription} from 'rxjs/internal/Subscription';
 import {Field} from '../../../models/field';
 import {UrlService} from '../../../services/shared/url.service';
+import {DataProviderService} from '../../../services/data-provider/data-provider.service';
+import {DataProvider} from '../../../models/data-provider';
 
 @Component({
   selector: 'app-equipment-details',
   templateUrl: './equipment-details.component.html',
   styleUrls: ['./equipment-details.component.scss']
 })
-export class EquipmentDetailsComponent implements OnInit {
+export class EquipmentDetailsComponent implements OnInit, OnDestroy {
 
   // Icons
   faPlusSquare = faPlusSquare;
@@ -70,6 +72,9 @@ export class EquipmentDetailsComponent implements OnInit {
   fileTypeCheck: boolean;
   fileCheck: boolean;
   previousUrl = '';
+  dataProviders: DataProvider[] = [];
+  dataProviderSubscription: Subscription;
+  fieldsAssociatedToDataProvider = [];
 
   // Constants
   INIT_FIELD_NAME  = '';
@@ -88,6 +93,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param fileService the file service
    * @param equipmentTypeService the equipment Type service
    * @param urlService the service used to handle URL
+   * @param dataProviderService the service to handle dataProvider
    */
   constructor(private router: Router,
               private equipmentService: EquipmentService,
@@ -98,7 +104,8 @@ export class EquipmentDetailsComponent implements OnInit {
               private utilsService: UtilsService,
               private fileService: FileService,
               private equipmentTypeService: EquipmentTypeService,
-              private urlService: UrlService) {
+              private urlService: UrlService,
+              private dataProviderService: DataProviderService) {
   }
 
   /**
@@ -140,6 +147,13 @@ export class EquipmentDetailsComponent implements OnInit {
             });
           }
           this.myFilesPath.splice(6);
+          this.dataProviderSubscription = this.dataProviderService.dataProvidersSubject.subscribe(
+                (dataProviders: DataProvider[]) => {
+                  this.dataProviders = dataProviders;
+                  this.initDataProvidersFields();
+                }
+            );
+          this.dataProviderService.emitDataProviders();
         },
         (error) => this.router.navigate(['/four-oh-four']));
     this.initAddFieldTemplate();
@@ -248,6 +262,20 @@ export class EquipmentDetailsComponent implements OnInit {
   }
 
   /**
+   * Function that opens the modal to confirm the deletion to a field associated to a data provider
+   * @param content the modal template to load
+   * @param field the field to delete
+   * @param id the index of the field
+   */
+  openDeleteField(content, field, id: number) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
+      if (result === 'OK') {
+        this.deleteCurrentField(field, id);
+      }
+    });
+  }
+
+  /**
    * Function that opens the modal to confirm a deletion
    * @param content the modal template to load
    */
@@ -295,6 +323,25 @@ export class EquipmentDetailsComponent implements OnInit {
       equipment_type: this.currentEquipment.equipment_type,
       files: this.currentEquipment.files
     });
+  }
+
+  /**
+   *  Function that initialise the fields of the equipment that are associated to a data provider
+   */
+  initDataProvidersFields()  {
+    this.dataProviders.forEach(dataProvider => {
+      if (dataProvider.equipment.id === this.currentEquipment.id) {
+        this.fieldsAssociatedToDataProvider.push(dataProvider.field_object.id);
+      }
+    });
+  }
+
+  /**
+   * Function to know if a field is associated to a data provider
+   * @param id the id of the field
+   */
+  isAssociatedToDataProvider(id: number) {
+    return this.fieldsAssociatedToDataProvider.includes(id);
   }
 
   /**
@@ -645,8 +692,12 @@ export class EquipmentDetailsComponent implements OnInit {
   isTypeFileOk(): boolean {
     return this.fileTypeCheck;
   }
+
   /**
-   * Function that is triggered to load the modal template for team addition
-   * @param content the modal to open
+   * Function called when the component is destroyed
    */
+  ngOnDestroy() {
+    this.dataProviderSubscription.unsubscribe();
+    this.equipmentTypesSubscription.unsubscribe();
+  }
 }

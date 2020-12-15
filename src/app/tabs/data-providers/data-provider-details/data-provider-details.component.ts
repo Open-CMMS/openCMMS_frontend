@@ -57,7 +57,8 @@ export class DataProviderDetailsComponent implements OnInit {
    * @param router the service used to handle routing
    * @param modalService the modal service
    * @param utilsService the utils service
-   * @param authenticationService the authentifcation service
+   * @param authenticationService the authentication service
+   * @param urlService the service to handled URL
    */
   constructor(
     private dataProviderService: DataProviderService,
