@@ -118,7 +118,11 @@
             </ul>
         </div>
     </div>
-    <div class="d-flex justify-content-center align-items-center py-4">
-        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    <div class="d-flex justify-content-between">
+      <div class="d-flex"></div>
+      <div class="d-flex justify-content-center py-2">
+          <pagination-controls (pageChange)="p = $event"></pagination-controls>
+      </div>
+      <div style="padding: 12%;"></div>
     </div>
 </div>
