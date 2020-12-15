@@ -108,9 +108,10 @@
                 </button>
                 <ng-multiselect-dropdown 
                     [settings]="triggerCondition.dropdownTriggerConditionsSettings"
-                    [data]="createForm.value.equipment_or_equipment_type === 'equipment' && createForm.value.equipment !== '' ? triggerCondition.triggerConditionsList : triggerCondition.triggerConditionsListRecurrenceOnly"
+                    [data]="createForm.value.equipment_or_equipment_type === 'equipment' && selectedEquipmentIdValue.length > 0 ? triggerCondition.triggerConditionsList : triggerCondition.triggerConditionsListRecurrenceOnly"
                     [(ngModel)]="triggerCondition.selectedTriggerCondition"
                     [ngModelOptions]="{standalone: true}"
+                    (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, null)"
                     name="triggerCondition"
                     class="col-md-4 mr-md-1 my-1"
                     style="padding-left: 0px;padding-right: 0px;"
@@ -130,20 +131,30 @@
                     [(ngModel)]=triggerCondition.value
                     [ngModelOptions]="{standalone: true}"
                     [ngClass]="{'alert-danger': triggerConditionDuration.validity.patternMismatch}"
-                    (ngModelChange)="onUpdateTriggerConditionDurationValidity(triggerConditionDuration)">
+                    (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, [triggerConditionDuration, triggerConditionDelay])">
+
                     <input 
                     class="form-control my-1"
                     type="text"
                     placeholder="Delay"
                     ngbTooltip="Delay to realize the task (delay before the end date)"
                     placement="top"
+                    [pattern]="triggerConditionDurationRegex"
                     #triggerConditionDelay
                     [(ngModel)]=triggerCondition.delay
-                    [ngModelOptions]="{standalone: true}">
+                    [ngModelOptions]="{standalone: true}"
+                    [ngClass]="{'alert-danger': triggerConditionDelay.validity.patternMismatch}"
+                    (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, [triggerConditionDuration, triggerConditionDelay])">
                 </div>
 
                 <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value !== triggerConditionRecurrenceName">
-                    <select id="field-object" class="form-control my-1 mx-md-1" [(ngModel)]="triggerCondition.field_object" [ngModelOptions]="{standalone: true}">
+                    <select 
+                        id="field-object" 
+                        class="form-control my-1 mx-md-1" 
+                        #fieldObject 
+                        [(ngModel)]="triggerCondition.field_object" 
+                        [ngModelOptions]="{standalone: true}"
+                        (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, [fieldObject, thresholdValue, triggerConditionDelay])">
                         <option [ngValue]="null" defaultSelected="selected">Select a field to monitor ...</option>
                         <option *ngFor="let field of selectedEquipment?.fields" [ngValue]="field">{{ field.field_name }}</option>
                     </select>
@@ -165,7 +176,9 @@
                     [pattern]="triggerConditionDurationRegex"
                     #triggerConditionDelay
                     [(ngModel)]="triggerCondition.delay"
-                    [ngModelOptions]="{standalone: true}">
+                    [ngModelOptions]="{standalone: true}"
+                    [ngClass]="{'alert-danger': triggerConditionDelay.validity.patternMismatch}"
+                    (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, [fieldObject, thresholdValue, triggerConditionDelay])">
                 </div>
             </div>
         </div>
@@ -186,6 +199,7 @@
                     [data]="endCondition.endConditionsList"
                     [(ngModel)]="endCondition.selectedEndCondition"
                     [ngModelOptions]="{standalone: true}"
+                    (ngModelChange)="onUpdateEndConditionValidity(endCondition)"
                     name="endCondition"
                     class="col-md-5 mx-md-2 my-1"
                     style="margin-left: -15px;"
@@ -196,7 +210,7 @@
                     class="form-control my-1"
                     *ngIf="endCondition.selectedEndCondition[0]"
                     placeholder="description"
-                    [(ngModel)]=endCondition.description
+                    [(ngModel)]="endCondition.description"
                     [ngModelOptions]="{standalone: true}"
                     >
 
@@ -242,7 +256,7 @@
         </div>
         <div class="d-flex justify-content-between align-items-center mt-3">
           <button class="btn btn-danger nav-link" routerLink="/tasks">Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || triggerConditionDurationError">Create task</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isFormValidationDisabled()">Create task</button>
         </div>
     </form>
     <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">
