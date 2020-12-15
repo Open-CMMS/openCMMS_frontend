@@ -194,6 +194,18 @@
         </div>
     </div>
   </div>
+    <div class="card mt-5">
+        <div class="card-header">
+            <h3 class="font-weight-bold"> Permissions </h3>
+        </div>
+        <div>
+            <ul class="list-group w-100">
+                <li class="list-group-item" *ngFor="let permission of permissions">
+                    {{ permission }}
+                </li>
+            </ul>
+        </div>
+    </div>
     <div class="row mt-5" *ngIf="onInfoPage">
         <div class="col-md-12">
             <button class="btn btn-primary" (click)="onActivateChangePassword()">Change Password</button>

@@ -47,6 +47,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   teams = [];
   resendSuccess = null;
   previousUrl = '';
+  permissions: string[];
 
   // Forms
   userUpdateForm: FormGroup;
@@ -123,6 +124,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             }
           );
           this.teamService.emitTeams();
+          this.authenticationService.getUserPermissions(this.user.id).subscribe(
+              (permissions) => {
+                this.permissions = permissions;
+              }
+          );
           this.initForm();
         },
         (error) => {
