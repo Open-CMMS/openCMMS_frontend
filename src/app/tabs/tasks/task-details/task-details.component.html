@@ -169,20 +169,20 @@
                     <div class="input-group row col-md-4" *ngIf="!inputEnabled.equipment && task.equipment">
                         <input class="form-control" [(ngModel)]="task.equipment.name" disabled>
                         <div class="input-group-append" >
-                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faPen"></fa-icon></button>
+                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment')" *ngIf="onChangeTaskPermission() && !task.over && !hasSpecialTriggerConditions()"><fa-icon [icon]="faPen"></fa-icon></button>
                             <button class="btn btn-info" (click)="onViewEquipment(task.equipment.id)" [disabled]="task.equipment==null"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
                         </div>
                     </div>
-                    <div class="input-group row col-md-4" *ngIf="this.task.equipment_type">
-                        <div class="mb-md-2">
+                    <div class="row col-md-4" *ngIf="this.task.equipment_type">
+                        <div class="row mb-md-2" style="margin-left: 0px;">
                             <span>All equipments of the following type.</span>
                         </div>
-                        <div *ngIf="!inputEnabled.equipment_type">
-                            <input class="form-control" [(ngModel)]="task.equipment_type.name" disabled>
-                        </div>
-                        <div class="input-group-append" *ngIf="!inputEnabled.equipment_type">
-                            <button class="btn btn-outline-secondary" (click)="enableInput('equipment_type')" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faPen"></fa-icon></button>
-                            <button class="btn btn-info" (click)="onViewEquipmentType(task.equipment_type.id)" [disabled]="task.equipment_type==null"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                        <div class="input-group row mb-md-2" style="margin-left: 0px;">
+                            <input class="form-control" *ngIf="!inputEnabled.equipment_type" [(ngModel)]="task.equipment_type.name" disabled>
+                            <div class="input-group-append" *ngIf="!inputEnabled.equipment_type">
+                                <button class="btn btn-outline-secondary" (click)="enableInput('equipment_type')" *ngIf="onChangeTaskPermission() && !task.over"><fa-icon [icon]="faPen"></fa-icon></button>
+                                <button class="btn btn-info" (click)="onViewEquipmentType(task.equipment_type.id)" [disabled]="task.equipment_type==null"><fa-icon [icon]="faInfoCircle"></fa-icon></button>
+                            </div>
                         </div>
                     </div>
                     <div class="input-group row col-md-4" *ngIf="inputEnabled.equipment">

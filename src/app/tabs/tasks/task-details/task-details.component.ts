@@ -488,6 +488,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         // initialize Forms
         this.initForm();
         this.loaded = true;
+        console.log(task);
     });
   }
 
@@ -630,6 +631,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.validationError = true;
     }
+  }
+
+  /**
+   * Function that verifies if the task has special trigger conditions related to the equipment
+   */
+  hasSpecialTriggerConditions() {
+    return this.task.trigger_conditions.find(tc => tc.field_name !== 'Recurrence');
   }
 
   /**
