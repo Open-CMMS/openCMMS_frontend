@@ -189,7 +189,9 @@
           </div>
         </li>
       </ul>
-      <span *ngIf="teams.length === 0">No teams assigned !</span>
+        <div *ngIf="teams.length < 1" class="m-3">
+            <span>No related users !</span>
+        </div>
     </div>
   </div>
     <div class="card mt-5">

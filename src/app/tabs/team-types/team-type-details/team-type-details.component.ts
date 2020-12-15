@@ -29,8 +29,8 @@ export class TeamTypeDetailsComponent implements OnInit {
   // local variables
   id: number;
   name: string;
-  perms: any[];
-  teams: any[];
+  perms: any[] = [];
+  teams: any[] = [];
   previousUrl = '';
 
   all_permissions: Permission[] = [];

@@ -1,124 +1,103 @@
 <ng-template #contentDelete let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-delete">Delete Task</h4>
-    </div>
-    <div class="modal-body">
-        <p>Are you sure you want to delete <span class="font-weight-bold">{{ modalTaskName }} ? </span></p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
-    </div>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-delete">Delete Task</h4>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <span class="font-weight-bold">{{ modalTaskName }} ? </span></p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
+  </div>
 </ng-template>
 
 <div class="container-fluid justify-content-center col-md-8 mt-3">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mt-md-4 mb-md-4">
-      <h3 *ngIf="taskState" class="font-weight-bold">My Tasks</h3>
-      <h3 *ngIf="!taskState" class="font-weight-bold">Task Management</h3>
-      <div class="my-3" *ngIf="onAddTeamPermission()">
-        <button class="btn btn-primary" *ngIf="onAddTeamPermission" (click)="onCreateTask()"><fa-icon [icon]="faPlus"></fa-icon> Create new task</button>
-      </div>
+  <div class="d-flex flex-wrap justify-content-between align-items-center mt-md-4 mb-md-4">
+    <h3 *ngIf="taskState" class="font-weight-bold">My Tasks</h3>
+    <h3 *ngIf="!taskState" class="font-weight-bold">Task Management</h3>
+    <div class="my-3" *ngIf="onAddTeamPermission()">
+      <button class="btn btn-primary" *ngIf="onAddTeamPermission" (click)="onCreateTask()">
+        <fa-icon [icon]="faPlus"></fa-icon> Create new task
+      </button>
     </div>
-    <div class="d-flex justify-content-between my-1">
-      <div></div>
-      <div class="d-flex align-items-center mt-0">
-        <input type="text"
-               id="search-text"
-               aria-labelledby="search-text"
-               [(ngModel)]="searchText"
-               autofocus
-               placeholder="Search"
-               style="
+  </div>
+  <div class="d-flex justify-content-between my-1">
+    <div></div>
+    <div class="d-flex align-items-center mt-0">
+      <input type="text" id="search-text" aria-labelledby="search-text" [(ngModel)]="searchText" autofocus
+        placeholder="Search" style="
                 border-top:0;
                 border-left:0;
                 border-right:0;
                 border-color: #D3D3D3	;
-               "
-        >
-        <fa-icon
-          [icon]="faSearch"
-          placement="top"
-          ngbTooltip="Tip : Use @ for team filtering."
-          style="
+               ">
+      <fa-icon [icon]="faSearch" placement="top" ngbTooltip="Tip : Use @ for team filtering." style="
             margin-left:-18px;
             margin-bottom: 3px;
             color:#D3D3D3;">
-        </fa-icon>
+      </fa-icon>
+    </div>
+    <div class="d-flex align-items-center ">
+      <div class="badge badge-pill badge-info py-1 px-2" *ngIf=sortByDate><span>Date</span></div>
+      <div class="badge badge-pill badge-danger py-1 px-2" *ngIf=sortByDuration><span>Duration</span></div>
+      <div class="dropdown">
+        <button class="btn btn-link btn-sort dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">Sort</button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item d-flex align-items-center" (click)="sortingByEndDate()">
+            <div class="badge badge-pill badge-info mr-1">&nbsp;&nbsp;&nbsp;</div>
+            <span>Date</span>
+          </a>
+          <a class="dropdown-item d-flex align-items-center" (click)="sortingByDuration()">
+            <div class="badge badge-pill badge-danger mr-1">&nbsp;&nbsp;&nbsp;</div>
+            <span>Duration</span>
+          </a>
+        </div>
       </div>
-        <div class="d-flex align-items-center ">
-          <div class="badge badge-pill badge-info py-1 px-2" *ngIf=sortByDate><span>Date</span></div>
-          <div class="badge badge-pill badge-danger py-1 px-2" *ngIf=sortByDuration><span>Duration</span></div>
-          <div class="dropdown">
-            <button class="btn btn-link btn-sort dropdown-toggle"  id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sort</button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item d-flex align-items-center" (click)="sortingByEndDate()">
-                <div class="badge badge-pill badge-info mr-1">&nbsp;&nbsp;&nbsp;</div>
-                <span>Date</span>
+    </div>
+  </div>
+  <div class="container-fluid col-12" style="padding: 0px;">
+    <div class="list-group">
+      <ul class="list-group">
+        <li class="container-fluid list-group-item font-weight-bold "
+          *ngFor="let task of tasks | appFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }">
+          <div class="container-fluid row">
+            <div class="d-flex flex-column col col-lg-9 col-md-12">
+              <div class="d-flex align-items-center">
+                <h5 class="my-0" (click)="onViewTask(task)">{{ task.name }}</h5>
+                <fa-icon class="ml-2" [icon]="faCheck" *ngIf="task.over" style="color: green;"></fa-icon>
+              </div>
+              <div class="d-flex flex-wrap align-items-center my-2">
+                <div class="badge badge-pill badge-info mr-1 my-1" *ngIf="task.end_date">
+                  {{ task.end_date}}
+                </div>
+                <div class="badge badge-pill badge-danger mr-1 my-1" *ngIf="task.duration">
+                  {{ task.duration }}
+                </div>
+                <div *ngFor="let team of task.teams" class="badge badge-pill badge-warning mr-1 my-1">
+                  {{ team.name }}
+                </div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center col-lg-3 col-md-12 justify-content-end">
+              <a class="mr-3 my-2" style="cursor:pointer;" (click)="onViewTask(task)" ngbTooltip="Info"
+                placement="bottom">
+                <fa-icon class="fa-lg" [icon]="faInfoCircle" style="color:gray;"></fa-icon>
               </a>
-              <a class="dropdown-item d-flex align-items-center" (click)="sortingByDuration()">
-                <div class="badge badge-pill badge-danger mr-1">&nbsp;&nbsp;&nbsp;</div>
-                <span>Duration</span>
+              <a class="my-2" style="cursor:pointer;" (click)="openDelete(contentDelete, task)"
+                *ngIf="onDeleteTaskPermission()" ngbTooltip="Delete" placement="bottom">
+                <fa-icon class="fa-lg" [icon]="faTrash" style="color:#dc3545"></fa-icon>
               </a>
             </div>
           </div>
-        </div>
+        </li>
+      </ul>
     </div>
-    <div class="container-fluid col-12" style="padding: 0px;">
-        <div class="list-group">
-            <ul class="list-group">
-                <li
-                    class="container-fluid list-group-item font-weight-bold "
-                    *ngFor="let task of tasks | appFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }"
-                    >
-                  <div class="container-fluid row">
-                    <div class="d-flex flex-column col col-lg-9 col-md-12">
-                      <div class="d-flex align-items-center">
-                        <h5 class="my-0" (click)="onViewTask(task)">{{ task.name }}</h5>
-                        <fa-icon class="ml-2" [icon]="faCheck" *ngIf="task.over" style="color: green;"></fa-icon>
-                      </div>
-                      <div class="d-flex flex-wrap align-items-center my-2">
-                        <div class="badge badge-pill badge-info mr-1 my-1"
-                             *ngIf="task.end_date">
-                          {{ task.end_date}}
-                        </div>
-                        <div class="badge badge-pill badge-danger mr-1 my-1"
-                             *ngIf="task.duration">
-                          {{ task.duration }}
-                        </div>
-                        <div *ngFor="let team of task.teams" class="badge badge-pill badge-warning mr-1 my-1">
-                           {{ team.name }}
-                        </div>
-                      </div>
-                    </div>
-                    <div class="d-flex align-items-center col-lg-3 col-md-12 justify-content-end">
-                        <a class="mr-3 my-2"
-                           style="cursor:pointer;"
-                           (click)="onViewTask(task)"
-                           ngbTooltip="Info"
-                           placement="bottom"
-                        >
-                            <fa-icon class="fa-lg"
-                                    [icon]="faInfoCircle"
-                                    style="color:gray;"></fa-icon>
-                        </a>
-                        <a class="my-2"
-                           style="cursor:pointer;"
-                           (click)="openDelete(contentDelete, task)"
-                           *ngIf="onDeleteTaskPermission()"
-                           ngbTooltip="Delete"
-                           placement="bottom"
-                        >
-                            <fa-icon class="fa-lg"
-                                     [icon]="faTrash"
-                                     style="color:#dc3545"></fa-icon>
-                        </a>
-                    </div>
-                  </div>
-                </li>
-            </ul>
-        </div>
+  </div>
+  <div class="d-flex justify-content-between">
+    <div class="d-flex"></div>
+    <div class="d-flex align-content-center py-2">
+      <pagination-controls (pageChange)="p = $event"></pagination-controls>
     </div>
-    <div class="d-flex justify-content-center align-items-center py-4">
-        <pagination-controls (pageChange)="p = $event"></pagination-controls>
-    </div>
-</div>
+    <div class="d-flex align-content-center" style="visibility: hidden;">SpaceSpaceSpaceSpace</div>
+  </div>
