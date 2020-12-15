@@ -127,7 +127,6 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           this.authenticationService.getUserPermissions(this.user.id).subscribe(
               (permissions) => {
                 this.permissions = permissions;
-                console.log(this.permissions);
               }
           );
           this.initForm();
