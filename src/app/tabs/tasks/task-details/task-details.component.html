@@ -31,14 +31,14 @@
         <h4 class="modal-title" id="modal-add-file">Add a new file</h4>
     </div>
     <div class="modal-body">
-        <input type="file" class="form-control-file" (change)="onSetFileToUpload($event);getSizeFile($event)">
-        <small *ngIf="isSizeFileOk()" class="text-muted">This file will be added as a manual.</small>
+        <input accept='image/*,application/pdf' type="file" class="form-control text-truncate" (change)="getFileInfo($event,'assoc');onSetFileToUpload($event)">
+        <small *ngIf="isSizeFileOk() && isTypeFileOk()" class="text-muted">This file will be added as a manual.</small>
         <small *ngIf="!isSizeFileOk()" class="alert-danger">The size of the file must be under 10 Mo.</small>
-
+        <small *ngIf="!isTypeFileOk()" class="alert-danger">The file must be an image or a PDF.</small>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" [disabled]="newFile === null || !isSizeFileOk()" (click)="onUpdateTaskWithNewFile(); modal.close('OK')">Add</button>
+        <button type="button" class="btn btn-success" [disabled]="newFile === null || !isSizeFileOk()|| !isTypeFileOk()" (click)="onUpdateTaskWithNewFile(); modal.close('OK')">Add</button>
     </div>
 </ng-template>
 
@@ -87,9 +87,9 @@
     <div class="d-flex justify-content-between mt-md-4 mb-md-4">
         <div class="d-block">
             <div class="d-flex align-items-center">
-                <a (click)="onViewListing()"
+                <a (click)="onPreviousPage()"
                    style="cursor:pointer;"
-                   ngbTooltip="Return listing page"
+                   ngbTooltip="Previous page"
                    placement="bottom">
                     <fa-icon class="mr-3" [icon]="faChevronLeft"></fa-icon>
                 </a>
@@ -268,7 +268,7 @@
     </div>
 
     <div class="card mt-5">
-        <div class="card-header d-flex justify-content-between">
+        <div class="container-fluid card-header row align-items-center d-flex justify-content-between flex-wrap" style="margin: auto;">
             <div class="d-flex">
                 <h3 class="font-weight-bold">Teams</h3>
             </div>
@@ -288,7 +288,7 @@
             </div>
         </div>
         <div class="d-flex flex-wrap">
-            <ul class="list-group w-100">
+            <ul class="list-group w-100" style="margin-bottom: auto;">
                 <li
                     class="list-group-item font-weight-bold "
                     *ngFor="let team of task.teams"
@@ -319,8 +319,8 @@
                     </div>
                 </li>
             </ul>
-            <div class="mb-md-3 mt-md-3 px-2 py-1">
-                <span *ngIf="task.teams.length === 0">No teams assigned !</span>
+            <div class="mb-md-3 mt-md-3 px-2 py-1" *ngIf="task.teams.length === 0">
+                <span>No teams assigned !</span>
             </div>
         </div>
     </div>
@@ -365,21 +365,28 @@
                                 <input
                                         [(ngModel)]="endConditionValues[endCondition.id]"
                                         [ngModelOptions]="{standalone: true}"
+                                        class="form-control text-truncate"
                                         type="file"
+                                        accept='image/*,application/pdf'
                                         [disabled]="!isSelectedFile(endCondition) && fileToUpload.length > 0"
-                                        (change)="onSetPhotoToUpload(endCondition, $event)"
+                                        (change)="onSetPhotoToUpload(endCondition, $event);getFileInfo($event,'valid')"
                                 >
                             </div>
                         </div>
                         <div class="form-group" *ngIf="endCondition.field_name === 'Photo' && endCondition.value !== null ">
                             <a class="mr-2" href="{{ BASE_URL_API }}{{ '/' +endCondition.value.split('/')[2] + '/' + endCondition.value.split('/')[3] }}" target="_blank">See the photo</a>
                         </div>
+                        <small *ngIf="!fileTypeCheckValid" class="alert-danger">The file must be an image or a PDF.</small>
+                        <small *ngIf="!fileCheckValid" class="alert-danger"> The size of the file must be under 10 Mo.</small>
                     </div>
-                    <div class="col-md-1">
-                        <button class="btn btn-outline-dark" (click)="onValidateEndCondition(endCondition)" *ngIf="endCondition.value === null && isAValidValue(endCondition)"><fa-icon [icon]="faCheck"></fa-icon></button>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-dark" (click)="onValidateEndCondition(endCondition)" *ngIf="endCondition.value === null && isAValidValue(endCondition) && fileCheckValid && fileTypeCheckValid"><fa-icon [icon]="faCheck"></fa-icon></button>
                         <fa-icon [icon]="faCheckCircle" size="lg" style="color: green;" *ngIf="endCondition.value !== null"></fa-icon>
+
                     </div>
+                    
                 </li>
+                
             </ul>
             <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="validationError">
                 <p class="font-weight-bold">Error when validating the task :</p>

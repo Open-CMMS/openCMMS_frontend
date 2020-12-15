@@ -8,7 +8,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SigninComponent } from './auth/signin/signin.component';
 import { AccountBlockedComponent } from './auth/account-blocked/account-blocked.component';
 import { HeaderComponent } from './bars/header/header.component';
-import { FooterComponent } from './bars/footer/footer.component';
 import { HomeComponent } from './tabs/home/home.component';
 import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
 import { TasksListComponent } from './tabs/tasks/tasks-list/tasks-list.component';
@@ -62,12 +61,12 @@ import { DataProviderManagementComponent } from './tabs/data-providers/data-prov
 import { DataProviderListComponent } from './tabs/data-providers/data-provider-list/data-provider-list.component';
 import { NewDataProviderComponent } from './tabs/data-providers/new-data-provider/new-data-provider.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent,
     SigninComponent,
     AccountBlockedComponent,
     HomeComponent,
@@ -104,7 +103,7 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     DataProviderManagementComponent,
     DataProviderListComponent,
     NewDataProviderComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -115,6 +114,7 @@ import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.
     NgbModule,
     BrowserAnimationsModule,
     appRoutingModule,
+    NgxPaginationModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [

@@ -114,19 +114,17 @@ export class NewDataProviderComponent implements OnInit {
       formValues.field
     );
     this.dataProviderService.testDataProvider(newDataProvider, false).subscribe(
-      (response) => {
-        if (response) {
-          this.tested = true;
-          this.success = true;
-          this.response = true;
+        (res) => {
+          if (res.data) {
+            this.tested = true;
+            this.success = true;
+          }
+          if (res.error) {
+            this.tested = true;
+            this.success = false;
+          }
         }
-      },
     );
-    if (!this.response) {
-      this.tested = true;
-      this.success = false;
-    }
-    this.response = false;
   }
 
   /**

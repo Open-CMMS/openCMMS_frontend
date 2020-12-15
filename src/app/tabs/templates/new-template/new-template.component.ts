@@ -61,6 +61,8 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   filesSubscription: Subscription;
   myFiles: File[] = [];
   files: number[] = [];
+  fileCheck: boolean;
+  fileTypeCheck: boolean;
 
   // Forms
   createForm: FormGroup;
@@ -90,6 +92,8 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.fileTypeCheck = true;
+    this.fileCheck = true;
     this.equipmentTypeService.getEquipmentTypes();
     this.teamSubscription = this.teamService.teamSubject.subscribe(
       (teams: Team[]) => {
@@ -119,6 +123,33 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     this.initEndConditionsSelect();
     this.equipmentService.emitEquipments();
     this.initForm();
+  }
+
+  getFileInfo(content) {
+      if (content.target.files[0].type === 'image/png'
+          || content.target.files[0].type === 'image/jpeg'
+          || content.target.files[0].type === 'application/pdf') {
+            this.fileTypeCheck = true;
+      } else {
+        this.fileTypeCheck = false;
+      }
+      if (content.target.files[0].size / 1000000 <= 10) {
+      this.fileCheck = true;
+      } else {
+        this.fileCheck = false;
+      }
+  }
+  /**
+   * Provide a boolean which allow us to know if the size of the file is correct.
+   */
+  isSizeFileOk(): boolean {
+    return this.fileCheck;
+  }
+  /**
+   * Provide a boolean which allow us to know if the type of the file is correct.
+   */
+  isTypeFileOk(): boolean {
+    return this.fileTypeCheck;
   }
 
   /**
@@ -248,7 +279,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     let formData: FormData;
     let i = 0;
     for (i; i < event.target.files.length; i++) {
-      if (!this.myFiles.includes(event.target.files[i])) {
+      if (this.fileTypeCheck && this. fileCheck && !this.myFiles.includes(event.target.files[i])) {
         this.myFiles.push(event.target.files[i]);
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
