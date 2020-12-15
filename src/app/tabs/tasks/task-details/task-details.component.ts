@@ -488,7 +488,6 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         // initialize Forms
         this.initForm();
         this.loaded = true;
-        console.log(task);
     });
   }
 
