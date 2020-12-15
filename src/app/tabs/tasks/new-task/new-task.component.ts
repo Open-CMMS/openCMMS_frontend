@@ -29,11 +29,11 @@ import { durationRegex } from 'src/app/shares/consts';
 import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
 import {EquipmentType} from '../../../models/equipment-type';
 
-Component({
+@Component({
   selector: 'app-new-task',
   templateUrl: './new-task.component.html',
   styleUrls: ['./new-task.component.scss']
-});
+})
 export class NewTaskComponent implements OnInit, OnDestroy {
 
   // Local variables
