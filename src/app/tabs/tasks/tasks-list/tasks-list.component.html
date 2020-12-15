@@ -104,13 +104,22 @@
                         <a class="my-2"
                            style="cursor:pointer;"
                            (click)="openDelete(contentDelete, task)"
-                           *ngIf="onDeleteTaskPermission()"
+                           *ngIf="onDeleteTaskPermission() && !task.over"
                            ngbTooltip="Delete"
                            placement="bottom"
                         >
                             <fa-icon class="fa-lg"
                                      [icon]="faTrash"
                                      style="color:#dc3545"></fa-icon>
+                        </a>
+                        <a class="my-2"
+                          *ngIf="!onDeleteTaskPermission() || task.over"
+                          ngbTooltip="This task cannot be deleted"
+                          placement="bottom"
+                        >
+                            <fa-icon class="fa-lg"
+                                     [icon]="faTrash"
+                                     style="color:gray"></fa-icon>
                         </a>
                     </div>
                   </div>
