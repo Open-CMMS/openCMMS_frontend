@@ -515,18 +515,21 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       this.fileCheck = false;
     }
   }
+
   /**
    * Provide a boolean which allow us to know if the size of the file is correct.
    */
   isSizeFileOk(): boolean {
     return this.fileCheck;
   }
+
   /**
    * Provide a boolean which allow us to know if the type of the file is correct.
    */
   isTypeFileOk(): boolean {
     return this.fileTypeCheck;
   }
+
   /**
    * Function that initialize the fields in the form to create a new Team
    */
@@ -694,10 +697,6 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   }
 
-  // validTriggerConditions(): void {
-
-  // }
-
   /**
    * Async function to upload all the file before creating a new Task
    * @param files the file array linked to the Task
@@ -710,6 +709,10 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Validation function for task name
+   * @param control the name input
+   */
   public noWhiteSpaceValidator(control: FormControl) {
     const isWhiteSpace = (control.value || '').trim().length === 0;
     const isValid = !isWhiteSpace;
