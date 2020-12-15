@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, Subject } from 'rxjs';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { Team } from 'src/app/models/team';
@@ -16,7 +16,9 @@ import {
   faMinusCircle,
   faMinusSquare,
   faFileDownload,
-  faPlus
+  faPlus,
+  faTimes,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FileService } from 'src/app/services/files/file.service';
@@ -26,6 +28,12 @@ import { UserProfile } from 'src/app/models/user-profile';
 import { durationRegex } from 'src/app/shares/consts';
 import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
 import {EquipmentType} from '../../../models/equipment-type';
+
+function noSpaceOnly(): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} | null => {
+    return control.value.trim() === '' ? {spaceOnly: 'You can\'t choose a name with space only !'} : null;
+  };
+}
 @Component({
   selector: 'app-new-task',
   templateUrl: './new-task.component.html',
@@ -54,6 +62,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   faCalendar = faCalendar;
   faFileDownload = faFileDownload;
   faPlus = faPlus;
+  faTimes = faTimes;
+  faCheck = faCheck;
   model: NgbDateStruct;
 
   // Multiple Select
@@ -530,7 +540,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     const localDurationRegex = new RegExp(durationRegex);
 
     this.createForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, noSpaceOnly()]],
       description: [''],
       end_date: [null],
       duration: ['', Validators.pattern(localDurationRegex)],
