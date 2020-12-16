@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {FileService} from 'src/app/services/files/file.service';
 import {Equipment} from 'src/app/models/equipment';
@@ -105,7 +105,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    */
   initForm() {
     this.createForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
+      name: ['', [Validators.required, this.noWhiteSpaceValidator]],
       equipmentType: ['', Validators.required],
       file: ['']
     });
@@ -258,6 +258,12 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
       }
     });
     return canValidateForm;
+  }
+
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
   }
 
   /**
