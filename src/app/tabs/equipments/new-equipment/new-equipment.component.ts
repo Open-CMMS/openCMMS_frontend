@@ -150,6 +150,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * @param event file selection event from input of type file
    */
   onFileUpload(event) {
+    this.fileUploadLoader = true;
     let formData: FormData;
     let i = 0;
     for (i; i < event.target.files.length; i++) {
@@ -160,6 +161,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
         formData.append('is_manual', 'false');
         this.fileService.uploadFile(formData).subscribe(file => {
           this.files.push(Number(file.id));
+          this.fileUploadLoader = false;
         });
       }
     }

@@ -129,6 +129,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   addTeamForm: FormGroup;
   dropdownTeamsSettings: IDropdownSettings;
 
+  fileUploadLoader = false;
+  photoUploadLoader = null;
+
 
   /**
    * Constructor of TaskDetailsComponent
@@ -599,9 +602,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.validationError = false;
       switch (condition.field_name) {
         case 'Photo':
+          this.photoUploadLoader = condition.id;
           this.fileService.uploadFile(this.fileToUpload[0].value).subscribe(
             (file) => {
               updatedCondition.push({id: condition.id, file: file.id});
+              this.photoUploadLoader = null;
               this.updateTask(finalData);
           });
           // Update fileToUpload
@@ -667,6 +672,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * Function that update the task when a new file is attached to it
    */
   onUpdateTaskWithNewFile() {
+    this.fileUploadLoader = true;
     this.fileCheck = true;
     if (this.newFile !== null) {
       this.fileService.uploadFile(this.newFile.data).subscribe(
@@ -677,6 +683,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
             finalData.files.push(taskFile.id);
           }
           finalData.files.push(file.id);
+          this.fileUploadLoader = false;
           this.updateTask(finalData);
       });
     }

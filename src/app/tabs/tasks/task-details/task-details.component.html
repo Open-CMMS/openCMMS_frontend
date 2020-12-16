@@ -38,7 +38,10 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" [disabled]="newFile === null || !isSizeFileOk()|| !isTypeFileOk()" (click)="onUpdateTaskWithNewFile(); modal.close('OK')">Add</button>
+        <button type="button" class="btn btn-success" [disabled]="newFile === null || !isSizeFileOk()|| !isTypeFileOk() || fileUploadLoader" (click)="onUpdateTaskWithNewFile(); modal.close('OK')">
+            <ng-spinner *ngIf="fileUploadLoader" ngbTooltip="A file is probably being upload !" placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+            <span *ngIf="!fileUploadLoader">Add</span>
+        </button>
     </div>
 </ng-template>
 
@@ -368,7 +371,12 @@
                         <small *ngIf="!fileCheckValid" class="alert-danger"> The size of the file must be under 10 Mo.</small>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-outline-dark" (click)="onValidateEndCondition(endCondition)" *ngIf="endCondition.value === null && isAValidValue(endCondition) && fileCheckValid && fileTypeCheckValid"><fa-icon [icon]="faCheck"></fa-icon></button>
+                        <button class="btn btn-outline-dark" 
+                                (click)="onValidateEndCondition(endCondition)" 
+                                *ngIf="endCondition.value === null && isAValidValue(endCondition) && fileCheckValid && fileTypeCheckValid">
+                            <fa-icon *ngIf="!fileUploadLoader" [icon]="faCheck"></fa-icon>
+                        </button>
+                        <ng-spinner *ngIf="photoUploadLoader !== null && photoUploadLoader === endCondition.id" ngbTooltip="A file is probably being upload !" placement="top" class="mx-1" size="1" type="border" color="dark"></ng-spinner>
                         <fa-icon [icon]="faCheckCircle" size="lg" style="color: green;" *ngIf="endCondition.value !== null"></fa-icon>
 
                     </div>

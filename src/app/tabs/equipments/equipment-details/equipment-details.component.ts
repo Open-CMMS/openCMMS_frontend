@@ -79,6 +79,7 @@ export class EquipmentDetailsComponent implements OnInit, OnDestroy {
   // Constants
   INIT_FIELD_NAME  = '';
   INIT_FIELD_VALUE = '';
+  fileUploadLoader = false;
 
 
   /**
@@ -370,6 +371,7 @@ export class EquipmentDetailsComponent implements OnInit, OnDestroy {
    * @param event file selection event from input of type file
    */
   onFileUpload(event) {
+    this.fileUploadLoader = true;
     let formData: FormData;
     let i = 0;
     for (i; i < event.target.files.length; i++) {
@@ -380,6 +382,7 @@ export class EquipmentDetailsComponent implements OnInit, OnDestroy {
         formData.append('is_manual', 'false');
         this.fileService.uploadFile(formData).subscribe(file => {
           this.filesId.push(Number(file.id));
+          this.fileUploadLoader = false;
         });
       }
     }
@@ -434,7 +437,7 @@ export class EquipmentDetailsComponent implements OnInit, OnDestroy {
    * @param content the modal template to load
    */
   openUploadFile(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-addFile'}).result.then((result) => {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-addFile', backdrop: 'static'}).result.then((result) => {
       if (result === 'OK') {
         this.filesAdded = true;
         this.onModifyEquipment();

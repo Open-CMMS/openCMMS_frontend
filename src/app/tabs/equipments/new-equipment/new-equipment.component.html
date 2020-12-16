@@ -113,9 +113,11 @@
             type="submit"
             class="btn btn-primary"
             title="Name, Equipment Type and Fields value required"
-            [disabled]="createForm.invalid || missingEquipmentTypeFieldsValue() || !(canValidateForm())"
+            [disabled]="createForm.invalid || missingEquipmentTypeFieldsValue() || !(canValidateForm()) || creationLoader || fileUploadLoader"
           >
-            Create Equipment
+            <ng-spinner *ngIf="fileUploadLoader" ngbTooltip="A file is probably being upload !" placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+            <ng-spinner *ngIf="creationLoader" ngbTooltip="Please wait for the equipment to be created ..." placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+            <span *ngIf="!creationLoader && !fileUploadLoader">Create Equipment</span>
           </button>
         </div>
     </form>
