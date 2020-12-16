@@ -147,7 +147,12 @@
                       <div class="form-group">
                           <p><span class="font-weight-bold">Port :</span></p>
                           <div class="input-group row col-md-6">
+                              <input type="text" class="form-control"
+                                     *ngIf="!inputEnabled.port"
+                                     [attr.disabled]="!inputEnabled.port ? '': null"
+                                     [(ngModel)]="localDataProvider.port">
                               <input type="number" class="form-control"
+                                     *ngIf="inputEnabled.port"
                                      [attr.disabled]="!inputEnabled.port ? '': null"
                                      [(ngModel)]="localDataProvider.port">
                               <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
