@@ -54,13 +54,19 @@
           </a>
         </div>
       </div>
+      <div>
+        <button class="btn btn-link btn-sm" (click)="showValidateTask()" ngbTooltip="{{ this.showValidatedTaskButton.text }}">
+          <fa-icon [icon]="faEyeSlash" style="color: gray;" *ngIf="!(this.showValidatedTaskButton.showValidatedTasks)"></fa-icon>
+          <fa-icon [icon]="faEye" style="color: gray;" *ngIf="this.showValidatedTaskButton.showValidatedTasks"></fa-icon>
+        </button>
+      </div>
     </div>
   </div>
   <div class="container-fluid col-12" style="padding: 0px;">
     <div class="list-group">
-      <ul class="list-group">
+      <ul class="list-group" *ngIf="!(this.showValidatedTaskButton.showValidatedTasks)">
         <li class="container-fluid list-group-item font-weight-bold "
-          *ngFor="let task of tasks | appFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }">
+          *ngFor="let task of noValidatedTasks | appFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }">
           <div class="container-fluid row">
             <div class="d-flex flex-column col col-lg-9 col-md-12">
               <div class="d-flex align-items-center">
@@ -92,6 +98,40 @@
           </div>
         </li>
       </ul>
+      <ul class="list-group" *ngIf="this.showValidatedTaskButton.showValidatedTasks">
+        <li class="container-fluid list-group-item font-weight-bold "
+            *ngFor="let task of tasks | appFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }">
+          <div class="container-fluid row">
+            <div class="d-flex flex-column col col-lg-9 col-md-12">
+              <div class="d-flex align-items-center">
+                <h5 class="my-0" (click)="onViewTask(task)">{{ task.name }}</h5>
+                <fa-icon class="ml-2" [icon]="faCheck" *ngIf="task.over" style="color: green;"></fa-icon>
+              </div>
+              <div class="d-flex flex-wrap align-items-center my-2">
+                <div class="badge badge-pill badge-info mr-1 my-1" *ngIf="task.end_date">
+                  {{ task.end_date}}
+                </div>
+                <div class="badge badge-pill badge-danger mr-1 my-1" *ngIf="task.duration">
+                  {{ task.duration }}
+                </div>
+                <div *ngFor="let team of task.teams" class="badge badge-pill badge-warning mr-1 my-1">
+                  {{ team.name }}
+                </div>
+              </div>
+            </div>
+            <div class="d-flex align-items-center col-lg-3 col-md-12 justify-content-end">
+              <a class="mr-3 my-2" style="cursor:pointer;" (click)="onViewTask(task)" ngbTooltip="Info"
+                 placement="bottom">
+                <fa-icon class="fa-lg" [icon]="faInfoCircle" style="color:gray;"></fa-icon>
+              </a>
+              <a class="my-2" style="cursor:pointer;" (click)="openDelete(contentDelete, task)"
+                 *ngIf="onDeleteTaskPermission()" ngbTooltip="Delete" placement="bottom">
+                <fa-icon class="fa-lg" [icon]="faTrash" style="color:#dc3545"></fa-icon>
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
   <div class="d-flex justify-content-between">
@@ -101,3 +141,4 @@
     </div>
     <div class="d-flex align-content-center" style="visibility: hidden;">SpaceSpaceSpaceSpace</div>
   </div>
+</div>
