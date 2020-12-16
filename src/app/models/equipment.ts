@@ -18,7 +18,7 @@ export class Equipment {
                 name: string,
                 equipment_type: any,
                 list_of_files: any[],
-                list_of_fields: Field[],
+                list_of_fields: any[],
                 ) {
         this.id = id;
         this.name = name;

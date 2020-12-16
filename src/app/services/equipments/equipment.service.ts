@@ -35,6 +35,7 @@ export class EquipmentService {
                   .subscribe(
                     (response) => {
                       response.forEach(element => {
+                        console.log(element.field);
                         const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files, element.field);
                         this.equipments.push(equipment);
                       });
