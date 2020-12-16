@@ -29,30 +29,6 @@
         </div>
 </ng-template>
 
-<ng-template #contentModifyTeams let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-modify">Modifiy Team Type Teams</h4>
-    </div>
-    <div class="modal-body">
-        <div class="col-sm-8 col-sm-offset-2">
-          <div class="form-group">
-            <label for="teams">Teams</label>
-            <ng-multiselect-dropdown
-              [settings]="dropdownTeamsSettings"
-              [data]="teamsList"
-              [(ngModel)]="selectedTeams"
-              name="teams"
-            >
-            </ng-multiselect-dropdown>
-          </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Modify</button>
-    </div>
-</ng-template>
-
 <ng-template #contentModifyPermissions let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-modify">Modifiy Team Type Permissions</h4>
@@ -122,23 +98,9 @@
         </div>
     </div>
     <div class="card mt-5">
-        <div class="card-header d-flex justify-content-between">
+        <div class="card-header d-flex justify-content-start">
             <div class="d-flex">
                 <h3 class="font-weight-bold">Teams</h3>
-            </div>
-            <div class="d-flex">
-                <a class="mr-2 my-2"
-                    (click)="openModifyTeams(contentModifyTeams)"
-                    *ngIf="onChangeTeamTypesPermission()"
-                    style="cursor:pointer"
-                    ngbTooltip="Modify"
-                    placement="top"
-                >
-                    <fa-icon class="fa-lg"
-                                [icon]="faPencilAlt"
-                                style="color: gray"
-                    ></fa-icon>
-                </a>
             </div>
         </div>
         <div>
