@@ -100,6 +100,7 @@ export class NewTaskComponent implements OnInit, OnDestroy {
 
   // Equipments
   selectedEquipment: Equipment = null;
+  creationLoader = false;
 
   /**
    * Constructor for the NewTeamComponent
@@ -547,6 +548,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       files.push(templatesFile.id);
     }
 
+    this.creationLoader = true;
+
     // Saving new files in DB
     // Here we use an async function to wait for all the file to be uploaded before creating the task
     this.uploadFiles(files).then(
@@ -566,9 +569,11 @@ export class NewTaskComponent implements OnInit, OnDestroy {
             this.router.navigate(['/tasks']);
             this.taskService.getTasks();
             this.taskService.getUserTasks(this.currentUser?.id);
+            this.creationLoader = false;
           },
           (error) => {
             this.creationError = true;
+            this.creationLoader = false;
           }
         );
       }

@@ -108,7 +108,11 @@
         </div>
         <div class="d-flex justify-content-between align-items-center mt-3">
           <button class="btn btn-danger nav-link" routerLink="/template-management">Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid">Create template</button>
+          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || creationLoader || fileUploadLoader">
+              <ng-spinner *ngIf="fileUploadLoader" ngbTooltip="A file is probably being upload !" placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+              <ng-spinner *ngIf="creationLoader" ngbTooltip="Please wait for the task to be created ..." placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+              <span *ngIf="!creationLoader && !fileUploadLoader">Create template</span>
+          </button>
         </div>
     </form>
     <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">

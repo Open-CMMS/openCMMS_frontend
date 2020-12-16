@@ -58,6 +58,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   INIT_FIELD_VALUE = '';
   INIT_FIELD_DESCRIPTION = '';
 
+  creationLoader = false;
+  fileUploadLoader = false;
+
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -116,6 +119,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * creates a new Equipment with the data entered in the form.
    */
   onCreateEquipment() {
+    this.creationLoader = true;
     if (this.createForm.invalid) {
       return;
     }
@@ -135,8 +139,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
           equipment.fields,
         );
         this.equipmentService.getEquipments();
+        this.creationLoader = false;
+        this.router.navigate(['/equipments']);
       });
-    this.router.navigate(['/equipments']);
   }
 
   /**
