@@ -59,9 +59,6 @@
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" routerLink="infos">My Account</a>
-                <div *ngIf="onAddUserPermission()">
-                  <a class="dropdown-item" routerLink="settings">App settings</a>
-                </div>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" (click)="onLogout()">Sign out</a>
               </div>
