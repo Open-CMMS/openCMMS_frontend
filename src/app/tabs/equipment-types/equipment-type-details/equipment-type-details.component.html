@@ -141,9 +141,9 @@
                 *ngFor="let field of fields; let i=index">
                     <div class="container-fluid d-flex flex-wrap row justify-content-between">
                         <div class="d-flex row col-12">
-                            <div class="col-md-2 my-1">
+                            <div class="col my-1">
                                 <span class="font-weight-bold" >{{field.name}}</span>
-                                <ul>
+                                <ul class="container-fluid">
                                   <li *ngFor="let value of field.value; let i = index"> {{ value }}</li>
                                 </ul>
                             </div>
