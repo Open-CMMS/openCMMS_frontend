@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { TeamTypeService } from '../../../services/team-types/team-type.service';
 import { TeamType } from '../../../models/team-type';
 import { Permission } from '../../../models/permission';
-import { Team } from '../../../models/team';
 import { PermissionService } from 'src/app/services/permissions/permission.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -34,18 +33,13 @@ export class TeamTypeDetailsComponent implements OnInit {
   previousUrl = '';
 
   all_permissions: Permission[] = [];
-  all_teams: Team[] = [];
 
   team_type: TeamType;
 
   // variables for the dropdown selects in the modify form
   permsList = [];
-  teamsList = [];
   selectedPerms = [];
-  selectedTeams = [];
   dropdownPermsSettings: IDropdownSettings;
-  dropdownTeamsSettings: IDropdownSettings;
-
 
   // the Forms
   teamTypeForm: FormGroup;
@@ -86,11 +80,6 @@ export class TeamTypeDetailsComponent implements OnInit {
       this.all_permissions = permissions;
       this.initPermsSelect();
     });
-    this.teamService.teamSubject.subscribe((teams: Team[]) => {
-      this.all_teams = teams;
-      this.initTeamsSelect();
-    });
-    this.teamService.emitTeams();
     this.initForm();
   }
 
@@ -106,7 +95,6 @@ export class TeamTypeDetailsComponent implements OnInit {
       this.teams = team_type.team_set;
       this.perms = team_type.perms;
       this.initSelectedPerms();
-      this.initSelectedTeams();
     });
   }
 
@@ -127,21 +115,6 @@ export class TeamTypeDetailsComponent implements OnInit {
       (result) => {
         if (result === 'OK') {
           this.modifyTeamType('name');
-        }
-        this.modalService.dismissAll();
-      }
-    );
-  }
-
-  /**
-   * Function that opens the modify modal
-   * @param contentModify the content to put in the modal
-   */
-  openModifyTeams(contentModify) {
-    this.modalService.open(contentModify, {ariaLabelledBy: 'modal-basic-title', size: 'lg'}).result.then(
-      (result) => {
-        if (result === 'OK') {
-          this.modifyTeamType('teams');
         }
         this.modalService.dismissAll();
       }
@@ -210,42 +183,12 @@ export class TeamTypeDetailsComponent implements OnInit {
   }
 
   /**
-   * Function that initialize the dropdown select for teams
-   */
-  initTeamsSelect() {
-    this.teamsList = [];
-    this.all_teams.forEach(team => {
-      this.teamsList.push({id: team.id.toString(), value: team.name.toString()});
-    });
-    this.dropdownTeamsSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 4,
-      allowSearchFilter: true
-    };
-  }
-
-  /**
-   * Function that initialize the selected teams in the select
-   */
-  initSelectedTeams() {
-    this.selectedTeams = [];
-    this.teams.forEach(team => {
-      this.selectedTeams.push({id: team.id.toString(), value: team.name.toString()});
-    });
-  }
-
-  /**
    * Function that initialize the fields in the form to create a new TeamType
    */
   initForm() {
     this.teamTypeForm = this.formBuilder.group({
       name: ['', Validators.required],
       permissions: [''],
-      teams: ['']
     });
   }
 
@@ -261,7 +204,7 @@ export class TeamTypeDetailsComponent implements OnInit {
       permissions.push(perm.id);
     }
 
-    for (const team of this.selectedTeams) {
+    for (const team of this.teams) {
       teams.push(team.id);
     }
 
