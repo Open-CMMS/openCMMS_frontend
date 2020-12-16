@@ -289,13 +289,16 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * Function that removes specific trigger conditions id the equipment is unselected
    */
   removeForbiddenFields() {
-    if (this.createForm.value.equipment_or_equipment_type === 'no-equipment') {
+    if (this.createForm.value.equipment_or_equipment_type === 'no-equipment'
+        || this.createForm.value.equipment_or_equipment_type === 'equipment_type') {
       this.selectedEquipmentIdValue = [];
+      const temp = [];
       for (const tc of this.triggerConditions) {
-        if (tc.selectedTriggerCondition[0] && tc.selectedTriggerCondition[0].value !== this.triggerConditionRecurrenceName) {
-          this.triggerConditions.splice(this.triggerConditions.indexOf(tc), 1);
+        if (tc.selectedTriggerCondition[0]?.value === this.triggerConditionRecurrenceName) {
+          temp.push(tc);
         }
       }
+      this.triggerConditions = temp;
     }
   }
 
