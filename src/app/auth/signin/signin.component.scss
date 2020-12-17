@@ -1,0 +1,13 @@
+html, body, app-root {
+    height: 100%;
+    margin: 0;
+}
+
+.body {
+    background-image: url(../../../assets/background_login.png);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center;
+    background-size: cover;
+    background-attachment: fixed;
+}
