@@ -3,7 +3,7 @@
         <h4 class="modal-title" id="modal-delete">Delete DataProvider</h4>
     </div>
     <div class="modal-body">
-        <p> Are you sure you want to delete this data provider ?</p>
+        <p> Are you sure you want to delete <span class="font-weight-bold"> {{localDataProvider.name}}</span> ?</p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
@@ -11,9 +11,15 @@
     </div>
 </ng-template>
 <div class="container-fluid col-lg-8 col-md-8 mt-3 justify-content-center" *ngIf="loaded">
-        <div class="container-fluid d-flex flex-wrap justify-content-between">
-            <div class="d-flex">
-                <h2 class="font-weight-bold">{{localDataProvider?.name}}</h2>
+        <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
+            <div class="d-flex align-items-center">
+                <a (click)="onPreviousPage()"
+                   style="cursor:pointer;"
+                   ngbTooltip="Previous page"
+                   placement="bottom">
+                    <fa-icon class="mr-3" [icon]="faChevronLeft"></fa-icon>
+                </a>
+                <h2 class="font-weight-bold m-0">{{localDataProvider?.name}}</h2>
             </div>
             <div class="d-flex btn-group align-items-center">
                 <div> Enable </div>
@@ -30,9 +36,9 @@
                 <button class="btn btn-danger" (click)="openDelete(contentDelete)"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
             </div>
         </div>
-        <div class="card mt-3">
+        <div class="card mt-5">
             <div class="card-header">
-                <h3 class="font-weight-bold"> Data Provider info : </h3>
+                <h3 class="font-weight-bold">Data Provider info</h3>
             </div>
             <div class="row">
                 <div class="col-12">
@@ -101,7 +107,7 @@
         </div>
         <div class="card mt-3">
             <div class="card-header">
-                <h3 class="font-weight-bold"> Equipment : </h3>
+                <h3 class="font-weight-bold">Equipment</h3>
             </div>
             <div class="row">
                 <div class="col-12">
@@ -139,6 +145,25 @@
                         </div>
                       </div>
                       <div class="form-group">
+                          <p><span class="font-weight-bold">Port :</span></p>
+                          <div class="input-group row col-md-6">
+                              <input type="text" class="form-control"
+                                     *ngIf="!inputEnabled.port"
+                                     [attr.disabled]="!inputEnabled.port ? '': null"
+                                     [(ngModel)]="localDataProvider.port">
+                              <input type="number" class="form-control"
+                                     *ngIf="inputEnabled.port"
+                                     [attr.disabled]="!inputEnabled.port ? '': null"
+                                     [(ngModel)]="localDataProvider.port">
+                              <div class="input-group-append" *ngIf="onChangeDataProviderPermission()">
+                                  <button class="btn btn-outline-secondary" *ngIf="!inputEnabled.port" (click)="enableInput('port')"><fa-icon [icon]="faPen"></fa-icon></button>
+                              </div>
+                              <div class="input-group-append">
+                                  <button class="btn btn-outline-secondary" *ngIf="inputEnabled.port" (click)="saveInput('port')"><fa-icon [icon]="faSave"></fa-icon></button>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="form-group">
                         <p><span class="font-weight-bold">Field :</span></p>
                         <div class="input-group row col-md-6" *ngIf="!inputEnabled.field">
                           <input class="form-control" [(ngModel)]="localDataProvider.field_object.name" disabled>
@@ -167,4 +192,5 @@
                 </div>
             </div>
         </div>
+</div>
 </div>

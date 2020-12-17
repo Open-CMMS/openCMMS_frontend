@@ -32,14 +32,14 @@ describe('EquipmentService', () => {
           name: 'clé',
           equipment_type: '1',
           files: [1, 2, 3],
-          fields: ['266', '267']
+          field: ['266', '267']
       },
       {
         id: 2,
         name: 'brosse',
         equipment_type: '1',
         files: [4],
-        fields: ['21', '22']
+        field: ['21', '22']
     }
   ];
 
@@ -55,14 +55,14 @@ describe('EquipmentService', () => {
           name: 'clé',
           equipment_type: 1,
           files: [1, 2, 3],
-          fields: [new Field(1, 'name', ['value1', 'value2'], 'description'), new Field(2, 'name2', ['value12', 'value22'], 'description2')]
+          field: [new Field(1, 'name', ['value1', 'value2'], 'description'), new Field(2, 'name2', ['value12', 'value22'], 'description2')]
       },
       {
         id: 2,
         name: 'brosse',
         equipment_type: 1,
         files: [4],
-        fields: [new Field(3, 'name3', ['value13', 'value23'], 'description3')]
+        field: [new Field(3, 'name3', ['value13', 'value23'], 'description3')]
     }
   ];
 
@@ -92,6 +92,7 @@ describe('EquipmentService', () => {
       expect(files2[0]).toEqual(4);
       expect(fields1[0].id).toEqual(1);
       expect(fields1[1].id).toEqual(2);
+      expect(fields2[0].id).toEqual(3);
       expect(fields2[0].id).toEqual(3);
       expect(fields1[0].name).toEqual('name');
       expect(fields1[1].name).toEqual('name2');
@@ -258,7 +259,7 @@ describe('EquipmentService', () => {
       name: 'clé',
       equipment_type: 1,
       files: [1, 2, 3],
-      fields: mockFields
+      field: mockFields
   };
 
     service.createEquipment('clé', 1, [1, 2, 3], mockFields)
@@ -268,10 +269,10 @@ describe('EquipmentService', () => {
         expect(equipment.files[0]).toEqual(1);
         expect(equipment.files[1]).toEqual(2);
         expect(equipment.files[2]).toEqual(3);
-        expect(equipment.fields[0].id).toEqual(1);
-        expect(equipment.fields[0].name).toEqual('name');
-        expect(equipment.fields[0].value).toEqual(['value1', 'value2']);
-        expect(equipment.fields[0].description).toEqual('description');
+        expect(equipment.field[0].id).toEqual(1);
+        expect(equipment.field[0].name).toEqual('name');
+        expect(equipment.field[0].value).toEqual(['value1', 'value2']);
+        expect(equipment.field[0].description).toEqual('description');
       });
 
     const req = httpTestingController.match(BASE_URL_API + '/api/maintenancemanagement/equipments/');
@@ -311,5 +312,29 @@ describe('EquipmentService', () => {
     req.flush(mockEquipment);
   });
 
+  it('returned Observable should match the right data on delete field', () => {
+        const mockEquipment = {
+            id: 1,
+            name: 'clé',
+            equipment_type: 1,
+            files: [1, 2, 3],
+            fields: {id: 1, name: 'name', value: 'value', description: 'description'}
+        };
+
+        httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/');
+        service.deleteFieldEquipment(1, 1).subscribe(equipment => {
+            expect(equipment.name).toEqual('clé');
+            expect(equipment.equipment_type).toEqual(1);
+            expect(equipment.files[0]).toEqual(1);
+            expect(equipment.files[1]).toEqual(2);
+            expect(equipment.files[2]).toEqual(3);
+        });
+
+        const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/removefieldfromequipment/');
+
+        expect(req.request.method).toEqual('DELETE');
+
+        req.flush(mockEquipment);
+    });
 
 });

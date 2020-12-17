@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { PermissionService } from 'src/app/services/permissions/permission.service';
 import { TeamType } from 'src/app/models/team-type';
-import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {NgForm, FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import { TeamTypeService } from 'src/app/services/team-types/team-type.service';
 import { Team } from 'src/app/models/team';
 import { TeamService } from 'src/app/services/teams/team.service';
@@ -112,10 +112,16 @@ export class NewTeamTypeComponent implements OnInit {
    */
   initForm() {
     this.teamTypeForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, this.noWhiteSpaceValidator]],
       permissions: [''],
       teams: ['']
     });
+  }
+
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
   }
 
   /**

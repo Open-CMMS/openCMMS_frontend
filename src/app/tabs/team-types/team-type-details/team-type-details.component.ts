@@ -3,15 +3,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { TeamTypeService } from '../../../services/team-types/team-type.service';
 import { TeamType } from '../../../models/team-type';
 import { Permission } from '../../../models/permission';
-import { Team } from '../../../models/team';
 import { PermissionService } from 'src/app/services/permissions/permission.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
-import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faPencilAlt, faTrash, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-user-details',
@@ -21,26 +21,25 @@ import { AuthenticationService } from 'src/app/services/auth/authentication.serv
 export class TeamTypeDetailsComponent implements OnInit {
 
   faInfoCircle = faInfoCircle;
+  faPencilAlt = faPencilAlt;
+  faTrash = faTrash;
+  faChevronLeft = faChevronLeft;
 
   // local variables
   id: number;
   name: string;
-  perms: any[];
-  teams: any[];
+  perms: any[] = [];
+  teams: any[] = [];
+  previousUrl = '';
 
   all_permissions: Permission[] = [];
-  all_teams: Team[] = [];
 
   team_type: TeamType;
 
   // variables for the dropdown selects in the modify form
   permsList = [];
-  teamsList = [];
   selectedPerms = [];
-  selectedTeams = [];
   dropdownPermsSettings: IDropdownSettings;
-  dropdownTeamsSettings: IDropdownSettings;
-
 
   // the Forms
   teamTypeForm: FormGroup;
@@ -56,6 +55,7 @@ export class TeamTypeDetailsComponent implements OnInit {
    * @param formBuilder the service to handle forms
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
+   * @param urlService the service used to handle URL
    */
   constructor(private router: Router,
               private teamTypeService: TeamTypeService,
@@ -65,22 +65,21 @@ export class TeamTypeDetailsComponent implements OnInit {
               private modalService: NgbModal,
               private formBuilder: FormBuilder,
               private utilsService: UtilsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private urlService: UrlService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     this.initFields();
     this.permissionService.getPermissions().subscribe((permissions: Permission[]) => {
       this.all_permissions = permissions;
       this.initPermsSelect();
     });
-    this.teamService.teamSubject.subscribe((teams: Team[]) => {
-      this.all_teams = teams;
-      this.initTeamsSelect();
-    });
-    this.teamService.emitTeams();
     this.initForm();
   }
 
@@ -94,19 +93,8 @@ export class TeamTypeDetailsComponent implements OnInit {
     this.teamTypeService.getTeamType(this.id).subscribe((team_type: TeamType) => {
       this.name = team_type.name;
       this.teams = team_type.team_set;
-      // team_type.team_set.forEach((id) => {
-      //   this.teamService.getTeam(id).subscribe((team: Team) => {
-      //     this.teams.push(team);
-      //     this.initSelectedTeams();
-      //   });
-      // });
       this.perms = team_type.perms;
-      // team_type.perms.forEach((id) => {
-      //   this.permissionService.getPermission(id).subscribe((perm: Permission) => {
-      //     this.perms.push(perm);
-      //     this.initSelectedPerms();
-      //   });
-      // });
+      this.initSelectedPerms();
     });
   }
 
@@ -119,11 +107,33 @@ export class TeamTypeDetailsComponent implements OnInit {
   }
 
   /**
+   * Function that opens the modify modal for name
+   * @param contentModify the content to put in the modal
+   */
+  openModifyName(contentModify) {
+    this.modalService.open(contentModify, {ariaLabelledBy: 'modal-basic-title', size: 'lg'}).result.then(
+      (result) => {
+        if (result === 'OK') {
+          this.modifyTeamType('name');
+        }
+        this.modalService.dismissAll();
+      }
+    );
+  }
+
+  /**
    * Function that opens the modify modal
    * @param contentModify the content to put in the modal
    */
-  openModify(contentModify) {
-    this.modalService.open(contentModify, {ariaLabelledBy: 'modal-basic-title', size: 'lg'});
+  openModifyPerms(contentModify) {
+    this.modalService.open(contentModify, {ariaLabelledBy: 'modal-basic-title', size: 'lg'}).result.then(
+      (result) => {
+        if (result === 'OK') {
+          this.modifyTeamType('perms');
+        }
+        this.modalService.dismissAll();
+      }
+    );
   }
 
   /**
@@ -173,71 +183,33 @@ export class TeamTypeDetailsComponent implements OnInit {
   }
 
   /**
-   * Function that initialize the dropdown select for teams
-   */
-  initTeamsSelect() {
-    this.teamsList = [];
-    this.all_teams.forEach(team => {
-      this.teamsList.push({id: team.id.toString(), value: team.name.toString()});
-    });
-    this.dropdownTeamsSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 4,
-      allowSearchFilter: true
-    };
-  }
-
-  /**
-   * Function that initialize the selected teams in the select
-   */
-  initSelectedTeams() {
-    this.selectedTeams = [];
-    this.teams.forEach(team => {
-      this.selectedTeams.push({id: team.id.toString(), value: team.name.toString()});
-    });
-  }
-
-  /**
    * Function that initialize the fields in the form to create a new TeamType
    */
   initForm() {
     this.teamTypeForm = this.formBuilder.group({
       name: ['', Validators.required],
       permissions: [''],
-      teams: ['']
     });
   }
 
   /**
    * Function that submits the form to modify the teamType
    */
-  modifyTeamType() {
-    const formValue = this.teamTypeForm.value;
+  modifyTeamType(modifiedField: string) {
 
-    const nameStr = 'name';
-    const permissionsStr = 'permissions';
-    const teamsStr = 'teams';
-
-    const id = this.id;
-    const name = formValue[nameStr];
-    const permissions = [];
-    if (formValue[permissionsStr]) {
-      formValue[permissionsStr].forEach(item => {
-        permissions.push(item.id);
-      });
-    }
     const teams = [];
-    if (formValue[teamsStr]) {
-      formValue[teamsStr].forEach(item => {
-        teams.push(item.id);
-      });
+    const permissions = [];
+
+    for (const perm of this.selectedPerms) {
+      permissions.push(perm.id);
     }
-    this.teamTypeService.updateTeamType(new TeamType(id, name, permissions, teams)).subscribe(
-        team_type => {
+
+    for (const team of this.teams) {
+      teams.push(team.id);
+    }
+
+    this.teamTypeService.updateTeamType(new TeamType(this.id, this.name, permissions, teams)).subscribe(
+        (team_type) => {
           const old_team_type = this.teamTypeService.team_types.find((value) => {
             return value.id === team_type.id;
           });
@@ -245,10 +217,9 @@ export class TeamTypeDetailsComponent implements OnInit {
           this.teamTypeService.team_types[index] = team_type;
 
           this.teamTypeService.emitTeamTypes();
-
+          this.teamService.getTeams(); // To avoid deleted team with no team type issue
           this.initFields();
         });
-    this.modalService.dismissAll();
   }
 
   /**
@@ -269,6 +240,13 @@ export class TeamTypeDetailsComponent implements OnInit {
       this.authenticationService.getCurrentUserPermissions(),
       'delete_teamtype'
       );
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

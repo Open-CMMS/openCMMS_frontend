@@ -63,15 +63,21 @@ describe('TaskService', () => {
     const mockTask = {
       id: 1,
       name: 'Task 1',
-      description: 'Description task 1'
+      description: 'Description task 1',
+      end_date: '',
+      duration: '1d',
+      equipment: 1,
+      equipment_type: null,
+      teams: [1, 2],
+      files: null,
+      trigger_conditions: null,
+      end_conditions: null,
     };
 
-    const newTask = new Task(1,
-                            'Task 1',
-                            'Description');
-    service.createTask(newTask).subscribe(
+    service.createTask('Task 1', 'Description task 1', '', '1d', 1, null, [1, 2], null, null, null).subscribe(
       (task) => {
-        expect(task.id).toBe(1);
+        expect(task.name).toBe('Task 1');
+        expect(task.description).toBe('Description task 1');
       }
     );
 

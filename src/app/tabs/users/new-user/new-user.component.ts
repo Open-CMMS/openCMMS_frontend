@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
+import { emailRegex } from 'src/app/shares/consts';
 
 @Component({
   selector: 'app-new-user',
@@ -19,8 +20,12 @@ export class NewUserComponent implements OnInit {
     creationError = false;
     submitted = false;
     user: UserProfile;
+
     // Forms
     createForm: FormGroup;
+
+    // Regex
+    emailRegex = emailRegex;
 
 
   /**
@@ -45,12 +50,19 @@ export class NewUserComponent implements OnInit {
    * Function that initialize the fields in the form to create a new Team
    */
   initForm() {
-    this.createForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]]
+      const localEmailRegex = new RegExp(this.emailRegex);
+      this.createForm = this.formBuilder.group({
+      firstName: ['', [Validators.required, this.noWhiteSpaceValidator]],
+      lastName: ['', [Validators.required, this.noWhiteSpaceValidator]],
+      email: ['', [Validators.required, Validators.email, Validators.pattern(localEmailRegex)]]
     });
   }
+
+    public noWhiteSpaceValidator(control: FormControl) {
+        const isWhiteSpace = (control.value || '').trim().length === 0;
+        const isValid = !isWhiteSpace;
+        return isValid ? null : {whitespace: true};
+    }
 
   /**
    * Function that is triggered when a new User is being created (when button "Create new User" is pressed)

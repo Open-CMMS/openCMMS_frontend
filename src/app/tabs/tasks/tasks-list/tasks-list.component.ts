@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { faTrash, faInfoCircle, faPlus, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import { faTrash, faInfoCircle, faPlus, faCheck, faSearch, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
@@ -16,21 +16,32 @@ import { UserProfile } from 'src/app/models/user-profile';
 })
 export class TasksListComponent implements OnInit, OnDestroy {
 
-  // Local Variables
+  // Icon
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
   faPlus = faPlus;
   faCheck = faCheck;
   faSearch = faSearch;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
+  taskState: boolean;
 
+  // Local variables
   tasks: Task[] = [];
+  noValidatedTasks: Task[] = [];
   currentUser: UserProfile;
   tasksSubscription: Subscription = null;
   currentUserSubscription: Subscription = null;
   myTasks: boolean;
+  p = 1;
+  sortByDate = false;
+  sortByDuration = false;
+  showValidatedTaskButton = {showValidatedTasks : false, text: 'Show validated tasks'};
 
   // Search text
   searchText = '';
+
+  modalTaskName = '';
 
   /**
    * Constructor for the TasksList component
@@ -57,6 +68,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     this.route.url.subscribe(
       (route) => {
         if (route[0].path === 'tasks') { // Users tasks display
+          this.taskState = true;
           this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
             (currentUser) => {
               this.currentUser = currentUser;
@@ -70,9 +82,16 @@ export class TasksListComponent implements OnInit, OnDestroy {
           );
           this.myTasks = true;
         } else { // path equals tasks-management: all the tasks are displayed
+          this.taskState = false;
+          this.taskService.getTasks();
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
+              tasks.forEach(task => {
+                if (task.over === false) {
+                  this.noValidatedTasks.push(task);
+                }
+              });
             }
           );
           this.taskService.emitTasks();
@@ -96,6 +115,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
    * @param task the task concerned by the deletion
    */
   openDelete(content, task: Task) {
+    this.modalTaskName = task.name;
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteTask(task);
@@ -156,7 +176,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
     const dateA = new Date(a.end_date);
     const dateB = new Date(b.end_date);
     // @ts-ignore
-    return dateA - dateB;
+    return dateB - dateA;
   }
 
   compareDuration(a: Task, b: Task) {
@@ -192,32 +212,48 @@ export class TasksListComponent implements OnInit, OnDestroy {
           break;
       }
     });
-    return duration_in_minutes_A - duration_in_minutes_B;
+    return duration_in_minutes_B - duration_in_minutes_A;
   }
 
   /**
    * Function called when the tasks need to be sorting by end_date
    */
   sortingByEndDate() {
+    this.sortByDuration = false;
+    this.sortByDate = true;
     this.tasks.sort(this.compareDate);
     this.tasks.forEach(task => {
-      if (task.end_date == null) {
+      if (task.end_date) {
         const index = this.tasks.indexOf(task);
         this.tasks.splice(index, 1);
-        this.tasks.push(task);
+        this.tasks.unshift(task);
       }
     });
   }
 
   sortingByDuration() {
+    this.sortByDate = false;
+    this.sortByDuration = true;
+
     this.tasks.sort(this.compareDuration);
     this.tasks.forEach(task => {
-      if (task.duration === '') {
+      if (task.duration) {
         const index = this.tasks.indexOf(task);
         this.tasks.splice(index, 1);
-        this.tasks.push(task);
+        this.tasks.unshift(task);
       }
     });
+  }
+
+  /**
+   * Set the state of the button that allows to hide or show validated tasks
+   */
+  showValidateTask() {
+    if (this.showValidatedTaskButton.showValidatedTasks) {
+      this.showValidatedTaskButton = {showValidatedTasks : false, text: 'Show validated tasks'};
+    } else {
+      this.showValidatedTaskButton = {showValidatedTasks : true, text: 'Hide validated tasks'};
+    }
   }
 
   /**

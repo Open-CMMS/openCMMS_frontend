@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faInfoCircle, faPencilAlt, faSave, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faInfoCircle, faPencilAlt, faSave, faPlusSquare, faTrash, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { Equipment } from 'src/app/models/equipment';
 import { EquipmentType } from 'src/app/models/equipment-type';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import { EquipmentService } from 'src/app/services/equipments/equipment.service'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-equipment-type-details',
@@ -21,16 +22,20 @@ export class EquipmentTypeDetailsComponent implements OnInit {
   faPencilAlt = faPencilAlt;
   faSave = faSave;
   faPlusSquare = faPlusSquare;
+  faTrash = faTrash;
+  faChevronLeft = faChevronLeft;
 
   // Local variables
   id: number;
   name: string;
-  equipments: Equipment[];
+  equipments: Equipment[] = [];
   all_equipments: Equipment[] = [];
   fields = [];
   equipment_type: EquipmentType;
   modifyFields = false;
   newFieldsValues = [];
+  previousUrl = '';
+  canAddValue = [];
 
   // the Forms
   equipmentTypeForm: FormGroup;
@@ -45,6 +50,7 @@ export class EquipmentTypeDetailsComponent implements OnInit {
    * @param formBuilder the service to handle forms
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
+   * @param urlService the service used to handle URL
    */
   constructor(private router: Router,
               private equipmentTypeService: EquipmentTypeService,
@@ -53,12 +59,16 @@ export class EquipmentTypeDetailsComponent implements OnInit {
               private modalService: NgbModal,
               private formBuilder: FormBuilder,
               private utilsService: UtilsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private urlService: UrlService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     this.initFields();
     this.equipmentService.equipmentsSubject.subscribe((equipments: Equipment[]) => {
       this.all_equipments = equipments;
@@ -78,6 +88,13 @@ export class EquipmentTypeDetailsComponent implements OnInit {
       this.name = equipment_type.name;
       this.equipments = equipment_type.equipments;
       this.fields = equipment_type.field;
+      this.fields.forEach(field => {
+        if ((field.value.length !== 0) || (field.value.length === 0 && this.equipments.length === 0)) {
+          this.canAddValue.push(true);
+        } else {
+          this.canAddValue.push(false);
+        }
+      });
     });
   }
 
@@ -189,5 +206,12 @@ export class EquipmentTypeDetailsComponent implements OnInit {
       }
     });
     this.modifyEquipmentType();
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 }

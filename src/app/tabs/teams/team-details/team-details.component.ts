@@ -2,8 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Team } from 'src/app/models/team';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TeamService } from 'src/app/services/teams/team.service';
-import { faPencilAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { faPlusSquare, faMinusSquare } from '@fortawesome/free-regular-svg-icons';
+import { faPencilAlt, faTrash, faPlusSquare, faMinusSquare, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { UserProfile } from 'src/app/models/user-profile';
 import { TeamType } from 'src/app/models/team-type';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -14,6 +13,7 @@ import { UserService } from 'src/app/services/users/user.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-team-details',
@@ -29,6 +29,7 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
   faTrash = faTrash;
   faPlusSquare = faPlusSquare;
   faMinusSquare = faMinusSquare;
+  faChevronLeft = faChevronLeft;
 
   // Local variables
   team: Team = null;
@@ -41,11 +42,13 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
   loading = false;
   usersList = [];
   usersSubscription: Subscription;
+  previousUrl = '';
 
   // Forms
   updateForm: FormGroup;
   addUserForm: FormGroup;
   dropdownUsersSettings: IDropdownSettings;
+
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -67,12 +70,17 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private modalService: NgbModal,
               private utilsService: UtilsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private urlService: UrlService
+  ) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     let id: number;
     this.route.params.subscribe(params => {
       id = +params.id;
@@ -336,4 +344,12 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
     this.teamTypesSubscription.unsubscribe();
     this.usersSubscription.unsubscribe();
   }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
+  }
+
 }

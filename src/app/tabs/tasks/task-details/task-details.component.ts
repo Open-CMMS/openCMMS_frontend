@@ -16,8 +16,10 @@ import {
   faCheck,
   faBook,
   faPlusCircle,
-  faMinusCircle } from '@fortawesome/free-solid-svg-icons';
-import { faPlusSquare, faMinusSquare, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
+  faMinusCircle,
+  faChevronLeft,
+  faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { faMinusSquare, faCheckCircle } from '@fortawesome/free-regular-svg-icons';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Equipment } from 'src/app/models/equipment';
@@ -26,6 +28,9 @@ import { Subscription, Subject } from 'rxjs';
 import { FileService } from 'src/app/services/files/file.service';
 import { environment } from 'src/environments/environment';
 import { durationRegex } from 'src/app/shares/consts';
+import {EquipmentType} from '../../../models/equipment-type';
+import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-task-details',
@@ -50,6 +55,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   faCheck = faCheck;
   faBook = faBook;
   faCheckCircle = faCheckCircle;
+  faChevronLeft = faChevronLeft;
 
   /*
     ##### Local variables #####
@@ -58,9 +64,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Useful variables
   loaded = false;
   BASE_URL_API = environment.baseUrl;
+  previousUrl = '';
 
   // Task
-  task: Task = null;
+  task = null;
   taskDuration = '';
   teamsTask: Team[] = [];
 
@@ -68,6 +75,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   equipments: Equipment[] = [];
   equipmentsList = [];
   selectedEquipment = [];
+
+  // Equipment types
+  equipment_types: EquipmentType[] = [];
+  equipmentTypesList = [];
+  selectedEquipmentType = [];
 
   // Teams
   teams: Team[] = [];
@@ -82,9 +94,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   files: any[] = [];
   newFile: any = null;
   fileToUpload: any[] = [];
+  fileCheck: boolean;
+  fileTypeCheck: boolean;
+  fileCheckValid: boolean;
+  fileTypeCheckValid: boolean;
 
   // End conditions
-  endConditionValues: any[] = [];
+  endConditionValues: any = {};
   validationError = false;
 
   // Input activation
@@ -92,13 +108,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     description: false,
     date: false,
     duration: false,
-    equipment: false
+    equipment: false,
+    equipment_type: false,
   };
 
   // Subscriptions
   teamSubscription: Subscription;
   equipmentSubscription: Subscription;
-
+  equipmentTypeSubscription: Subscription;
 
   // End conditions
   endConditionsSubject = new Subject<any[]>();
@@ -107,10 +124,15 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Trigger Conditions
   triggerConditionsSubject = new Subject<any[]>();
   triggerConditionSubscription: Subscription;
+  triggerConditionRecurrenceName = 'Recurrence';
 
   // Forms
   addTeamForm: FormGroup;
   dropdownTeamsSettings: IDropdownSettings;
+
+  fileUploadLoader = false;
+  photoUploadLoader = null;
+
 
   /**
    * Constructor of TaskDetailsComponent
@@ -118,26 +140,37 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param route the service used to handle route parameters
    * @param teamService the service used to handle teams
    * @param equipmentService the service used to handle equipments
+   * @param equipmentTypeService the service used to handle equipment types
    * @param router the service used to handle routing
    * @param modalService the service used to handle modals
    * @param utilsService the service used for useful methods
    * @param authenticationService the service used to handle authentication
    * @param formBuilder the service used to handle forms
    * @param fileService the service used to handle files
+   * @param urlService the service used to handle URL
    */
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,
               private teamService: TeamService,
               private equipmentService: EquipmentService,
+              private equipmentTypeService: EquipmentTypeService,
               private router: Router,
               private modalService: NgbModal,
               private utilsService: UtilsService,
               private authenticationService: AuthenticationService,
               private formBuilder: FormBuilder,
-              private fileService: FileService) { }
+              private fileService: FileService,
+              private urlService: UrlService) { }
 
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     let id: number;
+    this.fileCheckValid = true;
+    this.fileTypeCheckValid = true;
+    this.fileCheck = true;
+    this.fileTypeCheck = true;
     this.route.params.subscribe(params => {
       id = +params.id;
     });
@@ -156,8 +189,15 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         this.equipments = equipments;
     });
 
+    // Subscribing to the equipment types
+    this.equipmentTypeSubscription = this.equipmentTypeService.equipment_types_subject.subscribe(
+        (equipmentTypes) => {
+          this.equipment_types = equipmentTypes;
+        });
+
     // Updating every subscriptions
     this.equipmentService.emitEquipments();
+    this.equipmentTypeService.emitEquipmentTypes();
     this.teamService.emitTeams();
   }
 
@@ -265,6 +305,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       case 'equipment':
         this.inputEnabled.equipment = true;
         break;
+      case 'equipment_type':
+        this.inputEnabled.equipment_type = true;
+        break;
       default:
         break;
     }
@@ -294,6 +337,10 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       case 'equipment':
         updatedField = {equipment: this.task.equipment.id};
         this.inputEnabled.equipment = false;
+        break;
+      case 'equipment_type':
+        updatedField = {equipment_type: this.task.equipment_type.id};
+        this.inputEnabled.equipment_type = false;
         break;
       default:
         break;
@@ -354,6 +401,58 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       }
     },
     (error) => {});
+  }
+
+  /**
+   * Function that get the size of the file the user want to upload.
+   * @param content the modal to open
+   */
+  getFileInfo(content, key: string) {
+    if (key === 'assoc') {
+      this.fileCheck = true;
+      this.fileTypeCheck = true;
+      if (content.target.files[0].type === 'image/png'
+          || content.target.files[0].type === 'image/jpeg'
+          || content.target.files[0].type === 'application/pdf') {
+            this.fileTypeCheck = true;
+      } else {
+        this.fileTypeCheck = false;
+      }
+      if (content.target.files[0].size / 1000000 <= 10) {
+      this.fileCheck = true;
+      } else {
+        this.fileCheck = false;
+      }
+    } else if (key === 'valid') {
+        this.fileCheckValid = true;
+        this.fileTypeCheckValid = true;
+        if (content.target.files[0].type === 'image/png'
+        || content.target.files[0].type === 'image/jpeg'
+        || content.target.files[0].type === 'application/pdf') {
+          this.fileTypeCheckValid = true;
+        } else {
+          this.fileTypeCheckValid = false;
+      }
+        if (content.target.files[0].size / 1000000 <= 10) {
+      this.fileCheckValid = true;
+      } else {
+        this.fileCheckValid = false;
+    }
+    }
+  }
+
+  /**
+   * Provide a boolean which allow us to know if the size of the file is correct.
+   */
+  isSizeFileOk(): boolean {
+    return this.fileCheck;
+  }
+
+  /**
+   * Provide a boolean which allow us to know if the type of the file is correct.
+   */
+  isTypeFileOk(): boolean {
+    return this.fileTypeCheck;
   }
 
   /**
@@ -424,6 +523,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Function that navigate the equipment type detail page linked to this task
+   * @param idEquipmentType the id of the equipment to consult
+   */
+  onViewEquipmentType(idEquipmentType: number) {
+    this.router.navigate(['/equipment-types', idEquipmentType]);
+  }
+
+  /**
    * Function that redirects on the team details page
    * @param team the team we want to access
    */
@@ -431,8 +538,12 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/teams', team.id]);
   }
 
+  /**
+   * Function that is triggered to delete a file from the task
+   * @param file the file to delete
+   */
   onDeleteFile(file) {
-    const fileToDelete = this.task.files.find(taskFile => taskFile.file.split('/')[1] === file.fileName);
+    const fileToDelete = this.task.files.find(taskFile => taskFile.file.split('/')[-1] === file.fileLink.split('/')[-1]);
     this.fileService.deleteFile(fileToDelete.id).subscribe(
       (_) => {
         this.getTask(this.task.id);
@@ -450,6 +561,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     this.taskService.deleteTask(this.task.id).subscribe(
       (resp) => {
         this.teamService.getTeams();
+        this.taskService.getTasks();
         this.router.navigate(['/tasks']);
     });
   }
@@ -495,9 +607,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.validationError = false;
       switch (condition.field_name) {
         case 'Photo':
+          this.photoUploadLoader = condition.id;
           this.fileService.uploadFile(this.fileToUpload[0].value).subscribe(
             (file) => {
               updatedCondition.push({id: condition.id, file: file.id});
+              this.photoUploadLoader = null;
               this.updateTask(finalData);
           });
           // Update fileToUpload
@@ -506,14 +620,17 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
         case 'Checkbox':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         case 'Integer':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         case 'Description':
           updatedCondition.push({id: condition.id, value: this.endConditionValues[condition.id].toString()});
           this.updateTask(finalData);
+          this.fileToUpload = [];
           break;
         default:
           break;
@@ -522,6 +639,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.validationError = true;
     }
+  }
+
+  /**
+   * Function that verifies if the task has special trigger conditions related to the equipment
+   */
+  hasSpecialTriggerConditions() {
+    return this.task.trigger_conditions.find(tc => tc.field_name !== 'Recurrence');
   }
 
   /**
@@ -560,16 +684,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * Function that update the task when a new file is attached to it
    */
   onUpdateTaskWithNewFile() {
+    this.fileUploadLoader = true;
+    this.fileCheck = true;
     if (this.newFile !== null) {
       this.fileService.uploadFile(this.newFile.data).subscribe(
         (file) => {
           this.newFile = null;
-          console.log(file);
           const finalData = {files: []};
           for (const taskFile of this.task.files) {
             finalData.files.push(taskFile.id);
           }
           finalData.files.push(file.id);
+          this.fileUploadLoader = false;
           this.updateTask(finalData);
       });
     }
@@ -597,7 +723,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that tests if an end condition file is beeing selected.
+   * Function that tests if an end condition file is being selected.
    * @param condition the condition concerned.
    */
   isSelectedFile(condition) {
@@ -664,6 +790,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.teamSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
+    this.equipmentTypeSubscription.unsubscribe();
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

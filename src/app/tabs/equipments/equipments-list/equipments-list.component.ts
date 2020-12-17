@@ -19,6 +19,7 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
   faInfoCircle = faInfoCircle;
   equipments: Equipment[] = [];
   equipmentsSubscription: Subscription = null;
+  modalEquipmentName = '';
 
   /**
    * Constructor for the equipmentList component
@@ -64,6 +65,7 @@ export class EquipmentsListComponent implements OnInit, OnDestroy {
    * @param equipment the equipment concerned by the deletion
    */
   openDelete(content, equipment: Equipment) {
+    this.modalEquipmentName = equipment.name;
     this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
       if (result === 'OK') {
         this.onDeleteEquipment(equipment);

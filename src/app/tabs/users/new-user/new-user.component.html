@@ -1,5 +1,5 @@
 <div class="container-fluid col-md-5 mt-3 justify-content-center">
-    <div class="d-flex">
+    <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <h2 class="font-weight-bold">Create a new User</h2>
     </div>
     <form [formGroup]="createForm">
@@ -28,13 +28,20 @@
 
         <div class="form-group">
             <label for="email">Email Address :</label>
-            <input type="text" id="email" class="form-control" formControlName="email"
-            [ngClass]="{ 'is-invalid': submitted && this.createForm.controls.email.errors }" />
-            <div *ngIf="submitted && this.createForm.controls.email.errors" class="invalid-feedback">
+            <input
+                    type="email"
+                    id="email"
+                    class="form-control"
+                    formControlName="email"
+                    #email
+                    [ngClass]="{ 'is-invalid': this.createForm.value.email !== '' && this.createForm.controls.email.errors && email.validity.patternMismatch}"
+                    [pattern]="emailRegex"
+            />
+            <div *ngIf="this.createForm.value.email !== '' && this.createForm.controls.email.errors" class="invalid-feedback">
                 <div *ngIf="this.createForm.controls.email.errors.required">
                     Email is required
                 </div>
-                <div *ngIf="this.createForm.controls.email.errors.email">
+                <div *ngIf="this.createForm.controls.email.errors.pattern">
                     Email must be a valid email address
                 </div>
             </div>

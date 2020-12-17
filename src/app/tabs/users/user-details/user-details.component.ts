@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { faPencilAlt, faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faTrash, faInfoCircle, faEnvelope, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FormBuilder, FormGroup, Validators} from '@angular/forms';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { CrossMatch } from 'src/app/shares/cross-match.validator';
 import {TeamService} from '../../../services/teams/team.service';
 import {Team} from '../../../models/team';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-user-details',
@@ -26,6 +27,8 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   faPencilAlt = faPencilAlt;
   faTrash = faTrash;
   faInfoCircle = faInfoCircle;
+  faEnvelope = faEnvelope;
+  faChevronLeft = faChevronLeft;
 
 // Local variables
   loaded = false;
@@ -42,6 +45,9 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
   changePwdActivated = false;
   teamsSubscription: Subscription;
   teams = [];
+  resendSuccess = null;
+  previousUrl = '';
+  permissions: string[];
 
   // Forms
   userUpdateForm: FormGroup;
@@ -57,6 +63,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
    * @param modalService the service used to handle modal windows
    * @param authenticationService the auth service
    * @param utilsService the service used for useful functions
+   * @param urlService the service used to handle URL
    */
   constructor(private router: Router,
               private userService: UserService,
@@ -65,12 +72,16 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private modalService: NgbModal,
               private authenticationService: AuthenticationService,
-              private utilsService: UtilsService) { }
+              private utilsService: UtilsService,
+              private urlService: UrlService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     let id: number;
     this.currentUserSubscription = this.authenticationService.currentUserSubject.subscribe(
       (currentUser) => {
@@ -113,6 +124,11 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
             }
           );
           this.teamService.emitTeams();
+          this.authenticationService.getUserPermissions(this.user.id).subscribe(
+              (permissions) => {
+                this.permissions = permissions;
+              }
+          );
           this.initForm();
         },
         (error) => {
@@ -131,6 +147,24 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
         this.userService.getUsers();
       }
     );
+  }
+
+  /**
+   * Function that calls the service function that resend the onboarding mail to the current user
+   */
+  onResendOnboardingMail() {
+    this.userService.resendOnboardingMail(this.user.id).subscribe(
+      (response) => {
+        this.resendSuccess = true;
+      },
+      (error) => {
+        this.resendSuccess = false;
+      }
+    );
+    setTimeout(
+      () => {
+        this.resendSuccess = null;
+      }, 10000);
   }
 
   /**
@@ -168,15 +202,35 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
     }
 
     const formValues = this.setPasswordForm.value;
-    this.userService.updateUserPassword(this.user, formValues.password).subscribe(userUpdated => {
-      this.updateError = false;
-      this.onInfoPage = true;
-      this.changePwdActivated = false;
-      this.initForm();
-      this.userService.getUsers();
-    },
-    (error) => {
-      this.updateError = true;
+    this.authenticationService.verifyPassword(this.user.username, formValues.oldPassword).subscribe(
+      (response) => {
+        if (response === true) {
+          this.userService.updateUserPassword(this.user, formValues.password).subscribe(userUpdated => {
+            this.updateError = false;
+            this.onInfoPage = true;
+            this.changePwdActivated = false;
+            this.initForm();
+            this.userService.getUsers();
+          },
+          (error) => {
+            this.updateError = true;
+          });
+        } else if (response === false) {
+          this.setPasswordForm.controls.oldPassword.setErrors({wrong: true});
+        }
+      }
+    );
+  }
+
+  /**
+   * Function that opens the modal to confirm a deletion
+   * @param content the modal template to load
+   */
+  openResend(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-resend'}).result.then((result) => {
+      if (result === 'OK') {
+        this.onResendOnboardingMail();
+      }
     });
   }
 
@@ -228,6 +282,7 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       email: this.user.email
     });
     this.setPasswordForm = this.formBuilder.group({
+      oldPassword:  ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(7)]],
       confPassword: ['', Validators.required]
     }, {
@@ -265,6 +320,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.currentUserSubscription.unsubscribe();
+  }
+
+  /**
+   * Function to return to the listing page.
+   */
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

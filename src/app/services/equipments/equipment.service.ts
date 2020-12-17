@@ -31,11 +31,11 @@ export class EquipmentService {
    */
   getEquipments() {
     this.equipments = [];
-    this.httpClient.get<Equipment[]>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/')
+    this.httpClient.get<any[]>(this.BASE_URL_API + '/api/maintenancemanagement/equipments/')
                   .subscribe(
                     (response) => {
                       response.forEach(element => {
-                        const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files, element.fields);
+                        const equipment = new Equipment(element.id, element.name, element.equipment_type, element.files, element.field);
                         this.equipments.push(equipment);
                       });
                       this.emitEquipments();
@@ -144,11 +144,30 @@ export class EquipmentService {
   }
 
   /**
-   * Fonction that delete a equipment saved on the server's database
+   * Function that delete an equipment saved on the server's database
    * @param equipmentId id attribut of the equipment you want to delete
    */
   deleteEquipment(equipmentId: number): Observable<any> {
     return this.httpClient.delete(this.BASE_URL_API + '/api/maintenancemanagement/equipments/' + equipmentId + '/');
+  }
+
+  /**
+   * Function that delete a field of an equipment
+   * @param equipmentId id of the equipment
+   * @param fieldId id of the field to delete
+   */
+  deleteFieldEquipment(equipmentId: number, fieldId: number): Observable<any> {
+    const httpOptions = {
+      headers : new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: {
+        equipment_id: equipmentId,
+        fieldobject_id: fieldId,
+      },
+    };
+
+    return this.httpClient.delete(this.BASE_URL_API + '/api/maintenancemanagement/removefieldfromequipment/', httpOptions);
   }
 
 }

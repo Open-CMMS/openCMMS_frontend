@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { faCalendar, faInfoCircle, faMinusCircle, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -61,9 +61,15 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   filesSubscription: Subscription;
   myFiles: File[] = [];
   files: number[] = [];
+  fileCheck: boolean;
+  fileTypeCheck: boolean;
 
   // Forms
   createForm: FormGroup;
+  endConditionError = false;
+
+  creationLoader = false;
+  fileUploadLoader = false;
 
 
   /**
@@ -90,6 +96,8 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.fileTypeCheck = true;
+    this.fileCheck = true;
     this.equipmentTypeService.getEquipmentTypes();
     this.teamSubscription = this.teamService.teamSubject.subscribe(
       (teams: Team[]) => {
@@ -121,6 +129,40 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
+
+  /**
+   * Function that retrieves a file informations
+   * @param content the file concerned
+   */
+  getFileInfo(content) {
+      if (content.target.files[0].type === 'image/png'
+          || content.target.files[0].type === 'image/jpeg'
+          || content.target.files[0].type === 'application/pdf') {
+            this.fileTypeCheck = true;
+      } else {
+        this.fileTypeCheck = false;
+      }
+      if (content.target.files[0].size / 1000000 <= 10) {
+      this.fileCheck = true;
+      } else {
+        this.fileCheck = false;
+      }
+  }
+
+  /**
+   * Provide a boolean which allow us to know if the size of the file is correct.
+   */
+  isSizeFileOk(): boolean {
+    return this.fileCheck;
+  }
+
+  /**
+   * Provide a boolean which allow us to know if the type of the file is correct.
+   */
+  isTypeFileOk(): boolean {
+    return this.fileTypeCheck;
+  }
+
   /**
    * Function to add an end condition in the form
    */
@@ -128,6 +170,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     this.endConditions.push(objectCopy);
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
   }
 
   /**
@@ -136,6 +179,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    */
   deleteEndCondition(i: number) {
     this.endConditions.splice(i, 1);
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
   }
 
   /**
@@ -155,6 +199,19 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
         },
         description: null
       };
+  }
+
+  /**
+   * Function that is triggered when a modification is done on an end condition field.
+   * @param endCondition the input field that needs to be verified
+   */
+  onUpdateEndConditionValidity(endCondition) {
+    if (endCondition.selectedEndCondition.length === 0) {
+      endCondition.valid = false;
+    } else {
+      endCondition.valid = true;
+    }
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
   }
 
   /**
@@ -198,6 +255,9 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Function that initialize the select for the equipment
+   */
   initEquipmentSelect() {
     this.equipmentTypes.forEach(element => {
       this.equipmentTypeService.getEquipmentType(element.id)
@@ -214,7 +274,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that initialize the select for the equipment
+   * Function that updates the select for the equipment
    */
   updateEquipmentsSelect(equipmentTypeId: number) {
     this.equipmentList = [];
@@ -245,15 +305,17 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    * @param event file selection event from input of type file
    */
   onFileUpload(event) {
+    this.fileUploadLoader = true;
     let formData: FormData;
     let i = 0;
     for (i; i < event.target.files.length; i++) {
-      if (!this.myFiles.includes(event.target.files[i])) {
+      if (this.fileTypeCheck && this. fileCheck && !this.myFiles.includes(event.target.files[i])) {
         this.myFiles.push(event.target.files[i]);
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
         formData.append('is_manual', 'true' );
         this.fileService.uploadFile(formData).subscribe(file => {
+          this.fileUploadLoader = false;
           this.files.push(Number(file.id));
         });
       }
@@ -280,8 +342,8 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   initForm() {
     const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
     this.createForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
+      name: ['', [Validators.required, this.noWhiteSpaceValidator]],
+      description: [''],
       time: ['', Validators.pattern(regex_time)],
       equipment: [''],
       equipmentType: [''],
@@ -294,6 +356,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    * Function that is triggered when a new Task is being created (when button "Create new task" is pressed)
    */
   onCreateTemplate() {
+
     const formValues = this.createForm.value;
 
     const teams = [];
@@ -338,9 +401,11 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
       (template: Template) => {
         this.router.navigate(['/template-management']);
         this.templateService.getTemplates();
+        this.creationLoader = false;
       },
       (error) => {
         this.creationError = true;
+        this.creationLoader = false;
       }
     );
   }
@@ -352,6 +417,16 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     this.filesSubscription.unsubscribe();
     this.teamSubscription.unsubscribe();
     this.equipmentSubscription.unsubscribe();
+  }
+
+  /**
+   * Function that validates the name input if it's not only spaces
+   * @param control the input name
+   */
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
   }
 
 }

@@ -1,9 +1,22 @@
 <ng-template #contentDelete let-modal>
     <div class="modal-header">
-        <h4 class="modal-title" id="modal-delete">Delete Equipments</h4>
+        <h4 class="modal-title" id="modal-delete">Delete Equipment</h4>
     </div>
     <div class="modal-body">
-        <p>Are you sure you want to delete this Equipment ?</p>
+        <p>Are you sure you want to delete <span class="font-weight-bold">{{ currentEquipment.name }}</span> ?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="modal.close('OK')">Delete</button>
+    </div>
+</ng-template>
+
+<ng-template #contentDeleteField let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-delete-field">Delete Field</h4>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to delete this field ? Be careful the data provider associated to this field will be deleted as well !</p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
@@ -53,21 +66,33 @@
             <form class="form" [formGroup]="equipmentUpdateForm">
                 <div class="form-group">
                     <label for="files">Files</label>
-                    <input type="file" id="files" class="form-control" (change)="onFileUpload($event)">
+                    <input type="file" accept="image/*,application/pdf" id="files" class="form-control text-truncate" (change)="getFileInfo($event);onFileUpload($event)">
+                    <small *ngIf="isSizeFileOk() && isTypeFileOk()" class="text-muted">This file will be added as a manual.</small>
+                    <small *ngIf="!isSizeFileOk()" class="alert-danger">The size of the file must be under 10 Mo.</small>
+                    <small *ngIf="!isTypeFileOk()" class="alert-danger">The file must be an image or a PDF.</small>
                 </div>
             </form>
         </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Add</button>
+        <button type="button" [disabled]="!isSizeFileOk()|| !isTypeFileOk() || fileUploadLoader" class="btn btn-success" (click)="modal.close('OK')">
+          <ng-spinner *ngIf="fileUploadLoader" ngbTooltip="A file is probably being upload !" placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+          <span *ngIf="!fileUploadLoader">Add</span>
+        </button>
     </div>
 </ng-template>
 
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
-    <div class="d-flex flex-wrap justify-content-between">
-        <div class="d-flex">
-            <h2 class="font-weight-bold" *ngIf="loaded">Equipment : {{currentEquipment.name}}</h2>
+    <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
+        <div class="d-flex align-items-center">
+            <a (click)="onPreviousPage()"
+               style="cursor:pointer;"
+               ngbTooltip="Previous page"
+               placement="bottom">
+                <fa-icon class="mr-3" [icon]="faChevronLeft"></fa-icon>
+            </a>
+            <h2 class="font-weight-bold m-0" *ngIf="loaded">{{currentEquipment.name}}</h2>
         </div>
         <div class="d-flex btn-group" role="group">
             <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteEquipmentPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
@@ -77,16 +102,27 @@
     <div class="card mt-5">
       <div class="card-header d-flex justify-content-between">
         <div class="d-flex">
-          <h3 class="font-weight-bold"> Equipment info : </h3>
+          <h3 class="font-weight-bold">Equipment informations</h3>
         </div>
         <div class="d-flex">
           <label for="files"></label>
-          <button class="d-flex btn btn-secondary" (click)="openModifyName(contentModify)" *ngIf="onChangeEquipmentPermission()"><fa-icon [icon]="faPencilAlt"></fa-icon></button>
+          <a class="mr-2 my-2"
+             (click)="openModifyName(contentModify)"
+             *ngIf="onChangeEquipmentPermission()"
+             style="cursor:pointer"
+             ngbTooltip="Modify"
+             placement="top"
+          >
+              <fa-icon class="fa-lg"
+                       [icon]="faPencilAlt"
+                       style="color: gray"
+              ></fa-icon>
+          </a>
         </div>
       </div>
-      <div class="row">
-          <div class="col-12">
-              <div class="px-2 py-1">
+      <div class="card-body">
+          <div class="row col-12">
+              <div class="py-1">
                   <p *ngIf="loaded"><span class="font-weight-bold">Name :</span> {{ currentEquipment.name }} <p>
               </div>
           </div>
@@ -94,10 +130,38 @@
     </div>
   <div class="card mt-5">
     <div class="card-header d-flex justify-content-between">
-      <h3 class="font-weight-bold">Fields : </h3>
-      <button class="d-flex btn btn-secondary" (click)="openModifyField()" *ngIf="onChangeEquipmentPermission() &&  (!(modifyFields) && !(equipmentTypeModified))"><fa-icon [icon]="faPencilAlt"></fa-icon></button>
-      <button class="d-flex btn btn-secondary"  [disabled]="missingEquipmentTypeFieldsValue()" (click)="saveFields()" *ngIf="onChangeEquipmentPermission() && (modifyFields || equipmentTypeModified)"><fa-icon [icon]="faSave"></fa-icon></button>
+      <h3 class="font-weight-bold">Fields</h3>
+      <a class="mr-2 my-2"
+         (click)="openModifyField()"
+         *ngIf="onChangeEquipmentPermission() &&  (!(modifyFields) && !(equipmentTypeModified))"
+         style="cursor: pointer"
+         ngbTooltip="Modify fields"
+         placement="top"
+      >
+          <fa-icon class="fa-lg"
+                   [icon]="faPencilAlt"
+                   style="color: gray"
+          >
+          </fa-icon>
+      </a>
+      <button
+              class="d-flex btn btn-link mr-2 my-2"
+              (click)="saveFields()"
+              *ngIf="onChangeEquipmentPermission() && (modifyFields || equipmentTypeModified)"
+              style="cursor: pointer"
+              ngbTooltip="Save fields"
+              placement="top"
+              [disabled]="missingEquipmentTypeFieldsValue()"
+      >
+          <fa-icon class="fa-lg"
+                   [icon]="faSave"
+                   style="color: gray"
+          ></fa-icon>
+      </button>
     </div>
+  <div *ngIf="fields.length < 1" class="m-3">
+      <span>No related fields !</span>
+  </div>
     <div class="row">
       <div class="col-10">
         <div class="px-2 py-1">
@@ -112,7 +176,7 @@
     </div>
     <div class="d-flex flex-wrap" *ngIf="!(equipmentTypeModified)">
       <ul class="w-100 list-group">
-        <li class="d-none d-md-flex list-group-item font-weight">
+        <li class="d-none d-md-flex list-group-item font-weight" *ngIf="!fieldsIsEmpty()">
           <div class="container-fluid row">
               <span class="font-weight-bold col-md-3">Name</span>
               <span class="font-weight-bold col-md-3">Value</span>
@@ -130,23 +194,52 @@
 
             <p class="col-md-3 my-1" *ngIf="!(field.field_value)">
               <span *ngIf="(!(field.field_value) && !(modifyFields))">{{ field.value }}</span>
-              <input class="form-control" id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [ngModel]=field.value>
+              <input class="form-control" id='fieldValueText' type="text" placeholder="value" *ngIf="(!(field.field_value) && modifyFields)" [(ngModel)]=field.value>
             </p>
 
             <p class="col-md-3 my-1" *ngIf="field.field_value">
               <span *ngIf="(field.field_value && !(modifyFields))">{{ field.field_value.value}}</span>
               <select id='fieldValueSelect' class="form-control" *ngIf="(field.field_value && modifyFields)" (click)="getFieldsEquipmentTypes(field.field)">
                 <option disabled selected value> {{ field.field_value.value}} </option>
-                <option *ngFor="let fieldValue of currentEquipmentTypeFields[i].value" [value]="fieldValue">{{ fieldValue }}</option>
+                <option *ngFor="let fieldValue of currentEquipmentTypeFields[i]?.value" [value]="fieldValue">{{ fieldValue }}</option>
               </select>
             </p>
 
-            <p class="col-md-6 my-1" *ngIf="field.description">
+            <p class="col-md-5 my-1">
               <span *ngIf="field.description">{{ field.description}}</span>
             </p>
+            <div class="d-flex col-md-1 flex-wrap">
+              <button class="btn btn-link"  ngbTooltip="Delete" placement="top" (click)="deleteCurrentField(field, i)" *ngIf="modifyFields && canDeleteField(field) && !(isAssociatedToDataProvider(field.id))">
+                <fa-icon [icon]="faTrash" style="color: gray; font-size:22px;"></fa-icon>
+              </button>
+                <button class="btn btn-link"  ngbTooltip="Delete" placement="top" (click)="openDeleteField(contentDeleteField, field, i)" *ngIf="modifyFields && canDeleteField(field) && isAssociatedToDataProvider(field.id)">
+                    <fa-icon [icon]="faTrash" style="color: gray; font-size:22px;"></fa-icon>
+                </button>
+            </div>
 
           </div>
         </li>
+          <div *ngIf="modifyFields">
+              <li class="form-group list-group-item">
+                  <button type="button" class="btn btn-outline-secondary" (click)="addField()">
+                      <span style="margin-right: 10px">Create a new field</span>
+                      <fa-icon [icon]="faPlusSquare"></fa-icon>
+                  </button>
+              </li>
+              <li class="form-group list-group-item" *ngFor="let new_field of new_fields; let i = index">
+                  <div class="form-row">
+                      <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteField(i)">
+                          <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
+                      </button>
+                      <input class="form-control col-md-3 mx-1 my-1" type="text" placeholder="name" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.name>
+                      <input class="form-control col-md-3 mx-1 my-1" type="text" placeholder="value" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.value>
+                      <input class="form-control col-md-4 mx-1 my-1" type="text" placeholder="description" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.description>
+                      <fa-icon class="d-flex align-items-center mx-2" [icon]="faCheck" style="color: green;" *ngIf="canValidateLine(new_field)"></fa-icon>
+                      <fa-icon class="d-flex align-items-center mx-2" [icon]="faTimes" style="color: red;" *ngIf="!canValidateLine(new_field)"></fa-icon>
+                  </div>
+              </li>
+          </div>
+
       </ul>
     </div>
     <div class="list-group" *ngIf="equipmentTypeModified">
@@ -157,14 +250,14 @@
           <span class="col-md-5 font-weight-bold">Description</span>
         </div>
       </li>
-      <li class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index" (change)="modifyNewEquipmentTypeFieldValue($event.target, i)">
+      <li class="list-group-item" *ngFor="let field of equipmentTypeFields; let i = index">
         <div class="container-fluid row" style="margin-bottom: 10px">
 
           <span class="col-md-3">{{ field.name }}</span>
 
           <div class="col-md-4">
-            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0" >
-            <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0">
+            <input class="form-control" id="field-value-text" type="text" placeholder="value" *ngIf="field.value.length === 0" [(ngModel)]="this.initialFields[i].value">
+            <select id="field-value-select" class="form-control" *ngIf="field.value.length !== 0" [(ngModel)]="this.initialFields[i].value">
               <option disabled selected value> -- select an option -- </option>
               <option *ngFor="let fieldValue of field.value" [value]="fieldValue" >{{ fieldValue }}</option>
             </select>
@@ -190,21 +283,34 @@
           <input class="form-control col-md-3 mx-1 my-1" type="text" placeholder="name" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.name>
           <input class="form-control col-md-3 mx-1 my-1" type="text" placeholder="value" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.value>
           <input class="form-control col-md-4 mx-1 my-1" type="text" placeholder="description" [ngModelOptions]="{standalone: true}" [(ngModel)]=new_field.description>
+          <fa-icon class="d-flex align-items-center mx-2" [icon]="faCheck" style="color: green;" *ngIf="canValidateLine(new_field)"></fa-icon>
+          <fa-icon class="d-flex align-items-center mx-2" [icon]="faTimes" style="color: red;" *ngIf="!canValidateLine(new_field)"></fa-icon>
         </div>
       </li>
     </div>
   </div>
     <div class="card mt-5">
-        <div class="card-header d-flex justify-content-between">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <div class="d-flex">
-                <h3 class="font-weight-bold"> Files : </h3>
+                <h3 class="font-weight-bold">Files</h3>
             </div>
             <div class="d-flex">
                 <label for="files"></label>
-                <button class="d-flex btn btn-secondary" (click)="openUploadFile(contentAddFile)" *ngIf="onChangeEquipmentPermission()"><fa-icon [icon]="faPlusSquare" size="2x"></fa-icon></button>
+                <a class="mr-2 my-2"
+                   (click)="openUploadFile(contentAddFile)"
+                   *ngIf="onChangeEquipmentPermission()"
+                   style="cursor: pointer"
+                   ngbTooltip="Add file"
+                   placement="top"
+                >
+                    <fa-icon class="fa-2x"
+                             [icon]="faPlusSquare"
+                             style="color:gray"
+                    ></fa-icon>
+                </a>
             </div>
         </div>
-        <div class="d-flex">
+        <div>
             <ul class="w-100 list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
@@ -212,10 +318,21 @@
                     >
                     <div class="container-fluid row justify-content-between">
                         <a style="margin-bottom: 0px; vertical-align: middle;" [href] ="createDownloadLink(filePath)">{{filePath}}</a>
-                        <button class="btn btn-danger" (click)="openDeleteFile(filePath,contentDeleteFile)" *ngIf="onChangeEquipmentPermission()"><fa-icon [icon]="faMinusSquare" size="2x"></fa-icon></button>
+                        <a class="fa-lg"
+                           (click)="openDeleteFile(filePath,contentDeleteFile)"
+                           *ngIf="onChangeEquipmentPermission()"
+                           style="cursor: pointer"
+                           ngbTooltip="Delete"
+                           placement="bottom"
+                        >
+                            <fa-icon [icon]="faMinusSquare" style="color: #dc3545"></fa-icon>
+                        </a>
                     </div>
                 </li>
             </ul>
+            <div *ngIf="myFilesPath.length < 1" class="m-3">
+                <span>No related files !</span>
+            </div>
         </div>
     </div>
 </div>

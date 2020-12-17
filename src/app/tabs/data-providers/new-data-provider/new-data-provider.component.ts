@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { faInfoCircle} from '@fortawesome/free-solid-svg-icons';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {DataProviderService} from '../../../services/data-provider/data-provider.service';
 import {Equipment} from '../../../models/equipment';
 import {Field} from '../../../models/field';
@@ -74,10 +74,11 @@ export class NewDataProviderComponent implements OnInit {
     const regex_time = new RegExp('^((([0-9]+)d)?\\s*(([0-9]+)h)?\\s*(([0-9]+)m)?)$');
 
     this.createForm = this.formBuilder.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, this.noWhiteSpaceValidator]],
       fileName: ['', Validators.required],
       equipment: ['', Validators.required],
-      equipment_ip: ['', Validators.required],
+      equipment_ip: ['', [Validators.required, this.noWhiteSpaceValidator]],
+      port: [null],
       field: ['', Validators.required],
       recurrence: ['', [Validators.pattern(regex_time), Validators.required]],
       activated: [true, Validators.required],
@@ -109,22 +110,26 @@ export class NewDataProviderComponent implements OnInit {
       formValues.activated,
       formValues.equipment,
       formValues.equipment_ip,
+      formValues.port,
       formValues.field
     );
     this.dataProviderService.testDataProvider(newDataProvider, false).subscribe(
-      (response) => {
-        if (response) {
-          this.tested = true;
-          this.success = true;
-          this.response = true;
+        (res) => {
+          if (res.data) {
+            this.tested = true;
+            this.success = true;
+          }
+          if (res.error) {
+            this.tested = true;
+            this.success = false;
+          }
         }
-      },
     );
-    if (!this.response) {
-      this.tested = true;
-      this.success = false;
-    }
-    this.response = false;
+  }
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
   }
 
   /**
@@ -139,6 +144,7 @@ export class NewDataProviderComponent implements OnInit {
       formValues.activated,
       formValues.equipment,
       formValues.equipment_ip,
+      formValues.port,
       formValues.field
       );
     this.dataProviderService.createDataProvider(newDataProvider).subscribe(
