@@ -26,7 +26,6 @@ describe('TaskService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
   });
 
   it('should verify the parameters and content of the task get action', () => {
@@ -59,7 +58,6 @@ describe('TaskService', () => {
   });
 
   it('should verify the creation of a new task', () => {
-    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
     const mockTask = {
       id: 1,
       name: 'Task 1',
@@ -93,7 +91,6 @@ describe('TaskService', () => {
       description: 'Description task 1'
     };
 
-    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
     const newTask = new Task(1,
       'Task 1',
       'Description');
@@ -109,7 +106,6 @@ describe('TaskService', () => {
   });
 
   it('should verify the deletion of a task in database', () => {
-    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
     service.deleteTask(1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/1/');
@@ -117,7 +113,6 @@ describe('TaskService', () => {
   });
 
   it('should verify the addition of  team to a task', () => {
-    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
     service.addTeamToTask(1, 1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/addteamtotask');
@@ -125,7 +120,6 @@ describe('TaskService', () => {
   });
 
   it('should verify the removal of a team from a task', () => {
-    httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/');
     service.removeTeamFromTask(1, 1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/addteamtotask');
