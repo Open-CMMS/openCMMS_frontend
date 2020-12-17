@@ -68,6 +68,9 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   createForm: FormGroup;
   endConditionError = false;
 
+  creationLoader = false;
+  fileUploadLoader = false;
+
 
   /**
    * Constructor for the NewTeamComponent
@@ -302,6 +305,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    * @param event file selection event from input of type file
    */
   onFileUpload(event) {
+    this.fileUploadLoader = true;
     let formData: FormData;
     let i = 0;
     for (i; i < event.target.files.length; i++) {
@@ -311,6 +315,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
         formData.append('file', event.target.files[i], event.target.files[i].name);
         formData.append('is_manual', 'true' );
         this.fileService.uploadFile(formData).subscribe(file => {
+          this.fileUploadLoader = false;
           this.files.push(Number(file.id));
         });
       }
@@ -351,6 +356,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    * Function that is triggered when a new Task is being created (when button "Create new task" is pressed)
    */
   onCreateTemplate() {
+
     const formValues = this.createForm.value;
 
     const teams = [];
@@ -395,9 +401,11 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
       (template: Template) => {
         this.router.navigate(['/template-management']);
         this.templateService.getTemplates();
+        this.creationLoader = false;
       },
       (error) => {
         this.creationError = true;
+        this.creationLoader = false;
       }
     );
   }

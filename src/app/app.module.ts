@@ -62,6 +62,7 @@ import { DataProviderListComponent } from './tabs/data-providers/data-provider-l
 import { NewDataProviderComponent } from './tabs/data-providers/new-data-provider/new-data-provider.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { NgSpinnerModule } from 'ng-bootstrap-spinner';
 
 @NgModule({
   declarations: [
@@ -115,6 +116,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
     BrowserAnimationsModule,
     appRoutingModule,
     NgxPaginationModule,
+    NgSpinnerModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [

@@ -76,7 +76,10 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" [disabled]="!isSizeFileOk()|| !isTypeFileOk()" class="btn btn-success" (click)="modal.close('OK')">Add</button>
+        <button type="button" [disabled]="!isSizeFileOk()|| !isTypeFileOk() || fileUploadLoader" class="btn btn-success" (click)="modal.close('OK')">
+          <ng-spinner *ngIf="fileUploadLoader" ngbTooltip="A file is probably being upload !" placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+          <span *ngIf="!fileUploadLoader">Add</span>
+        </button>
     </div>
 </ng-template>
 
