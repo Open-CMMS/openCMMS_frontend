@@ -1,5 +1,5 @@
-import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-import { faTrash, faInfoCircle, faPlus, faCheck, faSearch } from '@fortawesome/free-solid-svg-icons';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import { faTrash, faInfoCircle, faPlus, faCheck, faSearch, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { Subscription } from 'rxjs';
 import { TaskService } from 'src/app/services/tasks/task.service';
 import { Task } from 'src/app/models/task';
@@ -22,10 +22,13 @@ export class TasksListComponent implements OnInit, OnDestroy {
   faPlus = faPlus;
   faCheck = faCheck;
   faSearch = faSearch;
+  faEye = faEye;
+  faEyeSlash = faEyeSlash;
   taskState: boolean;
 
   // Local variables
   tasks: Task[] = [];
+  noValidatedTasks: Task[] = [];
   currentUser: UserProfile;
   tasksSubscription: Subscription = null;
   currentUserSubscription: Subscription = null;
@@ -33,6 +36,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   p = 1;
   sortByDate = false;
   sortByDuration = false;
+  showValidatedTaskButton = {showValidatedTasks : false, text: 'Show validated tasks'};
 
   // Search text
   searchText = '';
@@ -83,6 +87,11 @@ export class TasksListComponent implements OnInit, OnDestroy {
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
+              tasks.forEach(task => {
+                if (task.over === false) {
+                  this.noValidatedTasks.push(task);
+                }
+              });
             }
           );
           this.taskService.emitTasks();
@@ -234,6 +243,17 @@ export class TasksListComponent implements OnInit, OnDestroy {
         this.tasks.unshift(task);
       }
     });
+  }
+
+  /**
+   * Set the state of the button that allows to hide or show validated tasks
+   */
+  showValidateTask() {
+    if (this.showValidatedTaskButton.showValidatedTasks) {
+      this.showValidatedTaskButton = {showValidatedTasks : false, text: 'Show validated tasks'};
+    } else {
+      this.showValidatedTaskButton = {showValidatedTasks : true, text: 'Hide validated tasks'};
+    }
   }
 
   /**
