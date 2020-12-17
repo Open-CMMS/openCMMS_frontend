@@ -78,6 +78,11 @@ export class TasksListComponent implements OnInit, OnDestroy {
           this.taskService.getUserTasks(this.currentUser.id).subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
+              tasks.forEach(task => {
+                if (task.over === false) {
+                  this.noValidatedTasks.push(task);
+                }
+              });
             }
           );
           this.myTasks = true;

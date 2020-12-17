@@ -17,7 +17,6 @@ export class TaskService {
   private BASE_URL_API = environment.baseUrl;
 
   constructor(private httpClient: HttpClient) {
-    this.getTasks();
   }
 
   /**
@@ -36,7 +35,7 @@ export class TaskService {
     this.httpClient.get<Task[]>(this.BASE_URL_API + '/api/maintenancemanagement/tasks/')
                    .subscribe(
                       (response) => {
-                        response.forEach(element => {
+                        for (const element of response) {
                           const task = new Task(
                             element.id,
                             element.name,
@@ -51,7 +50,7 @@ export class TaskService {
                             element.trigger_conditions,
                             element.end_conditions);
                           this.tasks.push(task);
-                        });
+                        }
                         this.emitTasks();
                       }
                     );
