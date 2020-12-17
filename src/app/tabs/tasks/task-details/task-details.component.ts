@@ -124,6 +124,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Trigger Conditions
   triggerConditionsSubject = new Subject<any[]>();
   triggerConditionSubscription: Subscription;
+  triggerConditionRecurrenceName = 'Recurrence';
 
   // Forms
   addTeamForm: FormGroup;
@@ -398,6 +399,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     },
     (error) => {});
   }
+
   /**
    * Function that get the size of the file the user want to upload.
    * @param content the modal to open
@@ -435,18 +437,21 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     }
     }
   }
+
   /**
    * Provide a boolean which allow us to know if the size of the file is correct.
    */
   isSizeFileOk(): boolean {
     return this.fileCheck;
   }
+
   /**
    * Provide a boolean which allow us to know if the type of the file is correct.
    */
   isTypeFileOk(): boolean {
     return this.fileTypeCheck;
   }
+
   /**
    * Function that is triggered to load the modal template for team addition
    * @param content the modal to open
@@ -629,6 +634,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.validationError = true;
     }
+  }
+
+  /**
+   * Function that verifies if the task has special trigger conditions related to the equipment
+   */
+  hasSpecialTriggerConditions() {
+    return this.task.trigger_conditions.find(tc => tc.field_name !== 'Recurrence');
   }
 
   /**

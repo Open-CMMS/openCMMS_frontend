@@ -12,7 +12,13 @@
     </div>
     <form [formGroup]="createForm" (ngSubmit)="onCreateTask()">
         <div class="form-group">
-            <label for="name">Task Name* </label>
+            <label for="name">Task Name</label>
+            <span class="mx-1" 
+                  ngbTooltip="Your task should have a valid name !" 
+                  placement="right"
+                  *ngIf="createForm.value.name.trim() === ''">
+                <fa-icon [icon]="faTimes" style="color:red;" ></fa-icon>
+            </span>
             <input type="text" id="name" class="form-control" formControlName="name">
         </div>
         <div class="form-group">
@@ -33,7 +39,21 @@
         </div>
         <div class="form-group">
             <label for="equipment">Equipment</label>
-           <div class="px-2" ngbRadioGroup>
+            <span class="mx-1" 
+                  ngbTooltip="Make sure you have selected an equipment !" 
+                  placement="right"
+                  *ngIf="createForm.value.equipment_or_equipment_type === 'equipment' && selectedEquipmentIdValue.length === 0">
+                <fa-icon [icon]="faTimes" style="color:red;" ></fa-icon>
+            </span>
+
+            <span class="mx-1" 
+                  ngbTooltip="Make sure you have selected an equipment type !" 
+                  placement="right"
+                  *ngIf="createForm.value.equipment_or_equipment_type === 'equipment_type' && createForm.value.equipment_type.length === 0">
+                <fa-icon [icon]="faTimes" style="color:red;" ></fa-icon>
+            </span>
+
+           <div class="px-2" ngbRadioGroup (change)="removeForbiddenFields()">
                <input  class="" type="radio" id="no-equipment" value="no-equipment"  formControlName="equipment_or_equipment_type" name="equipment_or_equipment_type" [ngModel]="equipment_or_equipment_type">
                <label class="col-sm-3" for="no-equipment">No equipment</label>
 
@@ -51,9 +71,10 @@
                     [ngStyle]="{'background-color': (selectedTemplate?.equipment) ? 'rgb(255, 255, 202)' : '#ffffff'}"
                     [settings]="dropdownEquipmentsSettings"
                     [data]="equipmentList"
+                    [(ngModel)]="selectedEquipmentIdValue"
+                    (ngModelChange)="setSelectedEquipment(selectedEquipmentIdValue)"
                     formControlName="equipment"
-            >
-            </ng-multiselect-dropdown>
+            ></ng-multiselect-dropdown>
         </div>
         <div class="form-group">
             <ng-multiselect-dropdown
@@ -63,11 +84,10 @@
                     [settings]="dropdownEquipmentTypesSettings"
                     [data]="equipmentTypesList"
                     formControlName="equipment_type"
-            >
-            </ng-multiselect-dropdown>
+            ></ng-multiselect-dropdown>
         </div>
         <div class="form-group">
-            <label for="end_date">Task end date </label>
+            <label for="end_date">Task end date</label>
             <div class="input-group">
                 <input class="form-control" placeholder="yyyy-mm-dd" id="end_date"
                         name="end_date" ngbDatepicker #endDatePicker="ngbDatepicker" formControlName="end_date">
@@ -95,34 +115,37 @@
             </div>
         </div>
         <div class="form-group">
-            <label>Trigger Conditions </label><br>
+            <label>Trigger Conditions </label>
+            <span class="mx-1" ngbTooltip="Make sure you have filled every field required for each trigger condition !" placement="right">
+                <fa-icon [icon]="faTimes" style="color:red;" *ngIf="triggerConditionError"></fa-icon>
+            </span><br>
             <button type="button" class="btn btn-outline-secondary" (click)="addTriggerCondition()">
                 <span style="margin-right: 10px;">Add Trigger Condition</span>
                 <fa-icon [icon]="faPlusSquare"></fa-icon>
             </button>
         </div>
-        <div class="form-group" *ngFor="let triggerCondition of triggerConditions; let i = index">
+        <div class="row col-md-12 form-group" *ngFor="let triggerCondition of triggerConditions.reverse(); let i = index">
             <div class="input-group align-items-center">
-                <button class="btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteTriggerCondition(i)">
+                <button type="button" class="btn btn-link my-1" style="padding-left: 0px;" ngbTooltip="Delete" placement="bottom" (click)="deleteTriggerCondition(triggerCondition.id)">
                     <fa-icon [icon]="faMinusCircle"  style="color: red;font-size: 22px;"></fa-icon>
                 </button>
-                <ng-multiselect-dropdown
+                <ng-multiselect-dropdown 
                     [settings]="triggerCondition.dropdownTriggerConditionsSettings"
-                    [data]="triggerCondition.triggerConditionsList"
+                    [data]="createForm.value.equipment_or_equipment_type === 'equipment' && selectedEquipmentIdValue.length > 0 ? triggerCondition.triggerConditionsList : triggerCondition.triggerConditionsListRecurrenceOnly"
                     [(ngModel)]="triggerCondition.selectedTriggerCondition"
                     [ngModelOptions]="{standalone: true}"
+                    (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, null)"
                     name="triggerCondition"
-                    class="col-md-5 mx-md-2 my-1"
-                    style="margin-left: -15px;"
-                >
-                </ng-multiselect-dropdown>
+                    class="col-md-4 mr-md-1 my-1"
+                    style="padding-left: 0px;padding-right: 0px;"
+                ></ng-multiselect-dropdown>
 
-                <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === 'Duration'">
+                <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value === triggerConditionRecurrenceName">
                     <input 
-                    class="form-control my-1"
+                    class="form-control my-1 mr-md-1"
                     type="text"
-                    placeholder="value"
-                    ngbPopover="Examples : 1d5m, 3m 15d, 2y6m 15d"
+                    placeholder="Interval time"
+                    ngbPopover="Examples : 1d5m, 3m 15d, 6m 15d"
                     placement="top"
                     triggers="mouseenter:mouseleave"
                     popoverTitle="Info"
@@ -131,20 +154,70 @@
                     [(ngModel)]=triggerCondition.value
                     [ngModelOptions]="{standalone: true}"
                     [ngClass]="{'alert-danger': triggerConditionDuration.validity.patternMismatch}"
-                    (ngModelChange)="onUpdateTriggerConditionDurationValidity(triggerConditionDuration)">
+                    (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, [triggerConditionDuration, triggerConditionDelay])">
+
+                    <input 
+                    class="form-control my-1"
+                    type="text"
+                    placeholder="Delay"
+                    ngbTooltip="Delay to realize the task (delay before the end date)"
+                    placement="top"
+                    [pattern]="triggerConditionDurationRegex"
+                    #triggerConditionDelay
+                    [(ngModel)]=triggerCondition.delay
+                    [ngModelOptions]="{standalone: true}"
+                    [ngClass]="{'alert-danger': triggerConditionDelay.validity.patternMismatch}"
+                    (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, [triggerConditionDuration, triggerConditionDelay])">
+                </div>
+
+                <div class="input-group-append" *ngIf="triggerCondition.selectedTriggerCondition[0] && triggerCondition.selectedTriggerCondition[0].value !== triggerConditionRecurrenceName">
+                    <select 
+                        id="field-object" 
+                        class="form-control my-1 mx-md-1" 
+                        #fieldObject 
+                        [(ngModel)]="triggerCondition.field_object" 
+                        [ngModelOptions]="{standalone: true}"
+                        (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, [fieldObject, thresholdValue, triggerConditionDelay])">
+                        <option [ngValue]="null" defaultSelected="selected">Select a field to monitor ...</option>
+                        <option *ngFor="let field of selectedEquipment?.fields" [ngValue]="field">{{ field.field_name }}</option>
+                    </select>
+                    <input 
+                    class="form-control my-1 mx-md-1"
+                    type="text"
+                    placeholder="Threshold value"
+                    #thresholdValue
+                    [(ngModel)]=triggerCondition.value
+                    [ngModelOptions]="{standalone: true}">
+                    <input 
+                    class="form-control my-1 mx-md-1"
+                    type="text"
+                    placeholder="Delay"
+                    popoverTitle="Delay before the end date"
+                    ngbPopover="Example : 3d, 5h"
+                    placement="top"
+                    triggers="mouseenter:mouseleave"
+                    [pattern]="triggerConditionDurationRegex"
+                    #triggerConditionDelay
+                    [(ngModel)]="triggerCondition.delay"
+                    [ngModelOptions]="{standalone: true}"
+                    [ngClass]="{'alert-danger': triggerConditionDelay.validity.patternMismatch}"
+                    (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, [fieldObject, thresholdValue, triggerConditionDelay])">
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <label>End Conditions </label><br>
+            <label>End Conditions </label>
+            <span class="mx-1" ngbTooltip="Make sure you have selected a type for each end condition !" placement="right">
+                <fa-icon [icon]="faTimes" style="color:red;" *ngIf="endConditionError"></fa-icon>
+            </span><br>
             <button type="button" class="btn btn-outline-secondary" (click)="addEndCondition()">
                 <span style="margin-right: 10px;">Add End Condition</span>
                 <fa-icon [icon]="faPlusSquare"></fa-icon>
             </button>
         </div>
-        <div class="form-group" *ngFor="let endCondition of endConditions; let i = index">
+        <div class="form-group" *ngFor="let endCondition of endConditions.reverse(); let i = index">
             <div class="input-group align-items-center">
-                <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(i)">
+                <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(endCondition.id)">
                     <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
                   </button>
                 <ng-multiselect-dropdown
@@ -152,6 +225,7 @@
                     [data]="endCondition.endConditionsList"
                     [(ngModel)]="endCondition.selectedEndCondition"
                     [ngModelOptions]="{standalone: true}"
+                    (ngModelChange)="onUpdateEndConditionValidity(endCondition)"
                     name="endCondition"
                     class="col-md-5 mx-md-2 my-1"
                     style="margin-left: -15px;"
@@ -162,7 +236,7 @@
                     class="form-control my-1"
                     *ngIf="endCondition.selectedEndCondition[0]"
                     placeholder="description"
-                    [(ngModel)]=endCondition.description
+                    [(ngModel)]="endCondition.description"
                     [ngModelOptions]="{standalone: true}"
                     >
 
@@ -208,7 +282,7 @@
         </div>
         <div class="d-flex justify-content-between align-items-center mt-3">
           <button class="btn btn-danger nav-link" routerLink="/tasks">Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || triggerConditionDurationError">Create task</button>
+          <button type="submit" class="btn btn-primary" [disabled]="isFormValidationDisabled()">Create task</button>
         </div>
     </form>
     <div class="container-fluid alert alert-danger mt-3" role="alert" *ngIf="creationError">
