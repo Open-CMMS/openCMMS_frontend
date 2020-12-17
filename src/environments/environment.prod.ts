@@ -1,4 +1,4 @@
 export const environment = {
-  production: true,
+  production: false,
   baseUrl: 'https://application.lxc.pic.brasserie-du-slalom.fr'
 };
