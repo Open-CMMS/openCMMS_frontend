@@ -66,7 +66,7 @@
     <div class="list-group">
       <ul class="list-group" *ngIf="!(this.showValidatedTaskButton.showValidatedTasks)">
         <li class="container-fluid list-group-item font-weight-bold "
-          *ngFor="let task of noValidatedTasks | appFilter:searchText | paginate: { itemsPerPage: 10, currentPage: p }">
+          *ngFor="let task of noValidatedTasks | appFilter:searchText | paginate: this.configPagination">
           <div class="container-fluid row">
             <div class="d-flex flex-column col col-lg-9 col-md-12">
               <div class="d-flex align-items-center">
@@ -134,11 +134,15 @@
       </ul>
     </div>
   </div>
-  <div class="d-flex justify-content-between">
-    <div class="d-flex"></div>
+  <div class="d-flex justify-content-between ">
+    <div></div>
     <div class="d-flex align-content-center py-2">
-      <pagination-controls (pageChange)="p = $event"></pagination-controls>
+      <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
     </div>
-    <div class="d-flex align-content-center" style="visibility: hidden;">SpaceSpaceSpaceSpace</div>
+    <div class="py-2 pr-2">
+      {{ configPagination.currentPage * configPagination.itemsPerPage - configPagination.itemsPerPage +1}} -
+      {{ configPagination.currentPage * configPagination.itemsPerPage }} out of
+      {{ configPagination.totalItems }}
+    </div>
   </div>
 </div>

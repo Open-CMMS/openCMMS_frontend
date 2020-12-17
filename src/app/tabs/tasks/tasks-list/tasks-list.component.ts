@@ -37,6 +37,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   sortByDate = false;
   sortByDuration = false;
   showValidatedTaskButton = {showValidatedTasks : false, text: 'Show validated tasks'};
+  configPagination = {};
 
   // Search text
   searchText = '';
@@ -78,12 +79,13 @@ export class TasksListComponent implements OnInit, OnDestroy {
           this.taskService.getUserTasks(this.currentUser.id).subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
+              this.initConfigPagination(false);
             }
           );
           this.myTasks = true;
         } else { // path equals tasks-management: all the tasks are displayed
           this.taskState = false;
-          this.taskService.getTasks();
+          // this.taskService.getTasks();
           this.tasksSubscription = this.taskService.taskSubject.subscribe(
             (tasks: Task[]) => {
               this.tasks = tasks;
@@ -92,10 +94,16 @@ export class TasksListComponent implements OnInit, OnDestroy {
                   this.noValidatedTasks.push(task);
                 }
               });
+              console.log(this.noValidatedTasks.length);
+              console.log(this.tasks);
+              this.initConfigPagination(false);
             }
           );
-          this.taskService.emitTasks();
+          console.log(this.tasks);
+          this.taskService.getTasks();
+          // this.taskService.emitTasks();
           this.myTasks = false;
+          this.initConfigPagination(false);
         }
       }
     );
@@ -251,10 +259,34 @@ export class TasksListComponent implements OnInit, OnDestroy {
   showValidateTask() {
     if (this.showValidatedTaskButton.showValidatedTasks) {
       this.showValidatedTaskButton = {showValidatedTasks : false, text: 'Show validated tasks'};
+      this.initConfigPagination(false);
     } else {
       this.showValidatedTaskButton = {showValidatedTasks : true, text: 'Hide validated tasks'};
+      this.initConfigPagination(true);
     }
   }
+
+  /**
+   * Function to handle page changes in Pagination
+   * @param event the event.
+   */
+  pageChanged(event) {
+    console.log('ici');
+    console.log(event);
+    this.configPagination.currentPage = event;
+  }
+
+  /**
+   * Function to init the pagination configuration
+   */
+  initConfigPagination(isValidatedTasks) {
+    this.configPagination = {
+      itemsPerPage: 10,
+      currentPage: 1,
+      totalItems: isValidatedTasks ? this.tasks.length : this.noValidatedTasks.length
+    };
+  }
+
 
   /**
    * Function called at the destruction of the component
