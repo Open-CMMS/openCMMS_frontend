@@ -1,2 +1,17 @@
+html, body, app-root{
+    height: 94%;
+    margin: 0;
+}
+
+.login-background {
+    height: 100%;
+    margin: 0;
+    background-image: url(./assets/background_login.png);
+    background-repeat: no-repeat;
+    background-size: 60%;
+    background-position: center;
+    background-attachment: fixed;
+}
+
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
