@@ -147,16 +147,18 @@
                                   <li *ngFor="let value of field.value; let i = index"> {{ value }}</li>
                                 </ul>
                             </div>
-                            <input
-                            type="text"
-                            placeholder="value"
-                            class='form-control col-md-5 my-1'
-                            *ngIf="modifyFields && canAddValue[i]"
-                            style="margin-right: 10px; width: 500px"
-                            [ngModelOptions]="{standalone: true}"
-                            [(ngModel)]= newFieldsValues[i]
-                            title="You can enter multiple values separated by a comma."
-                            >
+                            <div>
+                                <input
+                                type="text"
+                                placeholder="Values"
+                                class='form-control my-1 flex'
+                                *ngIf="modifyFields && canAddValue[i]"
+                                style="margin-right: 10px;"
+                                [ngModelOptions]="{standalone: true}"
+                                [(ngModel)]= newFieldsValues[i]
+                                >
+                                <small class="text-muted" *ngIf="modifyFields && canAddValue[i]">You can enter multiple values separated by a comma <br> (eg : Apple,Amazon,Facebook)</small>
+                            </div>
                         </div>
                     </div>
                 </li>
