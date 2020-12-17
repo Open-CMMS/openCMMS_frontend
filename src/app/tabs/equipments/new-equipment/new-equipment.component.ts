@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {FileService} from 'src/app/services/files/file.service';
 import {Equipment} from 'src/app/models/equipment';
@@ -41,6 +41,8 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   filesSubscription: Subscription;
   myFiles: File[] = [];
   files: number[] = [];
+  fileTypeCheck: boolean;
+  fileCheck: boolean;
 
   // Fields
 
@@ -55,6 +57,10 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   INIT_FIELD_NAME  = '';
   INIT_FIELD_VALUE = '';
   INIT_FIELD_DESCRIPTION = '';
+
+  creationLoader = false;
+  fileUploadLoader = false;
+
 
   /**
    * Constructor for the NewEquipmentComponent
@@ -93,6 +99,8 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     this.equipmentService.emitEquipments();
     this.initForm();
     this.initAddFieldTemplate();
+    this.fileTypeCheck = true;
+    this.fileCheck = true;
   }
 
   /**
@@ -100,7 +108,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    */
   initForm() {
     this.createForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
+      name: ['', [Validators.required, this.noWhiteSpaceValidator]],
       equipmentType: ['', Validators.required],
       file: ['']
     });
@@ -111,6 +119,7 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * creates a new Equipment with the data entered in the form.
    */
   onCreateEquipment() {
+    this.creationLoader = true;
     if (this.createForm.invalid) {
       return;
     }
@@ -130,8 +139,9 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
           equipment.fields,
         );
         this.equipmentService.getEquipments();
+        this.creationLoader = false;
+        this.router.navigate(['/equipments']);
       });
-    this.router.navigate(['/equipments']);
   }
 
   /**
@@ -140,16 +150,18 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
    * @param event file selection event from input of type file
    */
   onFileUpload(event) {
+    this.fileUploadLoader = true;
     let formData: FormData;
     let i = 0;
     for (i; i < event.target.files.length; i++) {
-      if (!this.myFiles.includes(event.target.files[i])) {
+      if (!this.myFiles.includes(event.target.files[i]) && this.isSizeFileOk() && this.isTypeFileOk()) {
         this.myFiles.push(event.target.files[i]);
         formData = new FormData();
         formData.append('file', event.target.files[i], event.target.files[i].name);
         formData.append('is_manual', 'false');
         this.fileService.uploadFile(formData).subscribe(file => {
           this.files.push(Number(file.id));
+          this.fileUploadLoader = false;
         });
       }
     }
@@ -255,6 +267,12 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
     return canValidateForm;
   }
 
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
+  }
+
   /**
    * Function to check if a field line is completed.
    * @param field the field to check
@@ -274,5 +292,38 @@ export class NewEquipmentComponent implements OnInit, OnDestroy {
   fieldIsFill(field) {
     return (field.name !== this.INIT_FIELD_NAME && field.value !== this.INIT_FIELD_VALUE);
   }
+ /**
+  * Function that get the size of the file the user want to upload.
+  * @param content the modal to open
+  */
+ getFileInfo(content) {
+  if (content.target.files[0].type === 'image/png'
+      || content.target.files[0].type === 'image/jpeg'
+      || content.target.files[0].type === 'application/pdf') {
+        this.fileTypeCheck = true;
+  } else {
+    this.fileTypeCheck = false;
+  }
+  if (content.target.files[0].size / 1000000 <= 10) {
+  this.fileCheck = true;
+  } else {
+    this.fileCheck = false;
+  }
+}
+/**
+ * Provide a boolean which allow us to know if the size of the file is correct.
+ */
+isSizeFileOk(): boolean {
+  return this.fileCheck;
+}
+/**
+ * Provide a boolean which allow us to know if the type of the file is correct.
+ */
+isTypeFileOk(): boolean {
+  return this.fileTypeCheck;
+}
+/**
+ * Function that initialize the fields in the form to create a new Team
+ */
 
 }

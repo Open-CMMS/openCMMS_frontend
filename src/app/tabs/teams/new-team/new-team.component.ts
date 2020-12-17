@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TeamService } from 'src/app/services/teams/team.service';
 import { TeamTypeService } from 'src/app/services/team-types/team-type.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TeamType } from 'src/app/models/team-type';
@@ -94,7 +94,7 @@ export class NewTeamComponent implements OnInit, OnDestroy {
    */
   initForm() {
     this.createForm = this.formBuilder.group({
-      teamName: ['', Validators.required],
+      teamName: ['', [Validators.required, this.noWhiteSpaceValidator]],
       teamType: ['', Validators.required],
       users: ['']
     });
@@ -125,6 +125,12 @@ export class NewTeamComponent implements OnInit, OnDestroy {
       },
     );
 
+  }
+
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
   }
 
   /**

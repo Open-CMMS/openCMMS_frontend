@@ -29,30 +29,6 @@
         </div>
 </ng-template>
 
-<ng-template #contentModifyTeams let-modal>
-    <div class="modal-header">
-        <h4 class="modal-title" id="modal-modify">Modifiy Team Type Teams</h4>
-    </div>
-    <div class="modal-body">
-        <div class="col-sm-8 col-sm-offset-2">
-          <div class="form-group">
-            <label for="teams">Teams</label>
-            <ng-multiselect-dropdown
-              [settings]="dropdownTeamsSettings"
-              [data]="teamsList"
-              [(ngModel)]="selectedTeams"
-              name="teams"
-            >
-            </ng-multiselect-dropdown>
-          </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-        <button type="button" class="btn btn-success" (click)="modal.close('OK')">Modify</button>
-    </div>
-</ng-template>
-
 <ng-template #contentModifyPermissions let-modal>
     <div class="modal-header">
         <h4 class="modal-title" id="modal-modify">Modifiy Team Type Permissions</h4>
@@ -81,9 +57,9 @@
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
     <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <div class="d-flex align-items-center">
-            <a (click)="onViewListing()"
+            <a (click)="onPreviousPage()"
                style="cursor:pointer;"
-               ngbTooltip="Return listing page"
+               ngbTooltip="Previous page"
                placement="bottom">
                 <fa-icon class="mr-3" [icon]="faChevronLeft"></fa-icon>
             </a>
@@ -122,26 +98,12 @@
         </div>
     </div>
     <div class="card mt-5">
-        <div class="card-header d-flex justify-content-between">
+        <div class="card-header d-flex justify-content-start">
             <div class="d-flex">
                 <h3 class="font-weight-bold">Teams</h3>
             </div>
-            <div class="d-flex">
-                <a class="mr-2 my-2"
-                    (click)="openModifyTeams(contentModifyTeams)"
-                    *ngIf="onChangeTeamTypesPermission()"
-                    style="cursor:pointer"
-                    ngbTooltip="Modify"
-                    placement="top"
-                >
-                    <fa-icon class="fa-lg"
-                                [icon]="faPencilAlt"
-                                style="color: gray"
-                    ></fa-icon>
-                </a>
-            </div>
         </div>
-        <div class="d-flex">
+        <div>
             <ul class="list-group w-100">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
@@ -164,6 +126,9 @@
                     </div>
                 </li>
             </ul>
+            <div *ngIf="teams.length < 1" class="m-3">
+                <span>No related teams !</span>
+            </div>
         </div>
     </div>
     <div class="card mt-5">
@@ -186,7 +151,7 @@
                 </a>
             </div>
         </div>
-        <div class="d-flex">
+        <div>
             <ul class="w-100 list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
@@ -196,6 +161,9 @@
                     </div>
                 </li>
             </ul>
+            <div *ngIf="perms.length < 1" class="m-3">
+                <span>No related permissions !</span>
+            </div>
         </div>
     </div>
 </div>

@@ -3,7 +3,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { TeamTypeService } from '../../../services/team-types/team-type.service';
 import { TeamType } from '../../../models/team-type';
 import { Permission } from '../../../models/permission';
-import { Team } from '../../../models/team';
 import { PermissionService } from 'src/app/services/permissions/permission.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -12,6 +11,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { faInfoCircle, faPencilAlt, faTrash, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-user-details',
@@ -28,22 +28,18 @@ export class TeamTypeDetailsComponent implements OnInit {
   // local variables
   id: number;
   name: string;
-  perms: any[];
-  teams: any[];
+  perms: any[] = [];
+  teams: any[] = [];
+  previousUrl = '';
 
   all_permissions: Permission[] = [];
-  all_teams: Team[] = [];
 
   team_type: TeamType;
 
   // variables for the dropdown selects in the modify form
   permsList = [];
-  teamsList = [];
   selectedPerms = [];
-  selectedTeams = [];
   dropdownPermsSettings: IDropdownSettings;
-  dropdownTeamsSettings: IDropdownSettings;
-
 
   // the Forms
   teamTypeForm: FormGroup;
@@ -59,6 +55,7 @@ export class TeamTypeDetailsComponent implements OnInit {
    * @param formBuilder the service to handle forms
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
+   * @param urlService the service used to handle URL
    */
   constructor(private router: Router,
               private teamTypeService: TeamTypeService,
@@ -68,22 +65,21 @@ export class TeamTypeDetailsComponent implements OnInit {
               private modalService: NgbModal,
               private formBuilder: FormBuilder,
               private utilsService: UtilsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private urlService: UrlService) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     this.initFields();
     this.permissionService.getPermissions().subscribe((permissions: Permission[]) => {
       this.all_permissions = permissions;
       this.initPermsSelect();
     });
-    this.teamService.teamSubject.subscribe((teams: Team[]) => {
-      this.all_teams = teams;
-      this.initTeamsSelect();
-    });
-    this.teamService.emitTeams();
     this.initForm();
   }
 
@@ -99,7 +95,6 @@ export class TeamTypeDetailsComponent implements OnInit {
       this.teams = team_type.team_set;
       this.perms = team_type.perms;
       this.initSelectedPerms();
-      this.initSelectedTeams();
     });
   }
 
@@ -120,21 +115,6 @@ export class TeamTypeDetailsComponent implements OnInit {
       (result) => {
         if (result === 'OK') {
           this.modifyTeamType('name');
-        }
-        this.modalService.dismissAll();
-      }
-    );
-  }
-
-  /**
-   * Function that opens the modify modal
-   * @param contentModify the content to put in the modal
-   */
-  openModifyTeams(contentModify) {
-    this.modalService.open(contentModify, {ariaLabelledBy: 'modal-basic-title', size: 'lg'}).result.then(
-      (result) => {
-        if (result === 'OK') {
-          this.modifyTeamType('teams');
         }
         this.modalService.dismissAll();
       }
@@ -203,42 +183,12 @@ export class TeamTypeDetailsComponent implements OnInit {
   }
 
   /**
-   * Function that initialize the dropdown select for teams
-   */
-  initTeamsSelect() {
-    this.teamsList = [];
-    this.all_teams.forEach(team => {
-      this.teamsList.push({id: team.id.toString(), value: team.name.toString()});
-    });
-    this.dropdownTeamsSettings = {
-      singleSelection: false,
-      idField: 'id',
-      textField: 'value',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 4,
-      allowSearchFilter: true
-    };
-  }
-
-  /**
-   * Function that initialize the selected teams in the select
-   */
-  initSelectedTeams() {
-    this.selectedTeams = [];
-    this.teams.forEach(team => {
-      this.selectedTeams.push({id: team.id.toString(), value: team.name.toString()});
-    });
-  }
-
-  /**
    * Function that initialize the fields in the form to create a new TeamType
    */
   initForm() {
     this.teamTypeForm = this.formBuilder.group({
       name: ['', Validators.required],
       permissions: [''],
-      teams: ['']
     });
   }
 
@@ -254,7 +204,7 @@ export class TeamTypeDetailsComponent implements OnInit {
       permissions.push(perm.id);
     }
 
-    for (const team of this.selectedTeams) {
+    for (const team of this.teams) {
       teams.push(team.id);
     }
 
@@ -295,8 +245,8 @@ export class TeamTypeDetailsComponent implements OnInit {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['team-types/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

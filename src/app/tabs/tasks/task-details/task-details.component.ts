@@ -30,6 +30,7 @@ import { environment } from 'src/environments/environment';
 import { durationRegex } from 'src/app/shares/consts';
 import {EquipmentType} from '../../../models/equipment-type';
 import {EquipmentTypeService} from '../../../services/equipment-types/equipment-type.service';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-task-details',
@@ -63,6 +64,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Useful variables
   loaded = false;
   BASE_URL_API = environment.baseUrl;
+  previousUrl = '';
 
   // Task
   task = null;
@@ -93,6 +95,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   newFile: any = null;
   fileToUpload: any[] = [];
   fileCheck: boolean;
+  fileTypeCheck: boolean;
+  fileCheckValid: boolean;
+  fileTypeCheckValid: boolean;
 
   // End conditions
   endConditionValues: any = {};
@@ -119,10 +124,14 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   // Trigger Conditions
   triggerConditionsSubject = new Subject<any[]>();
   triggerConditionSubscription: Subscription;
+  triggerConditionRecurrenceName = 'Recurrence';
 
   // Forms
   addTeamForm: FormGroup;
   dropdownTeamsSettings: IDropdownSettings;
+
+  fileUploadLoader = false;
+  photoUploadLoader = null;
 
 
   /**
@@ -138,6 +147,7 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * @param authenticationService the service used to handle authentication
    * @param formBuilder the service used to handle forms
    * @param fileService the service used to handle files
+   * @param urlService the service used to handle URL
    */
   constructor(private taskService: TaskService,
               private route: ActivatedRoute,
@@ -149,11 +159,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
               private utilsService: UtilsService,
               private authenticationService: AuthenticationService,
               private formBuilder: FormBuilder,
-              private fileService: FileService) { }
+              private fileService: FileService,
+              private urlService: UrlService) { }
 
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     let id: number;
+    this.fileCheckValid = true;
+    this.fileTypeCheckValid = true;
     this.fileCheck = true;
+    this.fileTypeCheck = true;
     this.route.params.subscribe(params => {
       id = +params.id;
     });
@@ -385,23 +402,59 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     },
     (error) => {});
   }
+
   /**
    * Function that get the size of the file the user want to upload.
    * @param content the modal to open
    */
-  getSizeFile(content) {
-    if (content.target.files[0].size / 1000000 <= 10) {
-    this.fileCheck = true;
-    } else {
-      this.fileCheck = false;
+  getFileInfo(content, key: string) {
+    if (key === 'assoc') {
+      this.fileCheck = true;
+      this.fileTypeCheck = true;
+      if (content.target.files[0].type === 'image/png'
+          || content.target.files[0].type === 'image/jpeg'
+          || content.target.files[0].type === 'application/pdf') {
+            this.fileTypeCheck = true;
+      } else {
+        this.fileTypeCheck = false;
+      }
+      if (content.target.files[0].size / 1000000 <= 10) {
+      this.fileCheck = true;
+      } else {
+        this.fileCheck = false;
+      }
+    } else if (key === 'valid') {
+        this.fileCheckValid = true;
+        this.fileTypeCheckValid = true;
+        if (content.target.files[0].type === 'image/png'
+        || content.target.files[0].type === 'image/jpeg'
+        || content.target.files[0].type === 'application/pdf') {
+          this.fileTypeCheckValid = true;
+        } else {
+          this.fileTypeCheckValid = false;
+      }
+        if (content.target.files[0].size / 1000000 <= 10) {
+      this.fileCheckValid = true;
+      } else {
+        this.fileCheckValid = false;
+    }
     }
   }
+
   /**
    * Provide a boolean which allow us to know if the size of the file is correct.
    */
   isSizeFileOk(): boolean {
     return this.fileCheck;
   }
+
+  /**
+   * Provide a boolean which allow us to know if the type of the file is correct.
+   */
+  isTypeFileOk(): boolean {
+    return this.fileTypeCheck;
+  }
+
   /**
    * Function that is triggered to load the modal template for team addition
    * @param content the modal to open
@@ -554,9 +607,11 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
       this.validationError = false;
       switch (condition.field_name) {
         case 'Photo':
+          this.photoUploadLoader = condition.id;
           this.fileService.uploadFile(this.fileToUpload[0].value).subscribe(
             (file) => {
               updatedCondition.push({id: condition.id, file: file.id});
+              this.photoUploadLoader = null;
               this.updateTask(finalData);
           });
           // Update fileToUpload
@@ -584,6 +639,13 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
     } else {
       this.validationError = true;
     }
+  }
+
+  /**
+   * Function that verifies if the task has special trigger conditions related to the equipment
+   */
+  hasSpecialTriggerConditions() {
+    return this.task.trigger_conditions.find(tc => tc.field_name !== 'Recurrence');
   }
 
   /**
@@ -622,17 +684,18 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
    * Function that update the task when a new file is attached to it
    */
   onUpdateTaskWithNewFile() {
+    this.fileUploadLoader = true;
     this.fileCheck = true;
     if (this.newFile !== null) {
       this.fileService.uploadFile(this.newFile.data).subscribe(
         (file) => {
           this.newFile = null;
-          console.log(file);
           const finalData = {files: []};
           for (const taskFile of this.task.files) {
             finalData.files.push(taskFile.id);
           }
           finalData.files.push(file.id);
+          this.fileUploadLoader = false;
           this.updateTask(finalData);
       });
     }
@@ -733,8 +796,8 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['tasks/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

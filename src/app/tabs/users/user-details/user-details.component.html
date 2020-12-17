@@ -106,16 +106,16 @@
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
     <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <div class="d-flex align-items-center">
-            <a (click)="onViewListing()"
+            <a (click)="onPreviousPage()"
                style="cursor:pointer;"
-               ngbTooltip="Return listing page"
+               ngbTooltip="Previous page"
                placement="bottom">
                 <fa-icon class="mr-3" [icon]="faChevronLeft"></fa-icon>
             </a>
             <h2 class="font-weight-bold m-0" *ngIf="loaded">{{ user.first_name }} {{ user.last_name }}</h2>
         </div>
         <div class="d-flex">
-            <button class="btn btn-link" (click)="openResend(contentResendMail)" *ngIf="onChangeUserPermission()"><fa-icon [icon]="faEnvelope"></fa-icon> Resend onboarding mail</button>
+            <button class="btn btn-link" (click)="openResend(contentResendMail)" *ngIf="!onInfoPage && onChangeUserPermission()"><fa-icon [icon]="faEnvelope"></fa-icon> Resend onboarding mail</button>
             <div class="d-flex btn-group" role="group">
                 <button class="btn btn-danger" (click)="openDelete(contentDelete)" *ngIf="onDeleteUserPermission()"><fa-icon [icon]="faTrash"></fa-icon> Delete</button>
             </div>
@@ -189,9 +189,23 @@
           </div>
         </li>
       </ul>
-      <span *ngIf="teams.length === 0">No teams assigned !</span>
+        <div *ngIf="teams.length < 1" class="m-3">
+            <span>No related users !</span>
+        </div>
     </div>
   </div>
+    <div class="card mt-5" *ngIf="!onInfoPage">
+        <div class="card-header">
+            <h3 class="font-weight-bold"> Permissions </h3>
+        </div>
+        <div>
+            <ul class="list-group w-100">
+                <li class="list-group-item" *ngFor="let permission of permissions">
+                    {{ permission }}
+                </li>
+            </ul>
+        </div>
+    </div>
     <div class="row mt-5" *ngIf="onInfoPage">
         <div class="col-md-12">
             <button class="btn btn-primary" (click)="onActivateChangePassword()">Change Password</button>

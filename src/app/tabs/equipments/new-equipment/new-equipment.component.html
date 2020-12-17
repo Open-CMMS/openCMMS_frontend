@@ -1,4 +1,4 @@
-<div class="container-fluid col-md-8 mt-3 justify-content-center">
+<div class="container-fluid col-md-5 mt-3 justify-content-center">
     <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <h2 class="font-weight-bold">Create a new Equipment</h2>
     </div>
@@ -90,7 +90,9 @@
         <form [formGroup]="createForm" (ngSubmit)="onCreateEquipment()">
         <div class="form-group">
             <label for="file">Upload File</label>
-            <input formControlName="file" id="file" type="file" multiple class="form-control text-truncate" (change)="onFileUpload($event)">
+            <input formControlName="file" accept="image/*,application/pdf" id="file" type="file" multiple class="form-control text-truncate" (change)="getFileInfo($event);onFileUpload($event)">
+            <small *ngIf="!isSizeFileOk()" class="alert-danger">The size of the file must be under 10 Mo.</small>
+            <small *ngIf="!isTypeFileOk()" class="alert-danger">The file must be an image or a PDF.</small>
         </div>
         <div class="list-group">
             <ul class="list-group">
@@ -111,9 +113,11 @@
             type="submit"
             class="btn btn-primary"
             title="Name, Equipment Type and Fields value required"
-            [disabled]="createForm.invalid || missingEquipmentTypeFieldsValue() || !(canValidateForm())"
+            [disabled]="createForm.invalid || missingEquipmentTypeFieldsValue() || !(canValidateForm()) || creationLoader || fileUploadLoader"
           >
-            Create Equipment
+            <ng-spinner *ngIf="fileUploadLoader" ngbTooltip="A file is probably being upload !" placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+            <ng-spinner *ngIf="creationLoader" ngbTooltip="Please wait for the equipment to be created ..." placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
+            <span *ngIf="!creationLoader && !fileUploadLoader">Create Equipment</span>
           </button>
         </div>
     </form>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EquipmentType } from 'src/app/models/equipment-type';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import { EquipmentTypeService } from 'src/app/services/equipment-types/equipment-type.service';
 import { EquipmentService } from 'src/app/services/equipments/equipment.service';
 import { Router } from '@angular/router';
@@ -66,7 +66,7 @@ export class NewEquipmentTypeComponent implements OnInit {
    */
   initGeneralForm() {
     this.equipmentTypeForm = this.formBuilder.group({
-      name: [this.INIT_NAME, Validators.required]
+      name: [this.INIT_NAME, [Validators.required, this.noWhiteSpaceValidator]]
     });
   }
 
@@ -154,6 +154,12 @@ export class NewEquipmentTypeComponent implements OnInit {
    */
   fieldIsFill(field) {
     return (field.name !== this.INIT_FIELD_NAME);
+  }
+
+  public noWhiteSpaceValidator(control: FormControl) {
+    const isWhiteSpace = (control.value || '').trim().length === 0;
+    const isValid = !isWhiteSpace;
+    return isValid ? null : {whitespace: true};
   }
 
   /**

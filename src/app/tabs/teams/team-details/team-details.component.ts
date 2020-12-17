@@ -13,6 +13,7 @@ import { UserService } from 'src/app/services/users/user.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-team-details',
@@ -41,11 +42,13 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
   loading = false;
   usersList = [];
   usersSubscription: Subscription;
+  previousUrl = '';
 
   // Forms
   updateForm: FormGroup;
   addUserForm: FormGroup;
   dropdownUsersSettings: IDropdownSettings;
+
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -67,12 +70,17 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
               private formBuilder: FormBuilder,
               private modalService: NgbModal,
               private utilsService: UtilsService,
-              private authenticationService: AuthenticationService) { }
+              private authenticationService: AuthenticationService,
+              private urlService: UrlService
+  ) { }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     let id: number;
     this.route.params.subscribe(params => {
       id = +params.id;
@@ -340,8 +348,8 @@ export class TeamDetailsComponent implements OnInit, OnDestroy {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['/teams/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

@@ -1,5 +1,5 @@
 <div class="container-fluid" style="margin-top: 100px;">
-  <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-dark" *ngIf="loaded">
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark" *ngIf="loaded">
       <a class="navbar-brand" routerLink="tasks"><img src="../../../assets/OpenCMMS_logo/Logo_flat.png" height="40px"/></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
         <span class="navbar-toggler-icon"></span>
@@ -59,9 +59,6 @@
               </a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" routerLink="infos">My Account</a>
-                <div *ngIf="onAddUserPermission()">
-                  <a class="dropdown-item" routerLink="settings">App settings</a>
-                </div>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" (click)="onLogout()">Sign out</a>
               </div>
@@ -70,3 +67,4 @@
       </div>
   </nav>
 </div>
+

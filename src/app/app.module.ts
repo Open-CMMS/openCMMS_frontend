@@ -8,7 +8,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SigninComponent } from './auth/signin/signin.component';
 import { AccountBlockedComponent } from './auth/account-blocked/account-blocked.component';
 import { HeaderComponent } from './bars/header/header.component';
-import { FooterComponent } from './bars/footer/footer.component';
 import { HomeComponent } from './tabs/home/home.component';
 import { FourOhFourComponent } from './four-oh-four/four-oh-four.component';
 import { TasksListComponent } from './tabs/tasks/tasks-list/tasks-list.component';
@@ -63,12 +62,13 @@ import { DataProviderListComponent } from './tabs/data-providers/data-provider-l
 import { NewDataProviderComponent } from './tabs/data-providers/new-data-provider/new-data-provider.component';
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { NgSpinnerModule } from 'ng-bootstrap-spinner';
+import { FooterComponent } from './bars/footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    FooterComponent,
     SigninComponent,
     AccountBlockedComponent,
     HomeComponent,
@@ -106,6 +106,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
     DataProviderListComponent,
     NewDataProviderComponent,
     ForgotPasswordComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
@@ -117,6 +118,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
     BrowserAnimationsModule,
     appRoutingModule,
     NgxPaginationModule,
+    NgSpinnerModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [

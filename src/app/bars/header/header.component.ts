@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import { Router } from '@angular/router';
 import { UtilsService } from 'src/app/services/utils/utils.service';
@@ -11,6 +11,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit, OnDestroy {
+
+  @ViewChild('myNavbar') navbar: ElementRef;
 
   // Local Variables
   currentUser: UserProfile;
@@ -116,7 +118,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       'change_dataprovider'
     );
   }
-
 
   /**
    * Function that calls the logout function in authenticationService to log out the current user

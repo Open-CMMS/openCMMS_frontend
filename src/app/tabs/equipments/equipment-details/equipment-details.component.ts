@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {faTrash, faPencilAlt, faPlusSquare} from '@fortawesome/free-solid-svg-icons';
 import {Equipment} from 'src/app/models/equipment';
 import {EquipmentService} from 'src/app/services/equipments/equipment.service';
@@ -15,13 +15,16 @@ import {EquipmentTypeService} from 'src/app/services/equipment-types/equipment-t
 import {EquipmentType} from 'src/app/models/equipment-type';
 import {Subscription} from 'rxjs/internal/Subscription';
 import {Field} from '../../../models/field';
+import {UrlService} from '../../../services/shared/url.service';
+import {DataProviderService} from '../../../services/data-provider/data-provider.service';
+import {DataProvider} from '../../../models/data-provider';
 
 @Component({
   selector: 'app-equipment-details',
   templateUrl: './equipment-details.component.html',
   styleUrls: ['./equipment-details.component.scss']
 })
-export class EquipmentDetailsComponent implements OnInit {
+export class EquipmentDetailsComponent implements OnInit, OnDestroy {
 
   // Icons
   faPlusSquare = faPlusSquare;
@@ -66,10 +69,18 @@ export class EquipmentDetailsComponent implements OnInit {
   equipmentTypeModified = false;
   currentSelectFields: [];
   isCurrentEquipmentTypeFields = [];
+  fileTypeCheck: boolean;
+  fileCheck: boolean;
+  previousUrl = '';
+  dataProviders: DataProvider[] = [];
+  dataProviderSubscription: Subscription;
+  fieldsAssociatedToDataProvider = [];
 
   // Constants
   INIT_FIELD_NAME  = '';
   INIT_FIELD_VALUE = '';
+  fileUploadLoader = false;
+
 
   /**
    * Constructor for component TeamDetailsComponent
@@ -82,6 +93,8 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param utilsService the service used for useful functions
    * @param fileService the file service
    * @param equipmentTypeService the equipment Type service
+   * @param urlService the service used to handle URL
+   * @param dataProviderService the service to handle dataProvider
    */
   constructor(private router: Router,
               private equipmentService: EquipmentService,
@@ -91,13 +104,20 @@ export class EquipmentDetailsComponent implements OnInit {
               private authenticationService: AuthenticationService,
               private utilsService: UtilsService,
               private fileService: FileService,
-              private equipmentTypeService: EquipmentTypeService) {
+              private equipmentTypeService: EquipmentTypeService,
+              private urlService: UrlService,
+              private dataProviderService: DataProviderService) {
   }
 
   /**
    * Function that initialize the component when loaded
    */
   ngOnInit(): void {
+    this.fileCheck = true;
+    this.fileTypeCheck = true;
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     this.filesId = [];
     this.myFiles = [];
     this.myFilesPath = [];
@@ -128,6 +148,13 @@ export class EquipmentDetailsComponent implements OnInit {
             });
           }
           this.myFilesPath.splice(6);
+          this.dataProviderSubscription = this.dataProviderService.dataProvidersSubject.subscribe(
+                (dataProviders: DataProvider[]) => {
+                  this.dataProviders = dataProviders;
+                  this.initDataProvidersFields();
+                }
+            );
+          this.dataProviderService.emitDataProviders();
         },
         (error) => this.router.navigate(['/four-oh-four']));
     this.initAddFieldTemplate();
@@ -236,6 +263,20 @@ export class EquipmentDetailsComponent implements OnInit {
   }
 
   /**
+   * Function that opens the modal to confirm the deletion to a field associated to a data provider
+   * @param content the modal template to load
+   * @param field the field to delete
+   * @param id the index of the field
+   */
+  openDeleteField(content, field, id: number) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-delete'}).result.then((result) => {
+      if (result === 'OK') {
+        this.deleteCurrentField(field, id);
+      }
+    });
+  }
+
+  /**
    * Function that opens the modal to confirm a deletion
    * @param content the modal template to load
    */
@@ -286,6 +327,25 @@ export class EquipmentDetailsComponent implements OnInit {
   }
 
   /**
+   *  Function that initialise the fields of the equipment that are associated to a data provider
+   */
+  initDataProvidersFields()  {
+    this.dataProviders.forEach(dataProvider => {
+      if (dataProvider.equipment.id === this.currentEquipment.id) {
+        this.fieldsAssociatedToDataProvider.push(dataProvider.field_object.id);
+      }
+    });
+  }
+
+  /**
+   * Function to know if a field is associated to a data provider
+   * @param id the id of the field
+   */
+  isAssociatedToDataProvider(id: number) {
+    return this.fieldsAssociatedToDataProvider.includes(id);
+  }
+
+  /**
    * Function that display Modify button in navbar when current User has the correct permission
    */
   onChangeEquipmentPermission() {
@@ -311,6 +371,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param event file selection event from input of type file
    */
   onFileUpload(event) {
+    this.fileUploadLoader = true;
     let formData: FormData;
     let i = 0;
     for (i; i < event.target.files.length; i++) {
@@ -321,6 +382,7 @@ export class EquipmentDetailsComponent implements OnInit {
         formData.append('is_manual', 'false');
         this.fileService.uploadFile(formData).subscribe(file => {
           this.filesId.push(Number(file.id));
+          this.fileUploadLoader = false;
         });
       }
     }
@@ -375,7 +437,7 @@ export class EquipmentDetailsComponent implements OnInit {
    * @param content the modal template to load
    */
   openUploadFile(content) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-addFile'}).result.then((result) => {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-addFile', backdrop: 'static'}).result.then((result) => {
       if (result === 'OK') {
         this.filesAdded = true;
         this.onModifyEquipment();
@@ -599,7 +661,46 @@ export class EquipmentDetailsComponent implements OnInit {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['equipments/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
+  }
+
+  /**
+   * Function that get the size of the file the user want to upload.
+   * @param content the modal to open
+   */
+  getFileInfo(content) {
+    if (content.target.files[0].type === 'image/png'
+        || content.target.files[0].type === 'image/jpeg'
+        || content.target.files[0].type === 'application/pdf') {
+          this.fileTypeCheck = true;
+    } else {
+      this.fileTypeCheck = false;
+    }
+    if (content.target.files[0].size / 1000000 <= 10) {
+    this.fileCheck = true;
+    } else {
+      this.fileCheck = false;
+    }
+  }
+  /**
+   * Provide a boolean which allow us to know if the size of the file is correct.
+   */
+  isSizeFileOk(): boolean {
+    return this.fileCheck;
+  }
+  /**
+   * Provide a boolean which allow us to know if the type of the file is correct.
+   */
+  isTypeFileOk(): boolean {
+    return this.fileTypeCheck;
+  }
+
+  /**
+   * Function called when the component is destroyed
+   */
+  ngOnDestroy() {
+    this.dataProviderSubscription.unsubscribe();
+    this.equipmentTypesSubscription.unsubscribe();
   }
 }

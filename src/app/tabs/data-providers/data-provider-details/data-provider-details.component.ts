@@ -8,6 +8,7 @@ import { DataProvider } from 'src/app/models/data-provider';
 import { UtilsService } from 'src/app/services/utils/utils.service';
 import { AuthenticationService } from 'src/app/services/auth/authentication.service';
 import {Equipment} from '../../../models/equipment';
+import {UrlService} from '../../../services/shared/url.service';
 
 @Component({
   selector: 'app-data-provider-details',
@@ -35,6 +36,7 @@ export class DataProviderDetailsComponent implements OnInit {
   fields: Field[];
   toModify = false;
   selectedEquipment: any;
+  previousUrl = '';
 
   // Input enabled variables
   inputEnabled = {
@@ -55,7 +57,8 @@ export class DataProviderDetailsComponent implements OnInit {
    * @param router the service used to handle routing
    * @param modalService the modal service
    * @param utilsService the utils service
-   * @param authenticationService the authentifcation service
+   * @param authenticationService the authentication service
+   * @param urlService the service to handled URL
    */
   constructor(
     private dataProviderService: DataProviderService,
@@ -63,10 +66,14 @@ export class DataProviderDetailsComponent implements OnInit {
     private router: Router,
     private modalService: NgbModal,
     private utilsService: UtilsService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private urlService: UrlService,
     ) { }
 
   ngOnInit(): void {
+    this.urlService.previousUrl$.subscribe( (previousUrl: string) => {
+      this.previousUrl = previousUrl;
+    });
     let id: number;
     this.route.params.subscribe(params => {
       id = +params.id;
@@ -282,8 +289,8 @@ export class DataProviderDetailsComponent implements OnInit {
   /**
    * Function to return to the listing page.
    */
-  onViewListing() {
-    this.router.navigate(['data-providers/']);
+  onPreviousPage() {
+    this.router.navigate([this.previousUrl]);
   }
 
 }

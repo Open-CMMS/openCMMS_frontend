@@ -26,7 +26,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-primary" (click)="modal.close('KO')">Cancel</button>
-            <button type="button" class="btn btn-success" [disabled]="equipmentTypeForm.invalid" type="submit">Modify</button>
+            <button class="btn btn-success" [disabled]="equipmentTypeForm.invalid" type="submit">Modify</button>
         </div>
     </form>
 </ng-template>
@@ -34,9 +34,9 @@
 <div class="container-fluid col-md-8 mt-3 justify-content-center">
     <div class="d-flex flex-wrap justify-content-between mt-md-4 mb-md-4">
         <div class="d-flex align-items-center">
-            <a (click)="onViewListing()"
+            <a (click)="onPreviousPage()"
                style="cursor:pointer;"
-               ngbTooltip="Return listing page"
+               ngbTooltip="Previous page"
                placement="bottom">
                 <fa-icon class="mr-3" [icon]="faChevronLeft"></fa-icon>
             </a>
@@ -80,7 +80,7 @@
                 <h3 class="font-weight-bold">Equipments</h3>
             </div>
         </div>
-        <div class="d-flex">
+        <div>
             <ul class="w-100 list-group">
                 <li
                     class="container-fluid list-group-item font-weight-bold "
@@ -103,6 +103,9 @@
                     </div>
                 </li>
             </ul>
+            <div *ngIf="equipments.length < 1" class="m-3">
+                <span>No related equipments !</span>
+            </div>
         </div>
     </div>
     <div class="card mt-5">
@@ -110,7 +113,7 @@
               <h3 class="font-weight-bold">Fields</h3>
               <a class="d-flex align-items-center"
                  (click)="openModifyField()"
-                 *ngIf="onChangeEquipmentTypePermission() && (!modifyFields)"
+                 *ngIf="onChangeEquipmentTypePermission() && (!modifyFields) && fields.length > 0"
                  style="cursor:pointer;"
                  ngbTooltip="Modify fields"
                  placement="top"
@@ -131,33 +134,38 @@
                            style="color: gray;"></fa-icon>
               </a>
             </div>
-        <div class="d-flex">
+        <div>
             <ul class="w-100 list-group">
                 <li
                 class="container-fluid list-group-item"
                 *ngFor="let field of fields; let i=index">
-                <div class="container-fluid d-flex flex-wrap row justify-content-between">
-                    <div class="d-flex row col-12">
-                        <div class="col-md-2 my-1">
-                            <span class="font-weight-bold" >{{field.name}}</span>
-                            <ul>
-                              <li *ngFor="let value of field.value"> {{ value }}</li>
-                            </ul>
+                    <div class="container-fluid d-flex flex-wrap row justify-content-between">
+                        <div class="d-flex row col-12">
+                            <div class="col my-1">
+                                <span class="font-weight-bold" >{{field.name}}</span>
+                                <ul class="container-fluid">
+                                  <li *ngFor="let value of field.value; let i = index"> {{ value }}</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <input
+                                type="text"
+                                placeholder="Values"
+                                class='form-control my-1 flex'
+                                *ngIf="modifyFields && canAddValue[i]"
+                                style="margin-right: 10px;"
+                                [ngModelOptions]="{standalone: true}"
+                                [(ngModel)]= newFieldsValues[i]
+                                >
+                                <small class="text-muted" *ngIf="modifyFields && canAddValue[i]">You can enter multiple values separated by a comma <br> (eg : Apple,Amazon,Facebook)</small>
+                            </div>
                         </div>
-                        <input
-                        type="text"
-                        placeholder="value"
-                        class='form-control col-md-5 my-1'
-                        *ngIf="modifyFields"
-                        style="margin-right: 10px; width: 500px"
-                        [ngModelOptions]="{standalone: true}"
-                        [(ngModel)]= newFieldsValues[i]
-                        title="You can enter multiple values separated by a comma."
-                        >
                     </div>
-                </div>
                 </li>
             </ul>
+            <div *ngIf="fields.length < 1" class="m-3">
+                <span>No related fields !</span>
+            </div>
         </div>
     </div>
 </div>

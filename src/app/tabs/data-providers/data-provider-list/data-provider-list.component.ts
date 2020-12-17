@@ -25,7 +25,9 @@ export class DataProviderListComponent implements OnInit, OnDestroy {
 
   /**
    * Constructor for the EquipmentTypeListComponent
+   * @param dataProviderService the service to handle dataProvider
    * @param router the service used to handle redirections
+   * @param modalService the service to handle modal
    * @param utilsService the service used for useful methods
    * @param authenticationService the authentication service
    */
@@ -59,7 +61,7 @@ export class DataProviderListComponent implements OnInit, OnDestroy {
 
   /**
    * Function that activates/deactivates a data provider.
-   * @param dataProvider the dataprovider to activate or deactivate.
+   * @param dataProvider the data provider to activate or deactivate.
    */
   onActivate(dataProvider: DataProvider) {
     setTimeout( () => {
