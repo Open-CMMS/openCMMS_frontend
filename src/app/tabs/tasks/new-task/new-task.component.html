@@ -53,7 +53,7 @@
                 <fa-icon [icon]="faTimes" style="color:red;" ></fa-icon>
             </span>
 
-           <div class="px-2 row justify-content-between" ngbRadioGroup (change)="removeForbiddenFields()">
+           <div class="d-flex row col-12 justify-content-between" ngbRadioGroup (change)="removeForbiddenFields()">
                 <div>
                <input  class="" type="radio" id="no-equipment" value="no-equipment"  formControlName="equipment_or_equipment_type" name="equipment_or_equipment_type" [ngModel]="equipment_or_equipment_type">
                <label class="col-sm-10" for="no-equipment">No equipment</label>
@@ -100,7 +100,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-group row col-md-4">
+        <div class="form-group row col-md-6">
             <label for="duration">Task duration </label>
             <div class="input-group">
                 <input type="text" name="time" id="duration" class="form-control" formControlName="duration" [ngStyle]="{'background-color': (selectedTemplate?.duration) ? 'rgb(255, 255, 202)' : '#ffffff'}">
@@ -231,7 +231,7 @@
                     [ngModelOptions]="{standalone: true}"
                     (ngModelChange)="onUpdateEndConditionValidity(endCondition)"
                     name="endCondition"
-                    class="col-md-8 mx-md-2 my-1"
+                    class="col-md-8 mr-md-1 my-1"
                     style="padding-left: 0px;padding-right: 0px;"
                 >
                 </ng-multiselect-dropdown>
