@@ -36,7 +36,7 @@ export class TasksListComponent implements OnInit, OnDestroy {
   p = 1;
   sortByDate = false;
   sortByDuration = false;
-  showValidatedTaskButton = null;
+  showValidatedTaskButton = {showValidatedTasks : false, text: 'Show validated tasks'};
 
   // Search text
   searchText = '';
@@ -92,7 +92,6 @@ export class TasksListComponent implements OnInit, OnDestroy {
                   this.noValidatedTasks.push(task);
                 }
               });
-              this.showValidatedTaskButton = {showValidatedTasks : false, text: 'Show validated tasks'};
             }
           );
           this.taskService.emitTasks();
