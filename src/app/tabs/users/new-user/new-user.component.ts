@@ -3,6 +3,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserProfile } from 'src/app/models/user-profile';
 import { UserService } from 'src/app/services/users/user.service';
+import { emailRegex } from 'src/app/shares/consts';
 
 @Component({
   selector: 'app-new-user',
@@ -19,8 +20,12 @@ export class NewUserComponent implements OnInit {
     creationError = false;
     submitted = false;
     user: UserProfile;
+
     // Forms
     createForm: FormGroup;
+
+    // Regex
+    emailRegex = emailRegex;
 
 
   /**
@@ -45,10 +50,11 @@ export class NewUserComponent implements OnInit {
    * Function that initialize the fields in the form to create a new Team
    */
   initForm() {
-    this.createForm = this.formBuilder.group({
+      const localEmailRegex = new RegExp(this.emailRegex);
+      this.createForm = this.formBuilder.group({
       firstName: ['', [Validators.required, this.noWhiteSpaceValidator]],
       lastName: ['', [Validators.required, this.noWhiteSpaceValidator]],
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email, Validators.pattern(localEmailRegex)]]
     });
   }
 
