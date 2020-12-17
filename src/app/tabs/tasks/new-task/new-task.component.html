@@ -53,15 +53,19 @@
                 <fa-icon [icon]="faTimes" style="color:red;" ></fa-icon>
             </span>
 
-           <div class="px-2" ngbRadioGroup (change)="removeForbiddenFields()">
+           <div class="px-2 row justify-content-between" ngbRadioGroup (change)="removeForbiddenFields()">
+                <div>
                <input  class="" type="radio" id="no-equipment" value="no-equipment"  formControlName="equipment_or_equipment_type" name="equipment_or_equipment_type" [ngModel]="equipment_or_equipment_type">
-               <label class="col-sm-3" for="no-equipment">No equipment</label>
-
+               <label class="col-sm-10" for="no-equipment">No equipment</label>
+                </div>
+                <div>
                <input class="" type="radio" id="equipment" value="equipment"  formControlName="equipment_or_equipment_type" name="equipment_or_equipment_type">
-               <label class="col-sm-3" for="equipment">A specific equipment</label>
-
+               <label class="col-sm-10" for="equipment">A specific equipment</label>
+                </div>
+                <div>
                <input class="" type="radio" id="equipment_type"  formControlName="equipment_or_equipment_type" value="equipment_type" name="equipment_or_equipment_type">
-               <label class="col-sm-4" for="equipment_type">All equipments of a type</label>
+               <label class="col-sm-10" for="equipment_type">All equipments of a type</label>
+                </div>
            </div>
         </div>
         <div class="form-group">
@@ -136,7 +140,7 @@
                     [ngModelOptions]="{standalone: true}"
                     (ngModelChange)="onUpdateTriggerConditionValidity(triggerCondition, null)"
                     name="triggerCondition"
-                    class="col-md-4 mr-md-1 my-1"
+                    class="col-md-8 mr-md-1 my-1"
                     style="padding-left: 0px;padding-right: 0px;"
                 ></ng-multiselect-dropdown>
 
@@ -215,11 +219,11 @@
                 <fa-icon [icon]="faPlusSquare"></fa-icon>
             </button>
         </div>
-        <div class="form-group" *ngFor="let endCondition of endConditions.reverse(); let i = index">
+        <div class="row col-md-12 form-group" *ngFor="let endCondition of endConditions.reverse(); let i = index">
             <div class="input-group align-items-center">
-                <button class=" btn btn-link my-1" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(endCondition.id)">
+                <button class=" btn btn-link my-1" style="padding-left: 0px;" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(endCondition.id)">
                     <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
-                  </button>
+                </button>
                 <ng-multiselect-dropdown
                     [settings]="endCondition.dropdownEndConditionsSettings"
                     [data]="endCondition.endConditionsList"
@@ -227,8 +231,8 @@
                     [ngModelOptions]="{standalone: true}"
                     (ngModelChange)="onUpdateEndConditionValidity(endCondition)"
                     name="endCondition"
-                    class="col-md-5 mx-md-2 my-1"
-                    style="margin-left: -15px;"
+                    class="col-md-8 mx-md-2 my-1"
+                    style="padding-left: 0px;padding-right: 0px;"
                 >
                 </ng-multiselect-dropdown>
 
