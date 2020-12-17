@@ -70,6 +70,7 @@
                     [settings]="endCondition.dropdownEndConditionsSettings"
                     [data]="endCondition.endConditionsList"
                     [(ngModel)]="endCondition.selectedEndCondition"
+                    (ngModelChange)="onUpdateEndConditionValidity(endCondition)"
                     [ngModelOptions]="{standalone: true}"
                     name="endCondition"
                     class="col-md-4 mx-md-2 my-1"
@@ -108,7 +109,7 @@
         </div>
         <div class="d-flex justify-content-between align-items-center mt-3">
           <button class="btn btn-danger nav-link" routerLink="/template-management">Cancel</button>
-          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid || creationLoader || fileUploadLoader">
+          <button type="submit" class="btn btn-primary" [disabled]="createForm.invalid  || endConditionError || creationLoader || fileUploadLoader">
               <ng-spinner *ngIf="fileUploadLoader" ngbTooltip="A file is probably being upload !" placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
               <ng-spinner *ngIf="creationLoader" ngbTooltip="Please wait for the task to be created ..." placement="top" class="mx-1" size="1" type="border" color="light"></ng-spinner>
               <span *ngIf="!creationLoader && !fileUploadLoader">Create template</span>

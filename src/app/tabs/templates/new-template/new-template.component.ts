@@ -66,6 +66,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
 
   // Forms
   createForm: FormGroup;
+  endConditionError = false;
 
   creationLoader = false;
   fileUploadLoader = false;
@@ -128,6 +129,11 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     this.initForm();
   }
 
+
+  /**
+   * Function that retrieves a file informations
+   * @param content the file concerned
+   */
   getFileInfo(content) {
       if (content.target.files[0].type === 'image/png'
           || content.target.files[0].type === 'image/jpeg'
@@ -142,12 +148,14 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
         this.fileCheck = false;
       }
   }
+
   /**
    * Provide a boolean which allow us to know if the size of the file is correct.
    */
   isSizeFileOk(): boolean {
     return this.fileCheck;
   }
+
   /**
    * Provide a boolean which allow us to know if the type of the file is correct.
    */
@@ -162,6 +170,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
     this.endConditions.push(objectCopy);
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
   }
 
   /**
@@ -170,6 +179,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
    */
   deleteEndCondition(i: number) {
     this.endConditions.splice(i, 1);
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
   }
 
   /**
@@ -189,6 +199,19 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
         },
         description: null
       };
+  }
+
+  /**
+   * Function that is triggered when a modification is done on an end condition field.
+   * @param endCondition the input field that needs to be verified
+   */
+  onUpdateEndConditionValidity(endCondition) {
+    if (endCondition.selectedEndCondition.length === 0) {
+      endCondition.valid = false;
+    } else {
+      endCondition.valid = true;
+    }
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
   }
 
   /**
@@ -232,6 +255,9 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Function that initialize the select for the equipment
+   */
   initEquipmentSelect() {
     this.equipmentTypes.forEach(element => {
       this.equipmentTypeService.getEquipmentType(element.id)
@@ -248,7 +274,7 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Function that initialize the select for the equipment
+   * Function that updates the select for the equipment
    */
   updateEquipmentsSelect(equipmentTypeId: number) {
     this.equipmentList = [];
@@ -393,6 +419,10 @@ export class NewTemplateComponent implements OnInit, OnDestroy {
     this.equipmentSubscription.unsubscribe();
   }
 
+  /**
+   * Function that validates the name input if it's not only spaces
+   * @param control the input name
+   */
   public noWhiteSpaceValidator(control: FormControl) {
     const isWhiteSpace = (control.value || '').trim().length === 0;
     const isValid = !isWhiteSpace;

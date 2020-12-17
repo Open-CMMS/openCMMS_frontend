@@ -16,7 +16,9 @@ import {
   faMinusCircle,
   faMinusSquare,
   faFileDownload,
-  faPlus
+  faPlus,
+  faTimes,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FileService } from 'src/app/services/files/file.service';
@@ -40,6 +42,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   equipment_or_equipment_type = 'no-equipment';
   teams: Team[];
 
+  selectedFieldObject: any;
+
   teamSubscription: Subscription;
   equipmentSubscription: Subscription;
   equipmentTypeSubscription: Subscription;
@@ -53,6 +57,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   faCalendar = faCalendar;
   faFileDownload = faFileDownload;
   faPlus = faPlus;
+  faTimes = faTimes;
+  faCheck = faCheck;
   model: NgbDateStruct;
 
   // Multiple Select
@@ -73,11 +79,13 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   triggerConditions = [];
   triggerConditionSelectTemplate = null;
   triggerConditionDurationRegex: string;
-  triggerConditionDurationError = false;
+  triggerConditionError = false;
+  triggerConditionRecurrenceName = 'Recurrence';
 
   // End Conditions
   endConditions = [];
   endConditionSelectTemplate = null;
+  endConditionError = false;
 
   // Files
   filesSubject = new Subject<File[]>();
@@ -99,8 +107,9 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   currentUserSubscription: Subscription;
 
   // Equipments
-  selectedEquipment: Equipment = null;
   creationLoader = false;
+  selectedEquipment: any = null;
+  selectedEquipmentIdValue = [];
 
   /**
    * Constructor for the NewTeamComponent
@@ -188,12 +197,13 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       }
       let equipment_or_equipment_type = 'no-equipment';
       if (this.selectedTemplate.equipment) {
-          equipment_or_equipment_type = 'equipment';
+        equipment_or_equipment_type = 'equipment';
       } else {
         if (this.selectedTemplate.equipment_type) {
           equipment_or_equipment_type = 'equipment_type';
         }
       }
+      this.selectedEquipmentIdValue = [{id: this.selectedTemplate.equipment.id.toString(), value: this.selectedTemplate.equipment.name}];
       // Loading basic informations from template
       this.createForm.setValue({
         name: '',
@@ -202,10 +212,10 @@ export class NewTaskComponent implements OnInit, OnDestroy {
         duration: this.selectedTemplate.duration,
         equipment: this.selectedTemplate.equipment ?
             [{id: this.selectedTemplate.equipment.id.toString(), value: this.selectedTemplate.equipment.name}]
-            : null,
+            : '',
         equipment_type: this.selectedTemplate.equipment_type ?
             [{id: this.selectedTemplate.equipment_type.id.toString(), value: this.selectedTemplate.equipment_type.name}]
-            : null,
+            : [],
         equipment_or_equipment_type,
         teams: tempTeams,
         file: ''
@@ -236,8 +246,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       end_date: null,
       duration: '',
       equipment: '',
-      equipment_type: '',
-      equipment_or_equipment_type: '',
+      equipment_type: [],
+      equipment_or_equipment_type: 'no-equipment',
       teams: '',
       file: ''
     });
@@ -248,12 +258,22 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   */
 
   /**
+   * Function that retrieve the recurrence trigger condition
+   */
+  getTriggerConditionRecurrence(triggerCondition) {
+    const temp = triggerCondition.triggerConditionsList.find(tc => tc.value === this.triggerConditionRecurrenceName);
+    return temp;
+  }
+
+  /**
    * Function to add a trigger condition in the form
    */
   addTriggerCondition() {
     const jsonCopy = JSON.stringify(this.triggerConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
+    objectCopy.id = this.triggerConditions.length;
     this.triggerConditions.push(objectCopy);
+    this.triggerConditionError = true;
   }
 
   /**
@@ -261,7 +281,26 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * @param i the index of the trigger condition
    */
   deleteTriggerCondition(i: number) {
-    this.triggerConditions.splice(i, 1);
+    const index = this.triggerConditions.findIndex(elt => elt.id === i);
+    const temp = this.triggerConditions.splice(index, 1);
+    this.triggerConditionError = this.triggerConditions.find(tc => !tc.valid);
+  }
+
+  /**
+   * Function that removes specific trigger conditions id the equipment is unselected
+   */
+  removeForbiddenFields() {
+    if (this.createForm.value.equipment_or_equipment_type === 'no-equipment'
+        || this.createForm.value.equipment_or_equipment_type === 'equipment_type') {
+      this.selectedEquipmentIdValue = [];
+      const temp = [];
+      for (const tc of this.triggerConditions) {
+        if (tc.selectedTriggerCondition[0]?.value === this.triggerConditionRecurrenceName) {
+          temp.push(tc);
+        }
+      }
+      this.triggerConditions = temp;
+    }
   }
 
   /**
@@ -270,17 +309,23 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * @param trigger_conditions_types the array with the different types of trigger conditions
    */
   initTriggerConditionSelectTemplate(trigger_conditions_types: any[]) {
+    const temp = [trigger_conditions_types.find(tc => tc.value === this.triggerConditionRecurrenceName)];
     this.triggerConditionSelectTemplate = {
         selectedTriggerCondition: [],
         triggerConditionsList: trigger_conditions_types,
+        triggerConditionsListRecurrenceOnly: temp,
         dropdownTriggerConditionsSettings: {
           singleSelection: true,
           idField: 'id',
           textField: 'value',
-          allowSearchFilter: true
+          allowSearchFilter: true,
+          closeDropDownOnSelection: true
         },
         value: null,
-        description: null
+        description: null,
+        field: null,
+        valid: false,
+        field_object: null
       };
   }
 
@@ -305,7 +350,9 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   addEndCondition() {
     const jsonCopy = JSON.stringify(this.endConditionSelectTemplate);
     const objectCopy = JSON.parse(jsonCopy);
+    objectCopy.id = this.endConditions.length;
     this.endConditions.push(objectCopy);
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
   }
 
   /**
@@ -313,7 +360,9 @@ export class NewTaskComponent implements OnInit, OnDestroy {
    * @param i the index of the end condition
    */
   deleteEndCondition(i: number) {
-    this.endConditions.splice(i, 1);
+    const index = this.endConditions.findIndex(elt => elt.id === i);
+    this.endConditions.splice(index, 1);
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
   }
 
   /**
@@ -329,9 +378,11 @@ export class NewTaskComponent implements OnInit, OnDestroy {
           singleSelection: true,
           idField: 'id',
           textField: 'value',
-          allowSearchFilter: true
+          allowSearchFilter: true,
+          closeDropDownOnSelection: true
         },
-        description: null
+        description: null,
+        valid: false
       };
   }
 
@@ -375,14 +426,25 @@ export class NewTaskComponent implements OnInit, OnDestroy {
   initEquipmentsSelect() {
     this.equipmentList = [];
     this.equipments.forEach(equipment => {
-      this.equipmentList.push({id: equipment.id.toString(), value: equipment.name});
+      this.equipmentList.push({id: equipment.id.toString(), value: equipment.name, fields: equipment.fields});
     });
     this.dropdownEquipmentsSettings = {
       singleSelection: true,
       idField: 'id',
       textField: 'value',
-      allowSearchFilter: true
+      allowSearchFilter: true,
+      closeDropDownOnSelection: true
     };
+  }
+
+  /**
+   * Function that set the right equipment in the varaible selectedEquipment for field selection in the trigger conditions display
+   * @param equipment the equipment selected
+   */
+  setSelectedEquipment(equipment: any) {
+    if (equipment) {
+      this.selectedEquipment = this.equipmentList.find(eq => eq.id === equipment[0]?.id);
+    }
   }
 
   /**
@@ -397,7 +459,8 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       singleSelection: true,
       idField: 'id',
       textField: 'value',
-      allowSearchFilter: true
+      allowSearchFilter: true,
+      closeDropDownOnSelection: true
     };
   }
 
@@ -456,18 +519,21 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       this.fileCheck = false;
     }
   }
+
   /**
    * Provide a boolean which allow us to know if the size of the file is correct.
    */
   isSizeFileOk(): boolean {
     return this.fileCheck;
   }
+
   /**
    * Provide a boolean which allow us to know if the type of the file is correct.
    */
   isTypeFileOk(): boolean {
     return this.fileTypeCheck;
   }
+
   /**
    * Function that initialize the fields in the form to create a new Team
    */
@@ -480,20 +546,66 @@ export class NewTaskComponent implements OnInit, OnDestroy {
       description: [''],
       end_date: [null],
       duration: ['', Validators.pattern(localDurationRegex)],
-      equipment_or_equipment_type: [''],
+      equipment_or_equipment_type: ['no-equipment'],
       equipment: [''],
-      equipment_type: [''],
+      equipment_type: [[]],
       teams: [''],
       file: ['']
     });
   }
 
   /**
-   * Function that is triggered when a modification is done on a trigger condition duration field.
-   * @param triggerConditionDurationField the input field that needs to be verified
+   * Function that is triggered when a modification is done on a trigger condition field.
+   * @param triggerCondition the trigger condition concerned by the update
+   * @param fields the list of fields that needs to be checked
    */
-  onUpdateTriggerConditionDurationValidity(triggerConditionDurationField) {
-    this.triggerConditionDurationError = triggerConditionDurationField.validity.patternMismatch;
+  onUpdateTriggerConditionValidity(triggerCondition, fields) {
+    let tempValidity = true;
+    if (fields) { // Update trigger condition validity by checking fields validity
+      for (const field of fields) {
+        if ((field.validity.patternMismatch || field.value === '')
+            || (field.id === 'field-object' && triggerCondition.field_object === null)) {
+          tempValidity = false;
+          break;
+        }
+      }
+    } else { // Update trigger condition validity by checking selected trigger condition type
+      if (triggerCondition.selectedTriggerCondition.length === 0) {
+        triggerCondition.value = null;
+        triggerCondition.delay = null;
+        triggerCondition.field_object = null;
+      }
+      tempValidity = false;
+    }
+    // Update the trigger condition validity status
+    triggerCondition.valid = tempValidity;
+    // Update the error status to handle "Create Task" button activation
+    this.triggerConditionError = this.triggerConditions.find(tc => !tc.valid);
+  }
+
+  /**
+   * Function that is triggered when a modification is done on an end condition field.
+   * @param endCondition the input field that needs to be verified
+   */
+  onUpdateEndConditionValidity(endCondition) {
+    if (endCondition.selectedEndCondition.length === 0) {
+      endCondition.valid = false;
+    } else {
+      endCondition.valid = true;
+    }
+    this.endConditionError = this.endConditions.find(ec => !ec.valid);
+  }
+
+  /**
+   * Function that handle the disabled status of the Create Task button
+   * @return the disabled boolean value
+   */
+  isFormValidationDisabled() {
+    return this.createForm.invalid
+          || this.triggerConditionError
+          || this.endConditionError
+          || (this.createForm.value.equipment_or_equipment_type === 'equipment' && this.selectedEquipmentIdValue.length === 0)
+          || (this.createForm.value.equipment_or_equipment_type === 'equipment_type' && this.createForm.value.equipment_type.length === 0);
   }
 
   /**
@@ -521,12 +633,24 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     const trigger_conditions: any[] = [];
     if (this.triggerConditions.length > 0) {
       for (const triggerCondition of this.triggerConditions) {
-        trigger_conditions.push({
-          field: triggerCondition.selectedTriggerCondition[0].id,
-          name: triggerCondition.selectedTriggerCondition[0].value,
-          description: triggerCondition.description,
-          value: triggerCondition.value
-        });
+        if (triggerCondition.selectedTriggerCondition[0].value === this.triggerConditionRecurrenceName) {
+          trigger_conditions.push({
+            field: triggerCondition.selectedTriggerCondition[0].id,
+            name: triggerCondition.selectedTriggerCondition[0].value,
+            description: triggerCondition.description,
+            value: triggerCondition.value,
+            delay: triggerCondition.delay,
+          });
+        } else {
+          trigger_conditions.push({
+            field: triggerCondition.selectedTriggerCondition[0].id,
+            name: triggerCondition.selectedTriggerCondition[0].value,
+            description: triggerCondition.description,
+            value: triggerCondition.value,
+            delay: triggerCondition.delay,
+            field_object_id: triggerCondition.field_object.id
+          });
+        }
       }
     }
 
@@ -593,6 +717,10 @@ export class NewTaskComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Validation function for task name
+   * @param control the name input
+   */
   public noWhiteSpaceValidator(control: FormControl) {
     const isWhiteSpace = (control.value || '').trim().length === 0;
     const isValid = !isWhiteSpace;
