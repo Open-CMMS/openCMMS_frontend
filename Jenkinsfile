@@ -204,7 +204,7 @@ pipeline{
                 stage('Build'){
                     steps{
                             sh '''
-                                \$(npm bin)/ng build --prod --build-optimizer
+                                \$(npm bin)/ng build --build-optimizer --configuration=production
                                 '''
                     }
                 }
