@@ -63,6 +63,7 @@ import { NewDataProviderComponent } from './tabs/data-providers/new-data-provide
 import { ForgotPasswordComponent } from './auth/forgot-password/forgot-password.component';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { NgSpinnerModule } from 'ng-bootstrap-spinner';
+import { FooterComponent } from './bars/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -105,6 +106,7 @@ import { NgSpinnerModule } from 'ng-bootstrap-spinner';
     DataProviderListComponent,
     NewDataProviderComponent,
     ForgotPasswordComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
