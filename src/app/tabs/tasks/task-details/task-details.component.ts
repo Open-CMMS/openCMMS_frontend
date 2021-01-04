@@ -211,8 +211,9 @@ export class TaskDetailsComponent implements OnInit, OnDestroy {
   initFiles() {
     this.files = [];
     for (const file of this.task.files) {
+      const splittedFileUrl = file.file.split('/');
       const temp = {
-        fileName: decodeURI(file.file.split('/')[1]),
+        fileName: splittedFileUrl[splittedFileUrl.length - 1],
         fileLink: '/' + file.file,
         is_manual: file.is_manual
       };
