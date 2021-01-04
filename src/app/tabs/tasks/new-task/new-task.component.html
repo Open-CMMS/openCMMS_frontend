@@ -128,7 +128,7 @@
                 <fa-icon [icon]="faPlusSquare"></fa-icon>
             </button>
         </div>
-        <div class="row col-md-12 form-group" *ngFor="let triggerCondition of triggerConditions.reverse(); let i = index">
+        <div class="row col-md-12 form-group" *ngFor="let triggerCondition of triggerConditions; let i = index">
             <div class="input-group align-items-center">
                 <button type="button" class="btn btn-link my-1" style="padding-left: 0px;" ngbTooltip="Delete" placement="bottom" (click)="deleteTriggerCondition(triggerCondition.id)">
                     <fa-icon [icon]="faMinusCircle"  style="color: red;font-size: 22px;"></fa-icon>
@@ -219,7 +219,7 @@
                 <fa-icon [icon]="faPlusSquare"></fa-icon>
             </button>
         </div>
-        <div class="row col-md-12 form-group" *ngFor="let endCondition of endConditions.reverse(); let i = index">
+        <div class="row col-md-12 form-group" *ngFor="let endCondition of endConditions; let i = index">
             <div class="input-group align-items-center">
                 <button class=" btn btn-link my-1" style="padding-left: 0px;" ngbTooltip="Delete" placement="bottom" (click)="deleteEndCondition(endCondition.id)">
                     <fa-icon [icon]="faMinusCircle" style="color: red;font-size: 22px;"></fa-icon>
