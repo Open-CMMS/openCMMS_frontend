@@ -4,7 +4,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TeamTypeDetailsComponent } from './team-type-details.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
 describe('TeamTypeDetailsComponent', () => {
   let component: TeamTypeDetailsComponent;
@@ -24,7 +23,7 @@ describe('TeamTypeDetailsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US1_A3 - should create', () => {
     expect(component).toBeTruthy();
   });
 });
