@@ -27,11 +27,11 @@ describe('TemplateService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US18_A1 - should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should add a template to database (US18_A1)', () => {
+  it('US18_A2 - should add a template to database ', () => {
     const mockTemplate = new Template(1, 'myTemplate');
     service.createTemplate(mockTemplate).subscribe(
         (template) => {
@@ -45,13 +45,13 @@ describe('TemplateService', () => {
     req.flush(mockTemplate);
   });
 
-  it('should retrieve templates from database (US18_A1)', () => {
+  it('US18_A3 - should retrieve templates from database ', () => {
     service.getTemplates();
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/?template=true');
     expect(req.request.method).toEqual('GET');
   });
 
-  it('should delete a template from database (US18_A1)', () => {
+  it('US18_A4 - should delete a template from database ', () => {
     service.deleteTemplate(1).subscribe();
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/1/');
     expect(req.request.method).toEqual('DELETE');

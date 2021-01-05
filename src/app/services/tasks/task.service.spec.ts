@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { TaskService } from './task.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from 'src/environments/environment';
@@ -112,14 +111,14 @@ describe('TaskService', () => {
     expect(req.request.method).toEqual('DELETE');
   });
 
-  it('should verify the addition of  team to a task', () => {
+  it('US6_A1 should verify the addition of  team to a task', () => {
     service.addTeamToTask(1, 1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/addteamtotask');
     expect(req.request.method).toEqual('POST');
   });
 
-  it('should verify the removal of a team from a task', () => {
+  it('US6_A2 should verify the removal of a team from a task', () => {
     service.removeTeamFromTask(1, 1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/addteamtotask');
