@@ -176,7 +176,7 @@ pipeline{
                     steps{
                         sh '''
                             ssh root@192.168.101.14 'rm -rf /var/www/pic-slalom/*';
-                            scp -r -p $WORKSPACE/dist/pic-slalom/* root@192.168.101.14:/var/www/pic-slalom/;
+                            scp -r -p $WORKSPACE/dist/open-cmms/* root@192.168.101.14:/var/www/pic-slalom/;
                         '''
                     }
                 }
@@ -213,7 +213,7 @@ pipeline{
                     steps{
                         sh '''
                             ssh root@192.168.101.9 'rm -rf /var/www/pic-slalom/*';
-                            scp -r -p $WORKSPACE/dist/pic-slalom/* root@192.168.101.9:/var/www/pic-slalom/;
+                            scp -r -p $WORKSPACE/dist/open-cmms/* root@192.168.101.9:/var/www/pic-slalom/;
                         '''
                     }
                 }

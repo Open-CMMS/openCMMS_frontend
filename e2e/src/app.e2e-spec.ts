@@ -10,7 +10,7 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('pic-slalom app is running!');
+    expect(page.getTitleText()).toEqual('open-cmms app is running!');
   });
 
   afterEach(async () => {

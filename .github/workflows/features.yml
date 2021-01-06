@@ -68,4 +68,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: openCMMSfront-${{ github.run_id }}-${{ github.run_number }}
-          path: ./dist/pic-slalom
+          path: ./dist/open-cmms

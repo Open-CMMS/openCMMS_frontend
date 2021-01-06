@@ -9,7 +9,7 @@ import {UrlService} from 'src/app/services/shared/url.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'pic-slalom';
+  title = 'open-cmms';
   previousUrl: string = null;
   currentUrl: string = null;
 

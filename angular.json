@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "pic-slalom": {
+    "open-cmms": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/pic-slalom",
+            "outputPath": "dist/open-cmms",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -92,18 +92,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "pic-slalom:build"
+            "browserTarget": "open-cmms:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "pic-slalom:build:production"
+              "browserTarget": "open-cmms:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "pic-slalom:build"
+            "browserTarget": "open-cmms:build"
           }
         },
         "test": {
@@ -140,16 +140,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "pic-slalom:serve"
+            "devServerTarget": "open-cmms:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "pic-slalom:serve:production"
+              "devServerTarget": "open-cmms:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "pic-slalom"
+  "defaultProject": "open-cmms"
 }
