@@ -33,11 +33,11 @@ describe('NewEquipmentComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US4_A10 - should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize a form', () => {
+  it('US4_A11 - should initialize a form', () => {
     expect(component.createForm.contains('name')).toBe(true);
     expect(component.createForm.contains('equipmentType')).toBe(true);
     expect(component.createForm.contains('file')).toBe(true);

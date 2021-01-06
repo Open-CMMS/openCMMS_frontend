@@ -22,7 +22,7 @@ describe('EquipmentManagementComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US4_A18 - should create', () => {
     expect(component).toBeTruthy();
   });
 });

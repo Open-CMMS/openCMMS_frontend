@@ -24,7 +24,7 @@ describe('EquipmentTypeDetailsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US4_A29 - should create', () => {
     expect(component).toBeTruthy();
   });
 });
