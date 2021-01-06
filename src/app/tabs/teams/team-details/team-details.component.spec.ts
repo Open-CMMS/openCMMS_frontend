@@ -34,11 +34,11 @@ describe('TeamDetailsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US3_A5 - should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should delete the team', () => {
+  it('US3_A6 - should delete the team', () => {
     component.team = new Team(1, 'Test', 2, []);
     component.onDeleteTeam();
 
@@ -51,7 +51,7 @@ describe('TeamDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should update the team', () => {
+  it('US3_A7 - should update the team', () => {
     component.team = new Team(1, 'Test', 2, []);
     component.teamType = new TeamType(2, 'Test TT', [], []);
     component.initForm();
@@ -66,7 +66,7 @@ describe('TeamDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should remove a user from the team', () => {
+  it('US3_A8 - should remove a user from the team', () => {
     component.team = new Team(1, 'Test', 2, []);
     component.teamType = new TeamType(2, 'Test TT', [], []);
     component.initForm();
@@ -81,7 +81,7 @@ describe('TeamDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should init the forms', () => {
+  it('US3_A9 - should init the forms', () => {
     component.team = new Team(1, 'Test', 2, []);
     component.teamType = new TeamType(2, 'Test TT', [], []);
     component.initForm();

@@ -22,7 +22,7 @@ describe('TeamManagementComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US3_A10 - should create', () => {
     expect(component).toBeTruthy();
   });
 });
