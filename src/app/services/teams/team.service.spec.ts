@@ -23,7 +23,7 @@ describe('TeamService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US3_A13 - should be created', () => {
     expect(service).toBeTruthy();
     const mockTeams = [
       {
@@ -45,7 +45,7 @@ describe('TeamService', () => {
     req.flush(mockTeams);
   });
 
-  it('should verify the parameters and content of the team get action', () => {
+  it('US3_A14 - should verify the parameters and content of the team get action', () => {
     const mockTeams = [
       {
         id: 0,
@@ -85,7 +85,7 @@ describe('TeamService', () => {
     req[1].flush(mockTeams);
   });
 
-  it('should verify the parameters and content of the team by id GET request', () => {
+  it('US3_A15 - should verify the parameters and content of the team by id GET request', () => {
     const mockTeam = {
         id: 1,
         name: 'Team 2',
@@ -104,7 +104,7 @@ describe('TeamService', () => {
     req2.flush(mockTeam);
   });
 
-  it('should verify the creation of a new team', () => {
+  it('US3_A16 - should verify the creation of a new team', () => {
     const mockTeam = {
         id: 1,
         name: 'Team 2',
@@ -127,7 +127,7 @@ describe('TeamService', () => {
     req.flush(mockTeam);
   });
 
-  it('should verify the update of a team in database', () => {
+  it('US3_A17 - should verify the update of a team in database', () => {
     const mockTeam = {
         id: 1,
         name: 'Team 2',
@@ -150,7 +150,7 @@ describe('TeamService', () => {
     req.flush(mockTeam);
   });
 
-  it('should verify the deletion of a team in database', () => {
+  it('US3_A18 - should verify the deletion of a team in database', () => {
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');
     service.deleteTeam(1).subscribe();
 

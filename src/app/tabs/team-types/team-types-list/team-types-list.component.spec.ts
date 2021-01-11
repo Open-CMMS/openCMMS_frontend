@@ -22,7 +22,7 @@ describe('TeamTypesListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US1_A5 - should create', () => {
     expect(component).toBeTruthy();
   });
 });

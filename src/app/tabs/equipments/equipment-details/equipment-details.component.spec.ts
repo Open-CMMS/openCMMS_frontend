@@ -34,10 +34,10 @@ describe('EquipmentDetailsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US4_A13 - should create', () => {
     expect(component).toBeTruthy();
   });
-  it('should delete the equipment', () => {
+  it('US4_A14 - should delete the equipment', () => {
     const mockFields = [new Field(1, 'name', ['value1', 'value2'], 'description')];
     component.currentEquipment = new Equipment(6, 'test', 2, [0, 1], mockFields);
     component.onDeleteEquipment();
@@ -50,7 +50,7 @@ describe('EquipmentDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should update the equipment name', () => {
+  it('US4_A15 - should update the equipment name', () => {
     const mockFields = [new Field(1, 'name', ['value1'], 'description')];
     component.currentEquipment = new Equipment(6, 'test', 2, [0, 1], mockFields);
     component.initForm();
@@ -65,7 +65,7 @@ describe('EquipmentDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should update the equipment files', () => {
+  it('US4_A16 - should update the equipment files', () => {
     const mockFields = [new Field(1, 'name', ['value1'], 'description')];
     component.currentEquipment = new Equipment(6, 'test', 2, [0, 1], mockFields);
     component.initForm();
@@ -80,7 +80,7 @@ describe('EquipmentDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should init the forms', () => {
+  it('US4_A17 - should init the forms', () => {
     const mockFields = [new Field(1, 'name', ['value1', 'value2'], 'description')];
     component.currentEquipment = new Equipment(6, 'test', 2, [0, 1], mockFields);
     component.initForm();

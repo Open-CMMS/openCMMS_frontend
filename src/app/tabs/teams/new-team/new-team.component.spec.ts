@@ -32,17 +32,17 @@ describe('NewTeamComponent', () => {
     component.initUsersSelect();
   });
 
-  it('should create', () => {
+  it('US3_A2 - should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize a form', () => {
+  it('US3_A3 - should initialize a form', () => {
     expect(component.createForm.contains('teamName')).toBe(true);
     expect(component.createForm.contains('teamType')).toBe(true);
     expect(component.createForm.contains('users')).toBe(true);
   });
 
-  it('should call the creation method of Team', () => {
+  it('US3_A4 - should call the creation method of Team', () => {
     component.onCreateTeam();
 
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/');

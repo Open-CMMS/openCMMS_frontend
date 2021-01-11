@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
@@ -28,11 +28,11 @@ describe('TeamsListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US3_A11 - should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should delete a team from the list', () => {
+  it('US3_A12 - should delete a team from the list', () => {
     const team = new Team(1, 'Test', 2, []);
     component.onDeleteTeam(team);
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teams/');

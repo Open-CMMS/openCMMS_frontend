@@ -33,12 +33,12 @@ describe('UserDetailsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US2_A23 - should create', () => {
     expect(component).toBeTruthy();
   });
 
 
-  it('should delete the user', () => {
+  it('US2_A24 - should delete the user', () => {
     component.user = new UserProfile(6, 'test', 'test', 'test', 'test', 'test', 0, false);
     component.onDeleteUser();
 
@@ -49,7 +49,7 @@ describe('UserDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should update the user', () => {
+  it('US2_A25 - should update the user', () => {
     component.user = new UserProfile(6, 'test', 'test', 'test', 'test', 'test', 0, false);
     component.initForm();
     component.onModifyUser();
@@ -61,7 +61,7 @@ describe('UserDetailsComponent', () => {
     httpTestingController.verify();
   });
 
-  it('should init the forms', () => {
+  it('US2_A26 - should init the forms', () => {
     component.user = new UserProfile(6, 'test', 'test', 'test', 'test', 'test', 0, false);
     component.initForm();
     expect(component.userUpdateForm.contains('email')).toBe(true);
