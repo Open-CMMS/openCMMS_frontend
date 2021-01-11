@@ -22,11 +22,11 @@ describe('FileService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US7_A1 - should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('returned Equipment should match the right data of getFile', () => {
+  it('US7_A2 - returned Equipment should match the right data of getFile', () => {
     service.getFile(1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/files/1/');
@@ -34,7 +34,7 @@ describe('FileService', () => {
     expect(req.request.method).toEqual('GET');
   });
 
-  it('returned Observable should match the right data on uploading file', () => {
+  it('US7_A3 - returned Observable should match the right data on uploading file', () => {
     service.uploadFile(new FormData()).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/files/');
@@ -42,7 +42,7 @@ describe('FileService', () => {
     expect(req.request.method).toEqual('POST');
   });
 
-  it('returned Observable should match the right data on delete', () => {
+  it('US7_A4 - returned Observable should match the right data on delete', () => {
     service.deleteFile(1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/files/1/');
