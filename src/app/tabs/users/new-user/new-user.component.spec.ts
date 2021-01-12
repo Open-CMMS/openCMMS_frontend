@@ -4,13 +4,11 @@ import { NewUserComponent } from './new-user.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { environment } from 'src/environments/environment.prod';
 
 describe('NewUserComponent', () => {
   let component: NewUserComponent;
   let fixture: ComponentFixture<NewUserComponent>;
   let httpTestingController: HttpTestingController;
-  const BASE_URL_API = environment.baseUrl;
 
 
   beforeEach(async(() => {
@@ -29,12 +27,12 @@ describe('NewUserComponent', () => {
     component.initForm();
   });
 
-  it('should create', () => {
+  it('US2_A21 - should create', () => {
     expect(component).toBeTruthy();
   });
 
 
-  it('should initialize a form', () => {
+  it('US2_A22 - should initialize a form', () => {
     expect(component.createForm.contains('firstName')).toBe(true);
     expect(component.createForm.contains('lastName')).toBe(true);
     expect(component.createForm.contains('email')).toBe(true);

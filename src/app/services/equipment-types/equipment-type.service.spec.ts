@@ -22,7 +22,7 @@ describe('EquipmentTypeService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US4_A20 - should be created', () => {
     expect(service).toBeTruthy();
     const mockEquipmentTypes = [
       {
@@ -42,7 +42,7 @@ describe('EquipmentTypeService', () => {
     req.flush(mockEquipmentTypes);
   });
 
-  it('should verify the parameters and content of the equipment type get action', () => {
+  it('US4_A21 - should verify the parameters and content of the equipment type get action', () => {
     const mockEquipmentTypes = [
       {
         id: 0,
@@ -74,7 +74,7 @@ describe('EquipmentTypeService', () => {
     req[1].flush(mockEquipmentTypes);
   });
 
-  it('should verify the parameters and content of the equipment type by id GET request', () => {
+  it('US4_A22 - should verify the parameters and content of the equipment type by id GET request', () => {
     const mockEquipmentType = {
         id: 1,
         name: 'EquipmentType 1',
@@ -90,7 +90,7 @@ describe('EquipmentTypeService', () => {
     req2.flush(mockEquipmentType);
   });
 
-  it('should verify the creation of a new equipment type', () => {
+  it('US4_A23 - should verify the creation of a new equipment type', () => {
     const mockEquipmentType = {
         id: 1,
         name: 'EquipmentType 2',
@@ -98,7 +98,7 @@ describe('EquipmentTypeService', () => {
       };
 
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/');
-    const newEquipmentType = new EquipmentType(1, 'EquipmenttType 2', [1]);
+    const newEquipmentType = new EquipmentType(1, 'EquipmentType 2', [1]);
     service.createEquipmentType(newEquipmentType).subscribe(
       equipmentType => {
         expect(equipmentType.name).toBe('EquipmentType 2');
@@ -112,7 +112,7 @@ describe('EquipmentTypeService', () => {
     req.flush(mockEquipmentType);
   });
 
-  it('should verify the update of a equipment type in database', () => {
+  it('US4_A24 - should verify the update of a equipment type in database', () => {
     const mockEquipmentType = {
         id: 1,
         name: 'EquipmentType 2',
@@ -134,7 +134,7 @@ describe('EquipmentTypeService', () => {
     req.flush(mockEquipmentType);
   });
 
-  it('should verify the deletion of a equipment type in database', () => {
+  it('US4_A25 - should verify the deletion of a equipment type in database', () => {
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipmenttypes/');
     service.deleteEquipmentType(1);
 

@@ -23,7 +23,7 @@ describe('ResetPasswordComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US2_A2 - should create', () => {
     expect(component).toBeTruthy();
   });
 });

@@ -26,7 +26,7 @@ describe('SigninComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US2_A3 - should create', () => {
     expect(component).toBeTruthy();
   });
 });

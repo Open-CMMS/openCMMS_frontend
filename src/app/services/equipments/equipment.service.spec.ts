@@ -24,7 +24,7 @@ describe('EquipmentService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US4_A0 - should be created', () => {
     expect(service).toBeTruthy();
     const mockEquipment = [
       {
@@ -48,7 +48,7 @@ describe('EquipmentService', () => {
     req.flush(mockEquipment);
   });
 
-  it('returned Observable should match all the right Equipments', () => {
+  it('US4_A1 - returned Observable should match all the right Equipments', () => {
     const mockEquipment = [
       {
           id: 1,
@@ -114,7 +114,7 @@ describe('EquipmentService', () => {
 
   });
 
-  it('returned Equipment should match the right data of getEquipment', () => {
+  it('US4_A2 - returned Equipment should match the right data of getEquipment', () => {
     const mockEquipment = {
       id: 1,
       name: 'clé',
@@ -145,7 +145,7 @@ describe('EquipmentService', () => {
 
   });
 
-  it('returned Observable should match the right data on update', () => {
+  it('US4_A3 - returned Observable should match the right data on update', () => {
     const mockFields =  [new Field(1, 'name', ['value1', 'value2'], 'description'),
     new Field(2, 'name2', ['value12', 'value22'], 'description2')];
     const mockEquipment = {
@@ -182,7 +182,7 @@ describe('EquipmentService', () => {
     req.flush(mockEquipment);
   });
 
-  it('returned Observable should match the right data on update of the name', () => {
+  it('US4_A4 - returned Observable should match the right data on update of the name', () => {
     const mockFields =  [new Field(1, 'name', ['value1', 'value2'], 'description'),
       new Field(2, 'name2', ['value12', 'value22'], 'description2')];
     const mockEquipment = {
@@ -194,7 +194,7 @@ describe('EquipmentService', () => {
     };
 
     httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/equipments/');
-    service.updateEquipmentName('clé', 1)
+    service.updateEquipmentName('clé-anglaise', 1)
       .subscribe(equipment => {
         expect(equipment.name).toEqual('clé-anglaise');
         expect(equipment.equipment_type).toEqual(1);
@@ -217,7 +217,7 @@ describe('EquipmentService', () => {
     req.flush(mockEquipment);
   });
 
-  it('returned Observable should match the right data on update of the files', () => {
+  it('US4_A5 - returned Observable should match the right data on update of the files', () => {
     const mockFields =  [new Field(1, 'name', ['value1', 'value2'], 'description'),
       new Field(2, 'name2', ['value12', 'value22'], 'description2')];
     const mockEquipment = {
@@ -252,7 +252,7 @@ describe('EquipmentService', () => {
     req.flush(mockEquipment);
   });
 
-  it('returned Observable should match the right data on creating new equipment', () => {
+  it('US4_A6 - returned Observable should match the right data on creating new equipment', () => {
     const mockFields = [new Field(1, 'name', ['value1', 'value2'], 'description')];
     const mockEquipment = {
       id: 1,
@@ -282,7 +282,7 @@ describe('EquipmentService', () => {
     req[1].flush(mockEquipment);
   });
 
-  it('returned Observable should match the right data on delete', () => {
+  it('US4_A7 - returned Observable should match the right data on delete', () => {
     const mockFields = [new Field(1, 'name', ['value1', 'value2'], 'description')];
     const mockEquipment = {
       id: 1,
@@ -312,7 +312,7 @@ describe('EquipmentService', () => {
     req.flush(mockEquipment);
   });
 
-  it('returned Observable should match the right data on delete field', () => {
+  it('US4_A8 - returned Observable should match the right data on delete field', () => {
         const mockEquipment = {
             id: 1,
             name: 'clé',

@@ -25,11 +25,11 @@ describe('UserService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US2_A14 - should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('returned Observable should match the right data', () => {
+  it('US2_A15 - returned Observable should match the right data', () => {
     const mockUsers = [
       {
           id: 2,
@@ -83,7 +83,7 @@ describe('UserService', () => {
 
   });
 
-  it('returned UserProfile should match the right data of getUser()', () => {
+  it('US2_A16 - returned UserProfile should match the right data of getUser()', () => {
     const mockUser = {
       id: 3,
       username: 'hmaricato',
@@ -113,7 +113,7 @@ describe('UserService', () => {
 
   });
 
-  it('returned Observable should match the right data for update', () => {
+  it('US2_A17 - returned Observable should match the right data for update', () => {
     const mockUser = {
       id: 3,
       username: 'hmaricato',
@@ -140,7 +140,7 @@ describe('UserService', () => {
   });
 
 
-  it('returned Observable should match the right data on creating new user', () => {
+  it('US2_A18 - returned Observable should match the right data on creating new user', () => {
     const mockUser = {
       id: 0,
       username: 'hmaricato',
@@ -169,7 +169,7 @@ describe('UserService', () => {
     req.flush(mockUser);
   });
 
-  it('returned Observable should match the right data on delete', () => {
+  it('US2_A19 - returned Observable should match the right data on delete', () => {
     service.deleteUser(1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/users/1/');
@@ -177,7 +177,7 @@ describe('UserService', () => {
     expect(req.request.method).toEqual('DELETE');
   });
 
-  it('should update a user\'s password', () => {
+  it('US2_A20 - should update a user\'s password', () => {
     const mockUser = {
       id: 3,
       username: 'hmaricato',

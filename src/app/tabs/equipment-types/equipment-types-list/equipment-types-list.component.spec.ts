@@ -21,7 +21,7 @@ describe('EquipmentTypesListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US4_A30 - should create', () => {
     expect(component).toBeTruthy();
   });
 });

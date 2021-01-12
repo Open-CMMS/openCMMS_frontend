@@ -20,11 +20,11 @@ describe('AuthenticationService', () => {
 
   });
 
-  it('should be created', () => {
+  it('US2_A6 - should be created', () => {
     expect(authenticationService).toBeTruthy();
   });
 
-  it('should verify the parameters and result of the login call', () => {
+  it('US2_A7 - should verify the parameters and result of the login call', () => {
     const mockUser =
       new UserProfile(2, 'hmaricato', 'hugo', '', 'hugo.simoes_maricato@insa-rouen.fr',
       '!fmEy1YLWGsoWhQ4TgYb3LRqwUGbQwHaFiJFam8jf', 0, true);
@@ -44,7 +44,7 @@ describe('AuthenticationService', () => {
     req.flush(mockUser);
   });
 
-  it('should verify get the user\'s permissions ', () => {
+  it('US2_A8 - should verify get the user\'s permissions ', () => {
     const mockPerms = [
       'add_userprofile',
       'delete_team',
@@ -64,32 +64,32 @@ describe('AuthenticationService', () => {
     req.flush(mockPerms);
   });
 
-  it('should verify the token for setting password', () => {
+  it('US2_A9 - should verify the token for setting password', () => {
     authenticationService.verifyToken('username', 'token').subscribe();
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/check_token');
     expect(req.request.method).toEqual('POST');
   });
 
-  it('should set a password', () => {
+  it('US2_A10 - should set a password', () => {
     authenticationService.setPassword('username', 'password', 'token').subscribe();
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/set_password');
     expect(req.request.method).toEqual('POST');
   });
 
-  it('should send an email to the user (identified with email and username) who forget his password ', () => {
+  it('US2_A11 - should send an email to the user (identified with email and username) who forget his password ', () => {
     authenticationService.forgotPassword('jessica.billore@insa-rouen.fr', 'jbillore').subscribe();
     const req = httpTestingController.expectOne(
       BASE_URL_API + '/api/usersmanagement/forget_password?email=jessica.billore@insa-rouen.fr&&username=jbillore');
     expect(req.request.method).toEqual('GET');
   });
 
-  it('should send an email to the user (identified with email) who forget his password', () => {
+  it('US2_A12 - should send an email to the user (identified with email) who forget his password', () => {
     authenticationService.forgotPassword_email('jessica.billore@insa-rouen.fr').subscribe();
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/forget_password?email=jessica.billore@insa-rouen.fr');
     expect(req.request.method).toEqual('GET');
   });
 
-  it('should send an email to the user (identified with username) who forget his password', () => {
+  it('US2_A13 - should send an email to the user (identified with username) who forget his password', () => {
     authenticationService.forgotPassword_username('jbillore').subscribe();
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/forget_password?username=jbillore');
     expect(req.request.method).toEqual('GET');

@@ -23,7 +23,7 @@ describe('TeamTypeService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US1_A6 - should be created', () => {
     expect(service).toBeTruthy();
     const mockTeamTypes = [
       {
@@ -45,7 +45,7 @@ describe('TeamTypeService', () => {
     req.flush(mockTeamTypes);
   });
 
-  it('should verify the parameters and content of the team type get action', () => {
+  it('US1_A7 - should verify the parameters and content of the team type get action', () => {
     const mockTeamTypes = [
       {
         id: 0,
@@ -87,7 +87,7 @@ describe('TeamTypeService', () => {
     req[1].flush(mockTeamTypes);
   });
 
-  it('should verify the parameters and content of the team type by id GET request', () => {
+  it('US1_A8 - should verify the parameters and content of the team type by id GET request', () => {
     const mockTeamType = {
         id: 1,
         name: 'TeamType 1',
@@ -110,7 +110,7 @@ describe('TeamTypeService', () => {
     req2.flush(mockTeamType);
   });
 
-  it('should verify the creation of a new team type', () => {
+  it('US1_A9 - should verify the creation of a new team type', () => {
     const mockTeamType = {
         id: 1,
         name: 'TeamType 2',
@@ -134,7 +134,7 @@ describe('TeamTypeService', () => {
     req.flush(mockTeamType);
   });
 
-  it('should verify the update of a team type in database', () => {
+  it('US1_A10 - should verify the update of a team type in database', () => {
     const mockTeamType = {
         id: 1,
         name: 'TeamType 2',
@@ -158,7 +158,7 @@ describe('TeamTypeService', () => {
     req.flush(mockTeamType);
   });
 
-  it('should verify the deletion of a team type in database', () => {
+  it('US1_A11 - should verify the deletion of a team type in database', () => {
     httpTestingController.expectOne(BASE_URL_API + '/api/usersmanagement/teamtypes/');
     service.deleteTeamType(1);
 

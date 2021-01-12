@@ -23,7 +23,7 @@ describe('TeamTypeManagementComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US1_A4 - should create', () => {
     expect(component).toBeTruthy();
   });
 });

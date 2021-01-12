@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { TaskService } from './task.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from 'src/environments/environment';
@@ -24,11 +23,11 @@ describe('TaskService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US5_A5 - should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should verify the parameters and content of the task get action', () => {
+  it('US5_A6 - should verify the parameters and content of the task get action', () => {
     const mockTasks = [
       {
         id: 0,
@@ -57,7 +56,7 @@ describe('TaskService', () => {
     req[0].flush(mockTasks);
   });
 
-  it('should verify the creation of a new task', () => {
+  it('US5_A7 - should verify the creation of a new task', () => {
     const mockTask = {
       id: 1,
       name: 'Task 1',
@@ -84,7 +83,7 @@ describe('TaskService', () => {
     req.flush(mockTask);
   });
 
-  it('should verify the update of a task in database', () => {
+  it('US5_A8 - should verify the update of a task in database', () => {
     const mockTask = {
       id: 1,
       name: 'Task 1',
@@ -105,21 +104,21 @@ describe('TaskService', () => {
     req.flush(mockTask);
   });
 
-  it('should verify the deletion of a task in database', () => {
+  it('US5_A9 - should verify the deletion of a task in database', () => {
     service.deleteTask(1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/tasks/1/');
     expect(req.request.method).toEqual('DELETE');
   });
 
-  it('should verify the addition of  team to a task', () => {
+  it('US6_A1 should verify the addition of  team to a task', () => {
     service.addTeamToTask(1, 1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/addteamtotask');
     expect(req.request.method).toEqual('POST');
   });
 
-  it('should verify the removal of a team from a task', () => {
+  it('US6_A2 should verify the removal of a team from a task', () => {
     service.removeTeamFromTask(1, 1).subscribe();
 
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/maintenancemanagement/addteamtotask');

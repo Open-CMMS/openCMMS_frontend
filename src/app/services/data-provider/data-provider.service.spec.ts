@@ -25,12 +25,12 @@ describe('DataProviderService', () => {
     httpTestingController.verify();
   });
 
-  it('should be created', () => {
+  it('US23_A2  - should be created', () => {
     expect(service).toBeTruthy();
     httpTestingController.expectOne(BASE_URL_API + '/api/dataproviders/');
   });
 
-  it('should verify the parameters and content of the equipment type get action', () => {
+  it('US23_A3 - should verify the parameters and content of the equipment type get action', () => {
     const test: any[] = ['unField'];
     const test2: any = 'salut';
     const eq1: Equipment = new Equipment(1, 'test', 'equipmentTypeTest', test, test2);
@@ -93,7 +93,7 @@ describe('DataProviderService', () => {
 
   });
 
-  it('should verify the parameters and content of the equipment type by id GET request', () => {
+  it('US23_A4 - should verify the parameters and content of the equipment type by id GET request', () => {
     const test: any[] = ['unField'];
     const test2: any = 'salut';
     const eq1: Equipment = new Equipment(1, 'test', 'equipmentTypeTest', test, test2);
@@ -139,7 +139,7 @@ describe('DataProviderService', () => {
     req.flush(mockDataProviders[0]);
   });
 
-  it('should verify the update of a equipment type in database', () => {
+  it('US23_A5 - should verify the update of a equipment type in database', () => {
     const test: any[] = ['unField'];
     const test2: any = 'salut';
     const eq1: Equipment = new Equipment(1, 'test', 'equipmentTypeTest', test, test2);
@@ -176,14 +176,14 @@ describe('DataProviderService', () => {
     req.flush(mockDataProvider);
   });
 
-  it('should verify the deletion of a data provider in database', () => {
+  it('US23_A6 - should verify the deletion of a data provider in database', () => {
     httpTestingController.expectOne(BASE_URL_API + '/api/dataproviders/');
     service.deleteDataProvider(1).subscribe();
     const req = httpTestingController.expectOne(BASE_URL_API + '/api/dataproviders/1/');
     expect(req.request.method).toEqual('DELETE');
   });
 
-  it('should verify the test of a data provider', () => {
+  it('US23_A7 - should verify the test of a data provider', () => {
     const test: any[] = ['unField'];
     const test2: any = 'salut';
     const eq1: Equipment = new Equipment(1, 'test', 'equipmentTypeTest', test, test2);

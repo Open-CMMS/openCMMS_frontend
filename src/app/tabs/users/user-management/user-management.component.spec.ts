@@ -23,7 +23,7 @@ describe('UserManagementComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('US2_A27 - should create', () => {
     expect(component).toBeTruthy();
   });
 });
